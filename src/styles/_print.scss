@@ -1,0 +1,29 @@
+// Print styles: only the printable sheet is visible, A4 with sensible margins.
+@page {
+  size: A4;
+  margin: 14mm;
+}
+
+@media print {
+  html,
+  body {
+    background: #fff !important;
+  }
+
+  .no-print,
+  .app-header,
+  .app-footer {
+    display: none !important;
+  }
+
+  body.print-child .parent-sheet,
+  body.print-parent .child-sheet {
+    display: none !important;
+  }
+
+  .print-root {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: auto !important;
+  }
+}

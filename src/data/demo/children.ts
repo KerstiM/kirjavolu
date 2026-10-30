@@ -1,0 +1,55 @@
+import type { ChildProfile } from '../../domain/models'
+
+const created = '2026-01-01T00:00:00.000Z'
+
+/** Editable demonstration profiles shown on first launch. */
+export const DEMO_CHILDREN: ChildProfile[] = [
+  {
+    id: 'demo-ruben',
+    name: 'Ruben',
+    age: 10,
+    readingLevel: 'independent',
+    personality: 'Nutikas ja järjekindel, armastab keerulisi ülesandeid.',
+    interests: ['Rubiku kuubik', 'salakoodid ja mõistatused'],
+    favorites: ['Miki Hiire koomiksid'],
+    foods: [],
+    family: ['ema', 'isa', 'vend Jasper', 'õde Brita'],
+    achievements: [],
+    details: 'Eelistab nutikaid mõistatusi ja keerukamaid lugusid.',
+    parentNotes: '',
+    createdAt: created,
+    updatedAt: created,
+  },
+  {
+    id: 'demo-jasper',
+    name: 'Jasper',
+    age: 6,
+    readingLevel: 'independent',
+    personality: 'Rõõmsameelne naljahammas.',
+    interests: ['naljakad seiklused', 'eakohased mõistatused'],
+    favorites: ['Miki Hiire koomiksid'],
+    foods: ['riisipuder'],
+    family: ['ema', 'isa', 'vend Ruben', 'õde Brita'],
+    achievements: [],
+    details: 'Loeb juba hästi. Pudrudest sööb ainult riisiputru.',
+    parentNotes: '',
+    createdAt: created,
+    updatedAt: created,
+  },
+  {
+    id: 'demo-brita',
+    name: 'Brita',
+    age: 1,
+    readingLevel: 'read-aloud',
+    personality: 'Uudishimulik ja naerusuine.',
+    interests: [],
+    favorites: [],
+    foods: [],
+    family: ['ema', 'isa', 'Ruben', 'Jasper'],
+    achievements: [],
+    details: 'Lood loeb ette täiskasvanu. Lihtne keel, tuttavad asjad ja mängulised tegevused.',
+    parentNotes: '',
+    createdAt: created,
+    updatedAt: created,
+  },
+]
