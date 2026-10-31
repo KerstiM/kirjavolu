@@ -129,8 +129,9 @@ describe('compact daily series', () => {
     for (const item of items.slice(1)) expect(fillers).not.toContain(item.body.split('\n\n')[0])
   })
 
-  it('keeps full letters when the parent chooses "long"', () => {
-    const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', general: { length: 'long' } })).items
-    expect(items[1]!.body.split('\n\n').length).toBeGreaterThanOrEqual(5)
+  it('daily letters are whole stories of a few paragraphs, not a list of fragments', () => {
+    const items = runTemplates(makeRequest('letter', { occasionId: 'christmas' })).items
+    for (const item of items) expect(item.body.split('\n\n').length).toBeLessThanOrEqual(5)
+    expect(items.filter((item) => item.body.split('\n\n').length >= 3).length).toBeGreaterThanOrEqual(12)
   })
 })

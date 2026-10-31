@@ -64,14 +64,14 @@ export const QUESTIONS: QuestionThread[] = [
     id: 'steps',
     level: 'any',
     ask: (v) => `Küsimus: mitu sammu on ${v('sinu', 'teie')} toast kööki? ${v('Loe', 'Lugege')} järele ja ${v('kirjuta', 'kirjutage')} vastus mulle.`,
-    answerNext: () => `Aitäh vastuse eest! Päkapiku sammudega oleks see vähemalt kolm korda rohkem – meil on ju väga lühikesed jalad.`,
+    answerNext: () => `Eilse küsimuse kohta: mina lugesin päkapikusammudega ja sain kolm korda rohkem kui sina. Meil on ju väga lühikesed jalad.`,
     answer: 'Õiget vastust pole – iga vastus on hea.',
   },
   {
     id: 'favourite-moment',
     level: 'any',
     ask: (v) => `Küsimus: mis oli ${v('sinu', 'teie')} tänase päeva kõige parem hetk? ${v('Kirjuta', 'Kirjutage')} või ${v('joonista', 'joonistage')} see mulle.`,
-    answerNext: () => `Lugesin su vastust ja naeratasin terve hommiku. Head hetked on nagu pisikesed tähed – mida rohkem neid märkad, seda heledam on.`,
+    answerNext: () => `Eile küsisin päeva parima hetke kohta. Minu oma oli see, kui kass Nurr jäi päikselaigus magama ja norskas nagu väike traktor.`,
     answer: 'Õiget vastust pole – iga vastus on hea.',
   },
 ]

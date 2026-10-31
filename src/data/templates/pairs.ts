@@ -8,7 +8,7 @@ export interface PairContext {
   receiverGenitive: string
   receiverAllative: string
   receiverComitative: string
-  /** Name of the receiver's own helper, e.g. "Pisi-Pätsi". */
+  /** Name of the receiver's own helper, e.g. "Pisi-Pätsi". Only for the giver's letter: in the receiver's letter that helper is the narrator ("mina"). */
   receiverHelper: string
 }
 
@@ -35,8 +35,8 @@ export const PAIR_TEMPLATES: PairTemplate[] = [
     id: 'read',
     giver: (c) =>
       `Täna on sul tähtis ülesanne: loe ${c.receiverAllative} ette üks raamat või vaadake koos pilte. ${c.receiverHelper} istub sel ajal riiuli peal ja kuulab ka.`,
-    receiverReader: (c) => `Täna loeb ${c.giver} sulle ühe loo ette. ${c.receiverHelper} tuleb ka kuulama!`,
-    receiverToddler: (c) => `Täna loeb ${c.giver} sulle raamatut. ${c.receiverHelper} kuulab ka. Kuula hästi!`,
+    receiverReader: (c) => `Täna loeb ${c.giver} sulle ühe loo ette. Mina tulen ka kuulama!`,
+    receiverToddler: (c) => `Täna loeb ${c.giver} sulle raamatut. Mina kuulan ka. Kuula hästi!`,
     prep: (c) => `raamat, mida ${c.receiverAllative} ette lugeda`,
   },
   {
@@ -49,9 +49,9 @@ export const PAIR_TEMPLATES: PairTemplate[] = [
   {
     id: 'play',
     giver: (c) =>
-      `Tee täna ${c.receiverComitative} midagi toredat: mängige koos või ajage teineteist naerma. ${c.receiverHelper} rääkis mulle, et ${c.receiver} ootab seda väga.`,
+      `Tee täna ${c.receiverComitative} midagi toredat: mängige koos või ajage teineteist naerma. ${c.receiverHelper} arvab, et ${c.receiverAllative} meeldiks see väga.`,
     receiverReader: (c) => `Täna on ${c.giverGenitive} kord sinuga mängida. Vali sina, mida te mängite!`,
-    receiverToddler: (c) => `${c.giver} mängib täna sinuga. ${c.receiverHelper} vaatab ka!`,
+    receiverToddler: (c) => `${c.giver} mängib täna sinuga. Mina vaatan ka!`,
   },
   {
     id: 'drawing',
@@ -73,7 +73,7 @@ export const PAIR_TEMPLATES: PairTemplate[] = [
     id: 'slipper',
     giver: (c) =>
       `Täna on abilise ülesanne: vaata õhtul, et ka ${c.receiverGenitive} suss oleks aknalaual. ${c.receiverHelper} ei taha seda kuidagi maha magada!`,
-    receiverReader: (c) => `Kuulsin, et ${c.giver} aitab täna päkapikke. Kui ta küsib su sussi kohta, siis tea – see on salajane missioon.`,
+    receiverReader: (c) => `${c.giver} lubas täna õhtul vaadata, et ka sinu suss oleks kindlasti aknalaual. Ma ei taha sinu sussi kuidagi maha magada!`,
     receiverToddler: (c) => `${c.giver} aitab täna su sussi aknale panna. Aitäh, ${c.giver}!`,
     occasions: ['christmas'],
   },

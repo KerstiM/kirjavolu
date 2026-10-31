@@ -7,8 +7,6 @@ import { familyPlan, personasFor } from '@/domain/generators/linkedLetters'
 import ChallengesEditor from '@/features/creation/options/ChallengesEditor.vue'
 import type { ChildChallenge, GeneratedItem, RequestFor } from '@/domain/models'
 import { BRITA, JASPER, makeRequest, RUBEN } from './helpers'
-import { HELPER_GOSSIP, TODDLER_HELPER_GOSSIP } from '@/data/templates/gossip'
-import { nameCase } from '@/domain/text/estonian'
 
 type Item = Omit<GeneratedItem, 'id' | 'variant' | 'edited'>
 const sweetsBreak: ChildChallenge = { id: 'c', childId: JASPER.id, kind: 'no-sweets', start: '2026-12-11', end: '2026-12-13', title: '' }
@@ -58,41 +56,19 @@ describe('child challenges', () => {
   })
 })
 
-describe('helpers talk about each other', () => {
+describe('helpers know each other', () => {
   const request = family()
   const items = runTemplates(request).items
   const personas = personasFor(request)
-  // Every possible gossip sentence, rendered for each sibling, so detection is exact.
-  const possible = new Map<string, string>()
-  for (const sibling of [RUBEN, JASPER, BRITA]) {
-    const ctx = {
-      helper: personas[sibling.id]!.name,
-      child: sibling.name,
-      childGenitive: nameCase(sibling, 'genitive'),
-      childElative: nameCase(sibling, 'elative'),
-      childAllative: nameCase(sibling, 'allative'),
-    }
-    for (const t of [...HELPER_GOSSIP, ...TODDLER_HELPER_GOSSIP]) possible.set(t(ctx), personas[sibling.id]!.name)
-  }
-  const gossipOf = (childId: string) =>
+  const others = (childId: string) => [RUBEN, JASPER, BRITA].filter((c) => c.id !== childId).map((c) => personas[c.id]!.name)
+  const storiesWith = (childId: string) =>
     items
       .filter((item) => item.childId === childId)
-      .flatMap((item) => item.body.split('\n\n'))
-      .filter((p) => possible.has(p))
+      .slice(1)
+      .filter((item) => others(childId).some((name) => item.body.includes(name)))
 
-  it('every reader hears regularly about the siblings’ helpers, by their right names', () => {
-    for (const child of [RUBEN, JASPER]) {
-      const lines = gossipOf(child.id)
-      expect(lines.length).toBeGreaterThanOrEqual(3)
-      const own = personas[child.id]!.name
-      for (const line of lines) expect(possible.get(line)).not.toBe(own)
-      expect(new Set(lines.map((line) => possible.get(line))).size).toBe(2)
-    }
-  })
-
-  it('no story is told twice in the family', () => {
-    const all = [...gossipOf(RUBEN.id), ...gossipOf(JASPER.id)]
-    expect(new Set(all).size).toBe(all.length)
+  it('every reader regularly meets the siblings’ helpers inside the stories, by their right names', () => {
+    for (const child of [RUBEN, JASPER]) expect(storiesWith(child.id).length).toBeGreaterThanOrEqual(3)
   })
 
   it('toddler cards mention the big siblings', () => {
@@ -116,40 +92,14 @@ describe('challenges editor', () => {
 })
 
 describe('helper stories are kind and clear', () => {
-  const request = family()
-  const items = runTemplates(request).items
-  const personas = personasFor(request)
-  const otherHelpers = (childId: string) =>
-    [RUBEN, JASPER, BRITA].filter((c) => c.id !== childId).map((c) => personas[c.id]!.name)
+  const items = runTemplates(family()).items
 
   it('never compare the children: no sibling is praised in another child’s letter', () => {
-    const ctx = { helper: 'X', child: 'Y', childGenitive: 'Y', childElative: 'Y', childAllative: 'Y' }
-    for (const template of [...HELPER_GOSSIP, ...TODDLER_HELPER_GOSSIP]) {
-      expect(template(ctx)).not.toMatch(/tubli|parem kui|on parem|rohkem kui sina|õpetanud/)
-    }
-  })
-
-  it('start only after the first days', () => {
-    for (const child of [RUBEN, JASPER]) {
-      const first = items.filter((item) => item.childId === child.id).slice(0, 3)
-      for (const item of first) {
-        expect(otherHelpers(child.id).some((name) => item.body.includes(`${name} `) && /eksis|proovis|koosolek|liugu|nõu|sedeli|trikki|kakaod/.test(item.body))).toBe(false)
+    for (const child of [RUBEN, JASPER, BRITA]) {
+      const siblings = [RUBEN, JASPER, BRITA].filter((c) => c.id !== child.id).map((c) => c.name)
+      for (const item of items.filter((i) => i.childId === child.id)) {
+        for (const name of siblings) expect(item.body).not.toMatch(new RegExp(`${name}[^.!?]*(tubli|parem kui|rohkem kui sina)`))
       }
     }
   })
-
-  it('on a story day the child still gets their own task', () => {
-    for (const child of [RUBEN, JASPER]) {
-      const days = items.filter(
-        (item) => item.childId === child.id && item.body.split('\n\n').some((p) => possibleStory(p, otherHelpers(child.id))),
-      )
-      expect(days.length).toBeGreaterThanOrEqual(3)
-      for (const item of days) expect(item.body.split('\n\n').length).toBeGreaterThanOrEqual(2)
-    }
-  })
 })
-
-function possibleStory(paragraph: string, helpers: string[]): boolean {
-  return helpers.some((name) => paragraph.startsWith(name) || paragraph.includes(` ${name} `)) &&
-    /eksis|proovis eile|koosolek|liugu|nõu|sedeli|trikki|kakaod|pisike|väike, et|kasvab|häälitsuse|naeratuse/.test(paragraph)
-}

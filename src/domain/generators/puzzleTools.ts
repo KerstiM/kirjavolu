@@ -77,3 +77,8 @@ export function isAnagram(word: string, candidate: string): boolean {
   const sort = (value: string) => [...normalize(value)].sort().join('')
   return sort(word) === sort(candidate)
 }
+
+/** Mirror code used in letters: every word written backwards, word order kept. */
+export function reverseWords(text: string): string {
+  return normalize(text).split(/\s+/).map(reverseWord).join(' ')
+}

@@ -68,7 +68,8 @@ describe('letters', () => {
       expect(beats).toEqual([...beats].sort((a, b) => a - b))
     }
     const result = runTemplates(makeRequest('letter', { occasionId: 'christmas', options: { count: 7, connected: true } }))
-    expect(result.items.at(-1)?.body).toContain('Võlutäht on jälle minuga')
+    expect(result.items.some((item) => item.body.includes('Me leidsime tähe'))).toBe(true)
+    expect(result.items.at(-1)?.body).toContain('Täht särab jälle kuuse tipus')
   })
 
   it('regression: no letter after the star is found says the search continues', () => {
