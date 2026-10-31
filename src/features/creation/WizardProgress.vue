@@ -2,7 +2,7 @@
 import { Check } from 'lucide-vue-next'
 import { WIZARD_STEPS } from './useWizard'
 
-defineProps<{ current: number }>()
+defineProps<{ current: number; canGoTo: (step: number) => boolean }>()
 defineEmits<{ go: [step: number] }>()
 </script>
 
@@ -17,7 +17,7 @@ defineEmits<{ go: [step: number] }>()
         <button
           type="button"
           class="progress__btn"
-          :disabled="index >= current"
+          :disabled="!canGoTo(index)"
           :aria-current="index === current ? 'step' : undefined"
           @click="$emit('go', index)"
         >

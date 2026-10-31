@@ -27,6 +27,19 @@ export function ageBand(child: Pick<ChildProfile, 'age' | 'readingLevel'>): AgeB
   return 'older'
 }
 
+/**
+ * A toddler of three or more still listens rather than reads, but wants a real little
+ * story read aloud – not the one-line cards of a one-year-old.
+ */
+export function listensToLongerStories(child: Pick<ChildProfile, 'age' | 'readingLevel'>): boolean {
+  return ageBand(child) === 'toddler' && child.age >= 3
+}
+
+/** Toddlers who get the small one-line cards (12 per page) instead of the poster. */
+export function usesSmallCards(child: Pick<ChildProfile, 'age' | 'readingLevel'>): boolean {
+  return ageBand(child) === 'toddler' && !listensToLongerStories(child)
+}
+
 /** Applies the difficulty setting on top of the age band (never below toddler / above older). */
 export function adjustBand(band: AgeBand, difficulty: Difficulty): AgeBand {
   if (band === 'toddler' || difficulty === 'auto') return band

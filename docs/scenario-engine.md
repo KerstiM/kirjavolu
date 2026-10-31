@@ -84,7 +84,8 @@ voice and holds their sign-offs.
 | --- | --- | --- |
 | older (≈8–12, independent reader) | old, thoughtful elf (Kõpsu-Mõpsu) | mechanisms and small mysteries, dry humour, ~400–520 characters |
 | young (≈5–7) | young, lively elf (Tipp-Topp) | cooking and experiments, short sentences, ~250–380 characters |
-| toddler (≈1–3, read aloud) | tiniest elf (Pisi-Pätsi) | one sound, movement or thing to look at, ≤150 characters, one paragraph |
+| toddler (≈1–2, read aloud) | tiniest elf (Pisi-Pätsi) | one sound, movement or thing to look at, ≤150 characters, one paragraph |
+| toddler, age 3+ (`readAloud`) | tiniest elf | the same episode as a little story: what happened, how it turned out, something to do together; 2–3 paragraphs, fits the reader poster |
 
 The band comes from age and reading level (`ageBand`) and the difficulty setting
 (`adjustBand`), so a strong six-year-old reader can get the older letters.
@@ -148,6 +149,9 @@ helper.
 - Never write as if the child replied, drew or left something.
 - Toddler cards are for reading aloud: one paragraph, a sound or a movement to do
   together.
+- Every toddler episode also has a `readAloud` version for children of three and
+  over: a short story in 2–3 paragraphs (at most 380 characters) ending with
+  something to do together. Their letters go on the poster, not the small cards.
 - Helper names are only used in the nominative (subject); declining hyphenated
   names reads badly. Child names use `c.n('genitive')` etc.
 - Keep within the card budget (see the lengths above).

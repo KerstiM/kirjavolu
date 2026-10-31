@@ -29,6 +29,11 @@ export const WORLD_SCENARIOS: Scenario[] = [
         'Põhjapõder Välk hüppas lumme. Põmm! Ainult sarved paistavad. Välk raputab end: sahh-sahh-sahh! Kas sina oskad ka end raputada?',
       ],
     },
+    readAloud: () => [
+      'Põhjapõder Välk õpib lendama. Täna harjutas ta katusele maandumist. Ta jooksis, hüppas ja tõusis õhku – vuhh!',
+      'Aga maandumine ei läinud hästi. Välk kukkus otse suurde lumehange: põmm! Hangest paistsid välja ainult tema sarved.',
+      'Siis ronis ta välja ja raputas end: sahh-sahh-sahh! Lumi lendas mulle näkku ja me naersime mõlemad. Raputa sina ka!',
+    ],
   },
   {
     id: 'porridge-flood',
@@ -98,6 +103,11 @@ export const WORLD_SCENARIOS: Scenario[] = [
         'Kus on kiisu? Kingikotis! Kiisu teeb: nurr-nurr. Kiisu magab. Paitame kiisut: silita-silita.',
       ],
     },
+    readAloud: () => [
+      'Töökoja kiisu Nurr oli kadunud. Me hüüdsime: „Nurr! Nurr!“ Aga keegi ei tulnud.',
+      'Siis kuulsin, et üks kingipakk teeb häält: nurr-nurr-nurr. Kingipakk, mis nurrub? Ma tegin paela lahti ja piilusin sisse.',
+      'Seal magas Nurr, kerra tõmmatud nagu soe sall. Välja ta tulla ei tahtnudki. Silitame kiisut: silita, silita … nurr.',
+    ],
   },
   {
     id: 'gingerbread-house',
@@ -122,6 +132,11 @@ export const WORLD_SCENARIOS: Scenario[] = [
         'Piparkoogimaja! Seinad, aken ja katus. Mmm, kui hästi lõhnab. Nuusuta: nuuh-nuuh!',
       ],
     },
+    readAloud: () => [
+      'Me ehitasime piparkoogimaja. Seinad on piparkoogist, aknad suhkrust ja uks šokolaadist.',
+      'Katus tahtis muudkui maha libiseda. Panime glasuuri ja hoidsime kinni: üks, kaks, kolm … ja katus jäi paigale!',
+      'Hommikul oli majal üks nurk ära näritud. Põhjapõder Välk vaatas lakke ja tema ninaots oli valge. Nuusuta – kas teie kodus lõhnab ka piparkookide järele?',
+    ],
   },
   {
     id: 'tiny-in-mitten',
@@ -146,6 +161,11 @@ export const WORLD_SCENARIOS: Scenario[] = [
         'Ma pugesin kinda sisse magama. Soe ja pehme! Norr-norr. Kus on sinu pöial? Siin!',
       ],
     },
+    readAloud: () => [
+      'Eile õhtul olin ma väga väsinud. Otsisin sooja kohta, kus magada.',
+      'Ahju juures kuivas üks suur villane kinnas. Ma pugesin selle sisse, otse pöidla kohale. Seal oli soe ja pehme ja ma jäin kohe magama: norr-norr.',
+      'Teised päkapikud otsisid mind terve õhtu! Lõpuks kuulsid nad mu norskamist. Kus on sinu pöial? Peida see pihku ja otsime!',
+    ],
   },
   {
     id: 'santa-sledding',
@@ -191,6 +211,11 @@ export const WORLD_SCENARIOS: Scenario[] = [
         'Väljas tuiskab: huuu! Kopp-kopp! Kes tuli? Jänkud tulid! Jänku hüppab: hopp-hopp. Kas sina oskad hüpata nagu jänku?',
       ],
     },
+    readAloud: () => [
+      'Eile õhtul tuli tuisk. Tuul puhus: huuu-huuu! Aknast ei paistnud midagi, ainult valge.',
+      'Siis koputas keegi uksele: kopp-kopp-kopp. Tegin ukse lahti ja seal olid jänkud – ema, isa ja pisikesed jänkupojad, kõik lumised.',
+      'Me lasime nad sooja. Nad sõid porgandeid ja magasid ahju ääres. Hommikul hüppasid nad õue: hopp, hopp, hopp! Kuidas sina hüppad?',
+    ],
   },
   {
     id: 'ski-race',

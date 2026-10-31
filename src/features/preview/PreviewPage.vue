@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue'
-import { ArrowLeft, Download, FileQuestion, Printer, Plus } from 'lucide-vue-next'
+import { ArrowLeft, Download, FileQuestion, Printer, Plus, SlidersHorizontal } from 'lucide-vue-next'
 import type { CertificateStyle, ChildProfile, Decoration, GeneratedItem, PrintableLayout } from '../../domain/models'
 import { EMPTY_DECORATION } from '../../domain/models'
 import { computeGrid } from '../../domain/puzzleGrid'
@@ -9,7 +9,7 @@ import DecorationPanel from './decoration/DecorationPanel.vue'
 import PosterBoard from './poster/PosterBoard.vue'
 import MiniSheet from './mini/MiniSheet.vue'
 import ItemEditorDialog from './ItemEditorDialog.vue'
-import { ageBand, buildAudience } from '../../domain/generators/audience'
+import { ageBand, buildAudience, usesSmallCards } from '../../domain/generators/audience'
 import { formatDayMonth } from '../../domain/text/estonian'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import EmptyState from '../../components/ui/EmptyState.vue'
@@ -34,7 +34,7 @@ function announce(message: string): void {
   statusTimer = setTimeout(() => (status.value = ''), 3500)
 }
 
-const toddlers = computed(() => content.value?.request.children.filter((child) => ageBand(child) === 'toddler').length ?? 0)
+const toddlers = computed(() => content.value?.request.children.filter(usesSmallCards).length ?? 0)
 const allToddlers = computed(() => !!content.value && toddlers.value === content.value.request.children.length)
 /**
  * Puzzle poster and toddler cards are one choice: everyone gets the card layout
@@ -92,10 +92,10 @@ const visibleGroups = computed(() =>
   childFilter.value === 'all' ? groups.value : groups.value.filter((group) => group.key === childFilter.value),
 )
 
-/** Each child gets the card layout that suits them: toddlers simple cards, others the poster. */
+/** Each child gets the card layout that suits them: little ones simple cards, others the poster. */
 function groupLayout(group: ItemGroup): PrintableLayout {
   if (layout.value !== 'poster') return layout.value
-  const toddler = group.child ? ageBand(group.child) === 'toddler' : allToddlers.value
+  const toddler = group.child ? usesSmallCards(group.child) : allToddlers.value
   return toddler ? 'mini' : 'poster'
 }
 const isPoster = computed(() => groups.value.some((group) => groupLayout(group) === 'poster'))
@@ -227,7 +227,8 @@ function exportText(): void {
           </div>
         </div>
         <div class="toolbar__actions">
-          <BaseButton variant="secondary" size="sm" @click="exportText"><Download aria-hidden="true" /> Tekstifail</BaseButton>
+          <BaseButton :to="{ path: '/loo', query: { muuda: content.id } }" variant="secondary" size="sm"><SlidersHorizontal aria-hidden="true" /> <span class="toolbar__label">Muuda valikuid</span></BaseButton>
+          <BaseButton variant="secondary" size="sm" @click="exportText"><Download aria-hidden="true" /> <span class="toolbar__label">Tekstifail</span></BaseButton>
           <BaseButton size="sm" @click="print(printOptions.some((o) => o.value === printMode) ? printMode : 'all')"><Printer aria-hidden="true" /> Prindi / PDF</BaseButton>
         </div>
       </div>
@@ -375,6 +376,16 @@ function exportText(): void {
 .toolbar__actions {
   display: flex;
   gap: 0.5rem;
+}
+// On a phone the secondary actions keep only their icons, so the bar fits the width.
+@media (max-width: 520px) {
+  .toolbar__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
 }
 .preview__body {
   padding-block: 1.5rem 3rem;

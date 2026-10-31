@@ -44,7 +44,7 @@ function renderDay(
   const body: Paragraph[] = []
   if (d.content.kind === 'scenario') {
     const scenario = scenarioIn(library, d.content.scenarioId)
-    const variant = scenario.variants[p.band]
+    const variant = (p.readAloud && scenario.readAloud) || scenario.variants[p.band]
     if (!variant) throw new Error(`Scenario ${scenario.id} has no ${p.band} variant`)
     body.push(...variant(ctx))
     const activity = scenario.activities?.[p.band]
