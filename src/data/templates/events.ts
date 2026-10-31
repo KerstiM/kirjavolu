@@ -20,6 +20,8 @@ export interface EventTemplate {
   older: EventText
   young: EventText
   toddler: EventText
+  /** What the parent prepares for that day. */
+  prep?: string
 }
 
 /**
@@ -35,6 +37,7 @@ export const EVENT_TEMPLATES: Record<EventKind, EventTemplate> = {
     young: (c) =>
       `Kas ${c.v('teadsid', 'teadsite')}, et päkapikud elavad suviti metsas? Kui te täna metsa lähete, ${c.v('vaata', 'vaadake')} hoolega ringi. ${c.v('Too', 'Tooge')} mulle metsast üks käbi ja ${c.v('pane', 'pange')} see sussi kõrvale – mul on tarvis just ühte käbi, et oma tuba kaunistada.`,
     toddler: () => `Täna lähme metsa! Puud on suured ja kõrged. Kuula: kes seal laulab? Tsiu-tsiu!`,
+    prep: 'väike karp või kott metsaleidude jaoks',
   },
   ski: {
     label: 'Suusatamine',
@@ -80,6 +83,7 @@ export const EVENT_TEMPLATES: Record<EventKind, EventTemplate> = {
     young: (c) =>
       `Täna küpsetate piparkooke! ${c.v('Tee', 'Tehke')} üks piparkook ka mulle – võib-olla päkapiku kujuline? ${c.v('Jäta', 'Jätke')} see õhtul sussi juurde.`,
     toddler: () => `Täna küpsetame piparkooke. Mmm, kui hästi lõhnab! Nuusuta!`,
+    prep: 'piparkoogitainas, vormid ja glasuur',
   },
   party: {
     label: 'Pidu või sünnipäev',

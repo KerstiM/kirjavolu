@@ -10,6 +10,9 @@ Eestikeelne veebirakendus, mis aitab lapsevanematel luua lapsele personaalseid m
 - Laste profiilid (lisamine, muutmine, kustutamine), näidisprofiilid Ruben, Jasper ja Brita
 - Ühised elamused õdedele-vendadele: ülesanded jagatakse vanuse järgi
 - **Seotud pere sarjad**: mitme lapse puhul saab iga laps oma kirjasarja, aga need on omavahel seotud – igal lapsel on huvide järgi välja pakutud abiline (nt Kõpsu-Mõpsu Kuubikuvõlur, Tipp-Topp Riisiterake), esimeses kirjas tutvustatakse ka õdede-vendade abilisi, umbes iga viies päev on paarisülesanne (vanem teeb nooremale midagi ja mõlema kiri teab sellest) ning viimases kirjas lõpetavad kõik koos. Eelvaates on iga lapse sari omas paigutuses
+- **Küsimus täna, vastus homme**: päevasarjas on umbes iga viies päev mõistatus, teaduskatse (jää ja sool, mandariin vees, rosinad mullivees) või küsimus ning järgmine kiri algab vastusega; vastused on lapsevanema lehel
+- **Salajane abiline** (jõulud, vanim laps): kutse, abiliste reegel, salamissioonid nooremate heaks ja viimases kirjas tiitel „päkapikkude abiline“; nooremate kirjad sellest ei räägi
+- **Iga päeva ettevalmistus**: lapsevanema lehel on iga lapse ja päeva kohta kirjas, mis sussi panna või ette valmistada (komm, katsevahendid, raamat ettelugemiseks jne)
 - **Pere sündmused ja reeglid**: lapsevanem lisab kuupäevaga sündmused (metsaretk, suusatamine, külaskäik, esinemine, trenn, piparkoogipäev, pidu või muu) ja valib osalejad; selle päeva kiri räägib sündmusest igale lapsele vanusele sobivalt. Reegel „maiustused ainult pühapäeviti“ selgitatakse esimeses kirjas, pühapäeva kirjades on komm ja lapsevanema lehel on komme vajavad kuupäevad
 - Eelvaade: tekstide muutmine, ühe osa uuesti genereerimine, kolm prindipaigutust, printimine/PDF, tekstifaili eksport
 - Lapsevanema juhised ja vastused on lapsele mõeldud materjalist eraldi

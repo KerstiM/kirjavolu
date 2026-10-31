@@ -27,6 +27,8 @@ export function busyOn(request: RequestFor<'letter'>, index: number, childIds: s
 }
 
 export interface FamilyDayExtras {
+  /** Things the parent prepares for this letter (shown on the parent sheet). */
+  prep?: string[]
   event?: string
   sunday?: string
   ruleIntro?: string
@@ -69,6 +71,8 @@ export function familyExtras(
         helper,
         othersAllative: others.length > 0 ? namesInCase(others, 'allative') : '',
       })
+      const prep = EVENT_TEMPLATES[event.kind].prep
+      if (prep) extras.prep = [prep]
     }
     if (sundaySweets && startDate) {
       if (index === 0 && band !== 'toddler') extras.ruleIntro = SUNDAY_RULE.intro(v)

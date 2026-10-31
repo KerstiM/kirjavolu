@@ -1,12 +1,19 @@
 import type { ChildProfile, ElfPersona, OccasionId, ParentInstruction, RequestFor } from '../models'
 import { getOccasion } from '../occasions/occasions'
-import { addDays, formatDayMonth, joinList, nameCase } from '../text/estonian'
+import { addDays, formatDayMonth, joinList, nameCase, namesInCase } from '../text/estonian'
 import { createRng, hashSeed } from '../text/random'
 import { PAIR_TEMPLATES, type PairContext, type PairTemplate } from '../../data/templates/pairs'
 import { suggestPersonas } from '../../data/templates/personas'
 import { ageBand } from './audience'
 import type { DraftItem, TypeResult, UsedRegistry } from './context'
 import { busyOn, familyExtras } from './familyEvents'
+import {
+  HELPER_INVITE,
+  HELPER_MISSIONS,
+  HELPER_RULE,
+  HELPER_TITLE,
+  type HelperContext,
+} from '../../data/templates/helper'
 import { generateLetters, letterInstructions, type LinkedExtras } from './letterGenerator'
 
 export interface PairedDay {
@@ -132,6 +139,64 @@ function finale(
     : `Täna lõpetame kõik koos – ${names}. Ma räägin kõigile, kui hästi te kõik üksteist hoidsite.`
 }
 
+interface HelperArc {
+  context: HelperContext
+  days: Map<number, { text: string; prep?: string }>
+}
+
+/**
+ * Secret helper arc for the oldest reader at Christmas: an invitation, the
+ * helpers' rule the next day and a few secret missions for the younger ones.
+ * Uses only days that are free of paired tasks and family events.
+ */
+export function planHelperArc(
+  request: RequestFor<'letter'>,
+  plan: PairedDay[],
+  oldest: ChildProfile | undefined,
+): HelperArc | null {
+  const { count } = request.options
+  if (request.occasionId !== 'christmas' || count < 7 || !oldest) return null
+  const younger = request.children.filter((child) => child.age < oldest.age)
+  if (younger.length === 0) return null
+  const busy = (index: number) =>
+    plan.some(
+      (d) => d.index === index && (d.giverId === oldest.id || d.receiverId === oldest.id),
+    ) || busyOn(request, index, [oldest.id])
+  const context: HelperContext = {
+    siblingsAllative: namesInCase(younger, 'allative'),
+    siblingsComitative: namesInCase(younger, 'comitative'),
+    siblings: joinList(younger.map((child) => child.name)),
+    siblingGenitive: nameCase(younger[0] as ChildProfile, 'genitive'),
+    sibling: (younger[0] as ChildProfile).name,
+    helpersOf: 'päkapikkude',
+    year: Number(request.options.startDate.slice(0, 4)) || new Date().getFullYear(),
+  }
+  const days = new Map<number, { text: string; prep?: string }>()
+  // Invitation and rule on two consecutive free days near the start.
+  let invite = 1
+  while ((busy(invite) || busy(invite + 1)) && invite < count - 3) invite++
+  if (busy(invite) || busy(invite + 1)) return null
+  days.set(invite, { text: HELPER_INVITE(context) })
+  days.set(invite + 1, { text: HELPER_RULE(context) })
+  const targets = count >= 12 ? [6, 11, 16] : [4]
+  const missions = HELPER_MISSIONS.filter((m) => younger.length > 1 || m.id !== 'helping-hands')
+  targets.forEach((target, k) => {
+    let day = Math.max(target, invite + 2)
+    while ((busy(day) || days.has(day)) && day < count - 2) day++
+    const mission = missions[k % missions.length]
+    if (!mission || busy(day) || days.has(day) || day >= count - 1) return
+    // Rotate through the younger siblings so each gets some attention.
+    const sibling = younger[k % younger.length] as ChildProfile
+    const ctx = {
+      ...context,
+      sibling: sibling.name,
+      siblingGenitive: nameCase(sibling, 'genitive'),
+    }
+    days.set(day, { text: mission.text(ctx), prep: mission.prep?.(ctx) })
+  })
+  return { context, days }
+}
+
 function pairContext(
   giver: ChildProfile,
   receiver: ChildProfile,
@@ -164,6 +229,7 @@ export function generateLinkedLetters(
   const storyteller = [...children]
     .filter((child) => !isToddler(child))
     .sort((a, b) => b.age - a.age)[0]
+  const helperArc = planHelperArc(request, plan, storyteller)
   const items: DraftItem[] = []
 
   children.forEach((child, c) => {
@@ -172,8 +238,16 @@ export function generateLinkedLetters(
     const extras = (index: number): LinkedExtras => {
       const extra: LinkedExtras = { ...family(index) }
       if (index === 0) extra.opening = introduction(child, others, personas, occasion.id)
-      if (index === count - 1 && count > 1 && !isToddler(child))
+      if (index === count - 1 && count > 1 && !isToddler(child)) {
         extra.finale = finale(personas, children, occasion.id)
+        if (helperArc && child.id === storyteller?.id)
+          extra.finale += ` ${HELPER_TITLE(helperArc.context)}`
+      }
+      const helperDay = child.id === storyteller?.id ? helperArc?.days.get(index) : undefined
+      if (helperDay) {
+        extra.task = helperDay.text
+        if (helperDay.prep) extra.prep = [...(extra.prep ?? []), helperDay.prep]
+      }
       const day = plan.find(
         (d) => d.index === index && (d.giverId === child.id || d.receiverId === child.id),
       )
@@ -187,6 +261,8 @@ export function generateLinkedLetters(
             : isToddler(child)
               ? day.template.receiverToddler?.(ctx)
               : day.template.receiverReader?.(ctx)
+        const prep = day.giverId === child.id ? day.template.prep?.(ctx) : undefined
+        if (prep) extra.prep = [...(extra.prep ?? []), prep]
       }
       return extra
     }
@@ -211,7 +287,7 @@ export function generateLinkedLetters(
     title: count > 1 ? `${count} kirja igale lapsele` : 'Kirjad igale lapsele',
     subtitle: `${occasion.name} · ${joinList(children.map((c) => c.name))} · seotud sarjad`,
     items,
-    instructions: linkedInstructions(request, personas, plan),
+    instructions: linkedInstructions(request, personas, plan, helperArc, storyteller),
   }
 }
 
@@ -219,6 +295,8 @@ function linkedInstructions(
   request: RequestFor<'letter'>,
   personas: Record<string, ElfPersona>,
   plan: PairedDay[],
+  helperArc: HelperArc | null,
+  oldest: ChildProfile | undefined,
 ): ParentInstruction[] {
   const { options, children } = request
   const byId = new Map(children.map((child) => [child.id, child]))
@@ -243,5 +321,24 @@ function linkedInstructions(
     ],
   }
   const general = letterInstructions(request, options.connected && options.count > 1)
-  return [helpers, ...(plan.length > 0 || options.count > 1 ? [linkedDays] : []), ...general]
+  const helperDays = helperArc ? [...helperArc.days.keys()].sort((a, b) => a - b) : []
+  const secret: ParentInstruction[] =
+    helperArc && oldest
+      ? [
+          {
+            title: `${oldest.name} on salajane abiline`,
+            steps: [
+              `${dayLabel(helperDays[0] ?? 1)}: ${oldest.name} saab kutse olla päkapikkude salajane abiline ja vastab sussi juurde „JAH“. Järgmisel päeval tuleb abiliste reegel.`,
+              `Salamissioonid: ${helperDays.slice(2).map(dayLabel).join(', ') || '–'}. Nooremad ei tea neist midagi.`,
+              'Viimases kirjas nimetatakse ta ametlikult päkapikkude abiliseks.',
+            ],
+          },
+        ]
+      : []
+  return [
+    helpers,
+    ...(plan.length > 0 || options.count > 1 ? [linkedDays] : []),
+    ...secret,
+    ...general,
+  ]
 }

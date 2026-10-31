@@ -34,6 +34,13 @@ import {
   type TypeResult,
 } from './context'
 import { audienceLines } from './personal'
+import {
+  EXPERIMENTS,
+  QUESTIONS,
+  riddleThreads,
+  type QuestionThread,
+} from '../../data/templates/threads'
+import type { AgeBand } from '../models'
 
 /**
  * Maps letter index to an arc beat. The finale is only in the last letter and the
@@ -110,6 +117,14 @@ export function generateLetters(
 
   // In a linked series the family plan supplies these; otherwise they come from the options directly.
   const family = familyExtras(request, audience.children, sender)
+  const allExtras: LinkedExtras[] = Array.from({ length: options.count }, (_, i) =>
+    linked ? linked.extras(i) : family(i),
+  )
+  // Question today, answer tomorrow – only for readers on daily cards.
+  const threads =
+    compact && !toddlerOnly
+      ? planThreads(ctx, allExtras, audience.band)
+      : new Map<number, QuestionThread>()
   const items: DraftItem[] = []
   let previousBeat = -1
 
@@ -117,9 +132,11 @@ export function generateLetters(
     const p = ctx.item(i)
     const isLast = i === options.count - 1
     const isoDate = options.startDate ? addDays(options.startDate, i) : ''
-    const extra: LinkedExtras = linked ? linked.extras(i) : family(i)
+    const extra = allExtras[i] as LinkedExtras
+    const thread = threads.get(i)
+    const answerLine = threads.get(i - 1)?.answerNext(audience.v)
     // A paired sibling task or a real family event replaces the day's ordinary task.
-    const dayTask = extra.task ?? extra.event
+    const dayTask = extra.task ?? extra.event ?? thread?.ask(audience.v)
     const opening =
       i === 0
         ? (extra.opening ?? `Tere! ${ctx.line(p.pick(FIRST_LETTER_INTRO, 'intro'))}`)
@@ -172,7 +189,7 @@ export function generateLetters(
       // The first and last cards of a daily series carry the introduction and the farewell.
       !(compact && (i === 0 || isLast)) &&
       // Days with a paired task, a family event or the Sunday note need the room on the card.
-      !(compact && (dayTask || extra.sunday)) &&
+      !(compact && (dayTask || extra.sunday || answerLine)) &&
       (p.hasFresh(personal, 'personal') || i % 3 === 0)
         ? p.pick(personal, 'personal')
         : undefined
@@ -207,7 +224,8 @@ export function generateLetters(
         ? [...CLOSINGS[general.tone], ...SERIES_CLOSINGS[general.tone]]
         : CLOSINGS[general.tone]
     // Daily cards end with the signature only, like handwritten notes; the last one still says goodbye.
-    const closing = compact && !isLast ? undefined : ctx.line(p.pick(closingPool, 'closing'))
+    const closing =
+      compact && (!isLast || extra.finale) ? undefined : ctx.line(p.pick(closingPool, 'closing'))
     const signOff = p.pick(
       [
         'Soojade soovidega',
@@ -249,11 +267,18 @@ export function generateLetters(
       kind: 'letter',
       label: date || (options.count > 1 ? `${i + 1}. kiri` : occasion.name),
       date: isoDate || undefined,
+      answer: thread?.answer,
+      parentNote: prepNote([
+        ...(extra.prep ?? []),
+        thread?.prep,
+        extra.sunday ? 'komm sussi' : undefined,
+      ]),
       heading: audience.greeting,
       body:
         toddlerCardBody ??
         paragraphs(
           opening,
+          answerLine,
           christmasEve,
           purpose,
           extra.ruleIntro,
@@ -277,6 +302,49 @@ export function generateLetters(
     items,
     instructions: letterInstructions(request, connected),
   }
+}
+
+/** "Valmista ette: …" for the parent sheet, or nothing when there is nothing to prepare. */
+function prepNote(items: (string | undefined)[]): string | undefined {
+  const list = items.filter((item): item is string => Boolean(item))
+  return list.length > 0 ? `Valmista ette: ${list.join('; ')}` : undefined
+}
+
+/**
+ * Days with a question whose answer comes in the next letter: roughly every fifth
+ * day, never on a day that already has a sibling task or a family event, and the
+ * answer never lands on the last (farewell) letter.
+ */
+function planThreads(
+  ctx: ReturnType<typeof createContext<'letter'>>,
+  extras: LinkedExtras[],
+  band: AgeBand,
+): Map<number, QuestionThread> {
+  const count = extras.length
+  const threads = new Map<number, QuestionThread>()
+  const fits = (t: QuestionThread) => t.level === 'any' || t.level === band
+  const riddles = riddleThreads(ctx.request.occasionId).filter(fits)
+  const experiments = EXPERIMENTS.filter(fits)
+  const questions = QUESTIONS.filter(fits)
+  // Riddles and experiments alternate; an open question now and then.
+  const rotation = [
+    [riddles, experiments, questions],
+    [experiments, riddles, questions],
+    [riddles, questions, experiments],
+    [questions, riddles, experiments],
+  ]
+  let k = 0
+  for (let target = 2; target < count - 2; target += 5) {
+    for (let day = target; day <= target + 2 && day + 1 <= count - 2; day++) {
+      const busy = (d: number) => !!extras[d]?.task || !!extras[d]?.event
+      if (busy(day) || threads.has(day - 1) || threads.has(day + 1)) continue
+      const tiers = rotation[k % rotation.length] ?? [riddles]
+      threads.set(day, ctx.item(day).pickTiered(tiers, 'thread'))
+      k++
+      break
+    }
+  }
+  return threads
 }
 
 function pickCore(p: ItemPicker, occasionCores: Line[]): Line {

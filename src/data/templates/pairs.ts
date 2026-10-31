@@ -24,6 +24,8 @@ export interface PairTemplate {
   /** Toddler receiver: short, read aloud by an adult. Omit when unsuitable. */
   receiverToddler?: (c: PairContext) => string
   occasions?: OccasionId[]
+  /** What the parent prepares for the giver, e.g. a book to read aloud. */
+  prep?: (c: PairContext) => string
 }
 
 export const PAIR_TEMPLATES: PairTemplate[] = [
@@ -33,6 +35,7 @@ export const PAIR_TEMPLATES: PairTemplate[] = [
       `Täna on sul tähtis ülesanne: loe ${c.receiverAllative} ette üks raamat või vaadake koos pilte. ${c.receiverHelper} istub sel ajal riiuli peal ja kuulab ka.`,
     receiverReader: (c) => `Täna loeb ${c.giver} sulle ühe loo ette. ${c.receiverHelper} tuleb ka kuulama!`,
     receiverToddler: (c) => `Täna loeb ${c.giver} sulle raamatut. ${c.receiverHelper} kuulab ka. Kuula hästi!`,
+    prep: (c) => `raamat, mida ${c.receiverAllative} ette lugeda`,
   },
   {
     id: 'teach',
@@ -54,6 +57,7 @@ export const PAIR_TEMPLATES: PairTemplate[] = [
       `Joonista täna ${c.receiverAllative} pilt ja anna see talle üle. Päkapikud armastavad kingitusi, mis on tehtud oma kätega.`,
     receiverReader: (c) => `${c.giver} teeb sulle täna ühe üllatuse. Ära piilu enne õhtut!`,
     receiverToddler: (c) => `${c.giver} joonistab sulle täna pildi. Mis seal peal on? Näita näpuga!`,
+    prep: () => 'paber ja värvipliiatsid',
   },
   {
     id: 'secret-letter',
@@ -61,6 +65,7 @@ export const PAIR_TEMPLATES: PairTemplate[] = [
       `${c.receiverHelper} on täna nii hõivatud, et ei jõua ${c.receiverAllative} kirja kirjutada. Kirjuta sina üks lühike kiri ja allkirjasta see „${c.receiverHelper}“. Pane see salaja ${c.receiverGenitive} sussi juurde – keegi ei tohi sind näha!`,
     receiverReader: () => `Täna ei jõudnud ma ise pikalt kirjutada, sest töökojas oli palju tegemist. Aga vaata hoolega oma sussi juurde – võib-olla on seal veel üks kiri?`,
     occasions: ['christmas'],
+    prep: () => 'paber ja pliiats salajase kirja jaoks',
   },
   {
     id: 'slipper',
