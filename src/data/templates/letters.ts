@@ -298,6 +298,12 @@ export const TODDLER_CORES: Line[] = [
   () => `Ma kallistasin täna oma lemmikkaru. Karu on pehme ja soe. Kallista ka sina oma mänguasja!`,
   () => `Täna leidsin maast ilusa kivi. See on ümmargune ja sile nagu muna.`,
   () => `Kass tuli mulle külla ja ütles: mjäu! Mina ütlesin vastu: tere, kiisu!`,
+  () => `Täna nägin vikerkaart. Seal on punane, kollane ja sinine. Kui ilus!`,
+  () => `Mul on väike trumm. Trumm teeb: bumm-bumm-bumm!`,
+  () => `Täna kõndisin lompides: lärts-lärts! Saapad said märjaks.`,
+  () => `Väike kala ujub vees: sulp-sulp. Kas sina oskad ka teha kalasuud?`,
+  () => `Õhtul paistab taevas kuu. Kuu on ümmargune ja kollane. Head ööd, kuu!`,
+  () => `Ma ehitasin liivast koogi. Koogi peal on kivike. Mmm, liivakook!`,
 ]
 
 /** Simple occasion lines for toddler letters, read aloud by an adult. */
@@ -471,6 +477,12 @@ export const TODDLER_MISSIONS: string[] = [
   'Täiskasvanu abiga: peitke mänguasi teki alla ja leidke see koos üles.',
   'Täiskasvanu abiga: tantsige koos ühe lemmiklaulu järgi.',
   'Täiskasvanu abiga: lugege koos kokku, mitu varvast on jalgadel.',
+  'Täiskasvanu abiga: puhuge koos peopessa tuult – puhh!',
+  'Täiskasvanu abiga: vaadake aknast välja ja otsige üks lind.',
+  'Täiskasvanu abiga: öelge kõigile mänguasjadele head ööd.',
+  'Täiskasvanu abiga: katsuge midagi külma ja midagi sooja.',
+  'Täiskasvanu abiga: kõndige koos nagu karud – mõmm-mõmm!',
+  'Täiskasvanu abiga: laulge koos üks lemmiklaul.',
 ]
 
 /** Infinitive phrases for sibling tasks: "Ruben, sinu ülesanne on …". */

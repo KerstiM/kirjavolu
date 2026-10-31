@@ -13,6 +13,7 @@ Eestikeelne veebirakendus, mis aitab lapsevanematel luua lapsele personaalseid m
 - Lapsevanema juhised ja vastused on lapsele mõeldud materjalist eraldi
 - Kujundus: 8 SVG-taustamustrit (sündmusele sobivad eespool), tinti säästev raamirežiim või oma pilt heleda taustana
 - **Pusleplakat**: 7+ kirjaga sari prinditakse kaartidena, mis on paigutatud ussirada pidi (1. veerg alla, 2. üles jne) mitmele A4 lehele. Rada ja jaamad ühendavad päevi ning taustaks on sinu pilt või automaatne maastik. Kaardid lõigatakse lahti ja jõuludeks pannakse kokku terveks plakatiks. Igal lehel on märge („leht 1/4: pildi ülemine pool, vasak“), kaartidel kuupäev koos nädalapäevaga, tekst sobitub automaatselt ja alles lugema õppijale saab valida trükitähed
+- **Väikelapse kaardid**: väikelapse päevasari prinditakse 12 kaardina A4 lehel – värvilised raamid, suur number koos nädalapäevaga, igal kaardil loomanägu (12 SVG-joonistust) ja suur tekst trükitähtedega. Igal päeval üks pisike asi: paaritutel päevadel lühike lugu, paarispäevadel ühine tegevus; esimene kaart tutvustab päkapikku ja viimane on sündmuse tervitus
 - Puslepilt (teistes paigutustes): oma pilt jagatakse tükkideks ja iga osa allserva tuleb nummerdatud väljalõigatav puslekild; lapsevanema lehel on kokkupaneku juhend ja vajadusel lisatükid
 - Andmed salvestatakse brauseri localStorage'isse versioonitud skeemiga
 

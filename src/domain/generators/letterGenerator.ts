@@ -51,10 +51,14 @@ const USAGE_TIPS: Partial<Record<string, string>> = {
   'lost-tooth': 'Pane kiri öösel padja alla hamba asemele.',
   easter: 'Peida kiri koos värvilise munaga kohta, kust laps selle hommikul leiab.',
   birthday: 'Pane kiri sünnipäevahommikul hommikusöögilauale või kingituse juurde.',
-  'school-start': 'Libista kiri koolikotti või pinalisse – see on tore üllatus esimesel koolipäeval.',
+  'school-start':
+    'Libista kiri koolikotti või pinalisse – see on tore üllatus esimesel koolipäeval.',
 }
 
-export function generateLetters(request: RequestFor<'letter'>, variants: readonly number[]): TypeResult {
+export function generateLetters(
+  request: RequestFor<'letter'>,
+  variants: readonly number[],
+): TypeResult {
   const { options, general } = request
   const sender = options.sender.trim() || 'Salapärane Sõber'
   const ctx = createContext(request, variants, sender)
@@ -79,6 +83,8 @@ export function generateLetters(request: RequestFor<'letter'>, variants: readonl
   const purposePool = OCCASION_PURPOSE[occasion.id]
   // Daily series are printed as small cards: no filler opening or mood sentences there.
   const compact = options.count >= 7 && general.length !== 'long'
+  // Toddler cards hold one tiny thing per day: a little scene (even days) or something to do together (odd days).
+  const toddlerCard = toddlerOnly && compact
   const showPersonal = general.length !== 'short'
   const showMission = general.length !== 'short' || options.count > 1
 
@@ -95,7 +101,8 @@ export function generateLetters(request: RequestFor<'letter'>, variants: readonl
         : compact
           ? undefined
           : ctx.line(p.pick(toddlerOnly ? TODDLER_OPENINGS : OPENINGS[general.tone], 'opening'))
-    const purpose = i === 0 && purposePool && !toddlerOnly ? ctx.line(p.pick(purposePool, 'purpose')) : undefined
+    const purpose =
+      i === 0 && purposePool && !toddlerOnly ? ctx.line(p.pick(purposePool, 'purpose')) : undefined
     const christmasEve =
       occasion.id === 'christmas' &&
       !toddlerOnly &&
@@ -104,7 +111,10 @@ export function generateLetters(request: RequestFor<'letter'>, variants: readonl
         : undefined
 
     let core: string
-    if (toddlerOnly) {
+    if (toddlerCard && (i === 0 || i % 2 === 1)) {
+      // Introduction or activity day: no scene is drawn, so the scene pool is not used up.
+      core = ''
+    } else if (toddlerOnly) {
       core = ctx.line(p.pickTiered([TODDLER_OCCASION[occasion.id] ?? [], TODDLER_CORES], 'core'))
     } else if (connected) {
       const beat = beatIndexFor(i, options.count, ARC_BEATS.length)
@@ -133,11 +143,14 @@ export function generateLetters(request: RequestFor<'letter'>, variants: readonl
       (p.hasFresh(personal, 'personal') || i % 3 === 0)
         ? p.pick(personal, 'personal')
         : undefined
-    const mission = showMission
-      ? toddlerOnly
-        ? p.pick(TODDLER_MISSIONS, 'mission')
-        : ctx.line(p.pickTiered(missionTiers[i % missionTiers.length] ?? [GENERIC_MISSIONS], 'mission'))
-      : undefined
+    const mission =
+      showMission && !(toddlerCard && i % 2 === 0)
+        ? toddlerOnly
+          ? p.pick(TODDLER_MISSIONS, 'mission')
+          : ctx.line(
+              p.pickTiered(missionTiers[i % missionTiers.length] ?? [GENERIC_MISSIONS], 'mission'),
+            )
+        : undefined
     const siblingTasks =
       audience.plural && general.length !== 'short' && (options.count <= 7 || i % 3 === 0)
         ? audience.children
@@ -148,7 +161,9 @@ export function generateLetters(request: RequestFor<'letter'>, variants: readonl
             .join('\n')
         : undefined
     const extraPersonal =
-      general.length === 'long' && p.hasFresh(personal, 'personal') ? p.pick(personal, 'personal') : undefined
+      general.length === 'long' && p.hasFresh(personal, 'personal')
+        ? p.pick(personal, 'personal')
+        : undefined
     const closingPool = toddlerOnly
       ? TODDLER_CLOSINGS
       : options.count > 1 && !isLast
@@ -156,17 +171,50 @@ export function generateLetters(request: RequestFor<'letter'>, variants: readonl
         : CLOSINGS[general.tone]
     const closing = ctx.line(p.pick(closingPool, 'closing'))
     const signOff = p.pick(
-      ['Soojade soovidega', 'Kallistustega', 'Parimate soovidega', audience.v('Sinu sõber', 'Teie sõber')],
+      [
+        'Soojade soovidega',
+        'Kallistustega',
+        'Parimate soovidega',
+        audience.v('Sinu sõber', 'Teie sõber'),
+      ],
       'signoff',
     )
 
     const date = isoDate ? formatDate(isoDate) : ''
+    const toddlerIntro =
+      occasion.id === 'christmas'
+        ? `Tere, ${audience.v('väike', 'väikesed')} ${audience.names}! Mina olen ${sender}. Ma olen nii väike, et mahun ${audience.v('sinu', 'teie')} sussi sisse.`
+        : `Tere, ${audience.v('väike', 'väikesed')} ${audience.names}! Mina olen ${sender}. Ma tulin ${audience.v('sulle', 'teile')} külla!`
+    // The last card is a warm wish for the big day, like "Häid jõule, väike Brita!".
+    const toddlerFinale = `${occasion.vocabulary.greeting}, ${audience.v('väike', 'väikesed')} ${audience.names}! ${sender} kallistab ${audience.v('sind', 'teid')}. Musi-musi!`
+    const toddlerBody = toddlerCard
+      ? i === 0
+        ? toddlerIntro
+        : isLast
+          ? toddlerFinale
+          : i % 2 === 0
+            ? core
+            : mission
+      : undefined
     items.push({
       kind: 'letter',
       label: date || (options.count > 1 ? `${i + 1}. kiri` : occasion.name),
       date: isoDate || undefined,
       heading: audience.greeting,
-      body: paragraphs(opening, christmasEve, purpose, mood, core, personalLine, extraPersonal, mission, siblingTasks, closing),
+      body:
+        toddlerBody ??
+        paragraphs(
+          opening,
+          christmasEve,
+          purpose,
+          mood,
+          core,
+          personalLine,
+          extraPersonal,
+          mission,
+          siblingTasks,
+          closing,
+        ),
       signature: `${signOff}\n${sender}`,
     })
   }
@@ -184,7 +232,10 @@ function pickCore(p: ItemPicker, occasionCores: Line[]): Line {
   return p.pickTiered([occasionCores, GENERIC_CORES], 'core')
 }
 
-function letterInstructions(request: RequestFor<'letter'>, connected: boolean): ParentInstruction[] {
+function letterInstructions(
+  request: RequestFor<'letter'>,
+  connected: boolean,
+): ParentInstruction[] {
   const { options, occasionId, children } = request
   const steps = [
     'Prindi kirjad ja voldi iga kiri kaks korda kokku – nii on see nagu päris post.',

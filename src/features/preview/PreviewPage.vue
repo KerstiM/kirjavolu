@@ -7,6 +7,7 @@ import { computeGrid } from '../../domain/puzzleGrid'
 import { useStoredImage } from '../../composables/useStoredImage'
 import DecorationPanel from './decoration/DecorationPanel.vue'
 import PosterBoard from './poster/PosterBoard.vue'
+import MiniSheet from './mini/MiniSheet.vue'
 import { buildAudience } from '../../domain/generators/audience'
 import { formatDayMonth } from '../../domain/text/estonian'
 import BaseButton from '../../components/ui/BaseButton.vue'
@@ -37,6 +38,7 @@ const layoutOptions: { value: PrintableLayout; label: string }[] = [
   { value: 'half', label: 'Pool lehte' },
   { value: 'cards', label: 'Kaardid (4 lehel)' },
   { value: 'poster', label: 'Pusleplakat' },
+  { value: 'mini', label: 'Väikelapse kaardid' },
 ]
 const layout = computed({
   get: () => content.value?.layout ?? 'page',
@@ -48,9 +50,12 @@ const certificateStyle = computed<CertificateStyle | undefined>(() =>
 const decoration = computed<Decoration>(() => ({ ...EMPTY_DECORATION, ...content.value?.decoration }))
 const imageUrl = useStoredImage(() => decoration.value.image?.id)
 const isPoster = computed(() => layout.value === 'poster')
+const isMini = computed(() => layout.value === 'mini')
 // Capital letters by default when the youngest reader is still learning to read.
 const uppercase = computed(
-  () => decoration.value.uppercase ?? (content.value ? buildAudience(content.value.request.children).band === 'young' : false),
+  () =>
+    decoration.value.uppercase ??
+    (content.value ? buildAudience(content.value.request.children).band !== 'older' : false),
 )
 const overflowCount = ref(0)
 const posterTitle = computed(() =>
@@ -160,7 +165,10 @@ function exportText(): void {
           Pusleplakat: kaardid on tükid, mis lõigatakse lahti ja pannakse lõpuks kokku. Tekstide muutmiseks vali paigutus
           „Terve leht“.
         </p>
-        <p v-if="isPoster && overflowCount > 0" class="controls__warn" role="status">
+        <p v-if="isMini" class="controls__note">
+          Väikelapse kaardid: 12 kaarti lehel, lõika mööda katkendjooni lahti. Tekstide muutmiseks vali paigutus „Terve leht“.
+        </p>
+        <p v-if="(isPoster || isMini) && overflowCount > 0" class="controls__warn" role="status">
           {{ overflowCount }} kaardil on tekst liiga pikk. Lühenda neid paigutuses „Terve leht“.
         </p>
         <p class="controls__note">
@@ -187,6 +195,14 @@ function exportText(): void {
           :title="posterTitle"
           :image-url="decoration.image ? imageUrl : null"
           :pattern="decoration.pattern"
+          :uppercase="uppercase"
+          @overflow-count="(count) => (overflowCount = count)"
+        />
+      </div>
+      <div v-else-if="isMini" class="child-sheet print-root">
+        <MiniSheet
+          :items="content.items"
+          :title="posterTitle"
           :uppercase="uppercase"
           @overflow-count="(count) => (overflowCount = count)"
         />

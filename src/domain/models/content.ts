@@ -102,7 +102,7 @@ export type GenerationRequest = {
 
 export type RequestFor<K extends ContentTypeId> = Extract<GenerationRequest, { contentType: K }>
 
-export type PrintableLayout = 'page' | 'half' | 'cards' | 'poster'
+export type PrintableLayout = 'page' | 'half' | 'cards' | 'poster' | 'mini'
 
 export type ItemKind = 'letter' | 'clue' | 'story-page' | 'puzzle' | 'activity' | 'certificate'
 
