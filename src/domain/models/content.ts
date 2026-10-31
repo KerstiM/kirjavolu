@@ -102,7 +102,7 @@ export type GenerationRequest = {
 
 export type RequestFor<K extends ContentTypeId> = Extract<GenerationRequest, { contentType: K }>
 
-export type PrintableLayout = 'page' | 'half' | 'cards'
+export type PrintableLayout = 'page' | 'half' | 'cards' | 'poster'
 
 export type ItemKind = 'letter' | 'clue' | 'story-page' | 'puzzle' | 'activity' | 'certificate'
 
@@ -116,6 +116,8 @@ export interface GeneratedItem {
   body: string
   /** Signature or closing line, e.g. "Sinu päkapikk Tuduja". */
   signature?: string
+  /** Calendar date (YYYY-MM-DD) for dated items such as daily letters. */
+  date?: string
   /** Child the item is addressed to in a shared experience. */
   forChild?: string
   /** Solution, kept out of child-facing print. */

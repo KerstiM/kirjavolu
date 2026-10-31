@@ -4,8 +4,13 @@ import { ShieldCheck } from 'lucide-vue-next'
 import type { GeneratedContent } from '../../domain/models'
 import type { PuzzleGrid } from '../../domain/puzzleGrid'
 import AssemblyGuide from './decoration/AssemblyGuide.vue'
+import PosterGuide from './poster/PosterGuide.vue'
 
-const props = defineProps<{ content: GeneratedContent; puzzle?: { imageUrl: string; grid: PuzzleGrid } | null }>()
+const props = defineProps<{
+  content: GeneratedContent
+  puzzle?: { imageUrl: string; grid: PuzzleGrid } | null
+  posterLabels?: string[] | null
+}>()
 const solved = computed(() => props.content.items.filter((item) => item.answer || item.parentNote))
 </script>
 
@@ -25,6 +30,8 @@ const solved = computed(() => props.content.items.filter((item) => item.answer |
         <li v-for="step in instruction.steps" :key="step">{{ step }}</li>
       </ol>
     </div>
+
+    <PosterGuide v-if="posterLabels" :count="content.items.length" :labels="posterLabels" />
 
     <AssemblyGuide
       v-if="puzzle"

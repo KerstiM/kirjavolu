@@ -18,6 +18,8 @@ export interface Decoration {
   imageOpacity: number
   /** Split the picture into numbered pieces, one per item. */
   puzzle: boolean
+  /** Print card texts in capital letters for beginning readers; unset = decide by age. */
+  uppercase?: boolean
 }
 
 export const EMPTY_DECORATION: Decoration = {

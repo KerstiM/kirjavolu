@@ -15,6 +15,7 @@ const props = defineProps<{
   backgroundUrl?: string | null
   backgroundOpacity?: number
   piece?: { imageUrl: string; grid: PuzzleGrid; index: number; maxCm: number } | null
+  uppercase?: boolean
 }>()
 const emit = defineEmits<{
   save: [patch: Pick<GeneratedItem, 'heading' | 'body' | 'signature'>]
@@ -32,6 +33,7 @@ const kindClass = computed(() => [
   {
     'has-backdrop': !!props.backgroundUrl || (!!props.pattern && !props.inkSaver),
     'has-frame': !!props.pattern && props.inkSaver,
+    'is-upper': !!props.uppercase,
   },
 ])
 const bodyRows = computed(() => Math.min(18, Math.max(4, Math.ceil(draft.body.length / 60) + draft.body.split('\n').length)))
@@ -262,6 +264,11 @@ function save(): void {
   overflow: hidden;
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
+}
+
+.is-upper .paper__body,
+.is-upper .paper__signature {
+  text-transform: uppercase;
 }
 
 // Content-type specific looks

@@ -46,6 +46,7 @@ export function generateCalendar(request: RequestFor<'calendar'>, variants: read
   const relaxedAll = candidates.filter((a) => a.minAge <= Math.max(youngest, 3))
 
   const isAdvent = occasion.id === 'christmas' && days === 24
+  const adventYear = new Date().getFullYear()
   const items: DraftItem[] = []
   for (let i = 0; i < days; i++) {
     const p = ctx.item(i)
@@ -56,6 +57,7 @@ export function generateCalendar(request: RequestFor<'calendar'>, variants: read
     items.push({
       kind: 'activity',
       label: isAdvent ? `${i + 1}. detsember` : `${i + 1}. päev`,
+      date: isAdvent ? `${adventYear}-12-${String(i + 1).padStart(2, '0')}` : undefined,
       heading: activity.title,
       body: paragraphs(
         activity.text(audience.v),

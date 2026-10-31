@@ -1,4 +1,5 @@
-import type { GeneratedContent, GeneratedItem, GenerationRequest } from '../models'
+import type { GeneratedContent, GeneratedItem, GenerationRequest, PrintableLayout } from '../models'
+import { ageBand } from './audience'
 import { getContentType } from '../contentTypes'
 import { validateGenerationRequest } from '../validation'
 import { createId } from '../../utils/id'
@@ -38,6 +39,14 @@ export function runTemplates(request: GenerationRequest, variants: readonly numb
 
 const MAX_REGENERATION_ATTEMPTS = 25
 
+/** Daily series become a puzzle poster; toddler series use simple cards. */
+export function defaultLayoutFor(request: GenerationRequest): PrintableLayout {
+  const toddlersOnly = request.children.every((child) => ageBand(child) === 'toddler')
+  if (request.contentType === 'letter' && request.options.count >= 7) return toddlersOnly ? 'cards' : 'poster'
+  if (request.contentType === 'calendar' && request.options.days >= 14) return 'poster'
+  return getContentType(request.contentType).defaultLayout
+}
+
 /**
  * Local, deterministic template engine. It does not use AI – texts are assembled
  * from hand-written Estonian templates and the child profiles.
@@ -58,7 +67,7 @@ export class TemplateGenerator implements ContentGenerator {
       request,
       items: result.items.map((item) => ({ ...item, id: createId(), variant: 0, edited: false })),
       instructions: result.instructions,
-      layout: getContentType(request.contentType).defaultLayout,
+      layout: defaultLayoutFor(request),
       generator: { id: this.id, label: this.label },
     }
   }

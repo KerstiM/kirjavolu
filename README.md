@@ -12,7 +12,8 @@ Eestikeelne veebirakendus, mis aitab lapsevanematel luua lapsele personaalseid m
 - Eelvaade: tekstide muutmine, ühe osa uuesti genereerimine, kolm prindipaigutust, printimine/PDF, tekstifaili eksport
 - Lapsevanema juhised ja vastused on lapsele mõeldud materjalist eraldi
 - Kujundus: 8 SVG-taustamustrit (sündmusele sobivad eespool), tinti säästev raamirežiim või oma pilt heleda taustana
-- Puslepilt: oma pilt jagatakse tükkideks ja iga osa allserva tuleb nummerdatud väljalõigatav puslekild; lapsevanema lehel on kokkupaneku juhend ja vajadusel lisatükid
+- **Pusleplakat**: 7+ kirjaga sari prinditakse kaartidena, mis on paigutatud ussirada pidi (1. veerg alla, 2. üles jne) mitmele A4 lehele. Rada ja jaamad ühendavad päevi ning taustaks on sinu pilt või automaatne maastik. Kaardid lõigatakse lahti ja jõuludeks pannakse kokku terveks plakatiks. Igal lehel on märge („leht 1/4: pildi ülemine pool, vasak“), kaartidel kuupäev koos nädalapäevaga, tekst sobitub automaatselt ja alles lugema õppijale saab valida trükitähed
+- Puslepilt (teistes paigutustes): oma pilt jagatakse tükkideks ja iga osa allserva tuleb nummerdatud väljalõigatav puslekild; lapsevanema lehel on kokkupaneku juhend ja vajadusel lisatükid
 - Andmed salvestatakse brauseri localStorage'isse versioonitud skeemiga
 
 ## Tehnoloogia
@@ -60,6 +61,9 @@ src/
 - Üles laaditud pilt vähendatakse brauseris (kuni 2000 px) ja salvestatakse **IndexedDB-sse** (`src/utils/imageStore.ts`), sest localStorage'i maht on fotode jaoks liiga väike. Pilt ei lahku seadmest. Loomingu kustutamisel kustutatakse ka pilt.
 - Pusle ruudustik (`src/domain/puzzleGrid.ts`) valitakse nii, et tükke oleks vähemalt nii palju kui osi, liigseid tükke oleks vähe ja tükid oleksid umbes postkaardi kujuga. Näiteks 24 kirja ja 4:3 foto puhul on ruudustik 6 × 4.
 - Tükid ja taustapilt on `<img>`-elemendid, mitte CSS-taustad, et need prindiksid ka siis, kui brauseri prindiseadetes on taustagraafika välja lülitatud.
+
+### Pusleplakati geomeetria
+`src/domain/posterLayout.ts` arvutab veerud (kuni 12 osa: 2, rohkem: 4), read ja lehed (2 veergu ja kuni 4 rida lehel). Päev *i* asub veerus `floor(i / read)` ja paarisveergudes ülalt alla, paaritutes alt üles, nii et järjestikused päevad on alati naabrid ja rada ei hüppa. Taust ja rada joonistatakse plakati koordinaatides ning iga leht näitab oma lõiku, nii et kokku pandud lehtedel jätkuvad need katkematult. 7+ kirjaga sarjades jäetakse täitelaused ära, et tekst kaardile mahuks.
 
 ## Kohalik mallipõhine genereerimine
 Sisu ei loo tehisintellekt. `TemplateGenerator` (`src/domain/generators`) paneb tekstid kokku käsitsi kirjutatud eestikeelsetest mallidest ja lapse profiilist. Genereerimine on deterministlik (seemne põhjal), arvestab vanust ja lugemisoskust, väldib korduvaid tekste ning käänab nimesid (nt Rubenile, Rubeni ja Jasperiga).

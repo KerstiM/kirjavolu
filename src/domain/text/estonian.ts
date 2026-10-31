@@ -71,6 +71,23 @@ const MONTHS = [
   'detsember',
 ]
 
+const WEEKDAYS = ['pühapäev', 'esmaspäev', 'teisipäev', 'kolmapäev', 'neljapäev', 'reede', 'laupäev']
+
+/** Weekday of an ISO date (YYYY-MM-DD), e.g. "teisipäev". */
+export function weekdayName(iso: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso)
+  if (!match) return ''
+  const day = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]))).getUTCDay()
+  return WEEKDAYS[day] ?? ''
+}
+
+/** Day and month without the year: "1. detsember". */
+export function formatDayMonth(iso: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso)
+  if (!match) return ''
+  return `${Number(match[3])}. ${MONTHS[Number(match[2]) - 1] ?? ''}`
+}
+
 /** Formats an ISO date (YYYY-MM-DD) as "1. detsember 2026". */
 export function formatDate(iso: string): string {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso)

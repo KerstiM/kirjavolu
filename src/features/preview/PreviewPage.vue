@@ -6,6 +6,9 @@ import { EMPTY_DECORATION } from '../../domain/models'
 import { computeGrid } from '../../domain/puzzleGrid'
 import { useStoredImage } from '../../composables/useStoredImage'
 import DecorationPanel from './decoration/DecorationPanel.vue'
+import PosterBoard from './poster/PosterBoard.vue'
+import { buildAudience } from '../../domain/generators/audience'
+import { formatDayMonth } from '../../domain/text/estonian'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import EmptyState from '../../components/ui/EmptyState.vue'
 import SegmentedControl from '../../components/ui/SegmentedControl.vue'
@@ -33,6 +36,7 @@ const layoutOptions: { value: PrintableLayout; label: string }[] = [
   { value: 'page', label: 'Terve leht' },
   { value: 'half', label: 'Pool lehte' },
   { value: 'cards', label: 'Kaardid (4 lehel)' },
+  { value: 'poster', label: 'Pusleplakat' },
 ]
 const layout = computed({
   get: () => content.value?.layout ?? 'page',
@@ -43,14 +47,29 @@ const certificateStyle = computed<CertificateStyle | undefined>(() =>
 )
 const decoration = computed<Decoration>(() => ({ ...EMPTY_DECORATION, ...content.value?.decoration }))
 const imageUrl = useStoredImage(() => decoration.value.image?.id)
+const isPoster = computed(() => layout.value === 'poster')
+// Capital letters by default when the youngest reader is still learning to read.
+const uppercase = computed(
+  () => decoration.value.uppercase ?? (content.value ? buildAudience(content.value.request.children).band === 'young' : false),
+)
+const overflowCount = ref(0)
+const posterTitle = computed(() =>
+  content.value ? `${content.value.request.children.map((child) => child.name).join(', ')} · ${content.value.title}` : '',
+)
+const posterLabels = computed(() =>
+  (content.value?.items ?? []).map((item) => (item.date ? formatDayMonth(item.date) : item.label)),
+)
+// The small pieces under each item are not needed on the poster: the cards are the pieces.
 const puzzle = computed(() => {
   const image = decoration.value.image
-  if (!decoration.value.puzzle || !image || !imageUrl.value || !content.value) return null
+  if (isPoster.value || !decoration.value.puzzle || !image || !imageUrl.value || !content.value) return null
   return { imageUrl: imageUrl.value, grid: computeGrid(content.value.items.length, image.width / image.height) }
 })
 // Smaller pieces on cards so four still fit on one A4 page.
 const pieceMaxCm = computed(() => (layout.value === 'cards' ? 5 : layout.value === 'half' ? 6 : 8))
-const hasParentMaterial = computed(() => (content.value?.instructions.length ?? 0) > 0 || !!puzzle.value)
+const hasParentMaterial = computed(
+  () => (content.value?.instructions.length ?? 0) > 0 || !!puzzle.value || isPoster.value,
+)
 
 function setDecoration(next: Decoration): void {
   store.setDecoration(props.id, next)
@@ -133,6 +152,17 @@ function exportText(): void {
           <BaseButton variant="secondary" size="sm" @click="print('child')">Ainult lapsele</BaseButton>
           <BaseButton v-if="hasParentMaterial" variant="secondary" size="sm" @click="print('parent')">Lapsevanema leht</BaseButton>
         </div>
+        <label class="check controls__upper">
+          <input type="checkbox" :checked="uppercase" @change="setDecoration({ ...decoration, uppercase: !uppercase })" />
+          <span>Trükitähed (suured tähed alles lugema õppijale)</span>
+        </label>
+        <p v-if="isPoster" class="controls__note">
+          Pusleplakat: kaardid on tükid, mis lõigatakse lahti ja pannakse lõpuks kokku. Tekstide muutmiseks vali paigutus
+          „Terve leht“.
+        </p>
+        <p v-if="isPoster && overflowCount > 0" class="controls__warn" role="status">
+          {{ overflowCount }} kaardil on tekst liiga pikk. Lühenda neid paigutuses „Terve leht“.
+        </p>
         <p class="controls__note">
           PDF-i saamiseks vali printimisaknas „Salvesta PDF-ina“. {{ content.generator.label }}.
         </p>
@@ -143,13 +173,25 @@ function exportText(): void {
         :occasion-id="content.request.occasionId"
         :item-count="content.items.length"
         :image-url="imageUrl"
+        :poster="isPoster"
         @update="setDecoration"
       />
 
       <p class="visually-hidden" role="status" aria-live="polite">{{ status }}</p>
       <p v-if="status" class="toast no-print" aria-hidden="true">{{ status }}</p>
 
-      <div class="child-sheet print-root" :class="`sheet--${layout}`">
+      <div v-if="isPoster" class="child-sheet print-root">
+        <PosterBoard
+          :items="content.items"
+          :occasion-id="content.request.occasionId"
+          :title="posterTitle"
+          :image-url="decoration.image ? imageUrl : null"
+          :pattern="decoration.pattern"
+          :uppercase="uppercase"
+          @overflow-count="(count) => (overflowCount = count)"
+        />
+      </div>
+      <div v-else class="child-sheet print-root" :class="`sheet--${layout}`">
         <PrintableItem
           v-for="(item, index) in content.items"
           :key="item.id"
@@ -160,13 +202,19 @@ function exportText(): void {
           :ink-saver="decoration.inkSaver"
           :background-url="decoration.imageAsBackground ? imageUrl : null"
           :background-opacity="decoration.imageOpacity"
+          :uppercase="uppercase"
           :piece="puzzle ? { ...puzzle, index, maxCm: pieceMaxCm } : null"
           @save="(patch) => save(item, patch)"
           @regenerate="regenerate(index)"
         />
       </div>
 
-      <ParentSheet v-if="hasParentMaterial" :content="content" :puzzle="puzzle" />
+      <ParentSheet
+        v-if="hasParentMaterial"
+        :content="content"
+        :puzzle="puzzle"
+        :poster-labels="isPoster ? posterLabels : null"
+      />
     </div>
   </div>
 </template>
@@ -231,6 +279,15 @@ function exportText(): void {
   width: 100%;
   font-weight: 600;
   font-size: 0.95rem;
+}
+.controls__warn {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--danger);
+}
+.controls__upper {
+  align-self: center;
 }
 .controls__note {
   flex-basis: 100%;

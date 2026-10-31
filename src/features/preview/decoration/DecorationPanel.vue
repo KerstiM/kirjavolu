@@ -12,6 +12,8 @@ const props = defineProps<{
   occasionId: OccasionId
   itemCount: number
   imageUrl: string | null
+  /** On the puzzle poster the picture always spans the whole poster. */
+  poster?: boolean
 }>()
 const emit = defineEmits<{ update: [decoration: Decoration] }>()
 
@@ -81,7 +83,7 @@ function removeImage(): void {
           <span>{{ PATTERN_LABELS[pattern] }}<span v-if="isSuggestedPattern(occasionId, pattern)" class="visually-hidden"> (sobib sündmusega)</span></span>
           <span v-if="isSuggestedPattern(occasionId, pattern)" class="swatch__star" aria-hidden="true">★</span>
         </label>
-        <label v-if="decoration.image && imageUrl" class="swatch" :class="{ 'is-active': background === 'image' }">
+        <label v-if="decoration.image && imageUrl && !poster" class="swatch" :class="{ 'is-active': background === 'image' }">
           <input type="radio" class="visually-hidden" name="bg" :checked="background === 'image'" @change="chooseBackground('image')" />
           <span class="swatch__preview" aria-hidden="true"><img :src="imageUrl" alt="" /></span>
           <span>Oma pilt</span>
@@ -123,7 +125,10 @@ function removeImage(): void {
         </button>
       </div>
       <p v-if="error" class="decor__error" role="alert">{{ error }}</p>
-      <template v-if="decoration.image && grid">
+      <p v-if="poster && decoration.image" class="decor__hint" role="status">
+        Pusleplakatil on see pilt kogu plakati taust – kui kõik kaardid on koos, tuleb pilt välja.
+      </p>
+      <template v-if="decoration.image && grid && !poster">
         <label class="check">
           <input type="checkbox" :checked="decoration.puzzle" @change="update({ puzzle: !decoration.puzzle })" />
           <span>Tee pildist pusle</span>

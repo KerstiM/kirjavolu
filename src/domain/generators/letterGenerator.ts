@@ -77,6 +77,8 @@ export function generateLetters(request: RequestFor<'letter'>, variants: readonl
     [GENERIC_MISSIONS, occasionMissions, hookMissions],
   ]
   const purposePool = OCCASION_PURPOSE[occasion.id]
+  // Daily series are printed as small cards: no filler opening or mood sentences there.
+  const compact = options.count >= 7 && general.length !== 'long'
   const showPersonal = general.length !== 'short'
   const showMission = general.length !== 'short' || options.count > 1
 
@@ -90,7 +92,9 @@ export function generateLetters(request: RequestFor<'letter'>, variants: readonl
     const opening =
       i === 0
         ? `Tere! ${ctx.line(p.pick(FIRST_LETTER_INTRO, 'intro'))}`
-        : ctx.line(p.pick(toddlerOnly ? TODDLER_OPENINGS : OPENINGS[general.tone], 'opening'))
+        : compact
+          ? undefined
+          : ctx.line(p.pick(toddlerOnly ? TODDLER_OPENINGS : OPENINGS[general.tone], 'opening'))
     const purpose = i === 0 && purposePool && !toddlerOnly ? ctx.line(p.pick(purposePool, 'purpose')) : undefined
     const christmasEve =
       occasion.id === 'christmas' &&
@@ -117,12 +121,16 @@ export function generateLetters(request: RequestFor<'letter'>, variants: readonl
     }
 
     const mood =
-      !toddlerOnly && ((i === 0 && !purpose) || general.length === 'long')
+      !toddlerOnly && !compact && ((i === 0 && !purpose) || general.length === 'long')
         ? p.pick(occasion.vocabulary.moods, 'mood')
         : undefined
     // In long series, personal lines appear while fresh ones remain, then only now and then.
     const personalLine =
-      showPersonal && personal.length > 0 && (p.hasFresh(personal, 'personal') || i % 3 === 0)
+      showPersonal &&
+      personal.length > 0 &&
+      // The first card of a daily series already carries the introduction.
+      !(compact && i === 0) &&
+      (p.hasFresh(personal, 'personal') || i % 3 === 0)
         ? p.pick(personal, 'personal')
         : undefined
     const mission = showMission
@@ -156,6 +164,7 @@ export function generateLetters(request: RequestFor<'letter'>, variants: readonl
     items.push({
       kind: 'letter',
       label: date || (options.count > 1 ? `${i + 1}. kiri` : occasion.name),
+      date: isoDate || undefined,
       heading: audience.greeting,
       body: paragraphs(opening, christmasEve, purpose, mood, core, personalLine, extraPersonal, mission, siblingTasks, closing),
       signature: `${signOff}\n${sender}`,
