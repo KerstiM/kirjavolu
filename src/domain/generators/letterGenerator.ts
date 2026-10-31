@@ -51,7 +51,8 @@ export function generateLetters(request: RequestFor<'letter'>, variants: readonl
   const connected = options.connected && options.count > 1
   const personal = audienceLines(audience)
   const occasionCores = OCCASION_CORES[occasion.id] ?? []
-  const hookMissions: Line[] = audience.hooks.map(({ hook }) => ({ v }) => hook.mission(v))
+  const uniqueHooks = [...new Map(audience.hooks.map(({ hook }) => [hook.id, hook])).values()]
+  const hookMissions: Line[] = uniqueHooks.map((hook) => ({ v }) => hook.mission(v))
   const missions = [...(MISSIONS[occasion.id] ?? []), ...hookMissions, ...GENERIC_MISSIONS]
   const showPersonal = general.length !== 'short'
   const showMission = general.length !== 'short' || options.count > 1

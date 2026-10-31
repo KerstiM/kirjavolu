@@ -21,7 +21,9 @@ export function generateCalendar(request: RequestFor<'calendar'>, variants: read
   const days = Math.min(Math.max(options.days, 3), 31)
   const youngest = Math.min(...audience.children.map((child) => child.age))
 
-  const personal: Activity[] = audience.hooks.map(({ hook }) => ({
+  // Siblings often share interests; one personal activity per interest is enough.
+  const uniqueHooks = [...new Map(audience.hooks.map(({ hook }) => [hook.id, hook])).values()]
+  const personal: Activity[] = uniqueHooks.map((hook) => ({
     id: `hook-${hook.id}`,
     title: `Lemmikteema: ${hook.topic}`,
     text: hook.mission,

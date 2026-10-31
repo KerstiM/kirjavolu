@@ -19,7 +19,7 @@ Vue 3, TypeScript (strict), Vite, Vue Router, Pinia, SCSS, Lucide ikoonid, Googl
 ## Paigaldamine ja arendus
 ```bash
 npm install
-npm run dev        # http://localhost:5173
+npm run dev        # http://localhost:5173 (kui port on hõivatud, valib Vite järgmise)
 npm run typecheck
 npm run lint
 npm run test
@@ -38,6 +38,21 @@ src/
   utils/        id, kloonimine, localStorage, eksport
 ```
 
+## Testimine
+`npm run test` käivitab Vitesti (jsdom). Testid asuvad kaustas `tests/`:
+- `validation.spec.ts` – lapse profiili ja genereerimispäringu valideerimine
+- `storage.spec.ts` – localStorage'i salvestus, skeemi migratsioon, laste store
+- `estonian.spec.ts` – nimede käänamine, kuupäevad, salakirjade abifunktsioonid
+- `generators.spec.ts` – iga sisutüübi ja sündmuse kombinatsioon, vanusele kohandamine, mitu last, aardejahi peidukohtade ahel, mõistatuste vastuste õigsus, ühe osa uuesti genereerimine
+- `components.spec.ts` – profiilivorm, teksti muutmine eelvaates ja terve loomise voog viisardist eelvaateni
+
+## Arhitektuur
+- **Domeen on UI-st eraldi.** `src/domain` ei impordi Vue't; kõik tekstiloogika on puhtad funktsioonid, mida saab testida ilma brauserita.
+- **Andmed ja reeglid ei ole mallides.** Tekstipangad on `src/data/templates`, sündmuste kirjeldused `src/domain/occasions`.
+- **Genereeritud sisu on renderdusest eraldi.** Generaator tagastab `GeneratedContent` objekti (osad, lapsevanema juhised, vastused); eelvaade ja print ainult kuvavad seda.
+- **Deterministlik ja osade kaupa uuendatav.** Struktuur (nt peidukohtade järjekord) sõltub ainult seemnest; iga osa tekst sõltub seemnest, osa järjekorranumbrist ja variandist. Nii saab ühe kaardi uuesti luua, ilma et teised muutuksid.
+- **Olek.** Pinia store'id `children` ja `creations`; `app/persistence.ts` salvestab need versioonitud kujul (`schemaVersion`) võtme `kirjavolu.state` alla. Skeemi muutmisel lisa samm funktsiooni `migrate`.
+
 ## Kohalik mallipõhine genereerimine
 Sisu ei loo tehisintellekt. `TemplateGenerator` (`src/domain/generators`) paneb tekstid kokku käsitsi kirjutatud eestikeelsetest mallidest ja lapse profiilist. Genereerimine on deterministlik (seemne põhjal), arvestab vanust ja lugemisoskust, väldib korduvaid tekste ning käänab nimesid (nt Rubenile, Rubeni ja Jasperiga).
 
@@ -48,10 +63,12 @@ UI kasutab ainult liidest `ContentGenerator` (`generate`, `regenerateItem`) läb
 - Vaba teksti lisasoove mallimootor ei tõlgenda; need kuvatakse lapsevanemale meelespeana
 - Ebareeglipäraste nimede käänded vajavad profiilis omastava vormi
 - Andmed on ainult ühes brauseris; kontosid ega sünkroonimist pole
-- Ühiktestid on veel kirjutamata (vt plaanid)
+- Malliandmepangad on piiratud: pikas sarjas võib üksik lause korduda
+- Väikelapse unejutul ei ole alternatiivseid variante
+- Printimist on kontrollitud brauseri prindieelvaate stiilide tasemel, mitte igal printeril
 
 ## Plaanitud täiendused
-- Ühik- ja komponenditestid (valideerimine, salvestus, generaatorid, viisard)
+- End-to-end testid päris brauseris (nt Playwright), sh printimise eelvaade
 - Rohkem malle ja sündmusi, piltidega prindikujundused
 - Serveripoolne AI-pakkuja `ContentGenerator` liidese taga
 - Andmete eksport/import ja jagamine
