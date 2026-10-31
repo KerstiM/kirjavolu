@@ -26,7 +26,7 @@ const props = defineProps<{
   pattern: PatternId | null
   uppercase: boolean
 }>()
-const emit = defineEmits<{ overflowCount: [count: number] }>()
+const emit = defineEmits<{ overflowCount: [count: number]; edit: [itemId: string] }>()
 
 const layout = computed(() => computePoster(props.items.length))
 const pages = computed(() => posterPages(layout.value))
@@ -127,6 +127,7 @@ onBeforeUnmount(() => observer?.disconnect())
             :item="items[itemAt(cell, layout) as number] as GeneratedItem"
             :uppercase="uppercase"
             @overflow="(value) => onOverflow((items[itemAt(cell, layout) as number] as GeneratedItem).id, value)"
+            @edit="emit('edit', (items[itemAt(cell, layout) as number] as GeneratedItem).id)"
           />
         </div>
 

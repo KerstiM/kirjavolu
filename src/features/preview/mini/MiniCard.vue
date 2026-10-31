@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { Pencil } from 'lucide-vue-next'
 import type { GeneratedItem } from '../../../domain/models'
 import { weekdayName } from '../../../domain/text/estonian'
 import { useFitText } from '../../../composables/useFitText'
@@ -8,7 +9,7 @@ import { animalFor, colorFor } from './animals'
 
 /** Toddler card: big number, an animal face and a few large words to read aloud. */
 const props = defineProps<{ item: GeneratedItem; index: number; uppercase: boolean }>()
-const emit = defineEmits<{ overflow: [value: boolean] }>()
+const emit = defineEmits<{ overflow: [value: boolean]; edit: [] }>()
 
 const body = ref<HTMLElement | null>(null)
 const number = computed(() => (props.item.date ? Number(props.item.date.slice(8, 10)) : props.index + 1))
@@ -30,6 +31,9 @@ watch(overflow, (value) => emit('overflow', value), { immediate: true })
       <span v-if="weekday" class="mini__weekday">{{ weekday }}</span>
     </header>
     <span class="mini__face"><AnimalFace :animal="animalFor(index)" /></span>
+    <button type="button" class="card-edit no-print" :aria-label="`Muuda: ${number}. kaart`" @click="emit('edit')">
+      <Pencil :size="11" aria-hidden="true" /> Muuda
+    </button>
     <div ref="body" class="mini__body">
       <div class="mini__inner">
         <p v-for="(paragraph, i) in text" :key="i">{{ paragraph }}</p>
@@ -72,6 +76,45 @@ watch(overflow, (value) => emit('overflow', value), { immediate: true })
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #6f6a8f;
+}
+.card-edit {
+  position: absolute;
+  bottom: 1.6mm;
+  left: 1.6mm;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 1mm;
+  padding: 0.8mm 2.4mm;
+  border: 0.3mm solid #c9c3dc;
+  border-radius: 999px;
+  background: #fff;
+  font-family: var(--font-body);
+  font-size: 7.5pt;
+  font-weight: 600;
+  color: #54458c;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  &:hover,
+  &:focus-visible {
+    border-color: #6b5aa8;
+  }
+}
+/* With a mouse the button appears on hover or keyboard focus; on touch screens it is always visible. */
+@media (hover: hover) {
+  .card-edit {
+    opacity: 0;
+  }
+  .card:hover .card-edit,
+  .mini:hover .card-edit,
+  .card-edit:focus-visible {
+    opacity: 1;
+  }
+}
+@media print {
+  .card-edit {
+    display: none;
+  }
 }
 .mini__face {
   position: absolute;

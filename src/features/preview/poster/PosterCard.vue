@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { Pencil } from 'lucide-vue-next'
 import type { GeneratedItem } from '../../../domain/models'
 import { formatDayMonth, weekdayName } from '../../../domain/text/estonian'
 import { useFitText } from '../../../composables/useFitText'
 
 const props = defineProps<{ item: GeneratedItem; uppercase: boolean }>()
-const emit = defineEmits<{ overflow: [value: boolean] }>()
+const emit = defineEmits<{ overflow: [value: boolean]; edit: [] }>()
 
 const body = ref<HTMLElement | null>(null)
 const day = computed(() => (props.item.date ? formatDayMonth(props.item.date) : props.item.label))
@@ -32,6 +33,9 @@ watch(overflow, (value) => emit('overflow', value), { immediate: true })
 
 <template>
   <article class="card" :class="{ 'is-upper': uppercase, 'is-overflow': overflow }">
+    <button type="button" class="card-edit no-print" :aria-label="`Muuda: ${day}`" @click="emit('edit')">
+      <Pencil :size="11" aria-hidden="true" /> Muuda
+    </button>
     <header class="card__head">
       <span class="card__day">{{ day }}</span>
       <span v-if="weekday" class="card__weekday">{{ weekday }}</span>
@@ -43,7 +47,7 @@ watch(overflow, (value) => emit('overflow', value), { immediate: true })
         <p v-if="signer" class="card__signer">{{ signer }}</p>
       </div>
     </div>
-    <p v-if="overflow" class="card__warning no-print">Tekst on kaardi jaoks liiga pikk – lühenda seda paigutuses „Terve leht“.</p>
+    <p v-if="overflow" class="card__warning no-print">Tekst on kaardi jaoks liiga pikk – vajuta „Muuda“ ja lühenda.</p>
   </article>
 </template>
 
@@ -109,6 +113,45 @@ watch(overflow, (value) => emit('overflow', value), { immediate: true })
   color: #3f7a4f;
   text-transform: uppercase;
   margin-bottom: 0 !important;
+}
+.card-edit {
+  position: absolute;
+  bottom: 1.6mm;
+  left: 1.6mm;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 1mm;
+  padding: 0.8mm 2.4mm;
+  border: 0.3mm solid #c9c3dc;
+  border-radius: 999px;
+  background: #fff;
+  font-family: var(--font-body);
+  font-size: 7.5pt;
+  font-weight: 600;
+  color: #54458c;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  &:hover,
+  &:focus-visible {
+    border-color: #6b5aa8;
+  }
+}
+/* With a mouse the button appears on hover or keyboard focus; on touch screens it is always visible. */
+@media (hover: hover) {
+  .card-edit {
+    opacity: 0;
+  }
+  .card:hover .card-edit,
+  .mini:hover .card-edit,
+  .card-edit:focus-visible {
+    opacity: 1;
+  }
+}
+@media print {
+  .card-edit {
+    display: none;
+  }
 }
 .card__warning {
   margin: 1mm 0 0;

@@ -8,6 +8,7 @@ import { useStoredImage } from '../../composables/useStoredImage'
 import DecorationPanel from './decoration/DecorationPanel.vue'
 import PosterBoard from './poster/PosterBoard.vue'
 import MiniSheet from './mini/MiniSheet.vue'
+import ItemEditorDialog from './ItemEditorDialog.vue'
 import { ageBand, buildAudience } from '../../domain/generators/audience'
 import { formatDayMonth } from '../../domain/text/estonian'
 import BaseButton from '../../components/ui/BaseButton.vue'
@@ -127,6 +128,25 @@ function setDecoration(next: Decoration): void {
   store.setDecoration(props.id, next)
 }
 
+// Poster and toddler cards are edited in a dialog: there is no room on the card itself.
+const editingId = ref<string | null>(null)
+const editingIndex = computed(() => content.value?.items.findIndex((item) => item.id === editingId.value) ?? -1)
+const editingItem = computed(() => (editingIndex.value >= 0 ? content.value?.items[editingIndex.value] : undefined))
+const editingTitle = computed(() => {
+  const item = editingItem.value
+  if (!item) return ''
+  const day = item.date ? formatDayMonth(item.date) : item.label
+  return item.forChild && item.childId ? `${item.forChild}, ${day}` : day
+})
+function openEditor(itemId: string): void {
+  editingId.value = itemId
+}
+function saveFromDialog(patch: Pick<GeneratedItem, 'heading' | 'body' | 'signature'>): void {
+  const item = editingItem.value
+  if (item) save(item, patch)
+  editingId.value = null
+}
+
 function save(item: GeneratedItem, patch: Pick<GeneratedItem, 'heading' | 'body' | 'signature'>): void {
   store.editItem(props.id, item.id, patch)
   announce('Muudatus salvestatud.')
@@ -136,6 +156,8 @@ async function regenerate(index: number): Promise<void> {
   const current = content.value
   const item = current?.items[index]
   if (!current || !item) return
+  // A new variant replaces the text, so hand-made changes would be lost.
+  if (item.edited && !window.confirm('Oled seda teksti käsitsi muutnud. Uus variant asendab sinu muudatused. Jätkan?')) return
   busyItem.value = item.id
   try {
     const next = await generator.regenerateItem(current, index)
@@ -209,14 +231,13 @@ function exportText(): void {
           <span>Trükitähed (suured tähed alles lugema õppijale)</span>
         </label>
         <p v-if="isPoster" class="controls__note">
-          Pusleplakat: kaardid on tükid, mis lõigatakse lahti ja pannakse lõpuks kokku. Tekstide muutmiseks vali paigutus
-          „Terve leht“.
+          Pusleplakat: kaardid on tükid, mis lõigatakse lahti ja pannakse lõpuks kokku. Teksti muutmiseks vajuta kaardil „Muuda“.
         </p>
         <p v-if="isMini" class="controls__note">
-          Väikelapse kaardid: 12 kaarti lehel, lõika mööda katkendjooni lahti. Tekstide muutmiseks vali paigutus „Terve leht“.
+          Väikelapse kaardid: 12 kaarti lehel, lõika mööda katkendjooni lahti. Teksti muutmiseks vajuta kaardil „Muuda“.
         </p>
         <p v-if="(isPoster || isMini) && overflowCount > 0" class="controls__warn" role="status">
-          {{ overflowCount }} kaardil on tekst liiga pikk. Lühenda neid paigutuses „Terve leht“.
+          {{ overflowCount }} kaardil on tekst liiga pikk. Vajuta nendel kaartidel „Muuda“ ja lühenda.
         </p>
         <p class="controls__note">
           PDF-i saamiseks vali printimisaknas „Salvesta PDF-ina“. {{ content.generator.label }}.
@@ -260,6 +281,7 @@ function exportText(): void {
           :pattern="decoration.pattern"
           :uppercase="groupUppercase(group)"
           @overflow-count="(count) => setOverflow(group.key, count)"
+          @edit="openEditor"
         />
         <MiniSheet
           v-else-if="groupLayout(group) === 'mini'"
@@ -267,6 +289,7 @@ function exportText(): void {
           :title="groupTitle(group)"
           :uppercase="groupUppercase(group)"
           @overflow-count="(count) => setOverflow(group.key, count)"
+          @edit="openEditor"
         />
         <template v-else>
           <PrintableItem
@@ -286,6 +309,17 @@ function exportText(): void {
           />
         </template>
       </div>
+
+      <ItemEditorDialog
+        v-if="editingItem"
+        :key="`${editingItem.id}-${editingItem.variant}`"
+        :item="editingItem"
+        :title="editingTitle"
+        :busy="busyItem === editingItem.id"
+        @save="saveFromDialog"
+        @regenerate="regenerate(editingIndex)"
+        @close="editingId = null"
+      />
 
       <ParentSheet
         v-if="hasParentMaterial"

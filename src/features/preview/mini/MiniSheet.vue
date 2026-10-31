@@ -7,7 +7,7 @@ import MiniCard from './MiniCard.vue'
 
 /** Sheets of toddler cards: 12 per A4 page in two columns, with cut lines. */
 const props = defineProps<{ items: GeneratedItem[]; title: string; uppercase: boolean }>()
-const emit = defineEmits<{ overflowCount: [count: number] }>()
+const emit = defineEmits<{ overflowCount: [count: number]; edit: [itemId: string] }>()
 
 const pages = computed(() => miniPages(props.items.length))
 const cellW = PAGE_WIDTH_MM / 2
@@ -62,6 +62,7 @@ function onOverflow(index: number, value: boolean): void {
             :index="slot.index"
             :uppercase="uppercase"
             @overflow="(value) => onOverflow(slot.index, value)"
+            @edit="emit('edit', (items[slot.index] as GeneratedItem).id)"
           />
         </div>
         <svg class="mini-sheet__cuts" :viewBox="`0 0 ${PAGE_WIDTH_MM} ${POSTER_HEIGHT_MM}`" preserveAspectRatio="none" aria-hidden="true">
