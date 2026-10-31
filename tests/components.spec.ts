@@ -56,16 +56,12 @@ describe('PrintableItem editing', () => {
     edited: false,
   }
 
-  it('renders paragraphs and emits edits', async () => {
+  it('renders paragraphs and asks for the editor', async () => {
     const user = userEvent.setup()
     const { emitted } = render(PrintableItem, { props: { item } })
     expect(screen.getByText('Teine lõik.')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Muuda: 1. kiri' }))
-    const body = screen.getByLabelText('Tekst')
-    await user.clear(body)
-    await user.type(body, 'Uus tekst')
-    await user.click(screen.getByRole('button', { name: /Salvesta/ }))
-    expect(emitted<[Partial<GeneratedItem>]>().save?.[0]?.[0]).toMatchObject({ body: 'Uus tekst', heading: 'Kallis Ruben!' })
+    expect(emitted().edit).toHaveLength(1)
   })
 
   it('emits regenerate', async () => {
@@ -80,8 +76,8 @@ describe('creation flow', () => {
   it('creates a shared story for siblings and opens an editable preview', async () => {
     const { user, router } = await renderApp('/loo')
 
+    // Single-choice steps move on by themselves.
     await user.click(await screen.findByRole('radio', { name: /Personaalne lugu/ }))
-    await user.click(screen.getByRole('button', { name: /Edasi/ }))
 
     await user.click(await screen.findByRole('checkbox', { name: /Ruben/ }))
     await user.click(screen.getByRole('checkbox', { name: /Jasper/ }))
@@ -89,7 +85,6 @@ describe('creation flow', () => {
     await user.click(screen.getByRole('button', { name: /Edasi/ }))
 
     await user.click(await screen.findByRole('radio', { name: /Sünnipäev/ }))
-    await user.click(screen.getByRole('button', { name: /Edasi/ }))
 
     expect(await screen.findByRole('heading', { name: 'Kohanda' })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: /Loo ja vaata eelvaadet/ }))
@@ -104,10 +99,11 @@ describe('creation flow', () => {
 
     const firstEdit = screen.getAllByRole('button', { name: /^Muuda:/ })[0]!
     await user.click(firstEdit)
-    const body = screen.getByLabelText('Tekst')
+    const dialog = screen.getByRole('dialog')
+    const body = within(dialog).getByLabelText('Tekst')
     await user.clear(body)
     await user.type(body, 'Täiesti uus algus')
-    await user.click(screen.getByRole('button', { name: /Salvesta/ }))
+    await user.click(within(dialog).getByRole('button', { name: /Salvesta/ }))
     expect(await screen.findByText('Täiesti uus algus')).toBeInTheDocument()
     expect(store.creations[0]?.items[0]?.edited).toBe(true)
   })
@@ -122,5 +118,8 @@ describe('creation flow', () => {
     expect(await screen.findByRole('heading', { name: 'Kellele?' })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Vali kõik' }))
     expect(within(document.querySelector('.wizard__summary') as HTMLElement).getByText('Jõulud')).toBeInTheDocument()
+    // The occasion is already known, so "Mis puhul?" is skipped.
+    await user.click(screen.getByRole('button', { name: /Edasi/ }))
+    expect(await screen.findByRole('heading', { name: 'Kohanda' })).toBeInTheDocument()
   })
 })

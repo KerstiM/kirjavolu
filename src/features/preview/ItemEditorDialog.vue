@@ -4,10 +4,10 @@ import { RefreshCw, X } from 'lucide-vue-next'
 import type { GeneratedItem } from '../../domain/models'
 
 /**
- * Editor for one item, opened from cards that have no room for inline editing
- * (puzzle poster, toddler cards). Changes apply only when saved.
+ * Editor for one item, opened from the card's "Muuda" button in every layout.
+ * Changes apply only when saved.
  */
-const props = defineProps<{ item: GeneratedItem; title: string; busy?: boolean }>()
+const props = defineProps<{ item: GeneratedItem; title: string; busy?: boolean; fitHint?: boolean }>()
 const emit = defineEmits<{
   save: [patch: Pick<GeneratedItem, 'heading' | 'body' | 'signature'>]
   regenerate: []
@@ -83,7 +83,7 @@ onBeforeUnmount(() => {
         <label class="dialog__label" for="item-editor-body">Tekst</label>
         <textarea id="item-editor-body" ref="bodyField" v-model="draft.body" class="textarea" :rows="rows" />
         <p class="dialog__hint">
-          Tühi rida alustab uut lõiku. {{ words }} sõna – kaardile mahub mugavalt umbes 70–100 sõna.
+          Tühi rida alustab uut lõiku.<template v-if="fitHint"> {{ words }} sõna – kaardile mahub mugavalt umbes 70–100 sõna.</template>
         </p>
         <template v-if="item.signature !== undefined">
           <label class="dialog__label" for="item-editor-signature">Allkiri</label>

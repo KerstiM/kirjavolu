@@ -34,15 +34,25 @@ function announce(message: string): void {
   statusTimer = setTimeout(() => (status.value = ''), 3500)
 }
 
-const layoutOptions: { value: PrintableLayout; label: string }[] = [
+const toddlers = computed(() => content.value?.request.children.filter((child) => ageBand(child) === 'toddler').length ?? 0)
+const allToddlers = computed(() => !!content.value && toddlers.value === content.value.request.children.length)
+/**
+ * Puzzle poster and toddler cards are one choice: everyone gets the card layout
+ * that suits their age, so the label tells what this family will get.
+ */
+const cardLabel = computed(() => {
+  if (allToddlers.value) return 'Väikelapse kaardid'
+  return toddlers.value > 0 ? 'Plakat ja väikelapse kaardid' : 'Pusleplakat'
+})
+const layoutOptions = computed<{ value: PrintableLayout; label: string }[]>(() => [
   { value: 'page', label: 'Terve leht' },
   { value: 'half', label: 'Pool lehte' },
   { value: 'cards', label: 'Kaardid (4 lehel)' },
-  { value: 'poster', label: 'Pusleplakat' },
-  { value: 'mini', label: 'Väikelapse kaardid' },
-]
+  { value: 'poster', label: cardLabel.value },
+])
+const rawLayout = computed(() => content.value?.layout ?? 'page')
 const layout = computed({
-  get: () => content.value?.layout ?? 'page',
+  get: () => (rawLayout.value === 'mini' ? 'poster' : rawLayout.value),
   set: (value: PrintableLayout) => store.setLayout(props.id, value),
 })
 const certificateStyle = computed<CertificateStyle | undefined>(() =>
@@ -50,8 +60,6 @@ const certificateStyle = computed<CertificateStyle | undefined>(() =>
 )
 const decoration = computed<Decoration>(() => ({ ...EMPTY_DECORATION, ...content.value?.decoration }))
 const imageUrl = useStoredImage(() => decoration.value.image?.id)
-const isPoster = computed(() => layout.value === 'poster')
-const isMini = computed(() => layout.value === 'mini')
 // Capital letters by default when the youngest reader is still learning to read.
 const uppercase = computed(
   () =>
@@ -84,13 +92,14 @@ const visibleGroups = computed(() =>
   childFilter.value === 'all' ? groups.value : groups.value.filter((group) => group.key === childFilter.value),
 )
 
-/** In a family series each child gets the card layout that suits them: toddlers simple cards, others the poster. */
+/** Each child gets the card layout that suits them: toddlers simple cards, others the poster. */
 function groupLayout(group: ItemGroup): PrintableLayout {
-  if (group.child && (layout.value === 'poster' || layout.value === 'mini')) {
-    return ageBand(group.child) === 'toddler' ? 'mini' : 'poster'
-  }
-  return layout.value
+  if (layout.value !== 'poster') return layout.value
+  const toddler = group.child ? ageBand(group.child) === 'toddler' : allToddlers.value
+  return toddler ? 'mini' : 'poster'
 }
+const isPoster = computed(() => groups.value.some((group) => groupLayout(group) === 'poster'))
+const isMini = computed(() => groups.value.some((group) => groupLayout(group) === 'mini'))
 function groupUppercase(group: ItemGroup): boolean {
   if (decoration.value.uppercase !== undefined || !group.child) return uppercase.value
   return ageBand(group.child) !== 'older'
@@ -128,7 +137,7 @@ function setDecoration(next: Decoration): void {
   store.setDecoration(props.id, next)
 }
 
-// Poster and toddler cards are edited in a dialog: there is no room on the card itself.
+// Every card is edited in the same dialog.
 const editingId = ref<string | null>(null)
 const editingIndex = computed(() => content.value?.items.findIndex((item) => item.id === editingId.value) ?? -1)
 const editingItem = computed(() => (editingIndex.value >= 0 ? content.value?.items[editingIndex.value] : undefined))
@@ -173,6 +182,12 @@ async function regenerate(index: number): Promise<void> {
 }
 
 type PrintMode = 'all' | 'child' | 'parent'
+const printMode = ref<PrintMode>('all')
+const printOptions = computed<{ value: PrintMode; label: string }[]>(() => [
+  { value: 'all', label: 'Kõik' },
+  { value: 'child', label: 'Ainult lapsele' },
+  ...(hasParentMaterial.value ? [{ value: 'parent' as const, label: 'Lapsevanema leht' }] : []),
+])
 function cleanupPrint(): void {
   document.body.classList.remove('print-all', 'print-child', 'print-parent')
 }
@@ -213,7 +228,7 @@ function exportText(): void {
         </div>
         <div class="toolbar__actions">
           <BaseButton variant="secondary" size="sm" @click="exportText"><Download aria-hidden="true" /> Tekstifail</BaseButton>
-          <BaseButton size="sm" @click="print('all')"><Printer aria-hidden="true" /> Prindi / PDF</BaseButton>
+          <BaseButton size="sm" @click="print(printOptions.some((o) => o.value === printMode) ? printMode : 'all')"><Printer aria-hidden="true" /> Prindi / PDF</BaseButton>
         </div>
       </div>
     </div>
@@ -221,27 +236,20 @@ function exportText(): void {
     <div class="container preview__body">
       <aside class="controls no-print" aria-label="Eelvaate seaded">
         <SegmentedControl v-model="layout" name="layout" label="Prindi paigutus" :options="layoutOptions" />
-        <div class="controls__print">
-          <span class="controls__label">Prindi eraldi</span>
-          <BaseButton variant="secondary" size="sm" @click="print('child')">Ainult lapsele</BaseButton>
-          <BaseButton v-if="hasParentMaterial" variant="secondary" size="sm" @click="print('parent')">Lapsevanema leht</BaseButton>
-        </div>
+        <SegmentedControl v-model="printMode" name="print-mode" label="Mida printida" :options="printOptions" />
         <label class="check controls__upper">
           <input type="checkbox" :checked="uppercase" @change="setDecoration({ ...decoration, uppercase: !uppercase })" />
           <span>Trükitähed (suured tähed alles lugema õppijale)</span>
         </label>
-        <p v-if="isPoster" class="controls__note">
-          Pusleplakat: kaardid on tükid, mis lõigatakse lahti ja pannakse lõpuks kokku. Teksti muutmiseks vajuta kaardil „Muuda“.
-        </p>
-        <p v-if="isMini" class="controls__note">
-          Väikelapse kaardid: 12 kaarti lehel, lõika mööda katkendjooni lahti. Teksti muutmiseks vajuta kaardil „Muuda“.
+        <p class="controls__note">
+          <template v-if="isPoster">Pusleplakati kaardid on tükid, mis lõigatakse lahti ja pannakse lõpuks kokku. </template>
+          <template v-if="isMini">Väikelapse kaarte on 12 lehel, lõika mööda katkendjooni. </template>
+          Teksti muutmiseks vajuta kaardil „Muuda“. PDF-i saamiseks vali printimisaknas „Salvesta PDF-ina“.
         </p>
         <p v-if="(isPoster || isMini) && overflowCount > 0" class="controls__warn" role="status">
           {{ overflowCount }} kaardil on tekst liiga pikk. Vajuta nendel kaartidel „Muuda“ ja lühenda.
         </p>
-        <p class="controls__note">
-          PDF-i saamiseks vali printimisaknas „Salvesta PDF-ina“. {{ content.generator.label }}.
-        </p>
+        <p class="controls__note">{{ content.generator.label }}.</p>
       </aside>
 
       <DecorationPanel
@@ -304,7 +312,7 @@ function exportText(): void {
             :background-opacity="decoration.imageOpacity"
             :uppercase="groupUppercase(group)"
             :piece="puzzle ? { ...puzzle, index: entry.index, maxCm: pieceMaxCm } : null"
-            @save="(patch) => save(entry.item, patch)"
+            @edit="openEditor(entry.item.id)"
             @regenerate="regenerate(entry.index)"
           />
         </template>
@@ -316,6 +324,7 @@ function exportText(): void {
         :item="editingItem"
         :title="editingTitle"
         :busy="busyItem === editingItem.id"
+        :fit-hint="layout === 'poster'"
         @save="saveFromDialog"
         @regenerate="regenerate(editingIndex)"
         @close="editingId = null"
@@ -380,17 +389,6 @@ function exportText(): void {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-}
-.controls__print {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.4rem;
-}
-.controls__label {
-  width: 100%;
-  font-weight: 600;
-  font-size: 0.95rem;
 }
 .child-filter {
   margin-bottom: 1.25rem;

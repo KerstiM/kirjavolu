@@ -28,6 +28,7 @@ const wizard = useWizard({
   contentType: isContentTypeId(queryType) ? queryType : undefined,
   occasionId: isOccasionId(queryOccasion) ? queryOccasion : undefined,
   childIds: childrenStore.children.length === 1 ? [childrenStore.children[0]?.id ?? ''] : [],
+  onlyChild: childrenStore.children.length === 1,
 })
 const { state } = wizard
 
@@ -54,6 +55,12 @@ watch(
     heading?.focus()
   },
 )
+
+// Steps with a single choice move on by themselves once something is picked.
+function pick<K extends 'contentType' | 'occasionId'>(key: K, value: (typeof state)[K]): void {
+  state[key] = value
+  if (value !== null) wizard.next()
+}
 
 function selectAll(): void {
   state.childIds = childrenStore.children.map((child) => child.id)
@@ -87,7 +94,12 @@ async function create(): Promise<void> {
     </header>
 
     <div ref="stepHeading" class="wizard__body">
-      <StepType v-if="WIZARD_STEPS[state.step]?.id === 'type'" v-model="state.contentType" :occasion-id="state.occasionId" />
+      <StepType
+        v-if="WIZARD_STEPS[state.step]?.id === 'type'"
+        :model-value="state.contentType"
+        :occasion-id="state.occasionId"
+        @update:model-value="(value) => pick('contentType', value)"
+      />
       <StepChildren
         v-else-if="WIZARD_STEPS[state.step]?.id === 'children'"
         :children="childrenStore.children"
@@ -95,7 +107,12 @@ async function create(): Promise<void> {
         @toggle="wizard.toggleChild"
         @select-all="selectAll"
       />
-      <StepOccasion v-else-if="WIZARD_STEPS[state.step]?.id === 'occasion'" v-model="state.occasionId" :content-type="state.contentType" />
+      <StepOccasion
+        v-else-if="WIZARD_STEPS[state.step]?.id === 'occasion'"
+        :model-value="state.occasionId"
+        :content-type="state.contentType"
+        @update:model-value="(value) => pick('occasionId', value)"
+      />
       <StepCustomize
         v-else-if="state.contentType && state.occasionId"
         v-model:general="state.general"

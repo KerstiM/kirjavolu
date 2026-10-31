@@ -109,10 +109,10 @@ function removeImage(): void {
     </fieldset>
 
     <fieldset class="decor__group">
-      <legend>Oma pilt ja pusle</legend>
+      <legend>Oma pilt</legend>
       <p class="decor__hint">
-        Laadi üles pere foto või lapse joonistus. Pilt jääb ainult sinu seadmesse. Pusle puhul saab iga osa
-        väljalõigatava tüki – kui kõik on koos, tuleb välja terve pilt.
+        Laadi üles pere foto või lapse joonistus. Pilt jääb ainult sinu seadmesse. Seda saab kasutada taustana
+        või lõigata tükkideks, nii et iga osa juures on üks tükk – kui kõik on koos, tuleb välja terve pilt.
       </p>
       <div class="upload-row">
         <label class="upload" :class="{ 'is-busy': uploading }">
@@ -131,7 +131,7 @@ function removeImage(): void {
       <template v-if="decoration.image && grid && !poster">
         <label class="check">
           <input type="checkbox" :checked="decoration.puzzle" @change="update({ puzzle: !decoration.puzzle })" />
-          <span>Tee pildist pusle</span>
+          <span>Lõika pilt tükkideks (iga osa juurde üks tükk)</span>
         </label>
         <p v-if="decoration.puzzle" class="decor__hint" role="status">
           {{ itemCount }} osa → {{ grid.cells }} tükki ({{ grid.cols }} × {{ grid.rows }}).

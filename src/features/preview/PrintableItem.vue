@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, nextTick, reactive, ref } from 'vue'
-import { Check, Pencil, RefreshCw, X } from 'lucide-vue-next'
+import { computed } from 'vue'
+import { Pencil, RefreshCw } from 'lucide-vue-next'
 import type { CertificateStyle, GeneratedItem, PatternId } from '../../domain/models'
 import type { PuzzleGrid } from '../../domain/puzzleGrid'
 import PatternBackground from './decoration/PatternBackground.vue'
@@ -17,14 +17,7 @@ const props = defineProps<{
   piece?: { imageUrl: string; grid: PuzzleGrid; index: number; maxCm: number } | null
   uppercase?: boolean
 }>()
-const emit = defineEmits<{
-  save: [patch: Pick<GeneratedItem, 'heading' | 'body' | 'signature'>]
-  regenerate: []
-}>()
-
-const editing = ref(false)
-const draft = reactive({ heading: '', body: '', signature: '' })
-const bodyField = ref<HTMLTextAreaElement | null>(null)
+const emit = defineEmits<{ edit: []; regenerate: [] }>()
 
 const paragraphs = computed(() => props.item.body.split(/\n{2,}/).filter((p) => p.trim()))
 const kindClass = computed(() => [
@@ -36,25 +29,6 @@ const kindClass = computed(() => [
     'is-upper': !!props.uppercase,
   },
 ])
-const bodyRows = computed(() => Math.min(18, Math.max(4, Math.ceil(draft.body.length / 60) + draft.body.split('\n').length)))
-
-async function startEdit(): Promise<void> {
-  draft.heading = props.item.heading
-  draft.body = props.item.body
-  draft.signature = props.item.signature ?? ''
-  editing.value = true
-  await nextTick()
-  bodyField.value?.focus()
-}
-
-function save(): void {
-  emit('save', {
-    heading: draft.heading.trim(),
-    body: draft.body.trim(),
-    signature: draft.signature.trim() || undefined,
-  })
-  editing.value = false
-}
 </script>
 
 <template>
@@ -69,39 +43,15 @@ function save(): void {
     <PatternBackground v-else-if="pattern" :pattern="pattern" :ink-saver="!!inkSaver" />
     <div class="paper__tools no-print">
       <span v-if="item.edited" class="edited-badge">Muudetud</span>
-      <template v-if="!editing">
-        <button type="button" class="tool" :aria-label="`Muuda: ${item.label}`" @click="startEdit">
-          <Pencil :size="15" aria-hidden="true" /><span>Muuda</span>
-        </button>
-        <button
-          type="button"
-          class="tool"
-          :disabled="busy"
-          :aria-label="`Uus variant: ${item.label}`"
-          @click="emit('regenerate')"
-        >
-          <RefreshCw :size="15" aria-hidden="true" :class="{ spin: busy }" /><span>Uus variant</span>
-        </button>
-      </template>
+      <button type="button" class="tool" :aria-label="`Muuda: ${item.label}`" @click="emit('edit')">
+        <Pencil :size="15" aria-hidden="true" /><span>Muuda</span>
+      </button>
+      <button type="button" class="tool" :disabled="busy" :aria-label="`Uus variant: ${item.label}`" @click="emit('regenerate')">
+        <RefreshCw :size="15" aria-hidden="true" :class="{ spin: busy }" /><span>Uus variant</span>
+      </button>
     </div>
 
-    <form v-if="editing" class="editor no-print" @submit.prevent="save" @keydown.esc="editing = false">
-      <label class="editor__label" :for="`h-${item.id}`">Pealkiri</label>
-      <input :id="`h-${item.id}`" v-model="draft.heading" class="input" type="text" />
-      <label class="editor__label" :for="`b-${item.id}`">Tekst</label>
-      <textarea :id="`b-${item.id}`" ref="bodyField" v-model="draft.body" class="textarea" :rows="bodyRows" />
-      <p class="editor__hint">Tühi rida alustab uut lõiku.</p>
-      <template v-if="item.signature !== undefined">
-        <label class="editor__label" :for="`s-${item.id}`">Allkiri</label>
-        <textarea :id="`s-${item.id}`" v-model="draft.signature" class="textarea" rows="2" />
-      </template>
-      <div class="editor__actions">
-        <button type="button" class="tool" @click="editing = false"><X :size="15" aria-hidden="true" /> Tühista</button>
-        <button type="submit" class="tool tool--primary"><Check :size="15" aria-hidden="true" /> Salvesta</button>
-      </div>
-    </form>
-
-    <div v-else class="paper__content">
+    <div class="paper__content">
       <p v-if="item.label" class="paper__label">{{ item.label }}</p>
       <h3 v-if="item.heading" class="paper__heading">{{ item.heading }}</h3>
       <div class="paper__body">
@@ -109,7 +59,7 @@ function save(): void {
       </div>
       <p v-if="item.signature" class="paper__signature">{{ item.signature }}</p>
     </div>
-    <PuzzlePiece v-if="piece && !editing" v-bind="piece" class="paper__piece" />
+    <PuzzlePiece v-if="piece" v-bind="piece" class="paper__piece" />
   </article>
 </template>
 
@@ -163,15 +113,6 @@ function save(): void {
   &:disabled {
     opacity: 0.6;
     cursor: wait;
-  }
-}
-.tool--primary {
-  background: var(--lavender);
-  border-color: var(--lavender);
-  color: #fff;
-  &:hover:not(:disabled) {
-    color: #fff;
-    background: var(--lavender-ink);
   }
 }
 .edited-badge {
@@ -233,7 +174,6 @@ function save(): void {
   pointer-events: none;
 }
 .paper__content,
-.editor,
 .paper__piece,
 .paper__tools {
   position: relative;
@@ -330,29 +270,6 @@ function save(): void {
   }
 }
 
-.editor {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  font-family: var(--font-body);
-  padding-top: 1.25rem;
-}
-.editor__label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-top: 0.4rem;
-}
-.editor__hint {
-  margin: 0;
-  font-size: 0.8rem;
-  color: var(--ink-soft);
-}
-.editor__actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.4rem;
-  margin-top: 0.6rem;
-}
 
 @media (max-width: 560px) {
   .paper {
