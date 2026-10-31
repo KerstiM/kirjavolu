@@ -27,10 +27,16 @@ import {
 } from './context'
 import { audienceLines } from './personal'
 
-/** Maps letter index to an arc beat; the last letter always gets the finale. */
+/**
+ * Maps letter index to an arc beat. The finale is only in the last letter and the
+ * "star found" beat only in the one before it, so no filler letter can come after
+ * the star has been found.
+ */
 export function beatIndexFor(index: number, count: number, beats: number): number {
-  if (count <= 1) return beats - 1
-  return Math.round((index * (beats - 1)) / (count - 1))
+  if (count <= 1 || index === count - 1) return beats - 1
+  if (count >= 3 && index === count - 2) return beats - 2
+  const head = count >= 3 ? count - 2 : count - 1
+  return head <= 1 ? 0 : Math.round((index * (beats - 3)) / (head - 1))
 }
 
 const USAGE_TIPS: Partial<Record<string, string>> = {

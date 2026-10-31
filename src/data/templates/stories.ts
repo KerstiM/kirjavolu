@@ -10,10 +10,15 @@ export interface StoryContext {
   they: string
   mood: string
   missing: string
+  missingGenitive: string
 }
 
 export type StoryLine = (c: StoryContext) => string
 
+/**
+ * openings, problems and resolutions are parallel arrays: index i of each forms one
+ * coherent plot, so they must be picked with the same index.
+ */
 export interface GenreTemplate {
   label: string
   /** Title object joined after hero names: "Ruben, Jasper ja kuldne võti". */
@@ -45,9 +50,9 @@ export const GENRES: Record<StoryGenre, GenreTemplate> = {
     ],
     problems: [
       () =>
-        'Pisikese ukse tagant kostis nuttu. Seal elas haldjas Lumi, kelle võlukepp oli murdunud. „Ilma selleta ei saa ma täna öösel tähti süüdata,“ nuuksus ta.',
-      () =>
         'Kuldne võti kuulus Unemaa kuningannale. Tema lossi väravad olid lukku jäänud ja kogu Unemaa jäi liiga vara magama.',
+      () =>
+        'Pisikese ukse tagant kostis nuttu. Seal elas haldjas Lumi, kelle võlukepp oli murdunud. „Ilma selleta ei saa ma täna öösel tähti süüdata,“ nuuksus ta.',
     ],
     obstacles: [
       () =>
@@ -93,7 +98,7 @@ export const GENRES: Record<StoryGenre, GenreTemplate> = {
   },
   detective: {
     label: 'Detektiivilugu',
-    titleThing: (c) => `kadunud ${c.missing} juhtum`,
+    titleThing: (c) => `kadunud ${c.missingGenitive} juhtum`,
     openings: [
       (c) =>
         `${c.heroes} ${c.v('ärkas', 'ärkasid')} selle peale, et keegi hüüdis: „Appi! Kadunud on ${c.missing}!“ ${c.mood}`,
@@ -257,18 +262,19 @@ export const ENDINGS: Record<Tone, StoryLine[]> = {
   ],
 }
 
-export const MISSING_THINGS: Record<OccasionId, string> = {
-  christmas: 'piparkoogimaja',
-  easter: 'kuldne muna',
-  birthday: 'sünnipäevatort',
-  halloween: 'kõrvitsalatern',
-  'mardi-kadri': 'lõngakera',
-  vastlapaev: 'vastlakuklite korv',
-  valentines: 'sõbrapäeva kaartide kast',
-  'school-start': 'uus pinal',
-  summer: 'jäätisekast',
-  'lost-tooth': 'piimahamba karbike',
-  everyday: 'küpsisepurk',
+/** Missing item in detective stories: nominative and genitive ("küpsisepurgi juhtum"). */
+export const MISSING_THINGS: Record<OccasionId, { nominative: string; genitive: string }> = {
+  christmas: { nominative: 'piparkoogimaja', genitive: 'piparkoogimaja' },
+  easter: { nominative: 'kuldne muna', genitive: 'kuldse muna' },
+  birthday: { nominative: 'sünnipäevatort', genitive: 'sünnipäevatordi' },
+  halloween: { nominative: 'kõrvitsalatern', genitive: 'kõrvitsalaterna' },
+  'mardi-kadri': { nominative: 'lõngakera', genitive: 'lõngakera' },
+  vastlapaev: { nominative: 'vastlakuklite korv', genitive: 'vastlakuklite korvi' },
+  valentines: { nominative: 'sõbrapäeva kaartide kast', genitive: 'sõbrapäeva kaartide kasti' },
+  'school-start': { nominative: 'uus pinal', genitive: 'uue pinali' },
+  summer: { nominative: 'jäätisekast', genitive: 'jäätisekasti' },
+  'lost-tooth': { nominative: 'piimahamba karbike', genitive: 'piimahamba karbikese' },
+  everyday: { nominative: 'küpsisepurk', genitive: 'küpsisepurgi' },
 }
 
 export interface ToddlerGenre {

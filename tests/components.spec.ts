@@ -96,7 +96,7 @@ describe('creation flow', () => {
 
     await vi.waitFor(() => expect(router.currentRoute.value.name).toBe('preview'))
     const title = await screen.findByRole('heading', { level: 1 })
-    expect(title.textContent).toContain('Ruben, Jasper ja kadunud sünnipäevatort')
+    expect(title.textContent).toContain('Ruben, Jasper ja kadunud sünnipäevatordi juhtum')
 
     const store = useCreationsStore()
     expect(store.creations).toHaveLength(1)

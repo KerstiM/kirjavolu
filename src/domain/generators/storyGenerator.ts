@@ -48,7 +48,8 @@ function readerStory(ctx: GenContext<'story'>): Pick<TypeResult, 'title' | 'item
     v,
     they: plural ? 'nad' : 'ta',
     mood: ctx.item(0).pick(occasion.vocabulary.moods, 'mood'),
-    missing: MISSING_THINGS[occasion.id],
+    missing: MISSING_THINGS[occasion.id].nominative,
+    missingGenitive: MISSING_THINGS[occasion.id].genitive,
   }
 
   const companions = options.extraCharacters.map((name) => name.trim()).filter(Boolean)
@@ -65,9 +66,11 @@ function readerStory(ctx: GenContext<'story'>): Pick<TypeResult, 'title' | 'item
 
   // Each page draws its texts from its own picker, so regenerating page N only changes page N.
   type Segment = (p: ItemPicker) => string | undefined
-  const opening: Segment = (p) =>
-    paragraphs(p.pick(genre.openings, 'opening')(storyCtx), companionLine, toddlerLine, objectLine)
-  const problem: Segment = (p) => p.pick(genre.problems, 'problem')(storyCtx)
+  // One plot index for the whole story keeps opening, problem and resolution consistent.
+  const plot = ctx.structure.int(genre.openings.length)
+  const opening: Segment = () =>
+    paragraphs(genre.openings[plot]?.(storyCtx), companionLine, toddlerLine, objectLine)
+  const problem: Segment = () => genre.problems[plot]?.(storyCtx)
   const usedHooks = new Set<string>()
   const obstacle =
     (i: number): Segment =>
@@ -86,7 +89,7 @@ function readerStory(ctx: GenContext<'story'>): Pick<TypeResult, 'title' | 'item
       }
       return paragraphs(frame?.(storyCtx), solve)
     }
-  const resolution: Segment = (p) => p.pick(genre.resolutions, 'resolution')(storyCtx)
+  const resolution: Segment = () => genre.resolutions[plot]?.(storyCtx)
   const moral: Segment = () =>
     options.theme !== 'none' ? THEME_LINES[options.theme](storyCtx) : undefined
   const ending: Segment = (p) => p.pick(ENDINGS[general.tone], 'ending')(storyCtx)
@@ -131,7 +134,7 @@ function toddlerStory(ctx: GenContext<'story'>): Pick<TypeResult, 'title' | 'ite
   const play = `Kas sina oskad ka ${genre.action}? Proovime koos!`
   const home =
     family.length > 0
-      ? `Siis ${plural ? 'läksid' : 'läks'} ${name} koju. Kodus ${family.length > 1 ? 'ootasid' : 'ootas'} ${joinList(family)} ja ${family.length > 1 ? 'andsid' : 'andis'} sooja kalli. Head ööd, ${name}!`
+      ? `Siis ${plural ? 'läksid' : 'läks'} ${name} koju. Kodus ${family.length > 1 ? 'ootasid' : 'ootas'} ${joinList(family)} ning ${family.length > 1 ? 'andsid' : 'andis'} sooja kalli. Head ööd, ${name}!`
       : `Siis ${plural ? 'läksid' : 'läks'} ${name} koju. Kodus ootas soe kallistus. Head ööd, ${name}!`
 
   const pagesByLength = {

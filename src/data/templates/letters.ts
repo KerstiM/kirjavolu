@@ -205,7 +205,7 @@ export const ARC_BEATS: Line[] = [
 
 export const ARC_CONTINUE: Line[] = [
   () => `Võlutähe otsingud käivad edasi. Vahepeal juhtus siin aga midagi muud.`,
-  () => `Võlutähest pole veel uudiseid, aga ma ei anna alla. Seniks räägin, mis täna juhtus.`,
+  () => `Võlutähe otsingud võtavad aega, aga ma ei anna alla. Seniks räägin, mis täna juhtus.`,
   () => `Hõbedane sulg on mu laual ja ootab. Seniks üks lugu tänasest päevast.`,
 ]
 

@@ -61,8 +61,22 @@ describe('letters', () => {
   it('connected series always ends with the finale', () => {
     expect(beatIndexFor(0, 24, 12)).toBe(0)
     expect(beatIndexFor(23, 24, 12)).toBe(11)
+    for (const count of [2, 3, 7, 24]) {
+      const beats = Array.from({ length: count }, (_, i) => beatIndexFor(i, count, 12))
+      expect(beats.filter((b) => b === 11)).toHaveLength(1)
+      expect(beats.slice(0, -2).every((b) => b <= 9)).toBe(true)
+      expect(beats).toEqual([...beats].sort((a, b) => a - b))
+    }
     const result = runTemplates(makeRequest('letter', { occasionId: 'christmas', options: { count: 7, connected: true } }))
     expect(result.items.at(-1)?.body).toContain('Võlutäht on jälle minuga')
+  })
+
+  it('regression: no letter after the star is found says the search continues', () => {
+    const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [RUBEN, JASPER, BRITA], seed: 7 })).items
+    const found = items.findIndex((i) => i.body.includes('Kutsusin võlutähte ja ta vastas'))
+    expect(found).toBe(22)
+    expect(items[23]!.body).toContain('Võlutäht on jälle minuga')
+    for (const item of items.slice(found)) expect(item.body).not.toMatch(/otsingud|pole veel uudiseid|ootab/)
   })
 
   it('uses profile details and singular address for one child', () => {
@@ -201,16 +215,26 @@ describe('puzzles', () => {
   })
 
   it('number sequences continue correctly', () => {
-    for (let seed = 1; seed < 30; seed++) {
+    for (let seed = 1; seed < 60; seed++) {
       const result = runTemplates(makeRequest('puzzle', { seed, options: { kind: 'sequence', challengeCount: 3 } }))
       for (const item of result.items) {
         const nums = /\n\n([\d, ]+), \?/.exec(item.body)![1]!.split(', ').map(Number)
-        const d1 = nums[1]! - nums[0]!
-        const d2 = nums[2]! - nums[1]!
+        const diffs = nums.slice(1).map((n, i) => n - nums[i]!)
         const answer = Number(item.answer)
-        if (nums[1] === nums[0]! * 2 && nums[2] === nums[1]! * 2) expect(answer).toBe(nums.at(-1)! * 2)
-        else if (d1 === d2) expect(answer).toBe(nums.at(-1)! + d1)
-        else expect(answer).toBe(nums.at(-1)! + d1)
+        const last = nums.at(-1)!
+        if (nums.every((n, i) => i === 0 || n === nums[i - 1]! * 2)) expect(answer).toBe(last * 2)
+        else if (diffs.every((d) => d === diffs[0])) expect(answer).toBe(last + diffs[0]!)
+        // Alternating steps: the next step repeats the one before the last.
+        else expect(answer).toBe(last + diffs.at(-2)!)
+      }
+    }
+  })
+
+  it('never puts a partitive after the number 1', () => {
+    for (let seed = 1; seed < 80; seed++) {
+      for (const child of [RUBEN, JASPER]) {
+        const result = runTemplates(makeRequest('puzzle', { seed, children: [child], options: { kind: 'math', challengeCount: 4 } }))
+        for (const item of result.items) expect(item.body).not.toMatch(/(^|\D)1 (kommi|õuna|piparkooki|palli|muna|klotsi|kivi|münti)/)
       }
     }
   })
@@ -241,6 +265,41 @@ describe('stories, calendars, certificates', () => {
     expect(short.items).toHaveLength(3)
     expect(long.items).toHaveLength(7)
     expect(long.items.map((i) => i.body).join(' ')).toMatch(/kuubik/)
+  })
+
+  it('story opening, problem and resolution belong to the same plot', () => {
+    for (let seed = 1; seed < 40; seed++) {
+      const text = runTemplates(makeRequest('story', { seed, options: { genre: 'fairytale' } }))
+        .items.map((i) => i.body)
+        .join(' ')
+      if (text.includes('kuldse võtme')) {
+        expect(text).toContain('Unemaa kuningannale')
+        expect(text).toContain('lossi suur uks')
+        expect(text).not.toContain('Võlukepp oli jälle terve')
+      } else {
+        expect(text).toContain('haldjas Lumi')
+        expect(text).toContain('Võlukepp oli jälle terve')
+      }
+    }
+  })
+
+  it('detective title uses the genitive', () => {
+    const result = runTemplates(makeRequest('story', { options: { genre: 'detective' } }))
+    expect(result.title).toBe('Ruben ja kadunud küpsisepurgi juhtum')
+    const birthday = runTemplates(makeRequest('story', { occasionId: 'birthday', options: { genre: 'detective' } }))
+    expect(birthday.title).toContain('kadunud sünnipäevatordi juhtum')
+  })
+
+  it('toddler story does not repeat "ja" when listing family', () => {
+    const result = runTemplates(makeRequest('story', { children: [BRITA], general: { length: 'long' } }))
+    const home = result.items.at(-1)!.body
+    expect(home).toContain('Ruben ja Jasper ning andsid')
+  })
+
+  it('occasion calendar keeps occasion activities even with a toddler and short time limit', () => {
+    const result = runTemplates(makeRequest('calendar', { occasionId: 'vastlapaev', children: [JASPER, BRITA] }))
+    const titles = result.items.map((i) => i.heading)
+    expect(titles.filter((t) => /liug|Vastla|vurr|Lumememm/i.test(t)).length).toBeGreaterThanOrEqual(3)
   })
 
   it('toddler story is short and simple', () => {

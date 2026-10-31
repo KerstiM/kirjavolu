@@ -19,7 +19,9 @@ export function generateCalendar(request: RequestFor<'calendar'>, variants: read
   const ctx = createContext(request, variants, '')
   const { audience, occasion } = ctx
   const days = Math.min(Math.max(options.days, 3), 31)
-  const youngest = Math.min(...audience.children.map((child) => child.age))
+  // Toddlers join in with help, so they should not narrow the whole family's activities.
+  const ageGroup = audience.readers.length > 0 ? audience.readers : audience.children
+  const youngest = Math.min(...ageGroup.map((child) => child.age))
 
   // Siblings often share interests; one personal activity per interest is enough.
   const uniqueHooks = [...new Map(audience.hooks.map(({ hook }) => [hook.id, hook])).values()]
@@ -34,7 +36,10 @@ export function generateCalendar(request: RequestFor<'calendar'>, variants: read
   }))
   const candidates = [...ACTIVITIES, ...personal].filter((activity) => belongsTo(activity, occasion.id) !== 'other')
   const strict = candidates.filter((activity) => fitsOptions(activity, options, youngest))
-  const own = strict.filter((activity) => belongsTo(activity, occasion.id) === 'own')
+  // Occasion activities may exceed the time limit: they are what makes the calendar fit the occasion.
+  const own = candidates.filter(
+    (a) => belongsTo(a, occasion.id) === 'own' && fitsOptions(a, { ...options, minutes: 45 }, youngest),
+  )
   const generic = strict.filter((activity) => belongsTo(activity, occasion.id) === 'generic')
   // Relaxed tiers keep the calendar full when the filters are very strict.
   const relaxedTime = candidates.filter((a) => fitsOptions(a, { ...options, minutes: 45 }, youngest))

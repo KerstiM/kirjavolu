@@ -100,7 +100,8 @@ function math(p: ItemPicker, band: AgeBand, occasion: OccasionId, owner: string,
     if (p.rng.next() < 0.5) {
       const perBag = 3 + p.rng.int(5)
       const bags = 3 + p.rng.int(5)
-      const extra = 1 + p.rng.int(6)
+      // At least 2: Estonian uses the nominative after 1 ("1 komm"), the partitive after 2+.
+      const extra = 2 + p.rng.int(5)
       return {
         heading: 'Nuputamisülesanne',
         body: `${owner} pakib kotte. Igasse kotti läheb ${perBag} ${part}. Kotte on ${bags}. Lisaks on laual veel ${extra} ${part}. Mitu ${part} on kokku?`,
@@ -116,7 +117,8 @@ function math(p: ItemPicker, band: AgeBand, occasion: OccasionId, owner: string,
     }
   }
   const a = 2 + p.rng.int(6)
-  const b = 1 + p.rng.int(Math.min(4, 10 - a))
+  // b ≥ 2 keeps the partitive correct ("2 õuna"); a + b stays within 10.
+  const b = 2 + p.rng.int(Math.min(3, 9 - a))
   if (p.rng.next() < 0.5) {
     return {
       heading: 'Arvutame',
@@ -150,7 +152,8 @@ function sequence(p: ItemPicker, band: AgeBand, words: string[]): Challenge {
     const down = 1
     const seq: number[] = [10 + p.rng.int(5)]
     for (let i = 1; i < 6; i++) seq.push((seq[i - 1] as number) + (i % 2 === 1 ? up : -down))
-    const next = (seq[5] as number) + up
+    // Steps alternate +up, -down; six steps were shown, so the seventh is -down.
+    const next = (seq[5] as number) - down
     return { heading: 'Arvujada', body: `Mis arv tuleb järgmisena?\n\n${seq.join(', ')}, ?`, answer: String(next) }
   }
   const [first, second] = p.pickMany(words, 'sequence-word', 2)
