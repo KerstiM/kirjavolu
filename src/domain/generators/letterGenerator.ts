@@ -72,6 +72,8 @@ export interface LinkedExtras extends FamilyDayExtras {
   task?: string
   /** Added to the last letter: all helpers finish together. */
   finale?: string
+  /** A little story about a sibling's helper (or, on toddler cards, about the siblings). */
+  gossip?: string
 }
 
 export interface LinkedSeries {
@@ -136,7 +138,7 @@ export function generateLetters(
     const thread = threads.get(i)
     const answerLine = threads.get(i - 1)?.answerNext(audience.v)
     // A paired sibling task or a real family event replaces the day's ordinary task.
-    const dayTask = extra.task ?? extra.event ?? thread?.ask(audience.v)
+    const dayTask = extra.task ?? extra.challenge ?? extra.event ?? thread?.ask(audience.v)
     const opening =
       i === 0
         ? (extra.opening ?? `Tere! ${ctx.line(p.pick(FIRST_LETTER_INTRO, 'intro'))}`)
@@ -189,7 +191,7 @@ export function generateLetters(
       // The first and last cards of a daily series carry the introduction and the farewell.
       !(compact && (i === 0 || isLast)) &&
       // Days with a paired task, a family event or the Sunday note need the room on the card.
-      !(compact && (dayTask || extra.sunday || answerLine)) &&
+      !(compact && (dayTask || extra.sunday || answerLine || extra.gossip)) &&
       (p.hasFresh(personal, 'personal') || i % 3 === 0)
         ? p.pick(personal, 'personal')
         : undefined
@@ -197,8 +199,8 @@ export function generateLetters(
       ? dayTask
       : showMission &&
           !(toddlerCard && i % 2 === 0) &&
-          // In a daily series the first card introduces and the last says goodbye: no task there.
-          !(compact && !toddlerOnly && (i === 0 || isLast))
+          // Daily cards hold one or two things: no ordinary task on the first and last card or next to an answer or a helper story.
+          !(compact && !toddlerOnly && (i === 0 || isLast || answerLine || extra.gossip))
         ? toddlerOnly
           ? p.pick(TODDLER_MISSIONS, 'mission')
           : ctx.line(
@@ -251,9 +253,11 @@ export function generateLetters(
           ? toddlerFinale
           : dayTask
             ? dayTask
-            : i % 2 === 0
-              ? core
-              : mission
+            : extra.gossip
+              ? extra.gossip
+              : i % 2 === 0
+                ? core
+                : mission
       : undefined
     // On a plain Sunday the Sunday surprise is the whole toddler card; otherwise it is added at the end.
     const plainToddlerDay = toddlerCard && i !== 0 && !isLast && !dayTask
@@ -284,6 +288,7 @@ export function generateLetters(
           extra.ruleIntro,
           mood,
           core,
+          extra.gossip,
           personalLine,
           extraPersonal,
           mission,
@@ -336,7 +341,8 @@ function planThreads(
   let k = 0
   for (let target = 2; target < count - 2; target += 5) {
     for (let day = target; day <= target + 2 && day + 1 <= count - 2; day++) {
-      const busy = (d: number) => !!extras[d]?.task || !!extras[d]?.event
+      const busy = (d: number) =>
+        !!extras[d]?.task || !!extras[d]?.event || !!extras[d]?.challenge || !!extras[d]?.gossip
       if (busy(day) || threads.has(day - 1) || threads.has(day + 1)) continue
       const tiers = rotation[k % rotation.length] ?? [riddles]
       threads.set(day, ctx.item(day).pickTiered(tiers, 'thread'))

@@ -8,6 +8,12 @@ import { ageBand } from './audience'
 import type { DraftItem, TypeResult, UsedRegistry } from './context'
 import { busyOn, familyExtras } from './familyEvents'
 import {
+  HELPER_GOSSIP,
+  TODDLER_HELPER_GOSSIP,
+  TODDLER_SIBLING_LINES,
+  type SiblingNames,
+} from '../../data/templates/gossip'
+import {
   HELPER_INVITE,
   HELPER_MISSIONS,
   HELPER_RULE,
@@ -139,6 +145,75 @@ function finale(
     : `Täna lõpetame kõik koos – ${names}. Ma räägin kõigile, kui hästi te kõik üksteist hoidsite.`
 }
 
+/**
+ * Everyday remarks about the siblings' helpers, about every fourth day – on days
+ * without a paired task, family event, challenge or secret mission.
+ */
+export function planGossip(
+  request: RequestFor<'letter'>,
+  child: ChildProfile,
+  offset: number,
+  personas: Record<string, ElfPersona>,
+  plan: PairedDay[],
+  helperArc: HelperArc | null,
+  usedTexts: Set<string>,
+): Map<number, string> {
+  const { count } = request.options
+  const others = request.children.filter((other) => other.id !== child.id)
+  const result = new Map<number, string>()
+  if (count < 7 || others.length === 0) return result
+  const taken = (index: number) =>
+    plan.some((d) => d.index === index && (d.giverId === child.id || d.receiverId === child.id)) ||
+    !!helperArc?.days.has(index) ||
+    busyOn(request, index, [child.id])
+  // Takes the first not-yet-used variant, so neither the child nor the siblings read the same story twice.
+  const fresh = (candidates: string[]) =>
+    candidates.find((text) => !usedTexts.has(text) && !usedTexts.has(templateKey(text)))
+  const siblings: SiblingNames = {
+    names: joinList(others.map((o) => o.name)),
+    allative: namesInCase(others, 'allative'),
+    withYou: joinList([...others.map((o) => o.name), 'sina']),
+    plural: others.length > 1,
+  }
+  let k = 0
+  for (let index = 1; index < count - 1; index++) {
+    if ((index + offset) % 4 !== 2 || taken(index)) continue
+    let text: string | undefined
+    if (isToddler(child)) {
+      text = fresh(rotate(TODDLER_SIBLING_LINES, k + offset).map((line) => line(siblings)))
+    } else {
+      const sibling = others[k % others.length] as ChildProfile
+      const ctx = {
+        helper: (personas[sibling.id] as ElfPersona).name,
+        child: sibling.name,
+        childGenitive: nameCase(sibling, 'genitive'),
+        childElative: nameCase(sibling, 'elative'),
+        childAllative: nameCase(sibling, 'allative'),
+      }
+      const pool = isToddler(sibling) ? TODDLER_HELPER_GOSSIP : HELPER_GOSSIP
+      text = fresh(rotate(pool, k + offset).map((template) => template(ctx)))
+    }
+    if (text) {
+      usedTexts.add(text)
+      // Same template with another name would read as a copy when siblings compare letters.
+      usedTexts.add(templateKey(text))
+      result.set(index, text)
+    }
+    k++
+  }
+  return result
+}
+
+function rotate<T>(items: readonly T[], by: number): T[] {
+  const n = items.length
+  return items.map((_, i) => items[(i + by) % n] as T)
+}
+
+/** Rough template identity: the first three words. */
+function templateKey(text: string): string {
+  return `key:${text.split(' ').slice(0, 3).join(' ')}`
+}
+
 interface HelperArc {
   context: HelperContext
   days: Map<number, { text: string; prep?: string }>
@@ -230,11 +305,21 @@ export function generateLinkedLetters(
     .filter((child) => !isToddler(child))
     .sort((a, b) => b.age - a.age)[0]
   const helperArc = planHelperArc(request, plan, storyteller)
+  const usedGossip = new Set<string>()
   const items: DraftItem[] = []
 
   children.forEach((child, c) => {
     const others = children.filter((other) => other.id !== child.id)
     const family = familyExtras(request, [child], (personas[child.id] as ElfPersona).name)
+    const gossipPlan = planGossip(
+      request,
+      child,
+      c,
+      personas,
+      plan,
+      child.id === storyteller?.id ? helperArc : null,
+      usedGossip,
+    )
     const extras = (index: number): LinkedExtras => {
       const extra: LinkedExtras = { ...family(index) }
       if (index === 0) extra.opening = introduction(child, others, personas, occasion.id)
@@ -243,6 +328,8 @@ export function generateLinkedLetters(
         if (helperArc && child.id === storyteller?.id)
           extra.finale += ` ${HELPER_TITLE(helperArc.context)}`
       }
+      const gossip = gossipPlan.get(index)
+      if (gossip && !extra.challenge && !extra.event) extra.gossip = gossip
       const helperDay = child.id === storyteller?.id ? helperArc?.days.get(index) : undefined
       if (helperDay) {
         extra.task = helperDay.text

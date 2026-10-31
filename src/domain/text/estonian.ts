@@ -137,3 +137,25 @@ export function todayIso(now = new Date()): string {
   const pad = (n: number) => String(n).padStart(2, '0')
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
 }
+
+const MONTH_GENITIVE = [
+  'jaanuari',
+  'veebruari',
+  'märtsi',
+  'aprilli',
+  'mai',
+  'juuni',
+  'juuli',
+  'augusti',
+  'septembri',
+  'oktoobri',
+  'novembri',
+  'detsembri',
+]
+
+/** "kuni 13. detsembrini": the terminative case of a date. */
+export function untilDate(iso: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso)
+  if (!match) return ''
+  return `${Number(match[3])}. ${MONTH_GENITIVE[Number(match[2]) - 1] ?? ''}ni`
+}

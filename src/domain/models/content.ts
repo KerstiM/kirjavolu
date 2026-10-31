@@ -44,6 +44,19 @@ export interface FamilyEvent {
   participants: string[]
 }
 
+export type ChallengeKind = 'no-sweets' | 'tidy' | 'custom'
+
+/** A personal challenge for one child over a few days, e.g. a sweets-free weekend. */
+export interface ChildChallenge {
+  id: string
+  childId: string
+  kind: ChallengeKind
+  start: string
+  end: string
+  /** For "custom": what the challenge is, e.g. "magan oma voodis". */
+  title: string
+}
+
 /** "shared": one letter for all children; "linked": each child gets their own series, coordinated with siblings. */
 export type LetterMode = 'shared' | 'linked'
 
@@ -60,6 +73,8 @@ export interface LetterOptions {
   events?: FamilyEvent[]
   /** House rule: sweets only on Sundays – the Sunday letters say so. */
   sundaySweets?: boolean
+  /** Personal challenges; an older sibling is asked to support them in secret. */
+  challenges?: ChildChallenge[]
 }
 
 export type Setting = 'indoor' | 'outdoor'

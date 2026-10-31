@@ -2,6 +2,7 @@
 import type { ChildProfile, LetterOptions, OccasionId } from '../../../domain/models'
 import PersonaEditor from './PersonaEditor.vue'
 import FamilyEventsEditor from './FamilyEventsEditor.vue'
+import ChallengesEditor from './ChallengesEditor.vue'
 import FormField from '../../../components/ui/FormField.vue'
 import SegmentedControl from '../../../components/ui/SegmentedControl.vue'
 
@@ -68,6 +69,9 @@ const connectedOptions = [
         :start-date="model.startDate"
         :count="model.count"
       />
+    </div>
+    <div v-if="model.count > 1" class="options-grid__wide">
+      <ChallengesEditor v-model="model.challenges" :children="children" :start-date="model.startDate" :count="model.count" />
     </div>
   </div>
 </template>
