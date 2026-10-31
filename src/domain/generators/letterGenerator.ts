@@ -225,8 +225,8 @@ export function generateLetters(
       ? dayTask
       : showMission &&
           !(toddlerCard && i % 2 === 0) &&
-          // Daily cards hold one or two things: no ordinary task on the first and last card or next to an answer or a helper story.
-          !(compact && !toddlerOnly && (i === 0 || isLast || answerLine || extra.gossip))
+          // Daily cards hold one or two things: no ordinary task on the first and last card or next to an answer.
+          !(compact && !toddlerOnly && (i === 0 || isLast || answerLine))
         ? toddlerOnly
           ? p.pick(TODDLER_MISSIONS, 'mission')
           : ctx.line(
@@ -314,7 +314,8 @@ export function generateLetters(
           purpose,
           extra.ruleIntro,
           mood,
-          replyFirst ? undefined : core,
+          // On a daily card the helper story takes the place of the filler story; the child keeps their own task.
+          replyFirst || (compact && extra.gossip) ? undefined : core,
           extra.gossip,
           personalLine,
           extraPersonal,

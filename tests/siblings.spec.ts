@@ -114,3 +114,42 @@ describe('challenges editor', () => {
     expect(screen.queryByRole('option', { name: 'Brita' })).toBeNull()
   })
 })
+
+describe('helper stories are kind and clear', () => {
+  const request = family()
+  const items = runTemplates(request).items
+  const personas = personasFor(request)
+  const otherHelpers = (childId: string) =>
+    [RUBEN, JASPER, BRITA].filter((c) => c.id !== childId).map((c) => personas[c.id]!.name)
+
+  it('never compare the children: no sibling is praised in another child’s letter', () => {
+    const ctx = { helper: 'X', child: 'Y', childGenitive: 'Y', childElative: 'Y', childAllative: 'Y' }
+    for (const template of [...HELPER_GOSSIP, ...TODDLER_HELPER_GOSSIP]) {
+      expect(template(ctx)).not.toMatch(/tubli|parem kui|on parem|rohkem kui sina|õpetanud/)
+    }
+  })
+
+  it('start only after the first days', () => {
+    for (const child of [RUBEN, JASPER]) {
+      const first = items.filter((item) => item.childId === child.id).slice(0, 3)
+      for (const item of first) {
+        expect(otherHelpers(child.id).some((name) => item.body.includes(`${name} `) && /eksis|proovis|koosolek|liugu|nõu|sedeli|trikki|kakaod/.test(item.body))).toBe(false)
+      }
+    }
+  })
+
+  it('on a story day the child still gets their own task', () => {
+    for (const child of [RUBEN, JASPER]) {
+      const days = items.filter(
+        (item) => item.childId === child.id && item.body.split('\n\n').some((p) => possibleStory(p, otherHelpers(child.id))),
+      )
+      expect(days.length).toBeGreaterThanOrEqual(3)
+      for (const item of days) expect(item.body.split('\n\n').length).toBeGreaterThanOrEqual(2)
+    }
+  })
+})
+
+function possibleStory(paragraph: string, helpers: string[]): boolean {
+  return helpers.some((name) => paragraph.startsWith(name) || paragraph.includes(` ${name} `)) &&
+    /eksis|proovis eile|koosolek|liugu|nõu|sedeli|trikki|kakaod|pisike|väike, et|kasvab|häälitsuse|naeratuse/.test(paragraph)
+}

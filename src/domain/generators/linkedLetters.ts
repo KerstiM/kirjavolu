@@ -176,7 +176,8 @@ export function planGossip(
     plural: others.length > 1,
   }
   let k = 0
-  for (let index = 1; index < count - 1; index++) {
+  // Not in the first days: the child first gets to know their own helper.
+  for (let index = 3; index < count - 1; index++) {
     if ((index + offset) % 4 !== 2 || taken(index)) continue
     let text: string | undefined
     if (isToddler(child)) {
