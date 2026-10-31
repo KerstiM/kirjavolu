@@ -26,6 +26,9 @@ Eestikeelne veebirakendus, mis aitab lapsevanematel luua lapsele personaalseid m
 - Puslepilt (teistes paigutustes): oma pilt jagatakse tükkideks ja iga osa allserva tuleb nummerdatud väljalõigatav puslekild; lapsevanema lehel on kokkupaneku juhend ja vajadusel lisatükid
 - Andmed salvestatakse brauseri localStorage'isse versioonitud skeemiga
 
+## Demo
+https://kerstim.github.io/kirjavolu/ – uuendatakse automaatselt iga `main`-i muudatusega (`.github/workflows/pages.yml`). Andmed (laste profiilid, loodud kirjad) jäävad iga külastaja enda brauserisse.
+
 ## Tehnoloogia
 Vue 3, TypeScript (strict), Vite, Vue Router, Pinia, SCSS, Lucide ikoonid, Google Fonts (Playpen Sans prinditavatele materjalidele), Vitest, ESLint, Prettier.
 

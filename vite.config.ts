@@ -4,6 +4,8 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
+  // GitHub Pages serves the site from /kirjavolu/; locally it stays at the root.
+  base: process.env.GITHUB_PAGES ? '/kirjavolu/' : '/',
   plugins: [vue()],
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
