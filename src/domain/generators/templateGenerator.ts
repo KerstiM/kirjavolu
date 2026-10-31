@@ -12,6 +12,7 @@ import { generateLinkedLetters } from './linkedLetters'
 import { generatePuzzles } from './puzzleGenerator'
 import { generateStory } from './storyGenerator'
 import { generateTreasureHunt } from './treasureHuntGenerator'
+import { generateScenarioLetters, usesScenarioEngine } from '../story/scenarioLetters'
 
 export class GenerationError extends Error {
   constructor(readonly errors: string[]) {
@@ -24,6 +25,7 @@ export class GenerationError extends Error {
 export function runTemplates(request: GenerationRequest, variants: readonly number[] = []): TypeResult {
   switch (request.contentType) {
     case 'letter':
+      if (usesScenarioEngine(request)) return generateScenarioLetters(request, variants)
       return request.options.mode === 'linked' && request.children.length > 1
         ? generateLinkedLetters(request, variants)
         : generateLetters(request, variants)

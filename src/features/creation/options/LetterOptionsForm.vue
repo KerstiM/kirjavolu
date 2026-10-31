@@ -23,7 +23,7 @@ const countOptions = [
 
 /**
  * One choice for how the letters belong together. A linked family series always
- * carries the serial story for the oldest child, so it needs no separate switch.
+ * carries the serial story, told to every child from their own helper's side.
  */
 type Shape = 'linked' | 'shared' | 'shared-story' | 'single' | 'single-story'
 const shapeOptions = computed<{ value: Shape; label: string }[]>(() => {
@@ -53,9 +53,9 @@ const shape = computed<Shape>({
 })
 const shapeHint = computed(() => {
   if (shape.value === 'linked') {
-    return 'Iga laps saab oma kirjad, aga abilised tunnevad üksteist ja vanem laps teeb aeg-ajalt midagi nooremale – mõlema kiri teab sellest. Vanim laps otsib kirjast kirja kadunud võlutähte.'
+    return 'Iga laps saab oma kirjad samast päkapikumaailmast: abilised tunnevad üksteist, ühised sündmused juhtuvad kõigi kirjades samal päeval ja vanem laps teeb aeg-ajalt midagi nooremale. Järjejutus kadunud tähest kuuleb iga laps lugu oma päkapiku käest.'
   }
-  if (shape.value.endsWith('-story')) return 'Järjejutus otsitakse kirjast kirja kadunud võlutähte.'
+  if (shape.value.endsWith('-story')) return 'Järjejutus otsitakse kirjast kirja kadunud tähte. Vahepeal on ka iseseisvaid lugusid.'
   return ''
 })
 const showShape = computed(() => family.value || series.value)

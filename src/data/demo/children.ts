@@ -43,7 +43,7 @@ export const DEMO_CHILDREN: ChildProfile[] = [
     readingLevel: 'read-aloud',
     personality: 'Uudishimulik ja naerusuine.',
     interests: [],
-    favorites: [],
+    favorites: ['Põrsas Peppa raamatud'],
     foods: [],
     family: ['ema', 'isa', 'Ruben', 'Jasper'],
     achievements: [],

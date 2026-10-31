@@ -420,7 +420,7 @@ export function letterInstructions(
       title: 'Järjejutu nipid',
       steps: [
         'Kirjad moodustavad ühe loo kadunud võlutähest – hoia kirjade järjekord.',
-        'Ühes kirjas palutakse lapsel jätta aknalauale joonistatud täht. Korja see öösel ära, et järgmine kiri oleks usutav.',
+        'Ükski kiri ei eelda, et laps on vastanud või midagi teinud – lugu liigub edasi ka siis, kui laps ainult loeb.',
         'Viimases kirjas leitakse võlutäht. Soovi korral võid sinna juurde panna väikese helendava tähe või kleepsu.',
       ],
     })

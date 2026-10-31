@@ -41,9 +41,10 @@ describe('toddler daily letters', () => {
     expect(items[0]!.body).toBe('Tere, väike Brita! Mina olen Päkapikk Tuduja. Ma olen nii väike, et mahun sinu sussi sisse.')
   })
 
-  it('alternate between a little scene and something to do together', () => {
-    expect(items[1]!.body).toMatch(/^Täiskasvanu abiga/)
-    expect(items[2]!.body).not.toMatch(/^Täiskasvanu abiga/)
+  it('invite the child to join in: a sound, a movement or something to look at', () => {
+    const joining = items.filter((item) => /\?|!$/.test(item.body))
+    expect(joining.length).toBeGreaterThanOrEqual(16)
+    expect(items.some((item) => /Peppa/.test(item.body))).toBe(true)
   })
 
   it('stay short, like cards for a one-year-old', () => {

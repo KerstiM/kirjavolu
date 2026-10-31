@@ -92,10 +92,12 @@ describe('linked letters', () => {
     expect(coresOf(JASPER.id).filter((core) => ruben.has(core))).toEqual([])
   })
 
-  it('only the oldest child follows the serial story', () => {
-    const story = (id: string) => byChild(items, id).some((i) => i.body.includes('võlutäht'))
-    expect(story(RUBEN.id)).toBe(true)
-    expect(story(JASPER.id)).toBe(false)
+  it('every child follows the star story from their own helper’s side', () => {
+    const story = (id: string) => byChild(items, id).filter((i) => /täht|Täht/.test(i.body)).map((i) => i.body)
+    expect(story(RUBEN.id).length).toBeGreaterThan(story(BRITA.id).length)
+    expect(story(JASPER.id).length).toBeGreaterThanOrEqual(4)
+    const ruben = new Set(story(RUBEN.id))
+    expect(story(JASPER.id).filter((b) => ruben.has(b))).toEqual([])
   })
 
   it('the last letter is a shared farewell for the readers', () => {

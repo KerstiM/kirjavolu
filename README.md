@@ -9,18 +9,20 @@ Eestikeelne veebirakendus, mis aitab lapsevanematel luua lapsele personaalseid m
 - 11 sündmust (jõulud, lihavõtted, sünnipäev, halloween, mardi- ja kadripäev, vastlapäev, sõbrapäev, kooliaasta algus, suvevaheaeg, piimahammas, tavaline päev)
 - Laste profiilid (lisamine, muutmine, kustutamine), näidisprofiilid Ruben, Jasper ja Brita
 - Ühised elamused õdedele-vendadele: ülesanded jagatakse vanuse järgi
-- **Seotud pere sarjad**: mitme lapse puhul saab iga laps oma kirjasarja, aga need on omavahel seotud – igal lapsel on huvide järgi välja pakutud abiline (nt Kõpsu-Mõpsu Kuubikuvõlur, Tipp-Topp Riisiterake), esimeses kirjas tutvustatakse ka õdede-vendade abilisi, umbes iga viies päev on paarisülesanne (vanem teeb nooremale midagi ja mõlema kiri teab sellest) ning viimases kirjas lõpetavad kõik koos. Eelvaates on iga lapse sari omas paigutuses
-- **Abilised räägivad üksteisest**: umbes iga nelja päeva tagant tuleb lugu õe või venna abilisest (nt „Eile öösel eksis Tipp-Topp peaaegu kappi ära, sest ta ei leidnud Jasperi sussi üles“), väikelapse kaartidel read suurtest õdedest-vendadest; ükski lugu ei kordu pere sees
+- **Stsenaariumipõhised jõulukirjad**: 7 või 24 jõulukirja sari kirjutatakse terviklikest, käsitsi kirjutatud lugudest – igal kirjal on üks sündmus algusest lõpuni, mitte juhuslikult kokku pandud lõigud. Kogu sari planeeritakse enne kirjutamist (järjejutu etapid, iseseisvad lood, pere sündmused, ülesanded, isikupärastus) ja kontrollitakse automaatselt (kordused, ajajärjestus, saladused, mõistatuste vastused, kaardi pikkus). Vt [docs/scenario-engine.md](docs/scenario-engine.md)
+- **Seotud pere sarjad**: mitme lapse puhul saab iga laps oma kirjasarja samast päkapikumaailmast – igal lapsel on huvide järgi välja pakutud abiline (nt Kõpsu-Mõpsu Kuubikuvõlur, Tipp-Topp Riisiterake) oma häälega, esimeses kirjas tutvustatakse ka õdede-vendade abilisi, umbes iga viies päev on paarisülesanne (vanem teeb nooremale midagi ja mõlema kiri teab sellest) ning viimases kirjas lõpetavad kõik koos. Eelvaates on iga lapse sari omas paigutuses
+- **Ühine maailm**: osa sündmusi (nt „Välk harjutab maandumist“, „Täht on leitud“) juhtub kõigi laste kirjades samal päeval, igaüks kuuleb seda oma päkapiku käest; õdede-vendade abilised on lugudes tegelased (nt Tipp-Topp keedab putru, mis läheb trepist alla); väikelapse kaartidel on read suurtest õdedest-vendadest
+- **Järjejutt „Kadunud täht“**: töökoja kuuselt kaob täht; vanem laps uurib sule, öökulli ja vana raamatu abil, noorem leiab hõbedast tolmu ja teeb küpsisepüüniseid, väikelaps näeb hõbedast linnukest. Vahepeal on iseseisvad naljakad ja soojad lood
 - **Lapse väljakutsed**: nt kommideta päevad, korra hoidmine või oma väljakutse – laps saab esimesel päeval kutse ja viimasel kiituse, vanem õde või vend samal päeval salajase palve teda toetada; väljakutse ajal pühapäevakommi ei mainita
-- **Küsimus täna, vastus homme**: päevasarjas on umbes iga viies päev mõistatus, teaduskatse (jää ja sool, mandariin vees, rosinad mullivees) või küsimus ning järgmine kiri algab vastusega; vastused on lapsevanema lehel
-- **Salajane abiline** (jõulud, vanim laps): kutse, abiliste reegel, salamissioonid nooremate heaks ja viimases kirjas tiitel „päkapikkude abiline“; nooremate kirjad sellest ei räägi
+- **Mõistatus täna, vastus homme**: mõnes loos on mõistatus, salakiri või katse, mis kuulub selle loo juurde; vastus on lapsevanema lehel ja järgmise kirja P.S.-is. Ükski kiri ei eelda, et laps vastas või midagi tegi
+- **Salajane abiline** (jõulud, vanim laps, 12+ kirja): kutse koos reeglitega (vastama ei pea – nõusolek tähendab saladuse hoidmist), salamissioonid nooremate heaks pakkumistena ja viimases kirjas tiitel „päkapikkude abiline“; nooremate kirjad sellest ei räägi
 - **Iga päeva ettevalmistus**: lapsevanema lehel on iga lapse ja päeva kohta kirjas, mis sussi panna või ette valmistada (komm, katsevahendid, raamat ettelugemiseks jne)
 - **Pere sündmused ja reeglid**: lapsevanem lisab kuupäevaga sündmused (metsaretk, suusatamine, külaskäik, esinemine, trenn, piparkoogipäev, pidu või muu) ja valib osalejad; selle päeva kiri räägib sündmusest igale lapsele vanusele sobivalt. Reegel „maiustused ainult pühapäeviti“ selgitatakse esimeses kirjas, pühapäeva kirjades on komm ja lapsevanema lehel on komme vajavad kuupäevad
 - Eelvaade: tekstide muutmine (ka plakatil ja väikelapse kaartidel – nupp „Muuda“ avab redaktori), ühe osa uuesti genereerimine (käsitsi muudetud teksti puhul küsitakse kinnitust), kolm prindipaigutust, printimine/PDF, tekstifaili eksport
 - Lapsevanema juhised ja vastused on lapsele mõeldud materjalist eraldi
 - Kujundus: 8 SVG-taustamustrit (sündmusele sobivad eespool), tinti säästev raamirežiim või oma pilt heleda taustana
 - **Pusleplakat**: 7+ kirjaga sari prinditakse kaartidena, mis on paigutatud ussirada pidi (1. veerg alla, 2. üles jne) mitmele A4 lehele. Rada ja jaamad ühendavad päevi ning taustaks on sinu pilt või automaatne maastik. Kaardid lõigatakse lahti ja jõuludeks pannakse kokku terveks plakatiks. Igal lehel on märge („leht 1/4: pildi ülemine pool, vasak“), kaartidel kuupäev koos nädalapäevaga, tekst sobitub automaatselt ja alles lugema õppijale saab valida trükitähed
-- **Väikelapse kaardid**: väikelapse päevasari prinditakse 12 kaardina A4 lehel – värvilised raamid, suur number koos nädalapäevaga, igal kaardil loomanägu (12 SVG-joonistust) ja suur tekst trükitähtedega. Igal päeval üks pisike asi: paaritutel päevadel lühike lugu, paarispäevadel ühine tegevus; esimene kaart tutvustab päkapikku ja viimane on sündmuse tervitus
+- **Väikelapse kaardid**: väikelapse päevasari prinditakse 12 kaardina A4 lehel – värvilised raamid, suur number koos nädalapäevaga, igal kaardil loomanägu (12 SVG-joonistust) ja suur tekst trükitähtedega. Igal päeval üks pisike asi ette lugemiseks: häälitsus, liigutus või midagi, mida koos vaadata; esimene kaart tutvustab päkapikku ja viimane on sündmuse tervitus
 - Puslepilt (teistes paigutustes): oma pilt jagatakse tükkideks ja iga osa allserva tuleb nummerdatud väljalõigatav puslekild; lapsevanema lehel on kokkupaneku juhend ja vajadusel lisatükid
 - Andmed salvestatakse brauseri localStorage'isse versioonitud skeemiga
 
@@ -56,6 +58,8 @@ src/
 - `estonian.spec.ts` – nimede käänamine, kuupäevad, salakirjade abifunktsioonid
 - `generators.spec.ts` – iga sisutüübi ja sündmuse kombinatsioon, vanusele kohandamine, mitu last, aardejahi peidukohtade ahel, mõistatuste vastuste õigsus, ühe osa uuesti genereerimine
 - `components.spec.ts` – profiilivorm, teksti muutmine eelvaates ja terve loomise voog viisardist eelvaateni
+- `story.spec.ts` – stsenaariumimootor: lugude kogu kontroll, planeerimine, vanuserühmad, isikupärastus, järjejutu järjekord, ühised sündmused, saladused, mõistatuste vastused, kaardi pikkus ja sadade sarjade automaatne kontroll
+- `golden.spec.ts` – kirjutab terved näidissarjad kausta `docs/samples` (muutmiseks `npx vitest run -u tests/golden.spec.ts`), et neid saaks tervikuna läbi lugeda
 
 ## Arhitektuur
 - **Domeen on UI-st eraldi.** `src/domain` ei impordi Vue't; kõik tekstiloogika on puhtad funktsioonid, mida saab testida ilma brauserita.
@@ -82,6 +86,8 @@ src/
 ## Kohalik mallipõhine genereerimine
 Sisu ei loo tehisintellekt. `TemplateGenerator` (`src/domain/generators`) paneb tekstid kokku käsitsi kirjutatud eestikeelsetest mallidest ja lapse profiilist. Genereerimine on deterministlik (seemne põhjal), arvestab vanust ja lugemisoskust, väldib korduvaid tekste ning käänab nimesid (nt Rubenile, Rubeni ja Jasperiga).
 
+Jõulude päevasarjad kirjutab **stsenaariumimootor** (`src/domain/story`, lood kaustas `src/data/scenarios`): kõigepealt planeeritakse kogu sari (`planner.ts`), siis kirjutatakse plaani järgi kirjad (`render.ts`) ja lõpuks kontrollitakse tervikut (`validate.ts`). Näidissarjad Rubenile, Jasperile ja Britale on kaustas [docs/samples](docs/samples); arhitektuur, toimetamise põhimõtted ja juhised uute lugude, järjejuttude, tegelaste ja sündmuste lisamiseks on failis [docs/scenario-engine.md](docs/scenario-engine.md).
+
 ## Tulevane AI-integratsioon
 UI kasutab ainult liidest `ContentGenerator` (`generate`, `regenerateItem`) läbi `useGenerator()`. AI-teenuse lisamiseks tee serveripoolne teenus, mis implementeerib sama liidese. API-võtmeid ei tohi kunagi panna frontendi.
 
@@ -89,7 +95,8 @@ UI kasutab ainult liidest `ContentGenerator` (`generate`, `regenerateItem`) läb
 - Vaba teksti lisasoove mallimootor ei tõlgenda; need kuvatakse lapsevanemale meelespeana
 - Ebareeglipäraste nimede käänded vajavad profiilis omastava vormi
 - Andmed on ainult ühes brauseris; kontosid ega sünkroonimist pole
-- Malliandmepangad on piiratud: pikas sarjas võib üksik lause korduda
+- Malliandmepangad on piiratud: vanema generaatori (üksikkirjad, 3 kirja, ühine kiri mitmele lapsele, muud sündmused) pikas sarjas võib üksik lause korduda
+- Stsenaariumimootor katab praegu jõulude 7- ja 24-kirjalisi sarju; kaks samas vanuserühmas last jagavad järjejutu vaatenurka ning lapse päris vastust ei saa veel kinnitada (lood on kirjutatud nii, et vastust pole vaja)
 - Väikelapse unejutul ei ole alternatiivseid variante
 - Printimist on kontrollitud brauseri prindieelvaate stiilide tasemel, mitte igal printeril
 - Sündmuste tekstid on mallid: täpsustus (nt „vanaema juurde Valka“) lisatakse lausesse sellisena, nagu lapsevanem selle kirjutas

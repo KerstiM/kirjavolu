@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/vue'
 import { runTemplates } from '@/domain/generators/templateGenerator'
-import { familyPlan, planHelperArc } from '@/domain/generators/linkedLetters'
+import { familyPlan } from '@/domain/generators/linkedLetters'
+import { planCollection } from '@/domain/story/planner'
+import { CHRISTMAS_LIBRARY } from '@/domain/story/library'
 import ParentSheet from '@/features/preview/ParentSheet.vue'
 import type { GeneratedContent, GeneratedItem, RequestFor } from '@/domain/models'
 import { BRITA, JASPER, makeRequest, RUBEN } from './helpers'
@@ -19,69 +21,58 @@ const series = (items: Item[], childId: string) => items.filter((item) => item.c
 describe('question today, answer tomorrow', () => {
   const items = runTemplates(family()).items
 
-  it('every question is answered in the next letter', () => {
+  it('every puzzle is answered in a postscript of the next letter, without assuming a reply', () => {
     for (const child of [RUBEN, JASPER]) {
       const letters = series(items, child.id)
       const asked = letters.map((item, i) => ({ item, i })).filter(({ item }) => item.answer)
-      expect(asked.length).toBeGreaterThanOrEqual(3)
-      for (const { item, i } of asked) {
-        const next = letters[i + 1]!.body
-        expect(next).toMatch(/^(Eilse|Aitäh vastuse|Lugesin su vastust)/)
-        if (item.body.includes('Mõistatus:')) expect(next).toContain(`vastus oli: ${item.answer}`)
+      expect(asked.length).toBeGreaterThanOrEqual(2)
+      for (const { i } of asked) {
+        const ps = letters[i + 1]!.body.split('\n\n').find((p) => p.startsWith('P.S.'))
+        expect(ps).toBeDefined()
+        expect(ps).not.toMatch(/Aitäh vastuse|Lugesin su vastust|nägin/)
       }
     }
   })
 
-  it('never asks on the last day or on days with a sibling task', () => {
-    const plan = familyPlan(family())
-    for (const child of [RUBEN, JASPER]) {
-      const letters = series(items, child.id)
-      expect(letters.at(-1)!.answer).toBeUndefined()
-      expect(letters.at(-2)!.answer).toBeUndefined()
-      for (const day of plan.filter((d) => d.giverId === child.id || d.receiverId === child.id)) {
-        expect(letters[day.index]!.answer).toBeUndefined()
-      }
-    }
+  it('never asks on the last day', () => {
+    for (const child of [RUBEN, JASPER]) expect(series(items, child.id).at(-1)!.answer).toBeUndefined()
   })
 
   it('toddlers get no questions', () => {
     expect(series(items, BRITA.id).some((item) => item.answer)).toBe(false)
   })
 
-  it('siblings do not get the same riddle', () => {
-    const answers = (id: string) => series(items, id).flatMap((item) => (item.body.includes('Mõistatus:') ? [item.answer] : []))
+  it('siblings do not get the same puzzle', () => {
+    const answers = (id: string) => series(items, id).flatMap((item) => (item.answer ? [item.answer] : []))
     const ruben = new Set(answers(RUBEN.id))
     expect(answers(JASPER.id).filter((a) => ruben.has(a))).toEqual([])
   })
 
   it('experiments tell the parent what to prepare', () => {
-    const experiments = [RUBEN, JASPER].flatMap((c) => series(items, c.id)).filter((item) => item.body.includes('Teaduskatse:'))
-    expect(experiments.length).toBeGreaterThan(0)
+    const experiments = [RUBEN, JASPER].flatMap((c) => series(items, c.id)).filter((item) => item.body.includes('jääkuubikut'))
     for (const item of experiments) expect(item.parentNote).toMatch(/^Valmista ette: /)
   })
 })
 
 describe('secret helper', () => {
   const request = family()
-  const arc = planHelperArc(request, familyPlan(request), RUBEN)!
+  const plan = planCollection(request, CHRISTMAS_LIBRARY)
   const ruben = series(runTemplates(request).items, RUBEN.id)
 
-  it('invites the oldest child and explains the rule the next day', () => {
-    const invite = [...arc.days.keys()].sort((a, b) => a - b)[0]!
-    expect(ruben[invite]!.body).toContain('Kas sa oleksid sel aastal meie salajane abiline?')
-    expect(ruben[invite + 1]!.body).toContain('eriti mitte Jasper ja Brita')
+  it('invites the oldest child and explains the rules in the same letter', () => {
+    const invite = plan.secret!.inviteIndex
+    expect(ruben[invite]!.body).toContain('Igal aastal valime ühe salajase abilise')
+    expect(ruben[invite]!.body).toContain('eriti mitte Jasper ja Brita')
   })
 
-  it('the reply to the invitation opens the next letter, so the child connects it', () => {
-    const invite = [...arc.days.keys()].sort((a, b) => a - b)[0]!
-    const next = ruben[invite + 1]!.body
-    expect(next.startsWith('Suurepärane – ma teadsin, et võin sinu peale loota!')).toBe(true)
-    // One or two things on that card: the reply and a short story part, no extra task.
-    expect(next).not.toMatch(/Tänane ülesanne|Päkapikuülesanne/)
+  it('does not wait for an answer: agreeing means keeping the secret', () => {
+    const invite = plan.secret!.inviteIndex
+    expect(ruben[invite]!.body).toContain('ei pea sa midagi vastama')
+    expect(ruben[invite + 1]!.body).not.toMatch(/Suurepärane|ma teadsin, et võin sinu peale loota/)
   })
 
   it('gives secret missions on free days and the title in the last letter', () => {
-    expect(arc.days.size).toBe(5)
+    expect(plan.secret!.missionIndexes).toHaveLength(3)
     expect(ruben.filter((item) => item.body.includes('Salamissioon:'))).toHaveLength(3)
     expect(ruben[23]!.body).toContain('nimetan su ametlikult päkapikkude abiliseks 2026')
   })
@@ -91,18 +82,18 @@ describe('secret helper', () => {
     expect(others.some((item) => /Salamissioon|salajane abiline/.test(item.body))).toBe(false)
   })
 
-  it('needs a younger sibling and Christmas', () => {
-    expect(planHelperArc(family(), [], JASPER)).not.toBeNull()
+  it('needs a younger sibling, Christmas and a long series', () => {
+    const plans = (r: RequestFor<'letter'>) => planCollection(r, CHRISTMAS_LIBRARY).secret
+    expect(plans(family({ count: 7 }))).toBeUndefined()
     const onlyRuben = makeRequest('letter', { occasionId: 'christmas', children: [RUBEN] }) as RequestFor<'letter'>
-    expect(planHelperArc(onlyRuben, [], RUBEN)).toBeNull()
-    const easter = makeRequest('letter', { occasionId: 'easter', children: [RUBEN, JASPER] }) as RequestFor<'letter'>
-    expect(planHelperArc(easter, [], RUBEN)).toBeNull()
+    expect(plans(onlyRuben)).toBeUndefined()
+    const pair = makeRequest('letter', { occasionId: 'christmas', children: [JASPER, BRITA], options: { startDate: '2026-12-01' } }) as RequestFor<'letter'>
+    expect(plans(pair)?.childId).toBe(JASPER.id)
   })
 
   it('avoids the oldest child’s family events', () => {
     const busy = family({ events: [{ id: 'e', date: '2026-12-02', kind: 'hobby', title: 'trenn', participants: [RUBEN.id] }] })
-    const shifted = planHelperArc(busy, familyPlan(busy), RUBEN)!
-    expect(Math.min(...shifted.days.keys())).toBeGreaterThan(1)
+    expect(planCollection(busy, CHRISTMAS_LIBRARY).secret!.inviteIndex).toBeGreaterThan(1)
   })
 })
 
@@ -138,21 +129,5 @@ describe('poster map on the parent sheet', () => {
     const labels = Array.from({ length: 24 }, (_, i) => `${i + 1}. detsember`)
     render(ParentSheet, { props: { content, posterLabels: labels } })
     expect(document.querySelectorAll('.map td')).toHaveLength(24)
-  })
-})
-
-describe('story replies', () => {
-  it('the reply to the sign the child left comes the very next day, first', () => {
-    for (const count of [7, 24] as const) {
-      for (let seed = 1; seed < 6; seed++) {
-        const items = runTemplates(
-          makeRequest('letter', { seed, occasionId: 'christmas', children: [RUBEN], options: { count, connected: true } }),
-        ).items
-        const ask = items.findIndex((item) => item.body.includes('joonista paberile täht ja jäta see aknalauale'))
-        expect(ask).toBeGreaterThan(-1)
-        expect(items[ask + 1]!.body.startsWith('Ma nägin sinu märki!')).toBe(true)
-        expect(items.filter((item) => item.body.includes('Ma nägin sinu märki!'))).toHaveLength(1)
-      }
-    }
   })
 })

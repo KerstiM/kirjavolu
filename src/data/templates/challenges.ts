@@ -13,7 +13,7 @@ export interface ChallengeTemplate {
   label: string
   /** First day: invitation to the child. */
   start: (c: ChallengeContext) => string
-  /** Last day: praise and a small reward. */
+  /** Last day: a small reward. It never claims the child succeeded – the parent knows, the generator does not. */
   end: (c: ChallengeContext) => string
   /** Same first day, to an older sibling: a secret request to support. */
   support: (c: ChallengeContext) => string
@@ -31,7 +31,7 @@ export const CHALLENGES: Record<ChallengeKind, ChallengeTemplate> = {
     start: (c) =>
       `Päkapikud peavad igal detsembril „tugevate hammaste päevi“: ${c.until} ei sööda ühtegi kommi. Kas sa julged meiega kaasa teha? Kui jah, joonista igal õhtul sussi juurde üks täheke. Lõpus saad selle eest midagi erilist!`,
     end: (c) =>
-      `Hurraa, ${c.name}! Tugevate hammaste päevad on läbi ja sa said hakkama! Kõik päkapikud plaksutasid töökojas käsi. Täna on sussis selle eest väike üllatus.`,
+      `Hurraa, ${c.name}! Tugevate hammaste päevad on läbi. Kommidest loobuda pole sugugi lihtne – päkapikud teavad seda omast käest. Täna on sussis selle eest väike üllatus.`,
     support: (c) =>
       `Salajane palve: täna alustab ${c.name} kommideta päevi. Kui ta hakkab kommi ihaldama, mängi temaga midagi või paku talle mandariini. Kui tahad, võid ise ka kaasa teha!`,
     endPrep: 'väike üllatus kommideta päevade eest (nt kleeps või komm)',
@@ -40,7 +40,7 @@ export const CHALLENGES: Record<ChallengeKind, ChallengeTemplate> = {
     label: 'Korra hoidmine',
     start: (c) =>
       `Mul on sulle väljakutse: ${c.until} hoiame koos korda. Igal õhtul pane mänguasjad oma kohale ja joonista sussi juurde üks täheke. Lõpus ootab midagi erilist!`,
-    end: () => `Kõik õhtud korras – sa oled tõeline korrameister! Täna on sussis selle eest väike üllatus.`,
+    end: () => `Korrapäevad on läbi! Päkapikud hoidsid sulle kogu aeg pöialt. Täna on sussis selle eest väike üllatus.`,
     support: (c) =>
       `Salajane palve: ${c.name} hoiab ${c.until} oma tuba korras. Kui näed, et tal on palju koristada, aita natuke – aga nii, et keegi ei märka.`,
     endPrep: 'väike üllatus korra hoidmise eest',
@@ -49,7 +49,7 @@ export const CHALLENGES: Record<ChallengeKind, ChallengeTemplate> = {
     label: 'Oma väljakutse',
     start: (c) =>
       `Sul on väljakutse: ${c.title || 'proovida midagi uut'}. Iga päev, kui see õnnestub, joonista sussi juurde üks täheke. Ma usun sinusse!`,
-    end: (c) => `Väljakutse „${c.title || 'proovida midagi uut'}“ on läbi – ma olen sinu üle nii uhke! Täna on sussis selle eest väike üllatus.`,
+    end: (c) => `Väljakutse „${c.title || 'proovida midagi uut'}“ on läbi. Päkapikud hoidsid sulle kogu aeg pöialt! Täna on sussis selle eest väike üllatus.`,
     support: (c) =>
       `Salajane palve: ${c.name} teeb ${c.until} väljakutset „${c.title || 'proovida midagi uut'}“. Julgusta teda – päkapikud teevad sama!`,
     endPrep: 'väike üllatus väljakutse eest',

@@ -16,48 +16,58 @@ export interface HelperContext {
 
 export interface HelperMission {
   id: string
+  /** Paired sibling task that asks nearly the same; the mission is skipped when that pair is planned. */
+  similarPair?: string
   text: (c: HelperContext) => string
   prep?: (c: HelperContext) => string
 }
 
 /**
- * Secret helper arc for the oldest child: an invitation, the helpers' rule,
- * a few secret missions for the younger siblings and an official title at the end.
+ * Secret helper arc for the oldest child: one invitation that already explains the
+ * rules, a few secret missions for the younger siblings and a title at the end.
+ * Nothing assumes the child answered or did a mission: saying yes means simply
+ * keeping the secret, and every mission is an offer.
  */
 export const HELPER_INVITE = (c: HelperContext) =>
-  `Mul on sulle üks tähtis küsimus. ${c.helpersOf.charAt(0).toUpperCase()}${c.helpersOf.slice(1)} kõige vanemad teavad, et sinu peale saab loota. Kas sa oleksid sel aastal meie salajane abiline? Kui jah, kirjuta homseks sussi juurde üks sõna: JAH.`
+  [
+    `Mul on sulle küsimus, mida me ei küsi igaühelt. Igal aastal valime ühe salajase abilise – kellegi, kes aitab maja sees asjades, milleks meie käed on liiga pisikesed. Sel aastal mõtlesime sinule.`,
+    `Reegleid on kaks. Esiteks: see on saladus – keegi ei tohi teada, eriti mitte ${c.siblings}. Teiseks: head tehakse ka siis, kui keegi ei vaata.`,
+    'Kui oled nõus, ei pea sa midagi vastama – hoia lihtsalt saladust. Mõnes järgmises kirjas leiad salamissiooni. Kui sul on tahtmist, teed selle ära; kui ei ole, on ka hästi.',
+  ].join('\n\n')
 
-export const HELPER_RULE = (c: HelperContext) =>
-  `Suurepärane – ma teadsin, et võin sinu peale loota! Abiliste esimene reegel on salajasus: keegi ei tohi teada, et sa meid aitad, eriti mitte ${c.siblings}. Teine reegel: abiline teeb head ka siis, kui keegi ei vaata.`
-
+/** In order of preference; the slipper check comes last because a paired task often asks the same. */
 export const HELPER_MISSIONS: HelperMission[] = [
   {
-    id: 'slippers',
-    text: (c) =>
-      `Salamissioon: vaata täna õhtul salaja, et ${c.siblingGenitive} suss oleks aknalaual. Kui ei ole, aita tal see sinna panna – aga nii, et ta ei arva, miks sa küsid.`,
-  },
-  {
     id: 'cheer-up',
+    similarPair: 'play',
     text: (c) =>
-      `Salamissioon: kui ${c.sibling} on täna kurb või pahur, aja ta naerma. Abilised teavad, et naer on parem kui ükski komm.`,
+      `Salamissioon: kui ${c.sibling} on täna pahur või kurb, proovi teda naerma ajada. Abilised teavad, et naer aitab paremini kui ükski komm.`,
   },
   {
     id: 'drawing',
+    similarPair: 'drawing',
     text: (c) =>
-      `Salamissioon: joonista täna väike pilt ja peida see õhtul salaja ${c.siblingGenitive} sussi juurde. Kui ta küsib, kust see tuli, ütle lihtsalt: „Ehk päkapikud?“`,
+      `Salamissioon: joonista väike pilt ja peida see õhtul salaja ${c.siblingGenitive} sussi juurde. Kui ta homme küsib, kust see tuli, ütle lihtsalt: „Ehk päkapikud?“`,
     prep: () => 'paber ja värvipliiatsid',
   },
   {
     id: 'helping-hands',
+    similarPair: 'kindness',
     text: (c) =>
-      `Salamissioon: aita täna ${c.siblingsComitative} mänguasjad ära koristada – ilma et keegi sul seda paluks. Päkapikud märkavad kõike.`,
+      `Salamissioon: aita täna ${c.siblingsComitative} mänguasjad ära koristada – enne, kui keegi seda palub.`,
   },
   {
     id: 'kind-words',
     text: (c) =>
-      `Salamissioon: ütle täna ${c.siblingsAllative} midagi head – näiteks mille poolest nad on toredad. Abilise sõnad on võlusõnad.`,
+      `Salamissioon: ütle täna ${c.siblingsAllative} midagi head – päris ausat ja päris head.`,
+  },
+  {
+    id: 'slippers',
+    similarPair: 'slipper',
+    text: (c) =>
+      `Salamissioon: vaata täna õhtul salaja, kas ${c.siblingGenitive} suss on aknalaual. Kui ei ole, aita tal see sinna panna – nii, et ta ei arva, miks sa küsid.`,
   },
 ]
 
 export const HELPER_TITLE = (c: HelperContext) =>
-  `Selle kirjaga nimetan su ametlikult ${c.helpersOf} abiliseks ${c.year}. Abilise kohustus kestab terve aasta: tee head ka siis, kui keegi ei vaata, ja aita nooremaid, kui nad seda vajavad.`
+  `Selle kirjaga nimetan su ametlikult ${c.helpersOf} abiliseks ${c.year}. Tiitel kehtib terve aasta – kui majas on kunagi vaja salajast abi, tead nüüd, kuidas seda teha.`
