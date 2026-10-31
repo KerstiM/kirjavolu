@@ -15,6 +15,8 @@ export interface PairContext {
 /**
  * Paired task templates. Both letters on the same day are written from the same
  * template, so they always match: "loe Britale ette" ↔ "Täna loeb Jasper sulle".
+ * Letters are read in the morning, so anything the giver leaves by a slipper
+ * is found by the receiver the next morning, never the same day.
  */
 export interface PairTemplate {
   id: string
@@ -62,10 +64,10 @@ export const PAIR_TEMPLATES: PairTemplate[] = [
   {
     id: 'secret-letter',
     giver: (c) =>
-      `${c.receiverHelper} on täna nii hõivatud, et ei jõua ${c.receiverAllative} kirja kirjutada. Kirjuta sina üks lühike kiri ja allkirjasta see „${c.receiverHelper}“. Pane see salaja ${c.receiverGenitive} sussi juurde – keegi ei tohi sind näha!`,
-    receiverReader: () => `Täna ei jõudnud ma ise pikalt kirjutada, sest töökojas oli palju tegemist. Aga vaata hoolega oma sussi juurde – võib-olla on seal veel üks kiri?`,
+      `${c.receiverHelper} on homme nii hõivatud, et ei jõua ${c.receiverAllative} kirja kirjutada. Kirjuta sina täna õhtul üks lühike kiri ja allkirjasta see „${c.receiverHelper}“. Enne magamaminekut pane see salaja ${c.receiverGenitive} sussi juurde, et ${c.receiver} leiaks selle homme hommikul – keegi ei tohi sind näha!`,
+    receiverReader: () => `Homme on töökojas nii palju tegemist, et ma ei pruugi jõuda pikalt kirjutada. Aga vaata homme hommikul hoolega oma sussi juurde – võib-olla on seal üks kiri kelleltki teiselt?`,
     occasions: ['christmas'],
-    prep: () => 'paber ja pliiats salajase kirja jaoks',
+    prep: () => 'paber ja pliiats salajase kirja jaoks (laps paneb selle õhtul sussi juurde)',
   },
   {
     id: 'slipper',

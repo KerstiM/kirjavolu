@@ -73,6 +73,16 @@ describe('linked letters', () => {
     }
   })
 
+  it('a letter left by a slipper is found the next morning, not the same day', async () => {
+    const { PAIR_TEMPLATES } = await import('@/data/templates/pairs')
+    const template = PAIR_TEMPLATES.find((t) => t.id === 'secret-letter')!
+    const ctx = { giver: 'Ruben', giverGenitive: 'Rubeni', receiver: 'Jasper', receiverGenitive: 'Jasperi', receiverAllative: 'Jasperile', receiverComitative: 'Jasperiga', receiverHelper: 'Tipp-Topp' }
+    expect(template.giver(ctx)).toMatch(/õhtul/)
+    expect(template.giver(ctx)).toMatch(/homme hommikul/)
+    expect(template.receiverReader!(ctx)).toMatch(/homme hommikul/)
+    expect(template.receiverReader!(ctx)).not.toMatch(/\bTäna\b/)
+  })
+
   it('siblings never get the same story part', async () => {
     const { OCCASION_CORES, GENERIC_CORES } = await import('@/data/templates/letters')
     const ctx = { v: (s: string) => s, sender: '', vocab: { words: [], moods: [], greeting: '', sender: '', senderHome: '', prize: '' } }
