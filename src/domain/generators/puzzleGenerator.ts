@@ -13,18 +13,19 @@ export interface Challenge {
 }
 
 /** Countable objects with their partitive form for "3 piparkooki". */
+// Small things that make sense both to pack into bags and to share with friends.
 const COUNTABLES: Record<OccasionId, { part: string }[]> = {
-  christmas: [{ part: 'piparkooki' }, { part: 'kommi' }, { part: 'kingitust' }],
-  easter: [{ part: 'muna' }, { part: 'porgandit' }, { part: 'tibu' }],
-  birthday: [{ part: 'õhupalli' }, { part: 'küünalt' }, { part: 'kingitust' }],
-  halloween: [{ part: 'kõrvitsat' }, { part: 'kommi' }, { part: 'nahkhiirt' }],
-  'mardi-kadri': [{ part: 'pähklit' }, { part: 'õuna' }, { part: 'lõngakera' }],
-  vastlapaev: [{ part: 'vastlakuklit' }, { part: 'kelku' }, { part: 'lumepalli' }],
-  valentines: [{ part: 'kaarti' }, { part: 'südant' }, { part: 'lille' }],
-  'school-start': [{ part: 'pliiatsit' }, { part: 'vihikut' }, { part: 'raamatut' }],
-  summer: [{ part: 'mustikat' }, { part: 'karpi' }, { part: 'kivi' }],
-  'lost-tooth': [{ part: 'münti' }, { part: 'tähte' }, { part: 'hammast' }],
-  everyday: [{ part: 'palli' }, { part: 'õuna' }, { part: 'klotsi' }],
+  christmas: [{ part: 'piparkooki' }, { part: 'kommi' }, { part: 'mandariini' }],
+  easter: [{ part: 'muna' }, { part: 'kommimuna' }, { part: 'porgandit' }],
+  birthday: [{ part: 'õhupalli' }, { part: 'kommi' }, { part: 'küpsist' }],
+  halloween: [{ part: 'kommi' }, { part: 'õuna' }, { part: 'kleepsu' }],
+  'mardi-kadri': [{ part: 'pähklit' }, { part: 'õuna' }, { part: 'kommi' }],
+  vastlapaev: [{ part: 'vastlakuklit' }, { part: 'nööpi' }, { part: 'kommi' }],
+  valentines: [{ part: 'kaarti' }, { part: 'kommi' }, { part: 'kleepsu' }],
+  'school-start': [{ part: 'pliiatsit' }, { part: 'kustukummi' }, { part: 'vihikut' }],
+  summer: [{ part: 'maasikat' }, { part: 'mustikat' }, { part: 'karpi' }],
+  'lost-tooth': [{ part: 'münti' }, { part: 'kleepsu' }, { part: 'tähte' }],
+  everyday: [{ part: 'õuna' }, { part: 'klotsi' }, { part: 'küpsist' }],
 }
 
 const TODDLER_PLAY = [
@@ -57,7 +58,9 @@ function pickWord(p: ItemPicker, words: string[], band: AgeBand): string {
 function cipher(p: ItemPicker, band: AgeBand, words: string[], greeting: string): Challenge {
   if (band === 'older') {
     const shift = 1 + p.rng.int(3)
-    const usePhrase = p.rng.next() < 0.4
+    // The greeting is only used when every letter is in the cipher alphabet (e.g. no W in "halloweeni").
+    const phraseFits = [...normalize(greeting)].every((ch) => ch === ' ' || ESTONIAN_ALPHABET.includes(ch as never))
+    const usePhrase = phraseFits && p.rng.next() < 0.4
     const plain = usePhrase ? greeting : pickWord(p, words, band)
     return {
       heading: 'Salakiri',

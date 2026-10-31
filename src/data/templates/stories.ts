@@ -25,7 +25,8 @@ export interface GenreTemplate {
   titleThing: StoryLine
   openings: StoryLine[]
   problems: StoryLine[]
-  obstacles: StoryLine[]
+  /** Each obstacle comes with its own fitting solution. */
+  obstacles: { frame: StoryLine; solve: (name: string) => string }[]
   resolutions: StoryLine[]
 }
 
@@ -55,12 +56,21 @@ export const GENRES: Record<StoryGenre, GenreTemplate> = {
         'Pisikese ukse tagant kostis nuttu. Seal elas haldjas Lumi, kelle võlukepp oli murdunud. „Ilma selleta ei saa ma täna öösel tähti süüdata,“ nuuksus ta.',
     ],
     obstacles: [
-      () =>
-        'Tee viis läbi Sosinametsa, kus puud esitasid igale möödujale mõistatusi. Edasi pääses ainult see, kes vastust teadis.',
-      (c) =>
-        `Siis ${c.v('jõudis', 'jõudsid')} ${c.they} jõe äärde, kus sild oli kadunud. Vesi vulises kiiresti ja sügavalt.`,
-      () =>
-        'Lossi ees seisis pahur kivitroll. „Siit ei pääse keegi, kes mind naerma ei aja,“ porises ta.',
+      {
+        frame: () => 'Tee viis läbi Sosinametsa, kus puud esitasid igale möödujale mõistatusi. Edasi pääses ainult see, kes vastust teadis.',
+        solve: (n) =>
+          `Üks puu küsis: „Mis läheb kogu aeg üles, aga ei tule kunagi alla?“ ${n} mõtles hetke ja vastas: „Vanus!“ Puud kahisesid rahulolevalt ja tegid tee vabaks.`,
+      },
+      {
+        frame: (c) => `Siis ${c.v('jõudis', 'jõudsid')} ${c.they} jõe äärde, kus sild oli kadunud. Vesi vulises kiiresti ja sügavalt.`,
+        solve: (n) =>
+          `${n} märkas kaldal suuri lamedaid kive. Ettevaatlikult kivilt kivile astudes jõuti teisele kaldale kuiva jalaga.`,
+      },
+      {
+        frame: () => 'Lossi ees seisis pahur kivitroll. „Siit ei pääse keegi, kes mind naerma ei aja,“ porises ta.',
+        solve: (n) =>
+          `${n} rääkis trollile kõige naljakama loo, mida teadis – sellest, kuidas kass proovis haukuda. Troll hoidis naeru tagasi, veel natuke… ja lõpuks naeris nii, et mägi värises. Tee oli vaba!`,
+      },
     ],
     resolutions: [
       (c) =>
@@ -74,7 +84,7 @@ export const GENRES: Record<StoryGenre, GenreTemplate> = {
     titleThing: () => 'saladuslik kaart',
     openings: [
       (c) =>
-        `Vihmasel pärastlõunal ${c.v('ronis', 'ronisid')} ${c.heroes} pööningule. Vana kirstu põhjast ${c.v('leidis', 'leidsid')} ${c.they} kollaseks tõmbunud kaardi. ${c.mood}`,
+        `Ühel pärastlõunal ${c.v('ronis', 'ronisid')} ${c.heroes} pööningule. Vana kirstu põhjast ${c.v('leidis', 'leidsid')} ${c.they} kollaseks tõmbunud kaardi. ${c.mood}`,
       (c) =>
         `${c.heroes} ${c.v('oli', 'olid')} just hommikusöögi lõpetanud, kui aknale koputas tuvi. Tema jala külge oli seotud pisike rull – kaart! ${c.mood}`,
     ],
@@ -85,9 +95,21 @@ export const GENRES: Record<StoryGenre, GenreTemplate> = {
         'Kaardi nurgas oli kiri: „Aare tuleb leida enne päikeseloojangut, muidu kaob kaart igaveseks.“',
     ],
     obstacles: [
-      () => 'Esimene takistus oli kõrge kivimüür, millel polnud ühtegi ust – ainult kummalised märgid.',
-      () => 'Siis jõuti tihedasse metsa, kus kõik rajad tundusid ühesugused.',
-      () => 'Mäe jalamil ootas lukus värav, mille lukul oli võtmeaugu asemel hoopis mõistatus.',
+      {
+        frame: () => 'Esimene takistus oli kõrge kivimüür, millel polnud ühtegi ust – ainult kummalised märgid.',
+        solve: (n) =>
+          `${n} uuris märke hoolikalt ja nägi, et need moodustasid noole. Kui vajutada noole all olevale kivile, liikus see kõrvale ja müüri tekkis ava.`,
+      },
+      {
+        frame: () => 'Siis jõuti tihedasse metsa, kus kõik rajad tundusid ühesugused.',
+        solve: (n) =>
+          `${n} meenutas, et sammal kasvab puutüvedel sageli põhjapoolsel küljel. Selle järgi leiti õige suund ja rada viis metsast välja.`,
+      },
+      {
+        frame: () => 'Mäe jalamil ootas lukus värav, mille lukul oli võtmeaugu asemel hoopis mõistatus.',
+        solve: (n) =>
+          `Lukul oli kiri: „Mida rohkem sellest ära võtad, seda suuremaks see läheb?“ „Auk!“ hüüdis ${n}. Klõps – ja värav avanes.`,
+      },
     ],
     resolutions: [
       (c) =>
@@ -110,9 +132,21 @@ export const GENRES: Record<StoryGenre, GenreTemplate> = {
       () => 'Uks oli lukus ja aken kinni. Kuidas sai keegi sisse pääseda nii, et keegi midagi ei märganud?',
     ],
     obstacles: [
-      () => 'Esimene vihje: pisikesed jäljed viisid köögist esikusse ja kadusid vaiba alla.',
-      () => 'Teine vihje: diivanipatjade vahelt leiti pisike hall karv ja üks rosin.',
-      () => 'Kolmas vihje: keegi oli kirjutanud aknaklaasile auruga salapärase tähe.',
+      {
+        frame: () => 'Esimene vihje: pisikesed jäljed viisid köögist esikusse ja kadusid vaiba alla.',
+        solve: (n) =>
+          `${n} tõstis vaibaserva üles. Seal oli pisike kuhjake puru – keegi oli siin maiustanud!`,
+      },
+      {
+        frame: () => 'Teine vihje: diivanipatjade vahelt leiti pisike hall karv ja üks rosin.',
+        solve: (n) =>
+          `${n} uuris karva luubiga. „See karv on pisike ja hall. Süüdlane peab olema väike,“ järeldas ${n}.`,
+      },
+      {
+        frame: () => 'Kolmas vihje: keegi oli kirjutanud aknaklaasile auruga salapärase tähe.',
+        solve: (n) =>
+          `${n} hingas klaasile ja märk muutus selgemaks – see oli pisike käpajälg! Nüüd oli selge, et süüdlane on mõni loomake.`,
+      },
     ],
     resolutions: [
       () =>
@@ -137,9 +171,21 @@ export const GENRES: Record<StoryGenre, GenreTemplate> = {
         'Tähtede jõujaam planeedil Plõks oli seiskunud ja iga minutiga läks taevas tumedamaks.',
     ],
     obstacles: [
-      () => 'Esmalt tuli lennata läbi meteoriidivihma, kus kivid lendasid igas suunas.',
-      () => 'Planeedil Plõks oli raskusjõud nii väike, et iga samm viis kõrgele õhku.',
-      () => 'Tähtede jõujaama uks oli lukus ja sellel vilkus kood, mida keegi polnud aastaid lahendanud.',
+      {
+        frame: () => 'Esmalt tuli lennata läbi meteoriidivihma, kus kivid lendasid igas suunas.',
+        solve: (n) =>
+          `„Vasakule! Nüüd paremale!“ juhendas ${n} ja rakett põikles kivide vahelt läbi nagu kala vees.`,
+      },
+      {
+        frame: () => 'Planeedil Plõks oli raskusjõud nii väike, et iga samm viis kõrgele õhku.',
+        solve: (n) =>
+          `${n} pistis taskud kive täis, et olla raskem. Nüüd sai sammuda peaaegu nagu kodus Maal.`,
+      },
+      {
+        frame: () => 'Tähtede jõujaama uks oli lukus ja sellel vilkus kood, mida keegi polnud aastaid lahendanud.',
+        solve: (n) =>
+          `Uksel vilkusid arvud: 2, 4, 6, 8 ja üks tühi koht. „Kümme!“ ütles ${n} ja vajutas nupule. Uks avanes sumisedes.`,
+      },
     ],
     resolutions: [
       (c) =>
@@ -164,9 +210,21 @@ export const GENRES: Record<StoryGenre, GenreTemplate> = {
         '„Metsaloomad vajavad abi,“ prääksus harakas. „Torm murdis silla ja nüüd on pooled loomad oja ühel ja pooled teisel kaldal.“',
     ],
     obstacles: [
-      () => 'Kõigepealt oli vaja leida tugevaid oksi. Kobras teadis küll, kus neid on, kuid ta oli tee unustanud.',
-      () => 'Siis tuli oksad üle oja viia, kuid vool oli tugev ja oksad tahtsid minema ujuda.',
-      () => 'Viimaks oli vaja kõik oksad kokku siduda, kuid keegi polnud kunagi sõlmi teinud.',
+      {
+        frame: () => 'Kõigepealt oli vaja leida tugevaid oksi. Kobras teadis küll, kus neid on, kuid ta oli tee unustanud.',
+        solve: (n) =>
+          `${n} märkas puutüvedel kopra hambajälgi. Neid mööda jõuti otse suure oksavirnani.`,
+      },
+      {
+        frame: () => 'Siis tuli oksad üle oja viia, kuid vool oli tugev ja oksad tahtsid minema ujuda.',
+        solve: (n) =>
+          `${n} pakkus välja, et oksi tuleb kanda madalast kohast, kus kivid paistavad veest välja. Nii ei uhtunud vool ühtegi oksa minema.`,
+      },
+      {
+        frame: () => 'Viimaks oli vaja kõik oksad kokku siduda, kuid keegi polnud kunagi sõlmi teinud.',
+        solve: (n) =>
+          `${n} näitas, kuidas teha lihtsat sõlme: üks ring, ots läbi ja pingule. Varsti oskasid seda kõik, isegi siil oma pisikeste käppadega.`,
+      },
     ],
     resolutions: [
       () =>
@@ -189,9 +247,21 @@ export const GENRES: Record<StoryGenre, GenreTemplate> = {
       () => 'Kõik asjad olid tülli läinud ja keegi ei tahtnud oma tööd teha. Isegi lusikad keeldusid suppi tõstmast!',
     ],
     obstacles: [
-      () => 'Kõigepealt tuli kinni püüda lendav sokk, kes oli otsustanud, et ta on lind.',
-      () => 'Siis ilmus kööki pahur pannkook, kes keeldus taldrikule jäämast.',
-      () => 'Viimaks tuli veenda kangekaelset vihmavarju, et vihm sajab alla, mitte üles.',
+      {
+        frame: () => 'Kõigepealt tuli kinni püüda lendav sokk, kes oli otsustanud, et ta on lind.',
+        solve: (n) =>
+          `${n} pani aknalauale teise soki ja ootas. Lendav sokk igatses oma paarilist nii väga, et maandus kohe selle kõrvale.`,
+      },
+      {
+        frame: () => 'Siis ilmus kööki pahur pannkook, kes keeldus taldrikule jäämast.',
+        solve: (n) =>
+          `${n} küsis pannkoogilt, miks ta pahur on. Selgus, et pannkook tahtis lihtsalt moosi. Moosiga oli ta kohe rahul ja hüppas ise taldrikule.`,
+      },
+      {
+        frame: () => 'Viimaks tuli veenda kangekaelset vihmavarju, et vihm sajab alla, mitte üles.',
+        solve: (n) =>
+          `${n} näitas aknast välja: „Vaata, vihm sajab alla!“ Vihmavari häbenes natuke ja lubas edaspidi õigetpidi avaneda.`,
+      },
     ],
     resolutions: [
       () =>
@@ -202,12 +272,36 @@ export const GENRES: Record<StoryGenre, GenreTemplate> = {
   },
 }
 
-export const GENERIC_SOLVES: ((name: string) => string)[] = [
-  (n) => `${n} mõtles hetke ja ütles siis: „Ma tean! Proovime teistmoodi.“ Ja see töötaski.`,
-  (n) => `${n} ei andnud alla. Kolmandal katsel õnnestus!`,
-  (n) => `${n} märkas pisiasja, mida keegi teine polnud tähele pannud – ja just see oli lahendus.`,
-  (n) => `${n} hingas sügavalt sisse, kogus julguse ja astus esimesena edasi.`,
-  (n) => `${n} pakkus välja nutika plaani ja kõik aitasid kaasa.`,
+/** Past-tense atmosphere sentences for stories (letter moods are in the present tense). */
+export const STORY_MOODS: Record<OccasionId, string[]> = {
+  christmas: ['Väljas sadas vaikselt lund ja akendel helkisid küünlad.', 'Kogu majas lõhnas piparkookide ja mandariinide järele.'],
+  easter: ['Pajuoksad olid täis pehmeid urbi ja päike soojendas aknalauda.', 'Aias sirutasid esimesed lilled pead mullast välja.'],
+  birthday: ['Laual ootas tort ja õhupallid tantsisid lae all.', 'See oli eriline päev – sünnipäev!'],
+  halloween: ['Kõrvitsalaternad irvitasid akendel sõbralikult.', 'Täiskuu valgustas teed ja kusagil kriuksus vana värav.'],
+  'mardi-kadri': ['Novembriõhtu oli pime, aga kusagilt kostis sandilaulu.', 'Oli sandipäevade aeg ja õhus oli tunda ootust.'],
+  vastlapaev: ['Liumäel kostis kilkeid ja kelgud sõitsid võidu.', 'Köögist hõljus vastlakuklite magusat lõhna.'],
+  valentines: ['Oli sõbrapäev ja kõikjal vahetati kaarte ja naeratusi.'],
+  'school-start': ['Oli tarkusepäev ja koolikott seisis valmis ukse kõrval.'],
+  summer: ['Päike paistis soojalt ja rohi lõhnas suve järele.', 'Metsas valmisid mustikad ja kusagil siristas rohutirts.'],
+  'lost-tooth': ['Padja all ootas pisike piimahammas.'],
+  everyday: ['Oli täiesti tavaline päev – vähemalt nii see alguses tundus.', 'Kodus oli vaikne ja hubane.'],
+}
+
+/** Companions (toys, pets) help during the adventure. */
+export const COMPANION_HELP: ((names: string, plural: boolean, heroV: Say) => string)[] = [
+  (names, plural, v) =>
+    `${names} ${plural ? 'olid' : 'oli'} kogu aeg kõrval ja ${plural ? 'sosistasid' : 'sosistas'} julgustavalt: „${v('Saad', 'Saate')} hakkama!“`,
+  (names, plural) => `Kõige raskemal hetkel ${plural ? 'hoidsid' : 'hoidis'} ${names} kõvasti kinni ja hirm kadus nagu tuules.`,
+  (names, plural) => `${names} ${plural ? 'märkasid' : 'märkas'} midagi olulist ja ${plural ? 'osutasid' : 'osutas'} õiges suunas.`,
+]
+
+/** Short effort lines placed between an obstacle and its solution. */
+export const EFFORT_LINES: ((name: string) => string)[] = [
+  (n) => `${n} ei lasknud end heidutada.`,
+  (n) => `${n} hingas sügavalt sisse ja mõtles rahulikult järele.`,
+  (n) => `Esimene katse ei õnnestunud, aga ${n} ei andnud alla.`,
+  (n) => `${n} kortsutas kulmu ja vaatas hoolikalt ringi.`,
+  (n) => `„Hm,“ ütles ${n}, „siin peab olema mingi nipp.“`,
 ]
 
 export const THEME_LINES: Record<Exclude<EducationalTheme, 'none'>, StoryLine> = {

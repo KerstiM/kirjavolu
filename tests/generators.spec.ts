@@ -76,7 +76,7 @@ describe('letters', () => {
     const found = items.findIndex((i) => i.body.includes('Kutsusin võlutähte ja ta vastas'))
     expect(found).toBe(22)
     expect(items[23]!.body).toContain('Võlutäht on jälle minuga')
-    for (const item of items.slice(found)) expect(item.body).not.toMatch(/otsingud|pole veel uudiseid|ootab/)
+    for (const item of items.slice(found)) expect(item.body).not.toMatch(/otsingud|pole veel uudiseid|sulg on mu laual/)
   })
 
   it('uses profile details and singular address for one child', () => {

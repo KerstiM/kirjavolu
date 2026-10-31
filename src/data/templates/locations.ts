@@ -84,7 +84,7 @@ export const HUNT_LOCATIONS: HuntLocation[] = [
       () => 'Seal on seep, hambahari ja peegel. Vihje ootab kraanikausi juures.',
     ],
     older: [
-      () => 'Hommikul ja õhtul seisad minu ees, hambahari käes. Peegel näitab, kes vihje leiab.',
+      (v) => `Hommikul ja õhtul ${v('seisad', 'seisate')} minu ees, hambahari käes. Peegel näitab, kes vihje leiab.`,
       () => 'Minu toru kaudu jookseb vesi, aga ma ise ei jänune kunagi.',
     ],
     toddler: 'koht, kus me käsi peseme',
@@ -99,7 +99,7 @@ export const HUNT_LOCATIONS: HuntLocation[] = [
       () => 'Seal seisavad kingad paarikaupa reas. Üks neist peidab saladust.',
     ],
     older: [
-      () => 'Minu juures puhkavad need, kes kannavad sind igale poole. Vihje võib olla mõne saapa sees.',
+      (v) => `Minu juures puhkavad need, kes kannavad ${v('sind', 'teid')} igale poole. Vihje võib olla mõne saapa sees.`,
       () => 'Siin seisavad paarid, kes ei tantsi kunagi koos – ainult kõnnivad.',
     ],
     toddler: 'koht, kus on meie saapad',
@@ -114,7 +114,7 @@ export const HUNT_LOCATIONS: HuntLocation[] = [
       () => 'Seal kasvavad toalilled ja sealt saab vaadata, kas sajab vihma.',
     ],
     older: [
-      () => 'Läbi minu näeb kogu maailma, aga ise olen ma läbipaistev. Otsi minu all olevalt laualt.',
+      (v) => `Läbi minu näeb kogu maailma, aga ise olen ma läbipaistev. ${v('Vaata', 'Vaadake')} minu alla.`,
       () => 'Päike koputab igal hommikul minu klaasile. Vihje ootab seal, kus taimed päikest võtavad.',
     ],
     toddler: 'koht, kust paistab õue',
@@ -130,7 +130,7 @@ export const HUNT_LOCATIONS: HuntLocation[] = [
     ],
     older: [
       () => 'Minu sees magavad kangelased, kuni keegi nad üles äratab. Vihje on nende vahel.',
-      () => 'Mind avatakse ikka siis, kui on mängimise aeg. Kaeva sügavale!',
+      (v) => `Mind avatakse ikka siis, kui on mängimise aeg. ${v('Kaeva', 'Kaevake')} sügavale!`,
     ],
     toddler: 'koht, kus elavad mänguasjad',
   },
@@ -145,7 +145,7 @@ export const HUNT_LOCATIONS: HuntLocation[] = [
     ],
     older: [
       () => 'Minu ümber kogunetakse kolm korda päevas, aga ise ma ei söö kunagi. Vihje on minu all.',
-      () => 'Ma kannan iga päev suppi, leiba ja tasse, kuid ei kurda kunagi. Vaata alla.',
+      (v) => `Ma kannan iga päev suppi, leiba ja tasse, kuid ei kurda kunagi. ${v('Vaata', 'Vaadake')} alla.`,
     ],
     toddler: 'koht, kus me sööme',
   },
@@ -173,7 +173,7 @@ export const HUNT_LOCATIONS: HuntLocation[] = [
       () => 'Õhtul tõmmatakse mind ette, et pimedus tuppa ei piiluks. Vihje on minu taga.',
     ],
     older: [
-      () => 'Ma ei ole sein ega uks, aga ma suudan valguse välja jätta. Piilu minu taha.',
+      (v) => `Ma ei ole sein ega uks, aga ma suudan valguse välja jätta. ${v('Piilu', 'Piiluge')} minu taha.`,
     ],
     toddler: 'koht, kus saab peitust mängida',
   },
@@ -213,7 +213,7 @@ export const HUNT_LOCATIONS: HuntLocation[] = [
       () => 'Mul on lehed, oksad ja juured. Leia minu juurest järgmine vihje.',
     ],
     older: [
-      () => 'Mu juured on sügaval maas ja võra ulatub taeva poole. Otsi minu tüve ümbert.',
+      (v) => `Mu juured on sügaval maas ja võra ulatub taeva poole. ${v('Otsi', 'Otsige')} minu tüve ümbert.`,
       () => 'Igal aastal saan juurde ühe rõnga, kuigi keegi ei näe seda. Vihje ootab mu jalamil.',
     ],
     toddler: 'suur puu õues',
@@ -240,7 +240,7 @@ export const HUNT_LOCATIONS: HuntLocation[] = [
       () => 'Minuga saab lennata edasi-tagasi, edasi-tagasi. Vihje on minu juures.',
     ],
     older: [
-      () => 'Ma viin sind üles taeva poole ja toon kohe tagasi. Otsi minu alt.',
+      (v) => `Ma viin ${v('sind', 'teid')} üles taeva poole ja toon kohe tagasi. ${v('Otsi', 'Otsige')} minu alt.`,
     ],
     toddler: 'koht, kus saab kiikuda',
   },
@@ -253,7 +253,7 @@ export const HUNT_LOCATIONS: HuntLocation[] = [
       () => 'Minust astutakse läbi, kui tullakse koju või minnakse välja. Vihje on minu juures.',
     ],
     older: [
-      () => 'Ma olen hoovi uks, kuigi mul pole maja ümber. Otsi minu posti juurest.',
+      (v) => `Ma olen hoovi uks, kuigi mul pole maja ümber. ${v('Otsi', 'Otsige')} minu posti juurest.`,
     ],
     toddler: 'koht, kust me õue läheme',
   },
@@ -272,14 +272,14 @@ export const HUNT_LOCATIONS: HuntLocation[] = [
   },
   {
     id: 'shed',
-    name: 'kuur või aiamaja',
+    name: 'aiakuur',
     aliases: /kuur|aiamaja|garaaž/i,
     setting: 'outdoor',
     young: [
       () => 'Seal hoitakse rehasid, labidaid ja jalgrattaid. Vihje on ukse juures.',
     ],
     older: [
-      () => 'Ma olen väike maja, kus ei ela keegi – ainult tööriistad. Otsi minu ukse eest.',
+      (v) => `Ma olen väike maja, kus ei ela keegi – ainult tööriistad. ${v('Otsi', 'Otsige')} minu ukse eest.`,
     ],
     toddler: 'koht, kus on labidad ja rattad',
   },
@@ -292,7 +292,7 @@ export const HUNT_LOCATIONS: HuntLocation[] = [
       () => 'Minu peal kõnnitakse üles ja alla, kui tullakse koju. Vihje on astme all.',
     ],
     older: [
-      () => 'Mind mööda tõustakse, kuigi ma ise ei liigu kuhugi. Kontrolli alumist astet.',
+      (v) => `Mind mööda tõustakse, kuigi ma ise ei liigu kuhugi. ${v('Kontrolli', 'Kontrollige')} alumist astet.`,
     ],
     toddler: 'koht, kus on astmed',
   },

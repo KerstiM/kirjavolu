@@ -1,7 +1,7 @@
 import type { ChildProfile } from '../models'
 import {
   findInterestHooks,
-  foodLine,
+  foodLines,
   genericInterestLine,
   INTEREST_HOOKS,
   type Say,
@@ -27,7 +27,7 @@ export function childLines(child: ChildProfile): string[] {
   return [
     ...hooks.flatMap((hook) => hook.letterLines.map((line) => line(singular))),
     ...unmatched([...child.interests, ...child.favorites]).map((text) => genericInterestLine(text, singular)),
-    ...child.foods.map((food) => foodLine(food, singular)),
+    ...child.foods.flatMap((food) => foodLines(food, singular)),
     ...child.achievements.map(
       (achievement) =>
         `Kuulsin ka ühest saavutusest, mille üle võid väga uhke olla: „${achievement}“. Palju õnne!`,

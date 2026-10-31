@@ -12,47 +12,168 @@ export const OPENINGS: ToneLines = {
     ({ v }) => `Tervitus! Kirjutan ${v('sulle', 'teile')} kiiresti, sest mu tint kipub ära jooksma. Päriselt – tal on jalad!`,
     () => `Tere-tere! Proovisin seda kirja kirjutada peaga alaspidi, aga tähed hakkasid pööritama. Nüüd istun korralikult.`,
     ({ v }) => `Ahoi! Loodan, et ${v('sul', 'teil')} on hea tuju, sest minul on – hommikul leidsin taskust ühe ammu kadunud kommi.`,
+    () => `Tere-tere! Täna hommikul ajasin segi suhkru ja soola, nii et tee maitses nagu meri. Aga tuju on ikka hea!`,
+    ({ v }) => `Tervitus! Kas ${v('tead', 'teate')}, mis on maailmas kõige raskem? Kirjutada kirja, kui ninaots sügeleb.`,
+    () => `Tere! Pidin selle kirja kolm korda uuesti alustama, sest naljakad mõtted kippusid paberilt maha jooksma.`,
+    ({ v }) => `Hei-hei! Siin kirjutab ${v('sinu', 'teie')} kõige naerusuisem kirjasõber.`,
+    ({ sender }) => `Tere! ${sender} kirjutab jälle – seekord kindad käes, sest pliiats on täna eriti libe.`,
+    () => `Tervitus! Mu kass istus just selle paberi peale ja keeldus liikumast. Õnneks jäi talle sabast natuke ruumi üle.`,
   ],
   magical: [
     ({ v }) => `Tere! Selle kirja tõi ${v('sinuni', 'teieni')} tuuleiil, kes teab kõiki salateid.`,
     ({ v }) => `Tervitus! Kui ${v('sa seda kirja lahti voltisid', 'te seda kirja lahti voltisite')}, pudenes sealt ehk pisut sädelevat tolmu – see on võlu, mis kirjale kaasa tuli.`,
     ({ v }) => `Tere, ${v('mu kallis sõber', 'mu kallid sõbrad')}! Täna kirjutan kuuvalgel, sest just siis on sõnad kõige võluvamad.`,
     () => `Tere! Kirjutan seda kirja sulega, mis helendab pimedas. Iga täht jätab paberile väikese sära.`,
+    () => `Tere! Selle kirja paberisse on kootud kuuvalgust – akna vastu hoides võib see vaikselt helendada.`,
+    ({ v }) => `Tervitus! Üks pisike täht kukkus täna mu tindipotti ja nüüd on iga sõna, mille ${v('sulle', 'teile')} kirjutan, natuke säravam.`,
+    () => `Tere! Kirjutan täna vana tamme all, kelle lehed sosistavad saladusi.`,
+    ({ v }) => `Tere! Tuul tõi mulle täna ${v('sinu', 'teie')} naeru – see kõlas nagu pisikesed kellukesed.`,
+    () => `Tervitus! Mu kirjutuslaud on täna täis sädelevat tolmu, nii et tähed võivad paberil natuke tantsida.`,
+    ({ v }) => `Tere! Enne kui see kiri ${v('sinuni', 'teieni')} jõudis, lendas see üle kolme mäe ja ühe vikerkaare.`,
   ],
   adventurous: [
     ({ v }) => `Tere, ${v('julge seikleja', 'julged seiklejad')}! Mul on uudiseid, mis ei saa oodata.`,
     () => `Tervitus! Kirjutan seda kirja otse teekonnalt, seljakott seljas ja kaart käes.`,
     ({ v }) => `Tere! Tähelepanu – järgnev sõnum on mõeldud ainult ${v('sinu', 'teie')} silmadele.`,
+    ({ v }) => `Tere! Kirjutan seda kirja telgis, kus tuul paneb seinad lehvima. Aga ${v('sinu', 'teie')} jaoks leian alati aega.`,
+    () => `Tervitus! Täna ületasin kolm oja ja ühe karjamaa, kus haned vaatasid mind väga uudishimulikult.`,
+    ({ v }) => `Tere, ${v('mu julge sõber', 'mu julged sõbrad')}! Kaart on laual, kompass taskus – aeg on rääkida uudistest.`,
+    () => `Tere! Ronisin selle kirja kirjutamiseks kõrge puu otsa. Sealt paistis peaaegu kogu maailm.`,
+    ({ v }) => `Tervitus! Mul on ${v('sulle', 'teile')} salajane sõnum, mille tõi kohale kiire pääsuke.`,
+    () => `Tere! Seljakott on pakitud ja saapad jalas, aga enne teele asumist kirjutan selle kirja.`,
+    () => `Tere! Eile öösel nägin kaugel tulesid, mis vilkusid nagu salakood. Pidin kohe kirjutama.`,
   ],
   heartwarming: [
     ({ v }) => `Tere! Mõtlesin täna ${v('sinule', 'teile')} ja otsustasin kohe kirja kirjutada.`,
     ({ v }) => `Tere, ${v('mu armas sõber', 'mu armsad sõbrad')}! Loodan, et ${v('sinu', 'teie')} päev on olnud soe ja rõõmus.`,
     () => `Tere! Iga kord, kui ma kirja kirjutan, läheb süda kuidagi soojaks. Nii ka täna.`,
+    ({ v }) => `Tere! Täna hommikul ärgates oli mu esimene mõte ${v('sinust', 'teist')}.`,
+    () => `Tere! Keetsin endale tassi teed, mähkisin end sooja teki sisse ja hakkasin kirjutama.`,
+    ({ v }) => `Tere, ${v('kallis', 'kallid')}! Mul on alati hea meel, kui saan ${v('sulle', 'teile')} kirjutada.`,
+    () => `Tere! Väljas on vaikne ja rahulik – just paras aeg ühe sooja kirja jaoks.`,
+    ({ v }) => `Tere! Tahtsin lihtsalt öelda, et mõtlen ${v('sulle', 'teile')} sageli, ja alati naeratusega.`,
+    ({ v }) => `Tere! Iga kord, kui midagi ilusat näen, mõtlen: seda peaksin ${v('sulle', 'teile')} jutustama. Nii et siin ma olen.`,
+    () => `Tere! Panin selle kirja sisse ühe suure kallistuse. Loodan, et see jõudis kohale terve ja soojana.`,
   ],
 }
 
+/** Closings that fit any letter, including a single one. */
 export const CLOSINGS: ToneLines = {
   humorous: [
-    ({ v }) => `Nüüd pean minema, sest keegi pistis mu sussid jälle külmkappi. ${v('Ole', 'Olge')} tubli ja naera palju!`,
-    () => `Kirjutan varsti jälle – kui leian oma pliiatsi üles. See peitis end eile leivakorvi.`,
-    ({ v }) => `Seniks ${v('hoia', 'hoidke')} kõrvad lahti ja nina püsti!`,
+    ({ v }) => `Nüüd pean minema, sest keegi pistis mu sussid jälle külmkappi. ${v('Ole', 'Olge')} tubli ja ${v('naera', 'naerge')} palju!`,
+    ({ v }) => `${v('Hoia', 'Hoidke')} kõrvad lahti ja nina püsti!`,
+    ({ v }) => `Lehvitan ${v('sulle', 'teile')} nii kõvasti, et müts lendab peast!`,
+    () => `Ja pea meeles: hea tuju on nakkav – jaga seda julgelt!`,
+    () => `Lõpetuseks üks tarkus: kui üks naerab, kasvab tuju, ja kui naeravad kõik, kasvab see kaks korda suuremaks!`,
   ],
   magical: [
     ({ v }) => `${v('Hoia', 'Hoidke')} oma südames väikest võluväge – see kasvab iga hea teoga.`,
     ({ v }) => `Kui ${v('sa', 'te')} täna õhtul tähti ${v('vaatad', 'vaatate')}, siis ${v('tea', 'teadke')}: üks neist vilgutab just ${v('sulle', 'teile')}.`,
     () => `Võlu on alati lähemal, kui arvata oskame.`,
+    ({ v }) => `Saadan ${v('sulle', 'teile')} peotäie tähetolmu – see aitab head und näha.`,
+    () => `Imed juhtuvad neile, kes oskavad neid märgata.`,
+    () => `Las iga täht taevas meenutab, et maailm on täis imesid.`,
   ],
   adventurous: [
-    ({ v }) => `Seiklus jätkub! ${v('Ole', 'Olge')} valmis järgmiseks sõnumiks.`,
-    ({ v }) => `${v('Hoia', 'Hoidke')} silmad lahti – seiklused algavad sageli seal, kus neid kõige vähem oodatakse.`,
-    ({ v }) => `Kuni järgmise korrani, ${v('seikleja', 'seiklejad')}!`,
+    ({ v }) => `${v('Ole', 'Olge')} julge, uudishimulik ja ${v('hoia', 'hoidke')} silmad lahti!`,
+    () => `Parimad seiklused algavad sageli ühest väikesest sammust.`,
+    ({ v }) => `Ma usun, et ${v('sinust saab kunagi suur avastaja', 'teist saavad kunagi suured avastajad')}.`,
+    () => `Maailm on suur ja täis saladusi – ja kõige põnevamad neist ootavad alles avastamist.`,
   ],
   heartwarming: [
     ({ v }) => `${v('Sa oled', 'Te olete')} väga eriline. Ära kunagi unusta seda.`,
     ({ v }) => `Saadan ${v('sulle', 'teile')} suure ja sooja kallistuse.`,
     ({ v }) => `Mõtlen ${v('sinule', 'teile')} ja naeratan.`,
+    ({ v }) => `${v('Hoia ennast ja oma lähedasi.', 'Hoidke ennast ja üksteist.')}`,
+    ({ v }) => `${v('Pea', 'Pidage')} meeles: ${v('sind', 'teid')} armastatakse rohkem, kui sõnadega öelda oskab.`,
+    ({ v }) => `Head ööd ja magusaid unenägusid, ${v('mu kallis', 'mu kallid')}!`,
   ],
 }
+
+/** Closings that promise another letter: only used inside a series, never in the last letter. */
+export const SERIES_CLOSINGS: ToneLines = {
+  humorous: [
+    () => `Kirjutan varsti jälle – kui leian oma pliiatsi üles. See peitis end eile leivakorvi.`,
+    ({ v }) => `Homme räägin ${v('sulle', 'teile')}, mis juhtus minu kõige pahurama sokiga.`,
+  ],
+  magical: [
+    () => `Homme õhtul toob tuul järgmise kirja.`,
+    ({ v }) => `${v('Vaata', 'Vaadake')} homme jälle – võib-olla ootab seal midagi ${v('sinu', 'teie')} jaoks.`,
+  ],
+  adventurous: [
+    ({ v }) => `Seiklus jätkub! ${v('Ole', 'Olge')} valmis järgmiseks sõnumiks.`,
+    ({ v }) => `Kuni järgmise korrani, ${v('seikleja', 'seiklejad')}!`,
+  ],
+  heartwarming: [
+    () => `Ootan juba homset, et saaksin jälle kirjutada.`,
+    ({ v }) => `Kohtume järgmises kirjas, ${v('mu kallis', 'mu kallid')}.`,
+  ],
+}
+
+/** First-letter paragraph that states why the sender writes on this occasion. */
+export const OCCASION_PURPOSE: OccasionLines = {
+  christmas: [
+    ({ v }) => `Jõuluvana saatis mind ${v('sinu', 'teie')} juurde, et vaadata, kuidas läheb, ja tuua jõuluootusesse natuke võlu.`,
+    ({ v }) => `Detsembris on päkapikkudel kõige tähtsam töö: käia laste juures ja vaadata, kuidas head teod kasvavad. ${v('Sinu', 'Teie')} juures kasvavad need väga hästi!`,
+  ],
+  easter: [
+    ({ v }) => `Kevad on käes ja lihavõtted tulekul! Peitsin ${v('sinu', 'teie')} jaoks mõned munad – aga kuhu, seda ${v('pead', 'peate')} ise välja nuputama.`,
+    () => `Lihavõttepühadel jagavad jänesed lastele värvilisi mune. Selle aasta esimene muna tuli eriti ilus – sinine, valgete täppidega.`,
+  ],
+  birthday: [
+    ({ v }) => `Kuulsin, et ${v('sul', 'teil')} on sünnipäev! Palju-palju õnne! Kõik minu torni õhupallid tantsivad täna ${v('sinu', 'teie')} auks.`,
+    ({ v }) => `Täna on päev, mil maailm tähistab just ${v('sind', 'teid')}. Palju õnne sünnipäevaks!`,
+  ],
+  halloween: [
+    () => `Halloweenil lubatakse kõigil olla natuke kõhe – aga ainult sõbralikult. Mina harjutan juba oma kõige naljakamat „Buu!“.`,
+    ({ v }) => `Halloweeni õhtul süttivad akendel kõrvitsalaternad. Üks neist põleb just ${v('sinu', 'teie')} jaoks.`,
+  ],
+  'mardi-kadri': [
+    () => `Mardi- ja kadripäeval käivad sandid uksest uksesse, laulavad ja soovivad perele õnne. See on üks vanimaid Eesti kombeid.`,
+    ({ v }) => `Novembris on sandiaeg! Kas ${v('oled', 'olete')} juba mõelnud, millise sandina ${v('sa', 'te')} sel aastal ${v('lähed', 'lähete')}?`,
+  ],
+  vastlapaev: [
+    () => `Vastlapäev on käes! See on päev, mil lastakse liugu, süüakse hernesuppi ja vahukoorega vastlakukleid.`,
+    ({ v }) => `Vastlapäeval on kõige tähtsam pikk liug. Ma usun, et ${v('sinu', 'teie')} liug tuleb tänavu eriti pikk!`,
+  ],
+  valentines: [
+    ({ v }) => `Täna on sõbrapäev – päev, mil öeldakse sõpradele, kui tähtsad nad on. Ja ${v('sina oled', 'teie olete')} mulle väga tähtis.`,
+    ({ v }) => `Sõbrapäeval saadetakse kaarte ja häid soove. See kiri on minu kaart ${v('sulle', 'teile')}.`,
+  ],
+  'school-start': [
+    ({ v }) => `Uus kooliaasta algab! Tean, et ${v('sind', 'teid')} ootab palju uut: uued tunnid, uued teadmised ja võib-olla ka uued sõbrad.`,
+    ({ v }) => `Esimene september on tarkusepäev. Sel päeval alustavad kõik koolilapsed – ka ${v('sina', 'teie')} – uut seiklust.`,
+  ],
+  summer: [
+    () => `Suvevaheaeg on alanud! Ees ootavad pikad päevad, soojad õhtud ja palju aega mängimiseks.`,
+    ({ v }) => `Kool on läbi ja suvi käes! Tulin ${v('sulle', 'teile')} meelde tuletama, et suvi on seikluste aeg.`,
+  ],
+  'lost-tooth': [
+    ({ v }) => `Täna öösel tulin järele ${v('sinu', 'teie')} piimahambale. Aitäh, et ${v('hoidsid', 'hoidsite')} seda nii hoolikalt! Jätsin vastu väikese tänutäheks mõeldud üllatuse.`,
+    ({ v }) => `Palju õnne! ${v('Sinu', 'Teie')} piimahammas on välja tulnud – see tähendab, et ${v('kasvad', 'kasvate')} suureks. Võtsin hamba hoolega kaasa oma hammaste lossi.`,
+  ],
+}
+
+/** Inserted into the last letter of a December series. */
+export const CHRISTMAS_EVE: Line = ({ v }) =>
+  `Täna on jõululaupäev! Töökoda on vaikseks jäänud ja kingid on kelgul. Varsti on Jõuluvana teel – ka ${v('sinu', 'teie')} poole.`
+
+export const TODDLER_OPENINGS: Line[] = [
+  () => `Tere, väike sõber!`,
+  () => `Tere-tere! Mina olen jälle siin.`,
+  () => `Kopp-kopp! Kirjakandja tõi sulle kirja.`,
+  () => `Tere hommikust, päikesekiir!`,
+  () => `Tere! Kas tead, kes kirjutab? Mina!`,
+  () => `Tervist! Saadan sulle suure kalli.`,
+]
+
+export const TODDLER_CLOSINGS: Line[] = [
+  () => `Kalli-kalli!`,
+  () => `Musi põsele!`,
+  () => `Ole rõõmus ja naera palju!`,
+  () => `Saadan sulle päikest!`,
+  () => `Head ööd, väike sõber!`,
+]
 
 /** Standalone letter cores for specific occasions. */
 export const OCCASION_CORES: OccasionLines = {
@@ -179,13 +300,53 @@ export const TODDLER_CORES: Line[] = [
   () => `Kass tuli mulle külla ja ütles: mjäu! Mina ütlesin vastu: tere, kiisu!`,
 ]
 
-export const TODDLER_CHRISTMAS: Line[] = [
-  () => `Täna sadas palju lund. Lumi on valge ja külm. Brrr!`,
-  () => `Põhjapõder ütles mulle täna tere. Ta raputas pead ja kellukesed tegid kõlin-kõlin.`,
-  () => `Ma küpsetasin piparkooke. Need lõhnavad nii hästi! Nuusuta ka – nuuh-nuuh!`,
-  () => `Jõuluvana naeris täna: ho-ho-hoo! Kas sina oskad ka nii naerda?`,
-  () => `Kuusel säravad tuled: üks, kaks, kolm! Loe koos emme või issiga, mitu tulukest teie kuusel on.`,
-]
+/** Simple occasion lines for toddler letters, read aloud by an adult. */
+export const TODDLER_OCCASION: OccasionLines = {
+  christmas: [
+    () => `Täna sadas palju lund. Lumi on valge ja külm. Brrr!`,
+    () => `Põhjapõder ütles mulle täna tere. Ta raputas pead ja kellukesed tegid kõlin-kõlin.`,
+    () => `Ma küpsetasin piparkooke. Need lõhnavad nii hästi! Nuusuta ka – nuuh-nuuh!`,
+    () => `Jõuluvana naeris täna: ho-ho-hoo! Kas sina oskad ka nii naerda?`,
+    () => `Kuusel säravad tuled: üks, kaks, kolm! Loe koos emme või issiga, mitu tulukest teie kuusel on.`,
+  ],
+  easter: [
+    () => `Mina olen jänku. Mul on pikad kõrvad ja pehme saba. Hopp-hopp!`,
+    () => `Täna värvisin muna. Muna on kollane nagu päike.`,
+    () => `Väike tibu ütles: piiks-piiks! Kas sina oskad ka piiksuda?`,
+    () => `Ma peitsin ühe muna. Kus on muna? Otsime koos!`,
+  ],
+  birthday: [
+    () => `Täna on sinu päev! Õhupallid lendavad üles-üles!`,
+    () => `Tordil põlevad küünlad. Puhume koos: puhh!`,
+    () => `Palju õnne! Plaksutame koos: plaks-plaks-plaks!`,
+  ],
+  halloween: [
+    () => `Mina olen väike sõbralik kummitus. Ma ütlen: buu! Aga ma ei ole üldse hirmus.`,
+    () => `Kõrvits on suur ja oranž. Sellel on naljakas nägu.`,
+  ],
+  'mardi-kadri': [
+    () => `Sandid tulevad laulma: tra-lal-laa! Kas sina laulad ka?`,
+    () => `Mul on pehme lõngakera. See veereb: veeres-veeres!`,
+  ],
+  vastlapaev: [
+    () => `Kelk sõidab mäest alla: vuhh! Kas sina sõidad ka kelguga?`,
+    () => `Vastlakukkel on magus. Mõnus-mõnus!`,
+  ],
+  valentines: [
+    () => `Täna on sõprade päev. Sina oled minu sõber!`,
+    () => `Joonistasin sulle südame. Süda on punane.`,
+  ],
+  'school-start': [
+    () => `Koolikott on suur ja täis raamatuid. Pliiats teeb kritsa-kratsa.`,
+    () => `Koolikell helises: kõlin-kõlin! Kool algab.`,
+  ],
+  summer: [
+    () => `Päike paistab ja on soe. Lähme õue!`,
+    () => `Meri teeb: kohh-kohh. Kas sina tahad liivas mängida?`,
+    () => `Liblikas lendab: lipa-lipa. Kuhu ta lendab?`,
+  ],
+  'lost-tooth': [() => `Mina olen hambahaldjas. Mul on pisikesed säravad tiivad.`],
+}
 
 /** Ordered story arc for connected letters. The last beat is always the finale. */
 export const ARC_BEATS: Line[] = [
@@ -217,36 +378,74 @@ export const MISSIONS: OccasionLines = {
     ({ v }) => `Päkapikuülesanne: ${v('joonista', 'joonistage')} pilt, kus Jõuluvana teeb midagi täiesti ootamatut.`,
     ({ v }) => `Päkapikuülesanne: ${v('loe', 'lugege')} kokku, mitu tuld põleb täna õhtul teie kodus.`,
     ({ v }) => `Päkapikuülesanne: ${v('kirjuta', 'kirjutage')} või ${v('joonista', 'joonistage')} mulle, mis teeb ${v('sind', 'teid')} kõige rohkem rõõmsaks.`,
+    ({ v }) => `Päkapikuülesanne: ${v('vali', 'valige')} üks mänguasi, millega enam ei mängita, ja ${v('mõtle', 'mõelge')}, kellele see rõõmu võiks teha.`,
+    ({ v }) => `Päkapikuülesanne: ${v('meisterda', 'meisterdage')} paberist kuusk ja ${v('kaunista', 'kaunistage')} see värviliste mullidega.`,
+    ({ v }) => `Päkapikuülesanne: ${v('aita', 'aidake')} täna köögis – päkapikud on teatavasti kõige paremad pudrukeetjad!`,
+    ({ v }) => `Päkapikuülesanne: ${v('mõtle', 'mõelge')} välja nimi uuele põhjapõdrale ja ${v('kirjuta', 'kirjutage')} see mulle.`,
+    ({ v }) => `Päkapikuülesanne: ${v('kustuta', 'kustutage')} õhtul hetkeks kõik tuled ja ${v('vaata', 'vaadake')} ainult küünla- või kuuseehete valgust.`,
+    ({ v }) => `Päkapikuülesanne: ${v('ütle', 'öelge')} igale pereliikmele, mille poolest ta on eriline.`,
+    ({ v }) => `Päkapikuülesanne: ${v('õpi', 'õppige')} selgeks ühe jõululaulu esimene salm.`,
+    ({ v }) => `Päkapikuülesanne: ${v('pane', 'pange')} õhtul aknalauale midagi, mis ${v('sulle', 'teile')} täna rõõmu tegi – ma tahan seda näha.`,
   ],
   easter: [
     ({ v }) => `Jänkuülesanne: ${v('hüppa', 'hüpake')} nagu jänes kümme korda ümber laua!`,
     ({ v }) => `Jänkuülesanne: ${v('pane', 'pange')} vette mõni pajuoks ja ${v('vaata', 'vaadake')}, millal sellel lehed puhkevad.`,
     ({ v }) => `Jänkuülesanne: ${v('joonista', 'joonistage')} kõige uhkema mustriga muna, mida ${v('suudad', 'suudate')} välja mõelda.`,
+    ({ v }) => `Jänkuülesanne: ${v('otsi', 'otsige')} õuest esimesi kevadlilli.`,
+    ({ v }) => `Jänkuülesanne: ${v('meisterda', 'meisterdage')} paberist jänesekõrvad ja ${v('pane', 'pange')} need pähe.`,
+    ({ v }) => `Jänkuülesanne: ${v('loe', 'lugege')} kokku, mitu muna on külmkapis.`,
   ],
   birthday: [
     ({ v }) => `Sünnipäevaülesanne: ${v('mõtle', 'mõelge')} välja üks soov ja ${v('hoia', 'hoidke')} seda saladuses kuni küünalde puhumiseni.`,
     ({ v }) => `Sünnipäevaülesanne: ${v('tantsi', 'tantsige')} oma lemmiklaulu järgi nii, nagu keegi ei vaataks!`,
+    ({ v }) => `Sünnipäevaülesanne: ${v('ütle', 'öelge')} kolm asja, mida ${v('sa', 'te')} möödunud aasta jooksul ${v('õppisid', 'õppisite')}.`,
+    ({ v }) => `Sünnipäevaülesanne: ${v('kallista', 'kallistage')} kõiki, kes ${v('sind', 'teid')} täna õnnitlevad.`,
+    ({ v }) => `Sünnipäevaülesanne: ${v('vali', 'valige')} õhtuks lemmikmäng, mida kogu pere koos mängib.`,
   ],
   halloween: [
     ({ v }) => `Kummitusülesanne: ${v('õpeta', 'õpetage')} kellelegi perest oma kõige naljakam „Buu!“.`,
     ({ v }) => `Kummitusülesanne: ${v('joonista', 'joonistage')} sõbralik kummitus ja ${v('anna', 'andke')} talle nimi.`,
+    ({ v }) => `Kummitusülesanne: ${v('ehita', 'ehitage')} tekist kummitusekoobas ja ${v('räägi', 'rääkige')} seal üks naljakas jutt.`,
+    ({ v }) => `Kummitusülesanne: ${v('joonista', 'joonistage')} kõige naljakam kõrvitsanägu, mida ${v('suudad', 'suudate')} välja mõelda.`,
   ],
   'mardi-kadri': [
     ({ v }) => `Sandiülesanne: ${v('mõtle', 'mõelge')} välja üks hea soov, mida võiks sandina perele öelda.`,
     ({ v }) => `Sandiülesanne: ${v('küsi', 'küsige')} vanavanematelt, kuidas nemad lapsena sandiks käisid.`,
+    ({ v }) => `Sandiülesanne: ${v('õpi', 'õppige')} selgeks üks mardi- või kadrilaul.`,
+    ({ v }) => `Sandiülesanne: ${v('meisterda', 'meisterdage')} endale sandimask.`,
+  ],
+  vastlapaev: [
+    ({ v }) => `Vastlapäeva ülesanne: ${v('lase', 'laske')} nii pikk liug, kui ${v('suudad', 'suudate')}, ja ${v('mõõda', 'mõõtke')} see sammudega ära!`,
+    ({ v }) => `Vastlapäeva ülesanne: ${v('aita', 'aidake')} valmistada vastlakukleid.`,
+    ({ v }) => `Vastlapäeva ülesanne: ${v('meisterda', 'meisterdage')} nööbist ja niidist vastlavurr.`,
+  ],
+  valentines: [
+    ({ v }) => `Sõbrapäeva ülesanne: ${v('tee', 'tehke')} kellelegi kaart ja ${v('kirjuta', 'kirjutage')} sinna üks soe lause.`,
+    ({ v }) => `Sõbrapäeva ülesanne: ${v('helista', 'helistage')} vanaemale või vanaisale ja ${v('ütle', 'öelge')}, et ${v('mõtled', 'mõtlete')} tema peale.`,
+    ({ v }) => `Sõbrapäeva ülesanne: ${v('jaga', 'jagage')} täna kellegagi oma lemmikmänguasja.`,
+  ],
+  'school-start': [
+    ({ v }) => `Koolialguse ülesanne: ${v('pane', 'pange')} pinalisse üks väike salajane naeratus – näiteks joonistatud päike.`,
+    ({ v }) => `Koolialguse ülesanne: ${v('räägi', 'rääkige')} õhtul, mis oli koolipäevas kõige huvitavam.`,
+    ({ v }) => `Koolialguse ülesanne: ${v('pane', 'pange')} õhtul koolikott valmis ja ${v('kontrolli', 'kontrollige')}, et pinal oleks täis.`,
   ],
   summer: [
     ({ v }) => `Suveülesanne: ${v('leia', 'leidke')} õuest kolm erinevat lille ja ${v('uuri', 'uurige')} välja nende nimed.`,
     ({ v }) => `Suveülesanne: ${v('vaata', 'vaadake')} pilvi ja ${v('otsi', 'otsige')} nende seast mõni loom.`,
+    ({ v }) => `Suveülesanne: ${v('mine', 'minge')} paljajalu muru peale ja ${v('tunne', 'tundke')}, kui pehme see on.`,
+    ({ v }) => `Suveülesanne: ${v('korja', 'korjake')} väike lillekimp ja ${v('kingi', 'kinkige')} see kellelegi.`,
+    ({ v }) => `Suveülesanne: ${v('ehita', 'ehitage')} kividest või okstest pisike torn.`,
   ],
-  'school-start': [
-    ({ v }) => `Koolialguse ülesanne: ${v('pane', 'pange')} pinalisse üks väike salajane naeratus – näiteks joonistatud päike.`,
+  'lost-tooth': [
+    ({ v }) => `Hambahaldja ülesanne: ${v('pese', 'peske')} täna hambaid täpselt kaks minutit – ma loen kaasa!`,
+    ({ v }) => `Hambahaldja ülesanne: ${v('vaata', 'vaadake')} peeglisse ja ${v('naerata', 'naeratage')} oma kõige laiema naeratusega.`,
+    ({ v }) => `Hambahaldja ülesanne: ${v('joonista', 'joonistage')} pilt, kuidas uus hammas võiks välja näha.`,
   ],
 }
 
 export const GENERIC_MISSIONS: Line[] = [
   ({ v }) => `Tänane ülesanne: ${v('ütle', 'öelge')} kolmele inimesele midagi head.`,
-  ({ v }) => `Tänane ülesanne: ${v('ehita', 'ehitage')} padjadest ja tekkidest koobas ja ${v('loe', 'lugege')} seal üks lugu.`,
+  ({ v }) => `Tänane ülesanne: ${v('ehita', 'ehitage')} patjadest ja tekkidest koobas ja ${v('loe', 'lugege')} seal üks lugu.`,
   ({ v }) => `Tänane ülesanne: ${v('leia', 'leidke')} kodust viis ümmargust asja.`,
   ({ v }) => `Tänane ülesanne: ${v('joonista', 'joonistage')} pilt kõige paremast hetkest sel nädalal.`,
   ({ v }) => `Tänane ülesanne: ${v('tee', 'tehke')} oma toas väike koristus – kõige kiiremini enne, kui liivakell saab tühjaks!`,
@@ -255,6 +454,14 @@ export const GENERIC_MISSIONS: Line[] = [
   ({ v }) => `Tänane ülesanne: ${v('mõtle', 'mõelge')} välja nali ja ${v('räägi', 'rääkige')} see õhtul perele.`,
   ({ v }) => `Tänane ülesanne: ${v('meisterda', 'meisterdage')} paberist lennuk ja ${v('vaata', 'vaadake')}, kui kaugele see lendab.`,
   ({ v }) => `Tänane ülesanne: ${v('vaata', 'vaadake')} õhtul aknast välja ja ${v('loe', 'lugege')} kokku, mitu tähte paistab.`,
+  ({ v }) => `Tänane ülesanne: ${v('leia', 'leidke')} aknast vaadates kolm asja, mida keegi pole varem märganud.`,
+  ({ v }) => `Tänane ülesanne: ${v('kata', 'katke')} õhtusöögilaud eriti ilusti – see on perele üllatus.`,
+  ({ v }) => `Tänane ülesanne: ${v('mõtle', 'mõelge')} välja uus mäng ja ${v('õpeta', 'õpetage')} see perele.`,
+  ({ v }) => `Tänane ülesanne: ${v('loe', 'lugege')} enne magamaminekut üks lugu mõnele mänguasjale.`,
+  ({ v }) => `Tänane ülesanne: ${v('joonista', 'joonistage')} oma unistuste maja.`,
+  ({ v }) => `Tänane ülesanne: ${v('ütle', 'öelge')} terve päeva jooksul „aitäh“ igaühele, kes ${v('sind', 'teid')} aitab.`,
+  ({ v }) => `Tänane ülesanne: ${v('õpi', 'õppige')} selgeks üks uus tantsusamm ja ${v('näita', 'näidake')} seda õhtul teistele.`,
+  ({ v }) => `Tänane ülesanne: ${v('korista', 'koristage')} üks sahtel ja ${v('vaata', 'vaadake')}, kas sealt leiab mõne ammu kadunud aarde.`,
 ]
 
 export const TODDLER_MISSIONS: string[] = [
@@ -290,4 +497,3 @@ export const SIBLING_TASKS: Record<'young' | 'older' | 'toddler', string[]> = {
   ],
 }
 
-export const SIGN_OFFS: string[] = ['Soojade soovidega', 'Kallistustega', 'Sinu sõber', 'Parimate soovidega']

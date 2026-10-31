@@ -1,12 +1,14 @@
 import type { ChildProfile, ParentInstruction, RequestFor } from '../models'
-import { ageLabel, joinList, namesInCase } from '../text/estonian'
+import { ageLabel, capitalize, joinList, namesInCase } from '../text/estonian'
 import type { Say } from '../../data/templates/interests'
 import {
   ENDINGS,
-  GENERIC_SOLVES,
+  COMPANION_HELP,
+  EFFORT_LINES,
   GENRE_LABELS,
   GENRES,
   MISSING_THINGS,
+  STORY_MOODS,
   THEME_LABELS,
   THEME_LINES,
   THEME_QUESTIONS,
@@ -47,7 +49,7 @@ function readerStory(ctx: GenContext<'story'>): Pick<TypeResult, 'title' | 'item
     heroesAllative: namesInCase(heroes, 'allative'),
     v,
     they: plural ? 'nad' : 'ta',
-    mood: ctx.item(0).pick(occasion.vocabulary.moods, 'mood'),
+    mood: ctx.item(0).pick(STORY_MOODS[occasion.id], 'mood'),
     missing: MISSING_THINGS[occasion.id].nominative,
     missingGenitive: MISSING_THINGS[occasion.id].genitive,
   }
@@ -71,28 +73,44 @@ function readerStory(ctx: GenContext<'story'>): Pick<TypeResult, 'title' | 'item
   const opening: Segment = () =>
     paragraphs(genre.openings[plot]?.(storyCtx), companionLine, toddlerLine, objectLine)
   const problem: Segment = () => genre.problems[plot]?.(storyCtx)
+  const obstacleCount = { short: 1, medium: 2, long: 3 }[general.length]
+  // Companions step in once, in the last obstacle; interest remarks appear at most twice.
+  const companionObstacle = obstacleCount - 1
   const usedHooks = new Set<string>()
   const obstacle =
     (i: number): Segment =>
     (p) => {
-      const frame = genre.obstacles[i % genre.obstacles.length]
+      const step = genre.obstacles[i % genre.obstacles.length]
       const solver = heroes[i % heroes.length] as ChildProfile
-      const hook = audience.hooks.find(
-        ({ child, hook }) => child.id === solver.id && !usedHooks.has(hook.id),
+      const hook =
+        usedHooks.size < 2
+          ? audience.hooks.find(({ child, hook }) => child.id === solver.id && !usedHooks.has(hook.id))
+          : undefined
+      if (hook) usedHooks.add(hook.hook.id)
+      const help =
+        i === companionObstacle && companions.length > 0
+          ? capitalize(p.pick(COMPANION_HELP, 'companion')(joinList(companions), companions.length > 1, v))
+          : undefined
+      return paragraphs(
+        step?.frame(storyCtx),
+        p.pick(EFFORT_LINES, 'effort')(solver.name),
+        help,
+        step?.solve(solver.name),
+        hook?.hook.storyReflection(solver.name),
       )
-      let solve: string
-      if (hook && p.rng.next() < 0.85) {
-        usedHooks.add(hook.hook.id)
-        solve = hook.hook.storySolve(solver.name)
-      } else {
-        solve = p.pick(GENERIC_SOLVES, 'solve')(solver.name)
-      }
-      return paragraphs(frame?.(storyCtx), solve)
     }
   const resolution: Segment = () => genre.resolutions[plot]?.(storyCtx)
   const moral: Segment = () =>
     options.theme !== 'none' ? THEME_LINES[options.theme](storyCtx) : undefined
-  const ending: Segment = (p) => p.pick(ENDINGS[general.tone], 'ending')(storyCtx)
+  const companionRest =
+    companions.length > 0
+      ? `Ka ${joinList(companions)} ${companions.length > 1 ? 'olid' : 'oli'} väsinud, aga väga rahul.`
+      : undefined
+  const objectKeepsake = hookObject
+    ? `Ja see eriline asi – ${hookObject}? See jäi ${v('talle', 'neile')} mälestuseks sellest päevast.`
+    : undefined
+  const ending: Segment = (p) =>
+    paragraphs(objectKeepsake, p.pick(ENDINGS[general.tone], 'ending')(storyCtx), companionRest)
 
   const plan: Segment[][] = {
     short: [[opening], [problem, obstacle(0)], [resolution, moral, ending]],

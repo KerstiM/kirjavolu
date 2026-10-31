@@ -11,14 +11,20 @@ import {
   OCCASION_CORES,
   OPENINGS,
   SIBLING_TASKS,
-  TODDLER_CHRISTMAS,
+  CHRISTMAS_EVE,
+  OCCASION_PURPOSE,
+  SERIES_CLOSINGS,
+  TODDLER_CLOSINGS,
   TODDLER_CORES,
   TODDLER_MISSIONS,
+  TODDLER_OCCASION,
+  TODDLER_OPENINGS,
 } from '../../data/templates/letters'
 import type { Line } from '../../data/templates/types'
 import { ageBand } from './audience'
 import {
   createContext,
+  lowerFirst,
   notesInstruction,
   paragraphs,
   type DraftItem,
@@ -58,8 +64,19 @@ export function generateLetters(request: RequestFor<'letter'>, variants: readonl
   const personal = audienceLines(audience)
   const occasionCores = OCCASION_CORES[occasion.id] ?? []
   const uniqueHooks = [...new Map(audience.hooks.map(({ hook }) => [hook.id, hook])).values()]
-  const hookMissions: Line[] = uniqueHooks.map((hook) => ({ v }) => hook.mission(v))
-  const missions = [...(MISSIONS[occasion.id] ?? []), ...hookMissions, ...GENERIC_MISSIONS]
+  const hookMissions: Line[] = uniqueHooks.map(
+    (hook) =>
+      ({ v }) =>
+        `Tänane ülesanne: ${lowerFirst(hook.mission(v))}`,
+  )
+  const occasionMissions = MISSIONS[occasion.id] ?? []
+  // Rotating the tier order mixes occasion, interest and general tasks across a series.
+  const missionTiers = [
+    [occasionMissions, hookMissions, GENERIC_MISSIONS],
+    [hookMissions, GENERIC_MISSIONS, occasionMissions],
+    [GENERIC_MISSIONS, occasionMissions, hookMissions],
+  ]
+  const purposePool = OCCASION_PURPOSE[occasion.id]
   const showPersonal = general.length !== 'short'
   const showMission = general.length !== 'short' || options.count > 1
 
@@ -68,15 +85,23 @@ export function generateLetters(request: RequestFor<'letter'>, variants: readonl
 
   for (let i = 0; i < options.count; i++) {
     const p = ctx.item(i)
+    const isLast = i === options.count - 1
+    const isoDate = options.startDate ? addDays(options.startDate, i) : ''
     const opening =
       i === 0
         ? `Tere! ${ctx.line(p.pick(FIRST_LETTER_INTRO, 'intro'))}`
-        : ctx.line(p.pick(OPENINGS[general.tone], 'opening'))
+        : ctx.line(p.pick(toddlerOnly ? TODDLER_OPENINGS : OPENINGS[general.tone], 'opening'))
+    const purpose = i === 0 && purposePool && !toddlerOnly ? ctx.line(p.pick(purposePool, 'purpose')) : undefined
+    const christmasEve =
+      occasion.id === 'christmas' &&
+      !toddlerOnly &&
+      (isoDate.endsWith('-12-24') || (!isoDate && options.count === 24 && isLast))
+        ? ctx.line(CHRISTMAS_EVE)
+        : undefined
 
     let core: string
     if (toddlerOnly) {
-      const pool = occasion.id === 'christmas' ? [...TODDLER_CHRISTMAS, ...TODDLER_CORES] : TODDLER_CORES
-      core = ctx.line(p.pick(pool, 'core'))
+      core = ctx.line(p.pickTiered([TODDLER_OCCASION[occasion.id] ?? [], TODDLER_CORES], 'core'))
     } else if (connected) {
       const beat = beatIndexFor(i, options.count, ARC_BEATS.length)
       const beatLine = ARC_BEATS[beat]
@@ -92,14 +117,18 @@ export function generateLetters(request: RequestFor<'letter'>, variants: readonl
     }
 
     const mood =
-      (i === 0 || general.length === 'long') && !toddlerOnly
+      !toddlerOnly && ((i === 0 && !purpose) || general.length === 'long')
         ? p.pick(occasion.vocabulary.moods, 'mood')
         : undefined
-    const personalLine = showPersonal && personal.length > 0 ? p.pick(personal, 'personal') : undefined
+    // In long series, personal lines appear while fresh ones remain, then only now and then.
+    const personalLine =
+      showPersonal && personal.length > 0 && (p.hasFresh(personal, 'personal') || i % 3 === 0)
+        ? p.pick(personal, 'personal')
+        : undefined
     const mission = showMission
       ? toddlerOnly
         ? p.pick(TODDLER_MISSIONS, 'mission')
-        : ctx.line(p.pick(missions, 'mission'))
+        : ctx.line(p.pickTiered(missionTiers[i % missionTiers.length] ?? [GENERIC_MISSIONS], 'mission'))
       : undefined
     const siblingTasks =
       audience.plural && general.length !== 'short' && (options.count <= 7 || i % 3 === 0)
@@ -111,19 +140,24 @@ export function generateLetters(request: RequestFor<'letter'>, variants: readonl
             .join('\n')
         : undefined
     const extraPersonal =
-      general.length === 'long' && personal.length > 1 ? p.pick(personal, 'personal') : undefined
-    const closing = ctx.line(p.pick(CLOSINGS[toddlerOnly ? 'heartwarming' : general.tone], 'closing'))
+      general.length === 'long' && p.hasFresh(personal, 'personal') ? p.pick(personal, 'personal') : undefined
+    const closingPool = toddlerOnly
+      ? TODDLER_CLOSINGS
+      : options.count > 1 && !isLast
+        ? [...CLOSINGS[general.tone], ...SERIES_CLOSINGS[general.tone]]
+        : CLOSINGS[general.tone]
+    const closing = ctx.line(p.pick(closingPool, 'closing'))
     const signOff = p.pick(
       ['Soojade soovidega', 'Kallistustega', 'Parimate soovidega', audience.v('Sinu sõber', 'Teie sõber')],
       'signoff',
     )
 
-    const date = options.startDate ? formatDate(addDays(options.startDate, i)) : ''
+    const date = isoDate ? formatDate(isoDate) : ''
     items.push({
       kind: 'letter',
       label: date || (options.count > 1 ? `${i + 1}. kiri` : occasion.name),
       heading: audience.greeting,
-      body: paragraphs(opening, mood, core, personalLine, extraPersonal, mission, siblingTasks, closing),
+      body: paragraphs(opening, christmasEve, purpose, mood, core, personalLine, extraPersonal, mission, siblingTasks, closing),
       signature: `${signOff}\n${sender}`,
     })
   }
