@@ -108,7 +108,6 @@ function save(): void {
         <p v-for="(paragraph, index) in paragraphs" :key="index">{{ paragraph }}</p>
       </div>
       <p v-if="item.signature" class="paper__signature">{{ item.signature }}</p>
-      <span v-if="!pattern && !backgroundUrl" class="paper__ornament" aria-hidden="true">✦</span>
     </div>
     <PuzzlePiece v-if="piece && !editing" v-bind="piece" class="paper__piece" />
   </article>
@@ -222,14 +221,6 @@ function save(): void {
   white-space: pre-line;
   font-weight: 500;
 }
-.paper__ornament {
-  position: absolute;
-  bottom: 0.7rem;
-  left: 1rem;
-  color: var(--gold);
-  font-size: 1rem;
-}
-
 // Decoration layers: content sits above the background on a soft white panel.
 .paper__bg-image {
   position: absolute;
