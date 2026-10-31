@@ -23,7 +23,7 @@ export const INTEREST_HOOKS: InterestHook[] = [
       (v) =>
         `Proovisin ka ise Rubiku kuubikut keerata, aga sain korda ainult ühe nurga. Kuidas ${v('sul', 'teil')} see nii hästi välja tuleb?`,
       (v) =>
-        `Kas ${v('tead', 'teate')}, et Rubiku kuubikul on üle 43 kvintiljoni erineva asendi? Ja ikkagi ${v('leiad sa', 'leiate te')} õige tee!`,
+        `Kas ${v('tead', 'teate')}, et Rubiku kuubikul on üle 43 triljoni erineva asendi? Ja ikkagi ${v('leiad sa', 'leiate te')} õige tee!`,
       (v) =>
         `Mulle meeldib, et ${v('sa ei anna', 'te ei anna')} alla, kui kuubik kohe lahti ei tule. See on tõelise nuputaja tunnus.`,
       (v) =>

@@ -114,3 +114,13 @@ describe('puzzle and hunt template quality', () => {
     }
   })
 })
+
+describe('facts in templates', () => {
+  it('uses the Estonian long scale for the number of Rubik positions (10^18 = triljon)', async () => {
+    const { INTEREST_HOOKS } = await import('@/data/templates/interests')
+    const rubik = INTEREST_HOOKS.find((hook) => hook.id === 'rubik')!
+    const lines = rubik.letterLines.map((line) => line((s) => s))
+    expect(lines.some((line) => line.includes('43 triljoni'))).toBe(true)
+    expect(lines.join(' ')).not.toContain('kvintiljon')
+  })
+})
