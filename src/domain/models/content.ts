@@ -1,5 +1,6 @@
 import type { ChildProfile } from './child'
 import type { OccasionId } from './occasion'
+import type { Decoration } from './decoration'
 
 export type ContentTypeId = 'letter' | 'treasure-hunt' | 'story' | 'puzzle' | 'calendar' | 'certificate'
 
@@ -139,5 +140,7 @@ export interface GeneratedContent {
   items: GeneratedItem[]
   instructions: ParentInstruction[]
   layout: PrintableLayout
+  /** Optional backgrounds and picture puzzle; missing in creations made before this feature. */
+  decoration?: Decoration
   generator: { id: string; label: string }
 }

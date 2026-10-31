@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import { computed, nextTick, reactive, ref } from 'vue'
 import { Check, Pencil, RefreshCw, X } from 'lucide-vue-next'
-import type { CertificateStyle, GeneratedItem } from '../../domain/models'
+import type { CertificateStyle, GeneratedItem, PatternId } from '../../domain/models'
+import type { PuzzleGrid } from '../../domain/puzzleGrid'
+import PatternBackground from './decoration/PatternBackground.vue'
+import PuzzlePiece from './decoration/PuzzlePiece.vue'
 
 const props = defineProps<{
   item: GeneratedItem
   certificateStyle?: CertificateStyle
   busy?: boolean
+  pattern?: PatternId | null
+  inkSaver?: boolean
+  backgroundUrl?: string | null
+  backgroundOpacity?: number
+  piece?: { imageUrl: string; grid: PuzzleGrid; index: number; maxCm: number } | null
 }>()
 const emit = defineEmits<{
   save: [patch: Pick<GeneratedItem, 'heading' | 'body' | 'signature'>]
@@ -21,6 +29,10 @@ const paragraphs = computed(() => props.item.body.split(/\n{2,}/).filter((p) => 
 const kindClass = computed(() => [
   `paper--${props.item.kind}`,
   props.item.kind === 'certificate' ? `cert--${props.certificateStyle ?? 'magical'}` : '',
+  {
+    'has-backdrop': !!props.backgroundUrl || (!!props.pattern && !props.inkSaver),
+    'has-frame': !!props.pattern && props.inkSaver,
+  },
 ])
 const bodyRows = computed(() => Math.min(18, Math.max(4, Math.ceil(draft.body.length / 60) + draft.body.split('\n').length)))
 
@@ -45,6 +57,14 @@ function save(): void {
 
 <template>
   <article class="paper" :class="kindClass">
+    <img
+      v-if="backgroundUrl"
+      :src="backgroundUrl"
+      alt=""
+      class="paper__bg-image"
+      :style="{ opacity: backgroundOpacity ?? 0.25 }"
+    />
+    <PatternBackground v-else-if="pattern" :pattern="pattern" :ink-saver="!!inkSaver" />
     <div class="paper__tools no-print">
       <span v-if="item.edited" class="edited-badge">Muudetud</span>
       <template v-if="!editing">
@@ -86,8 +106,9 @@ function save(): void {
         <p v-for="(paragraph, index) in paragraphs" :key="index">{{ paragraph }}</p>
       </div>
       <p v-if="item.signature" class="paper__signature">{{ item.signature }}</p>
-      <span class="paper__ornament" aria-hidden="true">✦</span>
+      <span v-if="!pattern && !backgroundUrl" class="paper__ornament" aria-hidden="true">✦</span>
     </div>
+    <PuzzlePiece v-if="piece && !editing" v-bind="piece" class="paper__piece" />
   </article>
 </template>
 
@@ -205,6 +226,42 @@ function save(): void {
   left: 1rem;
   color: var(--gold);
   font-size: 1rem;
+}
+
+// Decoration layers: content sits above the background on a soft white panel.
+.paper__bg-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.paper__content,
+.editor,
+.paper__piece,
+.paper__tools {
+  position: relative;
+  z-index: 1;
+}
+.paper__tools {
+  position: absolute;
+  z-index: 2;
+}
+.has-backdrop .paper__content {
+  padding: 1.1rem 1.25rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+}
+.has-frame {
+  padding: 2.8rem;
+}
+.paper {
+  overflow: hidden;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
 }
 
 // Content-type specific looks

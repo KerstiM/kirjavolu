@@ -11,6 +11,8 @@ Eestikeelne veebirakendus, mis aitab lapsevanematel luua lapsele personaalseid m
 - Ühised elamused õdedele-vendadele: ülesanded jagatakse vanuse järgi
 - Eelvaade: tekstide muutmine, ühe osa uuesti genereerimine, kolm prindipaigutust, printimine/PDF, tekstifaili eksport
 - Lapsevanema juhised ja vastused on lapsele mõeldud materjalist eraldi
+- Kujundus: 8 SVG-taustamustrit (sündmusele sobivad eespool), tinti säästev raamirežiim või oma pilt heleda taustana
+- Puslepilt: oma pilt jagatakse tükkideks ja iga osa allserva tuleb nummerdatud väljalõigatav puslekild; lapsevanema lehel on kokkupaneku juhend ja vajadusel lisatükid
 - Andmed salvestatakse brauseri localStorage'isse versioonitud skeemiga
 
 ## Tehnoloogia
@@ -53,6 +55,12 @@ src/
 - **Deterministlik ja osade kaupa uuendatav.** Struktuur (nt peidukohtade järjekord) sõltub ainult seemnest; iga osa tekst sõltub seemnest, osa järjekorranumbrist ja variandist. Nii saab ühe kaardi uuesti luua, ilma et teised muutuksid.
 - **Olek.** Pinia store'id `children` ja `creations`; `app/persistence.ts` salvestab need versioonitud kujul (`schemaVersion`) võtme `kirjavolu.state` alla. Skeemi muutmisel lisa samm funktsiooni `migrate`.
 
+## Kujundus ja puslepilt
+- Kujundus on puhtalt visuaalne (`GeneratedContent.decoration`) ega muuda tekste.
+- Üles laaditud pilt vähendatakse brauseris (kuni 2000 px) ja salvestatakse **IndexedDB-sse** (`src/utils/imageStore.ts`), sest localStorage'i maht on fotode jaoks liiga väike. Pilt ei lahku seadmest. Loomingu kustutamisel kustutatakse ka pilt.
+- Pusle ruudustik (`src/domain/puzzleGrid.ts`) valitakse nii, et tükke oleks vähemalt nii palju kui osi, liigseid tükke oleks vähe ja tükid oleksid umbes postkaardi kujuga. Näiteks 24 kirja ja 4:3 foto puhul on ruudustik 6 × 4.
+- Tükid ja taustapilt on `<img>`-elemendid, mitte CSS-taustad, et need prindiksid ka siis, kui brauseri prindiseadetes on taustagraafika välja lülitatud.
+
 ## Kohalik mallipõhine genereerimine
 Sisu ei loo tehisintellekt. `TemplateGenerator` (`src/domain/generators`) paneb tekstid kokku käsitsi kirjutatud eestikeelsetest mallidest ja lapse profiilist. Genereerimine on deterministlik (seemne põhjal), arvestab vanust ja lugemisoskust, väldib korduvaid tekste ning käänab nimesid (nt Rubenile, Rubeni ja Jasperiga).
 
@@ -66,6 +74,8 @@ UI kasutab ainult liidest `ContentGenerator` (`generate`, `regenerateItem`) läb
 - Malliandmepangad on piiratud: pikas sarjas võib üksik lause korduda
 - Väikelapse unejutul ei ole alternatiivseid variante
 - Printimist on kontrollitud brauseri prindieelvaate stiilide tasemel, mitte igal printeril
+- Oma pilt on salvestatud ainult selles brauseris; teises seadmes avatud loomingul pilti ei ole
+- Väikese eraldusvõimega pildi puhul võivad prinditud puslekillud jääda uduseks (rakendus hoiatab)
 
 ## Plaanitud täiendused
 - End-to-end testid päris brauseris (nt Playwright), sh printimise eelvaade

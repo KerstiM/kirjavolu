@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue'
 import { ArrowLeft, Download, FileQuestion, Printer, Plus } from 'lucide-vue-next'
-import type { CertificateStyle, GeneratedItem, PrintableLayout } from '../../domain/models'
+import type { CertificateStyle, Decoration, GeneratedItem, PrintableLayout } from '../../domain/models'
+import { EMPTY_DECORATION } from '../../domain/models'
+import { computeGrid } from '../../domain/puzzleGrid'
+import { useStoredImage } from '../../composables/useStoredImage'
+import DecorationPanel from './decoration/DecorationPanel.vue'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import EmptyState from '../../components/ui/EmptyState.vue'
 import SegmentedControl from '../../components/ui/SegmentedControl.vue'
@@ -37,7 +41,20 @@ const layout = computed({
 const certificateStyle = computed<CertificateStyle | undefined>(() =>
   content.value?.request.contentType === 'certificate' ? content.value.request.options.style : undefined,
 )
-const hasParentMaterial = computed(() => (content.value?.instructions.length ?? 0) > 0)
+const decoration = computed<Decoration>(() => ({ ...EMPTY_DECORATION, ...content.value?.decoration }))
+const imageUrl = useStoredImage(() => decoration.value.image?.id)
+const puzzle = computed(() => {
+  const image = decoration.value.image
+  if (!decoration.value.puzzle || !image || !imageUrl.value || !content.value) return null
+  return { imageUrl: imageUrl.value, grid: computeGrid(content.value.items.length, image.width / image.height) }
+})
+// Smaller pieces on cards so four still fit on one A4 page.
+const pieceMaxCm = computed(() => (layout.value === 'cards' ? 5 : layout.value === 'half' ? 6 : 8))
+const hasParentMaterial = computed(() => (content.value?.instructions.length ?? 0) > 0 || !!puzzle.value)
+
+function setDecoration(next: Decoration): void {
+  store.setDecoration(props.id, next)
+}
 
 function save(item: GeneratedItem, patch: Pick<GeneratedItem, 'heading' | 'body' | 'signature'>): void {
   store.editItem(props.id, item.id, patch)
@@ -121,6 +138,14 @@ function exportText(): void {
         </p>
       </aside>
 
+      <DecorationPanel
+        :decoration="decoration"
+        :occasion-id="content.request.occasionId"
+        :item-count="content.items.length"
+        :image-url="imageUrl"
+        @update="setDecoration"
+      />
+
       <p class="visually-hidden" role="status" aria-live="polite">{{ status }}</p>
       <p v-if="status" class="toast no-print" aria-hidden="true">{{ status }}</p>
 
@@ -131,12 +156,17 @@ function exportText(): void {
           :item="item"
           :certificate-style="certificateStyle"
           :busy="busyItem === item.id"
+          :pattern="decoration.pattern"
+          :ink-saver="decoration.inkSaver"
+          :background-url="decoration.imageAsBackground ? imageUrl : null"
+          :background-opacity="decoration.imageOpacity"
+          :piece="puzzle ? { ...puzzle, index, maxCm: pieceMaxCm } : null"
           @save="(patch) => save(item, patch)"
           @regenerate="regenerate(index)"
         />
       </div>
 
-      <ParentSheet v-if="hasParentMaterial" :content="content" />
+      <ParentSheet v-if="hasParentMaterial" :content="content" :puzzle="puzzle" />
     </div>
   </div>
 </template>
