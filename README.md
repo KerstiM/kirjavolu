@@ -9,6 +9,7 @@ Eestikeelne veebirakendus, mis aitab lapsevanematel luua lapsele personaalseid m
 - 11 sündmust (jõulud, lihavõtted, sünnipäev, halloween, mardi- ja kadripäev, vastlapäev, sõbrapäev, kooliaasta algus, suvevaheaeg, piimahammas, tavaline päev)
 - Laste profiilid (lisamine, muutmine, kustutamine), näidisprofiilid Ruben, Jasper ja Brita
 - Ühised elamused õdedele-vendadele: ülesanded jagatakse vanuse järgi
+- **Seotud pere sarjad**: mitme lapse puhul saab iga laps oma kirjasarja, aga need on omavahel seotud – igal lapsel on huvide järgi välja pakutud abiline (nt Kõpsu-Mõpsu Kuubikuvõlur, Tipp-Topp Riisiterake), esimeses kirjas tutvustatakse ka õdede-vendade abilisi, umbes iga viies päev on paarisülesanne (vanem teeb nooremale midagi ja mõlema kiri teab sellest) ning viimases kirjas lõpetavad kõik koos. Eelvaates on iga lapse sari omas paigutuses
 - Eelvaade: tekstide muutmine, ühe osa uuesti genereerimine, kolm prindipaigutust, printimine/PDF, tekstifaili eksport
 - Lapsevanema juhised ja vastused on lapsele mõeldud materjalist eraldi
 - Kujundus: 8 SVG-taustamustrit (sündmusele sobivad eespool), tinti säästev raamirežiim või oma pilt heleda taustana
@@ -63,6 +64,9 @@ src/
 - Pusle ruudustik (`src/domain/puzzleGrid.ts`) valitakse nii, et tükke oleks vähemalt nii palju kui osi, liigseid tükke oleks vähe ja tükid oleksid umbes postkaardi kujuga. Näiteks 24 kirja ja 4:3 foto puhul on ruudustik 6 × 4.
 - Tükid ja taustapilt on `<img>`-elemendid, mitte CSS-taustad, et need prindiksid ka siis, kui brauseri prindiseadetes on taustagraafika välja lülitatud.
 
+### Seotud pere sarjad
+`src/domain/generators/linkedLetters.ts` koostab **enne kirjade kirjutamist** pere päevaplaani: millisel päeval, kes kellele ja millise paarismalliga (`src/data/templates/pairs.ts`). Mõlema lapse kiri kirjutatakse samast plaanireast, nii et need klapivad alati. Iga lapse sari tehakse tavalise kirjageneraatoriga, kuid ühise „kasutatud tekstide“ registriga, et õed-vennad ei saaks sama lugu. Järjejuttu jutustatakse ainult vanimale lapsele.
+
 ### Pusleplakati geomeetria
 `src/domain/posterLayout.ts` arvutab veerud (kuni 12 osa: 2, rohkem: 4), read ja lehed (2 veergu ja kuni 4 rida lehel). Päev *i* asub veerus `floor(i / read)` ja paarisveergudes ülalt alla, paaritutes alt üles, nii et järjestikused päevad on alati naabrid ja rada ei hüppa. Taust ja rada joonistatakse plakati koordinaatides ning iga leht näitab oma lõiku, nii et kokku pandud lehtedel jätkuvad need katkematult. 7+ kirjaga sarjades jäetakse täitelaused ära, et tekst kaardile mahuks.
 
@@ -79,6 +83,7 @@ UI kasutab ainult liidest `ContentGenerator` (`generate`, `regenerateItem`) läb
 - Malliandmepangad on piiratud: pikas sarjas võib üksik lause korduda
 - Väikelapse unejutul ei ole alternatiivseid variante
 - Printimist on kontrollitud brauseri prindieelvaate stiilide tasemel, mitte igal printeril
+- Seotud sarjades ei kasutata veel lapsevanema sisestatud pere sündmusi ega reegleid (plaanis 2. etapis)
 - Oma pilt on salvestatud ainult selles brauseris; teises seadmes avatud loomingul pilti ei ole
 - Väikese eraldusvõimega pildi puhul võivad prinditud puslekillud jääda uduseks (rakendus hoiatab)
 

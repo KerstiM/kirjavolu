@@ -24,6 +24,8 @@ const paragraphs = computed(() => {
 const { overflow } = useFitText(body, [() => props.item.body, () => props.uppercase], {
   maxPt: () => (props.uppercase ? 10.5 : 11),
   minPt: 7.5,
+  // Capital letters come out wider in print than on screen: keep more room.
+  headroom: () => (props.uppercase ? 0.88 : 0.95),
 })
 watch(overflow, (value) => emit('overflow', value), { immediate: true })
 </script>

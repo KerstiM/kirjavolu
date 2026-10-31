@@ -34,6 +34,7 @@ export function defaultOptions(occasionId: OccasionId): ContentOptionsMap {
       startDate: upcomingDate(occasionId),
       count: christmas ? 24 : 1,
       connected: christmas,
+      mode: 'linked',
     },
     'treasure-hunt': {
       clueCount: 6,

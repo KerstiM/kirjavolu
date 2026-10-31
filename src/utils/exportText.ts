@@ -5,7 +5,7 @@ export function contentToPlainText(content: GeneratedContent, includeParent = tr
   const lines: string[] = [content.title, content.subtitle, '']
   for (const item of content.items) {
     lines.push('────────────────────────')
-    if (item.label) lines.push(item.label)
+    if (item.label) lines.push(item.childId && item.forChild ? `${item.forChild} · ${item.label}` : item.label)
     if (item.heading) lines.push(item.heading.toLocaleUpperCase('et-EE'))
     lines.push('', item.body)
     if (item.signature) lines.push('', item.signature)

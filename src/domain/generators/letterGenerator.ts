@@ -25,6 +25,7 @@ import { ageBand } from './audience'
 import {
   createContext,
   lowerFirst,
+  type UsedRegistry,
   notesInstruction,
   paragraphs,
   type DraftItem,
@@ -55,13 +56,31 @@ const USAGE_TIPS: Partial<Record<string, string>> = {
     'Libista kiri koolikotti või pinalisse – see on tore üllatus esimesel koolipäeval.',
 }
 
+/** Day-specific additions from the family plan of a linked series. */
+export interface LinkedExtras {
+  /** Replaces the first letter's introduction (mentions the siblings' helpers). */
+  opening?: string
+  /** Replaces the day's task: a paired task with a sibling. */
+  task?: string
+  /** Added to the last letter: all helpers finish together. */
+  finale?: string
+}
+
+export interface LinkedSeries {
+  sender: string
+  extras: (index: number) => LinkedExtras
+  /** Shared with the siblings' series so their texts do not repeat each other. */
+  used: UsedRegistry
+}
+
 export function generateLetters(
   request: RequestFor<'letter'>,
   variants: readonly number[],
+  linked?: LinkedSeries,
 ): TypeResult {
   const { options, general } = request
-  const sender = options.sender.trim() || 'Salapärane Sõber'
-  const ctx = createContext(request, variants, sender)
+  const sender = linked?.sender ?? (options.sender.trim() || 'Salapärane Sõber')
+  const ctx = createContext(request, variants, sender, linked?.used)
   const { audience, occasion } = ctx
   const toddlerOnly = audience.band === 'toddler'
   const connected = options.connected && options.count > 1
@@ -95,14 +114,18 @@ export function generateLetters(
     const p = ctx.item(i)
     const isLast = i === options.count - 1
     const isoDate = options.startDate ? addDays(options.startDate, i) : ''
+    const extra = linked?.extras(i) ?? {}
     const opening =
       i === 0
-        ? `Tere! ${ctx.line(p.pick(FIRST_LETTER_INTRO, 'intro'))}`
+        ? (extra.opening ?? `Tere! ${ctx.line(p.pick(FIRST_LETTER_INTRO, 'intro'))}`)
         : compact
           ? undefined
           : ctx.line(p.pick(toddlerOnly ? TODDLER_OPENINGS : OPENINGS[general.tone], 'opening'))
     const purpose =
-      i === 0 && purposePool && !toddlerOnly ? ctx.line(p.pick(purposePool, 'purpose')) : undefined
+      // A linked introduction already says why the helper came.
+      i === 0 && purposePool && !toddlerOnly && !extra.opening
+        ? ctx.line(p.pick(purposePool, 'purpose'))
+        : undefined
     const christmasEve =
       occasion.id === 'christmas' &&
       !toddlerOnly &&
@@ -111,7 +134,10 @@ export function generateLetters(
         : undefined
 
     let core: string
-    if (toddlerCard && (i === 0 || i % 2 === 1)) {
+    if (compact && isLast && !connected && !toddlerOnly && (christmasEve || extra.finale)) {
+      // A farewell card: Christmas Eve and the shared goodbye are enough.
+      core = ''
+    } else if (toddlerCard && (i === 0 || i % 2 === 1)) {
       // Introduction or activity day: no scene is drawn, so the scene pool is not used up.
       core = ''
     } else if (toddlerOnly) {
@@ -138,13 +164,17 @@ export function generateLetters(
     const personalLine =
       showPersonal &&
       personal.length > 0 &&
-      // The first card of a daily series already carries the introduction.
-      !(compact && i === 0) &&
+      // The first and last cards of a daily series carry the introduction and the farewell.
+      !(compact && (i === 0 || isLast)) &&
       (p.hasFresh(personal, 'personal') || i % 3 === 0)
         ? p.pick(personal, 'personal')
         : undefined
-    const mission =
-      showMission && !(toddlerCard && i % 2 === 0)
+    const mission = extra.task
+      ? extra.task
+      : showMission &&
+          !(toddlerCard && i % 2 === 0) &&
+          // In a daily series the first card introduces and the last says goodbye: no task there.
+          !(compact && !toddlerOnly && (i === 0 || isLast))
         ? toddlerOnly
           ? p.pick(TODDLER_MISSIONS, 'mission')
           : ctx.line(
@@ -169,7 +199,8 @@ export function generateLetters(
       : options.count > 1 && !isLast
         ? [...CLOSINGS[general.tone], ...SERIES_CLOSINGS[general.tone]]
         : CLOSINGS[general.tone]
-    const closing = ctx.line(p.pick(closingPool, 'closing'))
+    // Daily cards end with the signature only, like handwritten notes; the last one still says goodbye.
+    const closing = compact && !isLast ? undefined : ctx.line(p.pick(closingPool, 'closing'))
     const signOff = p.pick(
       [
         'Soojade soovidega',
@@ -182,9 +213,10 @@ export function generateLetters(
 
     const date = isoDate ? formatDate(isoDate) : ''
     const toddlerIntro =
-      occasion.id === 'christmas'
+      extra.opening ??
+      (occasion.id === 'christmas'
         ? `Tere, ${audience.v('väike', 'väikesed')} ${audience.names}! Mina olen ${sender}. Ma olen nii väike, et mahun ${audience.v('sinu', 'teie')} sussi sisse.`
-        : `Tere, ${audience.v('väike', 'väikesed')} ${audience.names}! Mina olen ${sender}. Ma tulin ${audience.v('sulle', 'teile')} külla!`
+        : `Tere, ${audience.v('väike', 'väikesed')} ${audience.names}! Mina olen ${sender}. Ma tulin ${audience.v('sulle', 'teile')} külla!`)
     // The last card is a warm wish for the big day, like "Häid jõule, väike Brita!".
     const toddlerFinale = `${occasion.vocabulary.greeting}, ${audience.v('väike', 'väikesed')} ${audience.names}! ${sender} kallistab ${audience.v('sind', 'teid')}. Musi-musi!`
     const toddlerBody = toddlerCard
@@ -192,9 +224,11 @@ export function generateLetters(
         ? toddlerIntro
         : isLast
           ? toddlerFinale
-          : i % 2 === 0
-            ? core
-            : mission
+          : extra.task
+            ? extra.task
+            : i % 2 === 0
+              ? core
+              : mission
       : undefined
     items.push({
       kind: 'letter',
@@ -213,6 +247,7 @@ export function generateLetters(
           extraPersonal,
           mission,
           siblingTasks,
+          extra.finale,
           closing,
         ),
       signature: `${signOff}\n${sender}`,
@@ -232,7 +267,7 @@ function pickCore(p: ItemPicker, occasionCores: Line[]): Line {
   return p.pickTiered([occasionCores, GENERIC_CORES], 'core')
 }
 
-function letterInstructions(
+export function letterInstructions(
   request: RequestFor<'letter'>,
   connected: boolean,
 ): ParentInstruction[] {

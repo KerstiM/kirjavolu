@@ -8,6 +8,7 @@ import type { TypeResult } from './context'
 import { generateCalendar } from './calendarGenerator'
 import { generateCertificates } from './certificateGenerator'
 import { generateLetters } from './letterGenerator'
+import { generateLinkedLetters } from './linkedLetters'
 import { generatePuzzles } from './puzzleGenerator'
 import { generateStory } from './storyGenerator'
 import { generateTreasureHunt } from './treasureHuntGenerator'
@@ -23,7 +24,9 @@ export class GenerationError extends Error {
 export function runTemplates(request: GenerationRequest, variants: readonly number[] = []): TypeResult {
   switch (request.contentType) {
     case 'letter':
-      return generateLetters(request, variants)
+      return request.options.mode === 'linked' && request.children.length > 1
+        ? generateLinkedLetters(request, variants)
+        : generateLetters(request, variants)
     case 'treasure-hunt':
       return generateTreasureHunt(request, variants)
     case 'story':

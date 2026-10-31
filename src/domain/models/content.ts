@@ -24,11 +24,25 @@ export interface GeneralOptions {
   notes: string
 }
 
+/** Helper character writing to one child in a linked family series. */
+export interface ElfPersona {
+  name: string
+  title: string
+  origin: string
+}
+
+/** "shared": one letter for all children; "linked": each child gets their own series, coordinated with siblings. */
+export type LetterMode = 'shared' | 'linked'
+
 export interface LetterOptions {
   sender: string
   startDate: string
   count: 1 | 3 | 7 | 24
   connected: boolean
+  /** Only used with several children. Missing in creations made before this feature. */
+  mode?: LetterMode
+  /** Helper per child id in linked mode; missing entries are suggested automatically. */
+  personas?: Record<string, ElfPersona>
 }
 
 export type Setting = 'indoor' | 'outdoor'
@@ -120,6 +134,8 @@ export interface GeneratedItem {
   date?: string
   /** Child the item is addressed to in a shared experience. */
   forChild?: string
+  /** Child id for items of a linked family series (one series per child). */
+  childId?: string
   /** Solution, kept out of child-facing print. */
   answer?: string
   /** Parent-only remark about this item (e.g. where to hide it). */

@@ -28,7 +28,7 @@ describe('letter template quality', () => {
 
   it('consecutive letters never share the opening or closing', () => {
     for (const seed of [1, 7, 42]) {
-      const items = runTemplates(makeRequest('letter', { seed, occasionId: 'christmas', children: [RUBEN, JASPER, BRITA] })).items
+      const items = runTemplates(makeRequest('letter', { seed, occasionId: 'christmas', children: [RUBEN, JASPER, BRITA], options: { mode: 'shared' } })).items
       for (let i = 1; i < items.length; i++) {
         const prev = items[i - 1]!.body.split('\n\n')
         const cur = items[i]!.body.split('\n\n')

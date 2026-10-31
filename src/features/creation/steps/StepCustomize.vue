@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ContentOptionsMap, ContentTypeId, GeneralOptions, OccasionId } from '../../../domain/models'
+import type { ChildProfile, ContentOptionsMap, ContentTypeId, GeneralOptions, OccasionId } from '../../../domain/models'
 import { getContentType } from '../../../domain/contentTypes'
 import FormField from '../../../components/ui/FormField.vue'
 import SegmentedControl from '../../../components/ui/SegmentedControl.vue'
@@ -11,7 +11,7 @@ import PuzzleOptionsForm from '../options/PuzzleOptionsForm.vue'
 import CalendarOptionsForm from '../options/CalendarOptionsForm.vue'
 import CertificateOptionsForm from '../options/CertificateOptionsForm.vue'
 
-defineProps<{ contentType: ContentTypeId; occasionId: OccasionId; childCount: number }>()
+defineProps<{ contentType: ContentTypeId; occasionId: OccasionId; childCount: number; children: ChildProfile[] }>()
 const general = defineModel<GeneralOptions>('general', { required: true })
 const options = defineModel<ContentOptionsMap>('options', { required: true })
 </script>
@@ -23,7 +23,12 @@ const options = defineModel<ContentOptionsMap>('options', { required: true })
 
     <div class="panel">
       <h3 class="panel__title">{{ getContentType(contentType).title }}</h3>
-      <LetterOptionsForm v-if="contentType === 'letter'" v-model="options.letter" />
+      <LetterOptionsForm
+        v-if="contentType === 'letter'"
+        v-model="options.letter"
+        :children="children"
+        :occasion-id="occasionId"
+      />
       <TreasureHuntOptionsForm
         v-else-if="contentType === 'treasure-hunt'"
         v-model="options['treasure-hunt']"

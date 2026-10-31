@@ -18,6 +18,7 @@ const text = computed(() => props.item.body.split(/\n{2,}/).filter((p) => p.trim
 const { overflow } = useFitText(body, [() => props.item.body, () => props.uppercase], {
   maxPt: () => 13,
   minPt: 9,
+  headroom: () => (props.uppercase ? 0.88 : 0.95),
 })
 watch(overflow, (value) => emit('overflow', value), { immediate: true })
 </script>

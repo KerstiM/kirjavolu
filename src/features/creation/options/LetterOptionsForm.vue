@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import type { LetterOptions } from '../../../domain/models'
+import type { ChildProfile, LetterOptions, OccasionId } from '../../../domain/models'
+import PersonaEditor from './PersonaEditor.vue'
 import FormField from '../../../components/ui/FormField.vue'
 import SegmentedControl from '../../../components/ui/SegmentedControl.vue'
 
+const props = defineProps<{ children: ChildProfile[]; occasionId: OccasionId }>()
 const model = defineModel<LetterOptions>({ required: true })
+
+const modeOptions = [
+  { value: 'linked' as const, label: 'Igaühele oma, omavahel seotud' },
+  { value: 'shared' as const, label: 'Üks ühine kiri kõigile' },
+]
+const linked = () => props.children.length > 1 && (model.value.mode ?? 'linked') === 'linked'
 
 const countOptions = [
   { value: 1 as const, label: '1 kiri' },
@@ -19,7 +27,20 @@ const connectedOptions = [
 
 <template>
   <div class="options-grid">
-    <FormField id="letter-sender" label="Saatja nimi" hint="Näiteks Päkapikk Tuduja või Hambahaldjas Helk.">
+    <div v-if="children.length > 1" class="options-grid__wide">
+      <SegmentedControl
+        :model-value="model.mode ?? 'linked'"
+        name="letter-mode"
+        label="Mitu last"
+        :options="modeOptions"
+        hint="Seotud sarjades saab iga laps oma kirjad, aga abilised tunnevad üksteist ja vanem laps teeb aeg-ajalt midagi nooremale – mõlema kiri teab sellest."
+        @update:model-value="(value) => (model.mode = value)"
+      />
+    </div>
+    <div v-if="linked()" class="options-grid__wide">
+      <PersonaEditor v-model="model.personas" :children="children" :occasion-id="occasionId" />
+    </div>
+    <FormField v-if="!linked()" id="letter-sender" label="Saatja nimi" hint="Näiteks Päkapikk Tuduja või Hambahaldjas Helk.">
       <template #default="{ describedBy }">
         <input id="letter-sender" v-model="model.sender" class="input" type="text" :aria-describedby="describedBy" />
       </template>

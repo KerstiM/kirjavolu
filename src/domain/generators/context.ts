@@ -46,14 +46,18 @@ export interface GenContext<K extends ContentTypeId> {
   lineContext: LineContext
 }
 
+/** Registry of texts already used; can be shared by sibling series so they do not repeat each other. */
+export type UsedRegistry = Map<string, Set<unknown>>
+
 export function createContext<K extends ContentTypeId>(
   request: RequestFor<K>,
   variants: readonly number[],
   sender: string,
+  shared?: UsedRegistry,
 ): GenContext<K> {
   const occasion = getOccasion(request.occasionId)
   const audience = buildAudience(request.children)
-  const used = new Map<string, Set<unknown>>()
+  const used: UsedRegistry = shared ?? new Map()
   // Last pick per key, so an exhausted pool never repeats the previous item right away.
   const last = new Map<string, unknown>()
 

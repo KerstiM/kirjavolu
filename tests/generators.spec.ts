@@ -51,7 +51,7 @@ describe('determinism', () => {
 
 describe('letters', () => {
   it('24 Christmas letters are all different', () => {
-    const result = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [RUBEN, JASPER] }))
+    const result = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [RUBEN, JASPER], options: { mode: 'shared' } }))
     const bodies = result.items.map((i) => i.body)
     expect(bodies).toHaveLength(24)
     expect(new Set(bodies).size).toBe(24)
@@ -72,7 +72,7 @@ describe('letters', () => {
   })
 
   it('regression: no letter after the star is found says the search continues', () => {
-    const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [RUBEN, JASPER, BRITA], seed: 7 })).items
+    const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [RUBEN, JASPER, BRITA], seed: 7, options: { mode: 'shared' } })).items
     const found = items.findIndex((i) => i.body.includes('Kutsusin võlutähte ja ta vastas'))
     expect(found).toBe(22)
     expect(items[23]!.body).toContain('Võlutäht on jälle minuga')
@@ -87,7 +87,7 @@ describe('letters', () => {
   })
 
   it('addresses siblings together and gives each a task', () => {
-    const result = runTemplates(makeRequest('letter', { children: [RUBEN, JASPER, BRITA] }))
+    const result = runTemplates(makeRequest('letter', { children: [RUBEN, JASPER, BRITA], options: { mode: 'shared' } }))
     const item = result.items[0]!
     expect(item.heading).toBe('Kallid Ruben, Jasper ja Brita!')
     expect(item.body).toContain('Ruben, sinu ülesanne on')

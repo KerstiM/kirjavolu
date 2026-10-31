@@ -1,17 +1,22 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
 import AppHeader from '../components/layout/AppHeader.vue'
 import AppFooter from '../components/layout/AppFooter.vue'
+
+const route = useRoute()
 </script>
 
 <template>
   <a href="#main" class="skip-link no-print">Liigu sisu juurde</a>
   <AppHeader />
   <main id="main" tabindex="-1" class="app-main">
+    <!--
+      A time-based CSS animation instead of <Transition>: Transition swaps classes in
+      animation-frame callbacks, which background tabs and offscreen print views may
+      never run – the page would then stay invisible.
+    -->
     <RouterView v-slot="{ Component }">
-      <Transition name="page" mode="out-in">
-        <component :is="Component" />
-      </Transition>
+      <component :is="Component" :key="route.path" class="page-view" />
     </RouterView>
   </main>
   <AppFooter />

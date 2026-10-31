@@ -103,6 +103,7 @@ async function create(): Promise<void> {
         :content-type="state.contentType"
         :occasion-id="state.occasionId"
         :child-count="state.childIds.length"
+        :children="childrenStore.children.filter((c) => state.childIds.includes(c.id))"
       />
     </div>
 

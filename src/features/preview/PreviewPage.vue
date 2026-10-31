@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue'
 import { ArrowLeft, Download, FileQuestion, Printer, Plus } from 'lucide-vue-next'
-import type { CertificateStyle, Decoration, GeneratedItem, PrintableLayout } from '../../domain/models'
+import type { CertificateStyle, ChildProfile, Decoration, GeneratedItem, PrintableLayout } from '../../domain/models'
 import { EMPTY_DECORATION } from '../../domain/models'
 import { computeGrid } from '../../domain/puzzleGrid'
 import { useStoredImage } from '../../composables/useStoredImage'
 import DecorationPanel from './decoration/DecorationPanel.vue'
 import PosterBoard from './poster/PosterBoard.vue'
 import MiniSheet from './mini/MiniSheet.vue'
-import { buildAudience } from '../../domain/generators/audience'
+import { ageBand, buildAudience } from '../../domain/generators/audience'
 import { formatDayMonth } from '../../domain/text/estonian'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import EmptyState from '../../components/ui/EmptyState.vue'
@@ -57,13 +57,60 @@ const uppercase = computed(
     decoration.value.uppercase ??
     (content.value ? buildAudience(content.value.request.children).band !== 'older' : false),
 )
-const overflowCount = ref(0)
+interface ItemGroup {
+  key: string
+  child: ChildProfile | null
+  entries: { item: GeneratedItem; index: number }[]
+}
+
+/** Linked family series are shown per child; everything else is one group. */
+const groups = computed<ItemGroup[]>(() => {
+  const current = content.value
+  if (!current) return []
+  const entries = current.items.map((item, index) => ({ item, index }))
+  const childIds = new Set(current.items.map((item) => item.childId).filter(Boolean))
+  if (childIds.size < 2) return [{ key: 'all', child: null, entries }]
+  return current.request.children
+    .filter((child) => childIds.has(child.id))
+    .map((child) => ({ key: child.id, child, entries: entries.filter((entry) => entry.item.childId === child.id) }))
+})
+const childFilter = ref('all')
+const filterOptions = computed(() => [
+  { value: 'all', label: 'Kõik lapsed' },
+  ...groups.value.flatMap((group) => (group.child ? [{ value: group.key, label: group.child.name }] : [])),
+])
+const visibleGroups = computed(() =>
+  childFilter.value === 'all' ? groups.value : groups.value.filter((group) => group.key === childFilter.value),
+)
+
+/** In a family series each child gets the card layout that suits them: toddlers simple cards, others the poster. */
+function groupLayout(group: ItemGroup): PrintableLayout {
+  if (group.child && (layout.value === 'poster' || layout.value === 'mini')) {
+    return ageBand(group.child) === 'toddler' ? 'mini' : 'poster'
+  }
+  return layout.value
+}
+function groupUppercase(group: ItemGroup): boolean {
+  if (decoration.value.uppercase !== undefined || !group.child) return uppercase.value
+  return ageBand(group.child) !== 'older'
+}
+function groupTitle(group: ItemGroup): string {
+  return group.child && content.value ? `${group.child.name} · ${content.value.title}` : posterTitle.value
+}
+
+const overflowByGroup = ref<Record<string, number>>({})
+const overflowCount = computed(() => Object.values(overflowByGroup.value).reduce((sum, n) => sum + n, 0))
+function setOverflow(key: string, count: number): void {
+  overflowByGroup.value = { ...overflowByGroup.value, [key]: count }
+}
+
 const posterTitle = computed(() =>
   content.value ? `${content.value.request.children.map((child) => child.name).join(', ')} · ${content.value.title}` : '',
 )
-const posterLabels = computed(() =>
-  (content.value?.items ?? []).map((item) => (item.date ? formatDayMonth(item.date) : item.label)),
-)
+const posterLabels = computed(() => {
+  const group = groups.value.find((candidate) => groupLayout(candidate) === 'poster')
+  return (group?.entries ?? []).map(({ item }) => (item.date ? formatDayMonth(item.date) : item.label))
+})
 // The small pieces under each item are not needed on the poster: the cards are the pieces.
 const puzzle = computed(() => {
   const image = decoration.value.image
@@ -188,48 +235,63 @@ function exportText(): void {
       <p class="visually-hidden" role="status" aria-live="polite">{{ status }}</p>
       <p v-if="status" class="toast no-print" aria-hidden="true">{{ status }}</p>
 
-      <div v-if="isPoster" class="child-sheet print-root">
+      <SegmentedControl
+        v-if="groups.length > 1"
+        v-model="childFilter"
+        class="child-filter no-print"
+        name="child-filter"
+        label="Näita ja prindi"
+        :options="filterOptions"
+      />
+
+      <div
+        v-for="(group, g) in visibleGroups"
+        :key="group.key"
+        class="child-sheet print-root"
+        :class="[`sheet--${groupLayout(group)}`, { 'child-group--next': g > 0 }]"
+      >
+        <h2 v-if="group.child" class="child-group__title no-print">{{ group.child.name }}</h2>
         <PosterBoard
-          :items="content.items"
+          v-if="groupLayout(group) === 'poster'"
+          :items="group.entries.map((entry) => entry.item)"
           :occasion-id="content.request.occasionId"
-          :title="posterTitle"
+          :title="groupTitle(group)"
           :image-url="decoration.image ? imageUrl : null"
           :pattern="decoration.pattern"
-          :uppercase="uppercase"
-          @overflow-count="(count) => (overflowCount = count)"
+          :uppercase="groupUppercase(group)"
+          @overflow-count="(count) => setOverflow(group.key, count)"
         />
-      </div>
-      <div v-else-if="isMini" class="child-sheet print-root">
         <MiniSheet
-          :items="content.items"
-          :title="posterTitle"
-          :uppercase="uppercase"
-          @overflow-count="(count) => (overflowCount = count)"
+          v-else-if="groupLayout(group) === 'mini'"
+          :items="group.entries.map((entry) => entry.item)"
+          :title="groupTitle(group)"
+          :uppercase="groupUppercase(group)"
+          @overflow-count="(count) => setOverflow(group.key, count)"
         />
-      </div>
-      <div v-else class="child-sheet print-root" :class="`sheet--${layout}`">
-        <PrintableItem
-          v-for="(item, index) in content.items"
-          :key="item.id"
-          :item="item"
-          :certificate-style="certificateStyle"
-          :busy="busyItem === item.id"
-          :pattern="decoration.pattern"
-          :ink-saver="decoration.inkSaver"
-          :background-url="decoration.imageAsBackground ? imageUrl : null"
-          :background-opacity="decoration.imageOpacity"
-          :uppercase="uppercase"
-          :piece="puzzle ? { ...puzzle, index, maxCm: pieceMaxCm } : null"
-          @save="(patch) => save(item, patch)"
-          @regenerate="regenerate(index)"
-        />
+        <template v-else>
+          <PrintableItem
+            v-for="entry in group.entries"
+            :key="entry.item.id"
+            :item="entry.item"
+            :certificate-style="certificateStyle"
+            :busy="busyItem === entry.item.id"
+            :pattern="decoration.pattern"
+            :ink-saver="decoration.inkSaver"
+            :background-url="decoration.imageAsBackground ? imageUrl : null"
+            :background-opacity="decoration.imageOpacity"
+            :uppercase="groupUppercase(group)"
+            :piece="puzzle ? { ...puzzle, index: entry.index, maxCm: pieceMaxCm } : null"
+            @save="(patch) => save(entry.item, patch)"
+            @regenerate="regenerate(entry.index)"
+          />
+        </template>
       </div>
 
       <ParentSheet
         v-if="hasParentMaterial"
         :content="content"
         :puzzle="puzzle"
-        :poster-labels="isPoster ? posterLabels : null"
+        :poster-labels="posterLabels.length > 0 ? posterLabels : null"
       />
     </div>
   </div>
@@ -296,6 +358,13 @@ function exportText(): void {
   font-weight: 600;
   font-size: 0.95rem;
 }
+.child-filter {
+  margin-bottom: 1.25rem;
+}
+.child-group__title {
+  font-size: 1.3rem;
+  margin: 1.5rem 0 0.75rem;
+}
 .controls__warn {
   flex-basis: 100%;
   margin: 0;
@@ -349,6 +418,10 @@ function exportText(): void {
 }
 
 @media print {
+  .child-group--next {
+    break-before: page;
+    page-break-before: always;
+  }
   .preview__body {
     padding: 0;
     width: auto;
