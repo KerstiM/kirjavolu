@@ -22,6 +22,7 @@ import {
 } from '../../data/templates/letters'
 import type { Line } from '../../data/templates/types'
 import { ageBand } from './audience'
+import { familyExtras, familyInstructions, type FamilyDayExtras } from './familyEvents'
 import {
   createContext,
   lowerFirst,
@@ -57,7 +58,7 @@ const USAGE_TIPS: Partial<Record<string, string>> = {
 }
 
 /** Day-specific additions from the family plan of a linked series. */
-export interface LinkedExtras {
+export interface LinkedExtras extends FamilyDayExtras {
   /** Replaces the first letter's introduction (mentions the siblings' helpers). */
   opening?: string
   /** Replaces the day's task: a paired task with a sibling. */
@@ -107,6 +108,8 @@ export function generateLetters(
   const showPersonal = general.length !== 'short'
   const showMission = general.length !== 'short' || options.count > 1
 
+  // In a linked series the family plan supplies these; otherwise they come from the options directly.
+  const family = familyExtras(request, audience.children, sender)
   const items: DraftItem[] = []
   let previousBeat = -1
 
@@ -114,7 +117,9 @@ export function generateLetters(
     const p = ctx.item(i)
     const isLast = i === options.count - 1
     const isoDate = options.startDate ? addDays(options.startDate, i) : ''
-    const extra = linked?.extras(i) ?? {}
+    const extra: LinkedExtras = linked ? linked.extras(i) : family(i)
+    // A paired sibling task or a real family event replaces the day's ordinary task.
+    const dayTask = extra.task ?? extra.event
     const opening =
       i === 0
         ? (extra.opening ?? `Tere! ${ctx.line(p.pick(FIRST_LETTER_INTRO, 'intro'))}`)
@@ -166,11 +171,13 @@ export function generateLetters(
       personal.length > 0 &&
       // The first and last cards of a daily series carry the introduction and the farewell.
       !(compact && (i === 0 || isLast)) &&
+      // Days with a paired task, a family event or the Sunday note need the room on the card.
+      !(compact && (dayTask || extra.sunday)) &&
       (p.hasFresh(personal, 'personal') || i % 3 === 0)
         ? p.pick(personal, 'personal')
         : undefined
-    const mission = extra.task
-      ? extra.task
+    const mission = dayTask
+      ? dayTask
       : showMission &&
           !(toddlerCard && i % 2 === 0) &&
           // In a daily series the first card introduces and the last says goodbye: no task there.
@@ -224,29 +231,39 @@ export function generateLetters(
         ? toddlerIntro
         : isLast
           ? toddlerFinale
-          : extra.task
-            ? extra.task
+          : dayTask
+            ? dayTask
             : i % 2 === 0
               ? core
               : mission
       : undefined
+    // On a plain Sunday the Sunday surprise is the whole toddler card; otherwise it is added at the end.
+    const plainToddlerDay = toddlerCard && i !== 0 && !isLast && !dayTask
+    const toddlerCardBody =
+      toddlerBody && extra.sunday
+        ? plainToddlerDay
+          ? extra.sunday
+          : `${toddlerBody} ${extra.sunday}`
+        : toddlerBody
     items.push({
       kind: 'letter',
       label: date || (options.count > 1 ? `${i + 1}. kiri` : occasion.name),
       date: isoDate || undefined,
       heading: audience.greeting,
       body:
-        toddlerBody ??
+        toddlerCardBody ??
         paragraphs(
           opening,
           christmasEve,
           purpose,
+          extra.ruleIntro,
           mood,
           core,
           personalLine,
           extraPersonal,
           mission,
           siblingTasks,
+          extra.sunday,
           extra.finale,
           closing,
         ),
@@ -286,7 +303,10 @@ export function letterInstructions(
       `${toddlers.map((child) => child.name).join(' ja ')} jaoks loe kiri ette ja tehke liigutused koos kaasa.`,
     )
   }
-  const result: ParentInstruction[] = [{ title: 'Kuidas kirju kasutada', steps }]
+  const result: ParentInstruction[] = [
+    { title: 'Kuidas kirju kasutada', steps },
+    ...familyInstructions(request),
+  ]
   if (connected) {
     result.push({
       title: 'Järjejutu nipid',

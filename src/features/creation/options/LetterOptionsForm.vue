@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ChildProfile, LetterOptions, OccasionId } from '../../../domain/models'
 import PersonaEditor from './PersonaEditor.vue'
+import FamilyEventsEditor from './FamilyEventsEditor.vue'
 import FormField from '../../../components/ui/FormField.vue'
 import SegmentedControl from '../../../components/ui/SegmentedControl.vue'
 
@@ -59,5 +60,14 @@ const connectedOptions = [
       :options="connectedOptions"
       hint="Järjejutus otsitakse kirjast kirja kadunud võlutähte."
     />
+    <div v-if="model.count > 1" class="options-grid__wide">
+      <FamilyEventsEditor
+        v-model:events="model.events"
+        v-model:sunday-sweets="model.sundaySweets"
+        :children="children"
+        :start-date="model.startDate"
+        :count="model.count"
+      />
+    </div>
   </div>
 </template>

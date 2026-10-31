@@ -31,6 +31,19 @@ export interface ElfPersona {
   origin: string
 }
 
+export type EventKind = 'forest' | 'ski' | 'visit' | 'performance' | 'hobby' | 'baking' | 'party' | 'custom'
+
+/** A real family event the letters should know about, e.g. a trip to the forest on 12 December. */
+export interface FamilyEvent {
+  id: string
+  date: string
+  kind: EventKind
+  /** Optional detail written by the parent, e.g. "vanaema juurde Valka" or "judotrenn". */
+  title: string
+  /** Children taking part; empty = everybody. */
+  participants: string[]
+}
+
 /** "shared": one letter for all children; "linked": each child gets their own series, coordinated with siblings. */
 export type LetterMode = 'shared' | 'linked'
 
@@ -43,6 +56,10 @@ export interface LetterOptions {
   mode?: LetterMode
   /** Helper per child id in linked mode; missing entries are suggested automatically. */
   personas?: Record<string, ElfPersona>
+  /** Family events on specific dates; the letter of that day talks about them. */
+  events?: FamilyEvent[]
+  /** House rule: sweets only on Sundays – the Sunday letters say so. */
+  sundaySweets?: boolean
 }
 
 export type Setting = 'indoor' | 'outdoor'

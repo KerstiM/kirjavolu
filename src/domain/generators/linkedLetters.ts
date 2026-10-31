@@ -6,6 +6,7 @@ import { PAIR_TEMPLATES, type PairContext, type PairTemplate } from '../../data/
 import { suggestPersonas } from '../../data/templates/personas'
 import { ageBand } from './audience'
 import type { DraftItem, TypeResult, UsedRegistry } from './context'
+import { busyOn, familyExtras } from './familyEvents'
 import { generateLetters, letterInstructions, type LinkedExtras } from './letterGenerator'
 
 export interface PairedDay {
@@ -66,9 +67,17 @@ export function familyPlan(request: RequestFor<'letter'>): PairedDay[] {
   const rng = createRng(hashSeed(request.seed, 'family-plan'))
   const templates = rng.shuffle(PAIR_TEMPLATES)
   const usedTemplates = new Set<string>()
-  return pairedDayIndexes(request.options.count).flatMap((index, k) => {
+  // Paired days step aside when the giver or the receiver has a family event, so one letter never carries two plans.
+  const taken = new Set<number>()
+  const last = request.options.count - 1
+  return pairedDayIndexes(request.options.count).flatMap((planned, k) => {
     const pair = pairs[k % pairs.length]
     if (!pair) return []
+    const ids = [pair.giver.id, pair.receiver.id]
+    let index = planned
+    while ((busyOn(request, index, ids) || taken.has(index)) && index < last - 1) index++
+    if (busyOn(request, index, ids) || taken.has(index)) return []
+    taken.add(index)
     const candidates = templates.filter((t) => fits(t, pair.receiver, request.occasionId))
     const template = candidates.find((t) => !usedTemplates.has(t.id)) ?? candidates[0]
     if (!template) return []
@@ -159,8 +168,9 @@ export function generateLinkedLetters(
 
   children.forEach((child, c) => {
     const others = children.filter((other) => other.id !== child.id)
+    const family = familyExtras(request, [child], (personas[child.id] as ElfPersona).name)
     const extras = (index: number): LinkedExtras => {
-      const extra: LinkedExtras = {}
+      const extra: LinkedExtras = { ...family(index) }
       if (index === 0) extra.opening = introduction(child, others, personas, occasion.id)
       if (index === count - 1 && count > 1 && !isToddler(child))
         extra.finale = finale(personas, children, occasion.id)
