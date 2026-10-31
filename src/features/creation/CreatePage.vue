@@ -14,7 +14,8 @@ import StepType from './steps/StepType.vue'
 import StepChildren from './steps/StepChildren.vue'
 import StepOccasion from './steps/StepOccasion.vue'
 import StepCustomize from './steps/StepCustomize.vue'
-import { useWizard, WIZARD_STEPS } from './useWizard'
+import { useWizard, WIZARD_STEPS, type WizardInit } from './useWizard'
+import { newCreationRequests } from './newCreation'
 
 const route = useRoute()
 const router = useRouter()
@@ -22,15 +23,33 @@ const childrenStore = useChildrenStore()
 const creations = useCreationsStore()
 const generator = useGenerator()
 
-const queryType = route.query.tyyp
-const queryOccasion = route.query.puhk
-const wizard = useWizard({
-  contentType: isContentTypeId(queryType) ? queryType : undefined,
-  occasionId: isOccasionId(queryOccasion) ? queryOccasion : undefined,
-  childIds: childrenStore.children.length === 1 ? [childrenStore.children[0]?.id ?? ''] : [],
-  onlyChild: childrenStore.children.length === 1,
-})
+/** Answers given by the link: type and occasion from the home page, or a creation to change (?muuda=id). */
+function initFromRoute(): WizardInit {
+  const editing = typeof route.query.muuda === 'string' ? creations.byId(route.query.muuda) : undefined
+  if (editing) {
+    const { request } = editing
+    return {
+      contentType: request.contentType,
+      occasionId: request.occasionId,
+      childIds: request.children
+        .map((child) => child.id)
+        .filter((id) => childrenStore.children.some((child) => child.id === id)),
+      restore: { general: request.general, options: request.options },
+    }
+  }
+  const queryType = route.query.tyyp
+  const queryOccasion = route.query.puhk
+  return {
+    contentType: isContentTypeId(queryType) ? queryType : undefined,
+    occasionId: isOccasionId(queryOccasion) ? queryOccasion : undefined,
+    childIds: childrenStore.children.length === 1 ? [childrenStore.children[0]?.id ?? ''] : [],
+    onlyChild: childrenStore.children.length === 1,
+  }
+}
+
+const wizard = useWizard(initFromRoute())
 const { state } = wizard
+watch([() => route.query, newCreationRequests], () => wizard.reset(initFromRoute()))
 
 const errors = ref<string[]>([])
 const busy = ref(false)
@@ -74,6 +93,8 @@ async function create(): Promise<void> {
   try {
     const content = await generator.generate(request)
     creations.add(content)
+    // "Back" from the preview returns to these choices instead of an empty wizard.
+    await router.replace({ path: '/loo', query: { muuda: content.id } })
     await router.push(`/looming/${content.id}`)
   } catch (error) {
     errors.value = error instanceof GenerationError ? error.errors : ['Midagi läks valesti. Proovi uuesti.']
@@ -87,7 +108,7 @@ async function create(): Promise<void> {
   <div class="container wizard section">
     <header class="wizard__head">
       <span class="eyebrow">Loo uus</span>
-      <WizardProgress :current="state.step" @go="wizard.goTo" />
+      <WizardProgress :current="state.step" :can-go-to="wizard.canGoTo" @go="wizard.goTo" />
       <p v-if="summary.length" class="wizard__summary">
         <span v-for="part in summary" :key="part" class="summary-chip">{{ part }}</span>
       </p>

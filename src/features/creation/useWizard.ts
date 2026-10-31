@@ -34,6 +34,8 @@ export interface WizardInit {
   childIds?: string[]
   /** The family has exactly one child, so "Kellele?" needs no answer. */
   onlyChild?: boolean
+  /** Choices of an earlier creation, to change them: the wizard opens at "Kohanda". */
+  restore?: { general: GeneralOptions; options: ContentOptionsMap[ContentTypeId] }
 }
 
 /**
@@ -62,22 +64,35 @@ export function carryOverOptions(
 export function useWizard(init: WizardInit = {}) {
   // Steps already answered on arrival (occasion from the home page, the only child) are skipped.
   const known = new Set<WizardStepId>()
-  if (init.occasionId) known.add('occasion')
-  if (init.onlyChild) known.add('children')
-
-  const state = reactive<WizardState>({
-    step: 0,
-    contentType: init.contentType ?? null,
-    childIds: init.childIds ?? [],
-    occasionId: init.occasionId ?? null,
-    general: { ...DEFAULT_GENERAL },
-    options: defaultOptions(init.occasionId ?? 'everyday'),
-  })
-  if (init.contentType) known.add('type')
-  state.step = firstOpenStep(0)
-  known.delete('type')
-
+  const state = reactive<WizardState>(initialState(init))
   let defaults = defaultOptions(init.occasionId ?? 'everyday')
+
+  function initialState(from: WizardInit): WizardState {
+    const options = defaultOptions(from.occasionId ?? 'everyday')
+    if (from.restore && from.contentType) Object.assign(options, { [from.contentType]: clone(from.restore.options) })
+    return {
+      step: 0,
+      contentType: from.contentType ?? null,
+      childIds: from.childIds ?? [],
+      occasionId: from.occasionId ?? null,
+      general: from.restore ? { ...from.restore.general } : { ...DEFAULT_GENERAL },
+      options,
+    }
+  }
+
+  /** Starts over with new answers, e.g. "Loo uus" while the wizard is already open. */
+  function reset(from: WizardInit = {}): void {
+    known.clear()
+    if (from.occasionId) known.add('occasion')
+    if (from.onlyChild || from.restore) known.add('children')
+    Object.assign(state, initialState(from))
+    defaults = defaultOptions(from.occasionId ?? 'everyday')
+    if (from.contentType) known.add('type')
+    state.step = firstOpenStep(0)
+    known.delete('type')
+  }
+  reset(init)
+
   watch(
     () => state.occasionId,
     (occasion) => {
@@ -127,9 +142,14 @@ export function useWizard(init: WizardInit = {}) {
     if (state.step > 0) state.step--
   }
 
+  /** A step can be opened from the progress bar once every step before it is answered. */
+  function canGoTo(step: number): boolean {
+    if (step === state.step || step < 0 || step >= WIZARD_STEPS.length) return false
+    return step < state.step || WIZARD_STEPS.slice(0, step).every((s) => answered(s.id))
+  }
+
   function goTo(step: number): void {
-    // Only allow jumping back, or forward to steps whose prerequisites are met.
-    if (step < state.step) state.step = step
+    if (canGoTo(step)) state.step = step
   }
 
   function toggleChild(id: string): void {
@@ -152,5 +172,5 @@ export function useWizard(init: WizardInit = {}) {
     return { ...base, contentType, options } as GenerationRequest
   }
 
-  return { state, canProceed, isLastStep, next, back, goTo, toggleChild, buildRequest }
+  return { state, canProceed, isLastStep, next, back, canGoTo, goTo, reset, toggleChild, buildRequest }
 }

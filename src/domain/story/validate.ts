@@ -2,7 +2,7 @@ import type { DraftItem } from '../generators/context'
 import { ageBand } from '../generators/audience'
 import { getHook, PERSONAL_HOOKS, profileHooks } from './hooks'
 import { scenarioIn, type ScenarioLibrary } from './library'
-import type { CollectionPlan, PlannedDay } from './planner'
+import type { CollectionPlan, PlannedChild, PlannedDay } from './planner'
 import type { Band, HookId } from './types'
 import { effectiveHooks, sampleContext } from './sample'
 
@@ -54,6 +54,11 @@ export const DEFAULT_VALIDATION: ValidationOptions = { phraseWords: 6, maxPhrase
 // past the hard limit the card overflows even at the smallest font (an error).
 export const CARD_LIMITS: Record<Band, number> = { older: 640, young: 460, toddler: 200 }
 export const CARD_HARD_LIMITS: Record<Band, number> = { older: 760, young: 560, toddler: 200 }
+
+/** The card a child's letters are printed on: longer read-aloud letters use the reader poster. */
+export function cardBand(p: Pick<PlannedChild, 'band' | 'readAloud'>): Band {
+  return p.readAloud ? 'young' : p.band
+}
 
 /** Phrases that claim the child did or answered something in real life. */
 const ASSUMED_RESPONSE = [
@@ -305,7 +310,8 @@ export function validateCollection(
           })
       }
       // 10. Age: toddler cards are one short paragraph; reader letters fit a poster card.
-      if (p.band === 'toddler' && text.split('\n\n').length > 1)
+      // Longer read-aloud letters for three-year-olds go on the poster like a young reader's.
+      if (p.band === 'toddler' && !p.readAloud && text.split('\n\n').length > 1)
         add({
           code: 'age-inappropriate',
           severity: 'error',
@@ -313,13 +319,14 @@ export function validateCollection(
           index: d.index,
           message: `${p.child.name}: väikelapse kaardil on mitu lõiku.`,
         })
-      if (text.length > CARD_LIMITS[p.band])
+      const card = cardBand(p)
+      if (text.length > CARD_LIMITS[card])
         add({
           code: 'too-long-for-card',
-          severity: text.length > CARD_HARD_LIMITS[p.band] ? 'error' : 'warning',
+          severity: text.length > CARD_HARD_LIMITS[card] ? 'error' : 'warning',
           childId: id,
           index: d.index,
-          message: `${p.child.name}, ${d.index + 1}. kiri: ${text.length} märki (piir ${CARD_LIMITS[p.band]}).`,
+          message: `${p.child.name}, ${d.index + 1}. kiri: ${text.length} märki (piir ${CARD_LIMITS[card]}).`,
         })
     }
 
@@ -492,6 +499,23 @@ export function validateLibrary(library: ScenarioLibrary): string[] {
         errors.push(`${s.id}: väikelapse kaardil ei ole eraldi ülesannet`)
       if (band === 'toddler' && plain.length > 1)
         errors.push(`${s.id}: väikelapse kaart peab olema üks lõik`)
+    }
+    if (s.readAloud) {
+      if (!s.variants.toddler) errors.push(`${s.id}: ettelugemise tekst ilma väikelapse kaardita`)
+      const paragraphs = s.readAloud(sampleContext([])).filter((p): p is string => Boolean(p))
+      const personal = s.readAloud(sampleContext(s.hooks ?? [])).filter((p): p is string => Boolean(p))
+      for (const paragraph of [...paragraphs, ...personal]) {
+        if (!/^[„A-ZÕÄÖÜŠŽ0-9"]/.test(paragraph))
+          errors.push(`${s.id}/ettelugemine: lõik ei alga suure tähega: „${paragraph.slice(0, 30)}“`)
+        if (/undefined|NaN|\$\{/.test(paragraph)) errors.push(`${s.id}/ettelugemine: täitmata koht`)
+      }
+      for (const hook of s.onlyWithHook ? [] : PERSONAL_HOOKS) {
+        if (hook.mentions.test(stripNames(paragraphs.join(' '), ['Meister'])))
+          errors.push(`${s.id}/ettelugemine: isikupärastamata tekst mainib teemat „${hook.label}“`)
+      }
+      const longest = Math.max(paragraphs.join('\n\n').length, personal.join('\n\n').length)
+      if (longest > CARD_LIMITS.young - 80)
+        errors.push(`${s.id}/ettelugemine: liiga pikk kaardi jaoks (${longest} märki)`)
     }
   }
   for (const arc of library.arcs) {

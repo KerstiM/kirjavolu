@@ -1,7 +1,7 @@
 import type { ChildProfile, ElfPersona, RequestFor } from '../models'
 import { addDays, joinList, nameCase, namesInCase } from '../text/estonian'
 import { createRng, hashSeed } from '../text/random'
-import { adjustBand, ageBand } from '../generators/audience'
+import { adjustBand, ageBand, listensToLongerStories } from '../generators/audience'
 import { familyExtras } from '../generators/familyEvents'
 import { familyPlan, pairContext, personasFor, type PairedDay } from '../generators/linkedLetters'
 import { HELPER_INVITE, HELPER_MISSIONS, type HelperContext } from '../../data/templates/helper'
@@ -34,6 +34,8 @@ const ACTIVITY_GAP: Record<'medium' | 'long', number> = { medium: 3, long: 2 }
 export interface PlannedChild {
   child: ChildProfile
   band: Band
+  /** A toddler who gets the longer read-aloud texts (see Scenario.readAloud). */
+  readAloud: boolean
   helper: string
   title: string
   origin: string
@@ -442,6 +444,7 @@ function plannedChild(
   return {
     child,
     band,
+    readAloud: band === 'toddler' && listensToLongerStories(child),
     helper: persona.name,
     title: persona.title,
     origin: persona.origin,

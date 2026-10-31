@@ -35,6 +35,11 @@ export const STAR_ARC_SCENARIOS: Scenario[] = [
         'Oi! Kuusel oli täht. Nüüd ei ole! Kus on täht? Laua all? Ei ole. Kapis? Ei ole. Otsime!',
       ],
     },
+    readAloud: () => [
+      'Oi-oi! Töökoja kuuse tipus oli suur kuldne täht. Ta säras nii ilusti. Aga täna hommikul oli kuuse tipp tühi!',
+      'Kus on täht? Vaatasin laua alla – ei ole. Vaatasin kapi taha – ei ole. Vaatasin isegi oma sussi sisse – ei ole!',
+      'Täht näitab Jõuluvanale jõuluööl teed, nii et kõik päkapikud otsivad. Kui sina näed kuskil sära, hüüa: täht!',
+    ],
   },
   {
     id: 'star-feather',
@@ -154,6 +159,11 @@ export const STAR_ARC_SCENARIOS: Scenario[] = [
         'Ma nägin väikest linnukest. Linnuke on hõbedane ja sätendab. Linnuke laulab: piiu-piiu! Kas sina oskad ka nii laulda?',
       ],
     },
+    readAloud: () => [
+      'Täna nägin midagi imelikku. Kuuse oksal istus väike linnuke. Ta oli hõbedane ja sätendas nagu lumi päikese käes.',
+      'Linnuke vaatas mind ja laulis: piiu-piiu! Siis lendas ta minema, mäe poole. Tiibadest jäi õhku natuke sära.',
+      'Kes see küll oli? Ma ei tea veel. Kas sina oskad laulda nagu see linnuke? Piiu-piiu!',
+    ],
   },
   {
     id: 'star-trap',
@@ -197,6 +207,11 @@ export const STAR_ARC_SCENARIOS: Scenario[] = [
         'Täht on leitud! Täht oli linnupesas. Pesas magavad linnupojad. Ssss… vaikselt! Täht teeb sära-sära.',
       ],
     },
+    readAloud: () => [
+      'Me leidsime tähe! Ta oli mäe taga vana kuuse otsas, linnupesas.',
+      'Pesas magasid kolm pisikest linnupoega. Täht oli pesa keskel ja helendas nagu väike öölamp, sest pojad kartsid pimedat. Ema-lind oli tähe neile toonud.',
+      'Keegi ei olnud pahane. Olime vaikselt-vaikselt, et pojad ei ärkaks. Ssss … Kuidas sina oled hästi vaikselt?',
+    ],
   },
   {
     id: 'star-return',

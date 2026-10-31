@@ -236,6 +236,35 @@ describe('age and reading level', () => {
       })
     }
   })
+
+  it('a three-year-old hears longer stories read aloud, not the one-year-old’s cards', () => {
+    const threeYearOld = { ...BRITA, id: 'brita-3', age: 3 }
+    for (const family of [[threeYearOld], [RUBEN, JASPER, threeYearOld]]) {
+      for (let seed = 1; seed <= 5; seed++) {
+        const request = christmas(family, { sundaySweets: true }, seed)
+        const { plan, items } = build(request)
+        const p = plan.children.find((o) => o.child.id === threeYearOld.id)!
+        expect(p.band).toBe('toddler')
+        expect(p.readAloud).toBe(true)
+        expect(validateCollection(plan, items, library).filter((i) => i.severity === 'error')).toEqual([])
+        const letters = plan.days.flatMap((d, k) => (d.childId === p.child.id ? [{ d, body: items[k]!.body }] : []))
+        const stories = letters.filter(({ d }) => d.content.kind === 'scenario')
+        for (const { body } of stories) {
+          expect(body.split('\n\n').length, body).toBeGreaterThan(1)
+          expect(body.length, body).toBeLessThanOrEqual(CARD_HARD_LIMITS.young)
+        }
+        const average = stories.reduce((sum, { body }) => sum + body.length, 0) / stories.length
+        expect(average).toBeGreaterThan(250)
+      }
+    }
+    // The one-year-old keeps the short cards.
+    expect(build(christmas([BRITA])).plan.children[0]!.readAloud).toBe(false)
+  })
+
+  it('every toddler episode has a longer read-aloud version', () => {
+    const missing = library.scenarios.filter((s) => s.variants.toddler && !s.readAloud).map((s) => s.id)
+    expect(missing).toEqual([])
+  })
 })
 
 describe('personalization', () => {

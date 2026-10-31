@@ -1,5 +1,5 @@
 import type { GeneratedContent, GeneratedItem, GenerationRequest, PrintableLayout } from '../models'
-import { ageBand } from './audience'
+import { usesSmallCards } from './audience'
 import { getContentType } from '../contentTypes'
 import { validateGenerationRequest } from '../validation'
 import { createId } from '../../utils/id'
@@ -46,7 +46,7 @@ const MAX_REGENERATION_ATTEMPTS = 25
 
 /** Daily series become a puzzle poster; toddler series use simple cards. */
 export function defaultLayoutFor(request: GenerationRequest): PrintableLayout {
-  const toddlersOnly = request.children.every((child) => ageBand(child) === 'toddler')
+  const toddlersOnly = request.children.every(usesSmallCards)
   if (request.contentType === 'letter' && request.options.count >= 7) return toddlersOnly ? 'mini' : 'poster'
   if (request.contentType === 'calendar' && request.options.days >= 14) return 'poster'
   return getContentType(request.contentType).defaultLayout

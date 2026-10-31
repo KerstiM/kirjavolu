@@ -23,6 +23,12 @@ export const FRAME_SCENARIOS: Scenario[] = [
           : `Tere, väike ${c.name}! Mina olen ${c.helper}. Ma olen nii väike, et mahun sinu sussi sisse.`,
       ],
     },
+    readAloud: (c) => [
+      `Tere, ${c.name}! Mina olen ${c.helper}${c.frame.origin ? ` – ${c.frame.origin}` : ', Jõuluvana töökoja kõige pisem päkapikk. Ma olen nii väike, et mahun sinu sussi sisse'}.`,
+      c.siblings &&
+        `${c.siblings} ${c.siblingCount > 1 ? 'saavad' : 'saab'} ka kirju oma päkapikkudelt. Me oleme kõik head sõbrad.`,
+      'Ma tulin pikalt teelt põhjast, kus on palju lund ja põhjapõtru. Nüüd elan ma sinu juures jõuludeni ja igal hommikul räägin, mis minuga juhtus. Musi!',
+    ],
   },
   {
     id: 'christmas-eve',
@@ -41,6 +47,11 @@ export const FRAME_SCENARIOS: Scenario[] = [
       ],
       toddler: (c) => [`Täna on jõululaupäev! Kuusel on tuled. Häid jõule, väike ${c.name}!`],
     },
+    readAloud: (c) => [
+      `Täna on jõululaupäev! Kuusel põlevad tuled ja kingid ootavad kelgul.${c.knows('star-back') ? ' Täht on jälle kuuse tipus ja särab.' : ''}`,
+      'Põhjapõdrad said kaela kuldsed kellukesed. Jõuluvana pani selga oma kõige punasema kasuka ja kammis habeme siledaks.',
+      `Täna öösel sõidab kelk üle taeva. Kuula hästi: võib-olla kuuled kellukesi. Häid jõule, ${c.name}!`,
+    ],
   },
   {
     id: 'farewell',
@@ -61,6 +72,13 @@ export const FRAME_SCENARIOS: Scenario[] = [
       ],
       toddler: (c) => [`Häid jõule, väike ${c.name}! ${c.helper} kallistab sind. Musi-musi!`],
     },
+    readAloud: (c) => [
+      `${c.frame.eve ? 'Täna on jõululaupäev!' : 'See on minu viimane kiri.'} Panin oma pisikese mütsi pähe ja paki selga.`,
+      c.frame.allHelpers
+        ? 'Täna lähevad kõik päkapikud koos tagasi põhja, Jõuluvana töökotta.'
+        : 'Nüüd lähen ma tagasi põhja, Jõuluvana töökotta.',
+      `Mul oli sinu juures väga hea. Jätan sulle ühe suure kalli ja hästi palju musisid. Häid jõule, ${c.name}!`,
+    ],
   },
 ]
 

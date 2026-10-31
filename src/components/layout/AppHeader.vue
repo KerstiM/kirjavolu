@@ -1,8 +1,15 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { Plus } from 'lucide-vue-next'
 import BrandMark from './BrandMark.vue'
 import BaseButton from '../ui/BaseButton.vue'
+import { newCreationRequests } from '../../features/creation/newCreation'
+
+const route = useRoute()
+// The link does nothing while the wizard is already open, so ask it to start over.
+function startOver(): void {
+  if (route.name === 'create') newCreationRequests.value++
+}
 </script>
 
 <template>
@@ -15,7 +22,7 @@ import BaseButton from '../ui/BaseButton.vue'
       <nav aria-label="Peamenüü" class="nav">
         <RouterLink to="/" class="nav__link nav__link--home" exact-active-class="is-active">Avaleht</RouterLink>
         <RouterLink to="/lapsed" class="nav__link" active-class="is-active">Lapsed</RouterLink>
-        <BaseButton to="/loo" size="sm" class="nav__cta">
+        <BaseButton to="/loo" size="sm" class="nav__cta" @click="startOver">
           <Plus aria-hidden="true" />
           <span class="nav__cta-text">Loo uus</span>
         </BaseButton>

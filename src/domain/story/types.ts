@@ -111,6 +111,11 @@ export interface Scenario {
   role: NarrativeRole
   /** One complete text per age band. A missing band means the scenario does not suit it. */
   variants: Partial<Record<Band, Variant>>
+  /**
+   * Longer toddler text for a child of about 3, read aloud by an adult: a few short
+   * paragraphs instead of one card line. Without it the toddler variant is used.
+   */
+  readAloud?: Variant
   activities?: Partial<Record<Band, Activity>>
   /** Hooks that can make this scenario personal. */
   hooks?: HookId[]
