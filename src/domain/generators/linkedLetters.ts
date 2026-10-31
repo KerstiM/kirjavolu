@@ -216,7 +216,7 @@ function templateKey(text: string): string {
 
 interface HelperArc {
   context: HelperContext
-  days: Map<number, { text: string; prep?: string }>
+  days: Map<number, { text: string; prep?: string; reply?: boolean }>
 }
 
 /**
@@ -246,13 +246,13 @@ export function planHelperArc(
     helpersOf: 'päkapikkude',
     year: Number(request.options.startDate.slice(0, 4)) || new Date().getFullYear(),
   }
-  const days = new Map<number, { text: string; prep?: string }>()
+  const days = new Map<number, { text: string; prep?: string; reply?: boolean }>()
   // Invitation and rule on two consecutive free days near the start.
   let invite = 1
   while ((busy(invite) || busy(invite + 1)) && invite < count - 3) invite++
   if (busy(invite) || busy(invite + 1)) return null
   days.set(invite, { text: HELPER_INVITE(context) })
-  days.set(invite + 1, { text: HELPER_RULE(context) })
+  days.set(invite + 1, { text: HELPER_RULE(context), reply: true })
   const targets = count >= 12 ? [6, 11, 16] : [4]
   const missions = HELPER_MISSIONS.filter((m) => younger.length > 1 || m.id !== 'helping-hands')
   targets.forEach((target, k) => {
@@ -331,7 +331,9 @@ export function generateLinkedLetters(
       const gossip = gossipPlan.get(index)
       if (gossip && !extra.challenge && !extra.event) extra.gossip = gossip
       const helperDay = child.id === storyteller?.id ? helperArc?.days.get(index) : undefined
-      if (helperDay) {
+      if (helperDay?.reply) {
+        extra.reply = helperDay.text
+      } else if (helperDay) {
         extra.task = helperDay.text
         if (helperDay.prep) extra.prep = [...(extra.prep ?? []), helperDay.prep]
       }

@@ -72,6 +72,14 @@ describe('secret helper', () => {
     expect(ruben[invite + 1]!.body).toContain('eriti mitte Jasper ja Brita')
   })
 
+  it('the reply to the invitation opens the next letter, so the child connects it', () => {
+    const invite = [...arc.days.keys()].sort((a, b) => a - b)[0]!
+    const next = ruben[invite + 1]!.body
+    expect(next.startsWith('Suurepärane – ma teadsin, et võin sinu peale loota!')).toBe(true)
+    // One or two things on that card: the reply and a short story part, no extra task.
+    expect(next).not.toMatch(/Tänane ülesanne|Päkapikuülesanne/)
+  })
+
   it('gives secret missions on free days and the title in the last letter', () => {
     expect(arc.days.size).toBe(5)
     expect(ruben.filter((item) => item.body.includes('Salamissioon:'))).toHaveLength(3)
@@ -130,5 +138,21 @@ describe('poster map on the parent sheet', () => {
     const labels = Array.from({ length: 24 }, (_, i) => `${i + 1}. detsember`)
     render(ParentSheet, { props: { content, posterLabels: labels } })
     expect(document.querySelectorAll('.map td')).toHaveLength(24)
+  })
+})
+
+describe('story replies', () => {
+  it('the reply to the sign the child left comes the very next day, first', () => {
+    for (const count of [7, 24] as const) {
+      for (let seed = 1; seed < 6; seed++) {
+        const items = runTemplates(
+          makeRequest('letter', { seed, occasionId: 'christmas', children: [RUBEN], options: { count, connected: true } }),
+        ).items
+        const ask = items.findIndex((item) => item.body.includes('joonista paberile täht ja jäta see aknalauale'))
+        expect(ask).toBeGreaterThan(-1)
+        expect(items[ask + 1]!.body.startsWith('Ma nägin sinu märki!')).toBe(true)
+        expect(items.filter((item) => item.body.includes('Ma nägin sinu märki!'))).toHaveLength(1)
+      }
+    }
   })
 })

@@ -355,6 +355,10 @@ export const TODDLER_OCCASION: OccasionLines = {
 }
 
 /** Ordered story arc for connected letters. The last beat is always the finale. */
+/** Beat that asks the child to leave a sign, and the beat that answers it – always on consecutive letters. */
+export const ARC_ASK_BEAT = 4
+export const ARC_REPLY_BEAT = 5
+
 export const ARC_BEATS: Line[] = [
   ({ v }) => `Pean ${v('sulle', 'teile')} midagi tähtsat rääkima. Minu kõige kallim asi – pisike helendav võlutäht – on kadunud. Ilma selleta ei saa ma oma tähtsat tööd lõpetada.`,
   () => `Otsisin võlutähte igalt poolt: voodi alt, kapist ja isegi teekannust. Leidsin hoopis ühe hõbedase sule. Kelle oma see küll olla võib?`,

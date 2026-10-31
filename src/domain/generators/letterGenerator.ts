@@ -2,7 +2,9 @@ import type { ParentInstruction, RequestFor } from '../models'
 import { addDays, formatDate } from '../text/estonian'
 import {
   ARC_BEATS,
+  ARC_ASK_BEAT,
   ARC_CONTINUE,
+  ARC_REPLY_BEAT,
   CLOSINGS,
   FIRST_LETTER_INTRO,
   GENERIC_CORES,
@@ -74,6 +76,8 @@ export interface LinkedExtras extends FamilyDayExtras {
   finale?: string
   /** A little story about a sibling's helper (or, on toddler cards, about the siblings). */
   gossip?: string
+  /** Reply to yesterday's question (e.g. the helper invitation); always opens the letter. */
+  reply?: string
 }
 
 export interface LinkedSeries {
@@ -129,6 +133,8 @@ export function generateLetters(
       : new Map<number, QuestionThread>()
   const items: DraftItem[] = []
   let previousBeat = -1
+  let askedYesterday = false
+  let askedEver = false
 
   for (let i = 0; i < options.count; i++) {
     const p = ctx.item(i)
@@ -136,7 +142,8 @@ export function generateLetters(
     const isoDate = options.startDate ? addDays(options.startDate, i) : ''
     const extra = allExtras[i] as LinkedExtras
     const thread = threads.get(i)
-    const answerLine = threads.get(i - 1)?.answerNext(audience.v)
+    // A reply to yesterday must come first, or the child cannot connect it to the question.
+    const answerLine = extra.reply ?? threads.get(i - 1)?.answerNext(audience.v)
     // A paired sibling task or a real family event replaces the day's ordinary task.
     const dayTask = extra.task ?? extra.challenge ?? extra.event ?? thread?.ask(audience.v)
     const opening =
@@ -158,6 +165,8 @@ export function generateLetters(
         : undefined
 
     let core: string
+    // The story's reply to yesterday's sign opens the letter, like any other reply.
+    let replyFirst = false
     if (compact && isLast && !connected && !toddlerOnly && (christmasEve || extra.finale)) {
       // A farewell card: Christmas Eve and the shared goodbye are enough.
       core = ''
@@ -167,14 +176,31 @@ export function generateLetters(
     } else if (toddlerOnly) {
       core = ctx.line(p.pickTiered([TODDLER_OCCASION[occasion.id] ?? [], TODDLER_CORES], 'core'))
     } else if (connected) {
-      const beat = beatIndexFor(i, options.count, ARC_BEATS.length)
+      // Never step back in the story; and the reply to the sign the child left comes the very next day.
+      let beat = Math.max(beatIndexFor(i, options.count, ARC_BEATS.length), previousBeat)
+      if (askedYesterday) beat = ARC_REPLY_BEAT
+      // Short series may map past the request: make the request first, as long as the farewell still fits.
+      if (
+        !askedEver &&
+        beat >= ARC_REPLY_BEAT &&
+        beat < ARC_BEATS.length - 2 &&
+        i <= options.count - 4
+      ) {
+        beat = ARC_ASK_BEAT
+      }
+      // Without the request, the reply would make no sense.
+      if (!askedEver && beat === ARC_REPLY_BEAT) beat = ARC_REPLY_BEAT + 1
       const beatLine = ARC_BEATS[beat]
-      if (beat !== previousBeat && beatLine) {
+      const shown = beat !== previousBeat && !!beatLine
+      if (shown && beatLine) {
         core = ctx.line(beatLine)
       } else {
         const filler = ctx.line(p.pick(ARC_CONTINUE, 'arc-continue'))
         core = `${filler} ${ctx.line(pickCore(p, occasionCores))}`
       }
+      replyFirst = shown && beat === ARC_REPLY_BEAT
+      askedYesterday = shown && beat === ARC_ASK_BEAT
+      if (askedYesterday) askedEver = true
       previousBeat = beat
     } else {
       core = ctx.line(pickCore(p, occasionCores))
@@ -282,12 +308,13 @@ export function generateLetters(
         toddlerCardBody ??
         paragraphs(
           opening,
+          replyFirst ? core : undefined,
           answerLine,
           christmasEve,
           purpose,
           extra.ruleIntro,
           mood,
-          core,
+          replyFirst ? undefined : core,
           extra.gossip,
           personalLine,
           extraPersonal,
@@ -342,8 +369,14 @@ function planThreads(
   for (let target = 2; target < count - 2; target += 5) {
     for (let day = target; day <= target + 2 && day + 1 <= count - 2; day++) {
       const busy = (d: number) =>
-        !!extras[d]?.task || !!extras[d]?.event || !!extras[d]?.challenge || !!extras[d]?.gossip
-      if (busy(day) || threads.has(day - 1) || threads.has(day + 1)) continue
+        !!extras[d]?.task ||
+        !!extras[d]?.event ||
+        !!extras[d]?.challenge ||
+        !!extras[d]?.gossip ||
+        !!extras[d]?.reply
+      // The answer day must not already open with another reply.
+      if (busy(day) || extras[day + 1]?.reply || threads.has(day - 1) || threads.has(day + 1))
+        continue
       const tiers = rotation[k % rotation.length] ?? [riddles]
       threads.set(day, ctx.item(day).pickTiered(tiers, 'thread'))
       k++
