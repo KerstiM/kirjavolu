@@ -96,9 +96,9 @@ export const TOPICS: Topic[] = [
     label: 'Rubiku kuubik',
     group: 'puzzles',
     match: /rubik|kuubik/i,
-    mentions: /(?<!jää)kuubik/i,
+    mentions: /rubik|(?<!jää)kuubik/i,
     tryout:
-      'Võtsin kätte Rubiku kuubiku. Keerasin üles, alla ja vasakule ning sain ühe tahu peaaegu valmis. Siis aevastasin ja kuubik kukkus kuuse alla, kõik värvid jälle segamini.',
+      'Leidsin töökojast Rubiku kuubiku. Keerasin külgi üht- ja teistpidi, kuni üks tahk oli lõpuks ühevärviline. Siis tuli Jõuluvana, keeras korra ja küsis: „Kas nüüd on parem?“ Ei olnud. Kõik värvid on jälle segamini.',
     reindeer:
       'Ta oli leidnud kusagilt Rubiku kuubiku ja lükkas seda ninaga ühest küljest teisele. Ühe tahu sai ta täiesti punaseks. Sellest ajast kõnnib ta ringi, nina püsti.',
     toddlerTryout: 'Mul on kirju kuubik. Keeran – kõik värvid on segamini! Keeran veel – üks pool on punane!',
@@ -140,8 +140,8 @@ export const TOPICS: Topic[] = [
       'Õppisin malet mängima. Ratsu käib nagu L-täht, ettur ainult otse ja kuningas väga ettevaatlikult. Mängisin Jõuluvanaga ja kaotasin kolme käiguga. Ta ütles, et sada aastat harjutamist aitab.',
     reindeer:
       'Ta seisab malelaua kõrval ja lükkab ninaga ratsut. Ainult ratsut, sest see on ainus nupp, millel on nina. Kui ratsu kukub, vaatab ta mind, nagu oleks see minu süü.',
-    toddlerTryout: 'Malelaual on mustad ja valged ruudud. Hüppan ruudult ruudule: hopp, hopp!',
-    toddlerReindeer: 'Välk vaatas malelauda ja lükkas ninaga ühe nupu ümber. Kukk! Nüüd on sinu kord.',
+    toddlerTryout: 'Malelaual on nupp, mis näeb välja nagu hobune. Malehobune hüppab: hopp, hopp! Hüppa sina ka!',
+    toddlerReindeer: 'Välk vaatas malelauda ja lükkas ninaga ühe nupu ümber. Kolks! Nüüd on sinu kord.',
   },
   {
     id: 'boardgames',
@@ -153,8 +153,8 @@ export const TOPICS: Topic[] = [
       'Mängisime päkapikkudega lauamängu. Viskasin täringuga kolm kuut järjest ja jõudsin peaaegu lõppu. Siis astusin mao peale ja pidin algusesse tagasi minema. Mäng kestis südaööni.',
     reindeer:
       'Ta on õppinud täringut veeretama. Kui tuleb kuus, hüppab ta rõõmust. Kui tuleb üks, keerab ta täringu salaja ümber. Mina nägin seda, aga ei öelnud kellelegi.',
-    toddlerTryout: 'Täring veereb: rull-rull-rull. Mitu täppi? Loeme koos: üks, kaks, kolm!',
-    toddlerReindeer: 'Välk veeretas täringut ninaga. Täring hüppas: hopp! Tuli kuus täppi. Hurraa!',
+    toddlerTryout: 'Täring veereb: rull-rull-rull. Mitu silma täringul on? Loeme koos: üks, kaks, kolm!',
+    toddlerReindeer: 'Välk veeretas täringut ninaga. Täring hüppas: hopp! Täringul tuli kuus silma. Hurraa!',
   },
 
   // Ehitamine ja teadus
@@ -165,7 +165,7 @@ export const TOPICS: Topic[] = [
     match: /lego|klots/i,
     mentions: /klotsimeist|klotsiehit/i,
     tryout:
-      'Ehitasin klotsidest Jõuluvanale uue kelgu: katuse, tulede ja isegi kohvitopsihoidjaga. Kõik oli valmis, ainult üks klots jäi üle. Nüüd ma ei tea, kust see puudu on, ja kelk natuke kõigub.',
+      'Ehitasin klotsidest Jõuluvanale uue kelgu: katuse, tulede ja isegi kohvitopsihoidjaga. Kõik oli valmis, ainult üks klots jäi üle. Nüüd ei saa ma aru, kuhu see klots käima pidi, ja kelk kõigub natuke.',
     reindeer:
       'Ta on õppinud klotse kokku panema – ninaga. Eile ehitas ta torni, mis oli peaaegu sama kõrge kui tema ise. Siis aevastas. Klotse korjasime kahekesi õhtuni.',
     toddlerTryout: 'Ma ehitan klotsidest torni: üks, kaks, kolm klotsi. Torn kõigub … ja kukub: põmm!',
@@ -191,9 +191,9 @@ export const TOPICS: Topic[] = [
     match: /katse|teadus|eksperiment|keemi/i,
     mentions: /teadlas|teaduskatse/i,
     tryout:
-      'Tegin töökojas teaduskatse: kas lumi sulab kiiremini taskus või mütsi all? Taskus sulas kiiremini. Nüüd on mul märg tasku ja Jõuluvana ütles, et teadlased kannavad katse ajal kitlit.',
+      'Tegin töökojas teaduskatse: kas lumi sulab kiiremini taskus või mütsi all? Taskus sulas kiiremini. Nüüd on mu tasku läbimärg ja Jõuluvana ütles, et teadlased kannavad katse ajal kitlit.',
     reindeer:
-      'Ta on hakanud teadlaseks. Ta paneb samblatükke lumme ja vaatab, mis juhtub. Seni pole juhtunud midagi, aga ta vaatab väga tõsise näoga ja teeb sõrgaga lumme märke.',
+      'Temast on saanud teadlane. Ta paneb samblatükke lumme ja vaatab, mis juhtub. Seni pole juhtunud midagi, aga ta vaatab väga tõsise näoga ja teeb sõrgaga lumme märke.',
     toddlerTryout: 'Panin lumepalli kaussi. Vaatame: lumepall läks väiksemaks … ja sai veeks! Oi!',
     toddlerReindeer: 'Välk pani nina lumme. Külm! Siis pani nina sooja vette. Soe! Välk on teadlane.',
   },
@@ -229,12 +229,12 @@ export const TOPICS: Topic[] = [
     id: 'animals',
     label: 'Loomad',
     group: 'nature',
-    match: /loom/i,
+    match: /loom(?!ing)/i,
     mentions: /loomasõb/i,
     tryout:
       'Käisin metsas loomade jälgi otsimas. Leidsin jänese, rebase ja ühe väga suure jälje. Ajasin seda tükk aega taga, kuni selgus, et see oli minu enda saapajälg.',
     reindeer:
-      'Ta on kutsunud metsloomad lauta külla: jänese, oravapere ja ühe uudishimuliku rebase. Kõik söövad tema heina ja tema on väga õnnelik. Jõuluvana ütles, et laut on nüüd loomaaed.',
+      'Ta on kutsunud metsloomad lauta külla: jänese, oravapere ja ühe uudishimuliku rebase. Jänes ja oravad söövad tema heina, rebane soojendab end nurgas ja Välk on väga õnnelik. Jõuluvana ütles, et laut on nüüd loomaaed.',
     toddlerTryout: 'Metsas elab jänes. Jänes hüppab: hopp, hopp! Hüppame nagu jänes!',
     toddlerReindeer: 'Välgul olid külas jänes ja orav. Jänes sõi heina. Orav sõi käbi. Krõmps!',
   },
@@ -245,7 +245,7 @@ export const TOPICS: Topic[] = [
     match: /kass|kiisu/i,
     mentions: /kassisõb|kasside\b/i,
     tryout:
-      'Töökoja kass Nurr magab alati kõige soojemas kohas. Eile proovisin ka nagu kass ahju peal magada. Nurr vaatas mind ühe silmaga, nurrus ja lükkas mu käpaga maha.',
+      'Töökoja kass Nurr magab alati kõige soojemas kohas. Eile proovisin ka ise kassi kombel ahju peal magada. Nurr vaatas mind ühe silmaga, nurrus ja lükkas mu käpaga maha.',
     reindeer:
       'Töökoja kass Nurr on tal külas. Nüüd magavad nad koos heinas: suur põhjapõder ja väike kass tema sarvede vahel. Välk ei julge liigutadagi, et kassi mitte äratada.',
     toddlerTryout: 'Kass ütleb: mjäu! Kass nurrub: nurr-nurr. Silitame kassi: pai-pai.',
@@ -284,7 +284,7 @@ export const TOPICS: Topic[] = [
     match: /mets|loodus|matk/i,
     mentions: /matkal|matkaja|loodusesõb/i,
     tryout:
-      'Käisin metsas matkal. Võtsin kaasa termose, kompassi ja kolm võileiba. Kompass näitas kogu aeg põhja, aga meie töökoda ongi põhjas – nii et kõndisin ringiratast ja jõudsin tagasi koju.',
+      'Käisin metsas matkal. Võtsin kaasa termose, kompassi ja kolm võileiba. Kompass näitas kogu aeg põhja ja mina läksin kompassi järgi. Jõudsin otse tagasi töökotta – meie töökoda ongi ju kõige põhjas.',
     reindeer:
       'Ta käib igal hommikul metsas ja toob midagi kaasa: käbi, samblatüki või puukoore. Kõik need on ta lauda seina äärde ritta pannud. Arvan, et ta teeb muuseumi.',
     toddlerTryout: 'Metsas on kuused ja käbid. Käbi on pruun ja krobeline. Leiame koos ühe käbi!',
@@ -338,9 +338,9 @@ export const TOPICS: Topic[] = [
     match: /uisu|hoki/i,
     mentions: /\buisu|\buisk/i,
     tryout:
-      'Proovisin järvel uisutada. Esimesed kolm sammu läksid hästi, neljanda ajal sõitsid jalad eri suundadesse. Istusin jääl ja vaatasin, kuidas Välk mööda libises – ilma uiskudeta ja palju osavamalt.',
+      'Proovisin järvel uisutada. Esimesed kolm sammu läksid hästi, neljanda juures läksid jalad eri suundadesse. Istusin jääl ja vaatasin, kuidas Välk mööda libises – ilma uiskudeta ja palju osavamalt.',
     reindeer:
-      'Ta käib igal hommikul järvel uisutamas. Uiske tal pole, aga sõrad libisevad niisama. Eile tegi ta piruetti – vähemalt nii ta arvab. Mina nägin, et ta keerles selili.',
+      'Ta käib igal hommikul järvel uisutamas. Uiske tal pole, aga sõrad libisevad niisama. Eile tegi ta piruetti – vähemalt nii ta arvab. Mina nägin, et ta keerles hoopis selili.',
     toddlerTryout: 'Jää on libe. Ma libisen: vuhh! Ja kukun: plumps! Tõusen ja libisen uuesti.',
     toddlerReindeer: 'Välk libises jääl: vuhh! Ta keerles ringi nagu vurr. Uisutaja Välk!',
   },
@@ -353,7 +353,7 @@ export const TOPICS: Topic[] = [
     tryout:
       'Proovisin suusatada. Mäest alla läks väga kiiresti, mäest üles väga aeglaselt. Kolmandal korral sõitsin otse hange ja välja paistsid ainult suusaotsad ja minu müts.',
     reindeer:
-      'Ta tahab ka suusatada. Proovisime talle panna neli suuska – igale jalale ühe. Ta sõitis mäest alla nagu kelk ja peatus alles lauda ukse ees.',
+      'Ta tahab ka suusatada. Proovisime talle neli suuska alla panna – igale jalale ühe. Ta sõitis mäest alla nagu kelk ja peatus alles lauda ukse ees.',
     toddlerTryout: 'Suusad libisevad: suhh, suhh! Mäest alla: vuhh! Ja hange: pläts!',
     toddlerReindeer: 'Välk sõitis mäest alla: vuhh! Ilma suuskadeta. Ja otse hange: pläts!',
   },
@@ -364,9 +364,9 @@ export const TOPICS: Topic[] = [
     match: /tants|ballett/i,
     mentions: /tantsija|ballett/i,
     tryout:
-      'Proovisin tantsida. Üks päkapikk mängis viiulit ja mina keerutasin, kuni kõik pöörles – ka siis, kui olin juba seisma jäänud. Päkapikud plaksutasid. Tantsija jaoks oli see hea algus.',
+      'Proovisin tantsida. Üks päkapikk mängis viiulit ja mina keerutasin, kuni kõik pöörles – ka siis, kui olin juba seisma jäänud. Päkapikud plaksutasid ja ütlesid, et nii keerulist tantsu pole nad varem näinud.',
     reindeer:
-      'Ta on hakanud tantsijaks. Kui keegi töökojas viiulit mängib, tõstab ta ühe esijala ja keerutab. Jõuluvana ütles, et põhjapõdrabaletti pole ta oma pika elu jooksul veel näinud.',
+      'Ta tahab saada tantsijaks. Kui keegi töökojas viiulit mängib, tõstab ta ühe esijala ja keerutab. Jõuluvana ütles, et põhjapõdrabaletti pole ta oma pika elu jooksul veel näinud.',
     toddlerTryout: 'Trall-lall-lall! Ma tantsin: keerutan ringi ja hüppan: hopp! Tantsime koos!',
     toddlerReindeer: 'Välk kuulis viiulit ja hakkas tantsima: keerutas ja hüppas. Tantsija Välk!',
   },
@@ -381,7 +381,7 @@ export const TOPICS: Topic[] = [
     tryout:
       'Proovisin joonistada Jõuluvana portree. Nina tuli liiga suur ja habe liiga lühike. Jõuluvana vaatas pilti tükk aega ja ütles: „Väga ilus põhjapõder.“ Nüüd ripub see lauda seinal.',
     reindeer:
-      'Ta on hakanud kunstnikuks. Eile joonistas ta sõrgaga lumme suure ringi ja kaks täppi. Ta väidab, et see olen mina. Ma pole kindel, aga täpid on tõesti minu moodi.',
+      'Ta peab end nüüd kunstnikuks. Eile joonistas ta sõrgaga lumme suure ringi ja kaks täppi. Ta väidab, et see olen mina. Ma pole kindel, aga täpid on tõesti minu moodi.',
     toddlerTryout: 'Mul on punane pliiats. Joonistan ringi: ring-ring-ring. Ja täpi: täpp! Joonista sina ka!',
     toddlerReindeer: 'Välk joonistas sõrgaga lumme ringi. Ring! Ja kaks silma. See on päike!',
   },
@@ -408,21 +408,21 @@ export const TOPICS: Topic[] = [
       'Meisterdasin paberist lumehelbe. Voltisin, lõikasin ja voltisin veel. Kui lahti tegin, oli see hoopis paberist põhjapõder – kolme sarve ja kahe sabaga. Jõuluvana pani selle ikkagi aknale.',
     reindeer:
       'Ta toob mulle igal hommikul midagi meisterdamiseks: oksa, sulekese, väikese kivi. Arvan, et ta tahab endale midagi ilusat. Täna meisterdasin talle oksadest krooni.',
-    toddlerTryout: 'Ma lõikan paberist tähe. Kleebin tähe aknale: klõps! Täht särab!',
+    toddlerTryout: 'Mul on paberist täht. Kleebin tähe aknale: klõps! Täht särab. Kuhu sina tähe paneksid?',
     toddlerReindeer: 'Välk tõi oksa ja sulekese. Me tegime neist krooni. Nüüd on Välk kuningas!',
   },
   {
     id: 'baking',
     label: 'Küpsetamine',
     group: 'creative',
-    match: /küpseta|kook|muffin/i,
+    match: /küpseta|(?<!pann)kook|muffin/i,
     mentions: /pagari|pagar\b|kondiitri/i,
     tryout:
       'Proovisin küpsetada kooki nagu päris pagar. Taina segamise ajal lendas jahu igale poole – lakke, aknale ja Jõuluvana habemesse. Kook tuli hea, aga Jõuluvana on nüüd veel valgem kui enne.',
     reindeer:
-      'Ta seisab iga päev köögiukse taga ja nuusutab. Kui ma kooki küpsetan, tuleb ta nii lähedale, et nina on peaaegu ahjus. Eile sai ta esimese tüki ja nüüd peab ta end peapagariks.',
+      'Ta seisab iga päev köögiukse taga ja nuusutab. Kui kook ahjus küpseb, pistab ta pea uksest sisse ja nuusutab õhku. Eile lubati tal esimesena kooki nuusutada ja nüüd peab ta end peapagariks.',
     toddlerTryout: 'Me teeme kooki: segame, segame! Ahjus kook kasvab. Mmm, kook lõhnab!',
-    toddlerReindeer: 'Välk nuusutas köögis: nuuts-nuuts! Kook! Välk sai ka ühe väikese tüki.',
+    toddlerReindeer: 'Välk nuusutas köögis: nuuts-nuuts! Kook! Aga Välk sai hoopis porgandi. Krõmps!',
   },
 
   // Mängud ja lood
@@ -446,9 +446,9 @@ export const TOPICS: Topic[] = [
     match: /miki|mickey|koomiks|donald/i,
     mentions: /miki hii|koomiksisõb|koomiksilugeja/i,
     tryout:
-      'Proovisin joonistada koomiksi nagu Miki Hiire raamatus: kolm pilti ja jutumullid. Esimesel pildil oli päkapikk, teisel päkapikk ja kolmandal samuti päkapikk. Lugu jäi igavaks, aga jutumullid olid ilusad.',
+      'Joonistasin koomiksi nagu Miki Hiire raamatus. Esimesel pildil sööb Jõuluvana piparkooki. Teisel on piparkook kadunud. Kolmandal on Jõuluvanal habe puru täis. Päkapikud ütlesid, et see pole mingi mõistatus. Ei saa aru, miks.',
     reindeer:
-      'Ta on leidnud Miki Hiire koomiksi ja vaatab seda iga päev. Lugeda ta ei oska, aga pildid meeldivad. Kõige naljakamas kohas norskab ta naerda nii, et hein lendab.',
+      'Ta on leidnud Miki Hiire koomiksi ja vaatab seda iga päev. Lugeda ta ei oska, aga pildid meeldivad. Kõige naljakama pildi juures hakkab ta nii kõvasti naerma, et hein lendab.',
     toddlerTryout: 'Miki Hiir naerab: hi-hi! Miki Hiir lehvitab. Lehvitame Mikile!',
     toddlerReindeer: 'Välk vaatas pilti, kus on Miki Hiir. Miki naeratas. Välk naeratas ka!',
   },
@@ -456,7 +456,7 @@ export const TOPICS: Topic[] = [
     id: 'cars',
     label: 'Autod',
     group: 'play',
-    match: /auto|traktor|veok/i,
+    match: /(?<!\p{L})auto(?!r|maat|gramm)|traktor|veok/iu,
     mentions: /võidusõiduauto|sahaga auto/i,
     tryout:
       'Ehitasin Jõuluvana kelgule mootori, et see sõidaks nagu võidusõiduauto. Mootor käivitus, tegi „vrumm“ – ja kelk sõitis tagurpidi otse lauta. Välk ei olnud sellest üldse vaimustuses.',
@@ -500,8 +500,8 @@ export const TOPICS: Topic[] = [
     tryout:
       'Mängisin töökojas piraati: silmaklapp ees, papist mõõk vöö vahel. Ronisin kingikuhja otsa ja hüüdsin: „Laev paistab!“ Laeva ei paistnud, aga Jõuluvana tuli vaatama, mis lärm see on.',
     reindeer:
-      'Ta on hakanud piraadiks. Ta kaevas lumme augu ja peitis sinna porgandi – oma aarde. Siis unustas, kus see oli. Nüüd kaevab ta terve õue läbi ja kõik päkapikud aitavad.',
-    toddlerTryout: 'Piraat ütleb: ahoi! Piraadil on laev. Laev õõtsub: kiik-kõik. Ahoi!',
+      'Ta mängib nüüd piraati: kaevas lumme augu ja peitis sinna porgandi – oma aarde. Siis unustas, kus see oli. Nüüd kaevab ta terve õue läbi ja kõik päkapikud aitavad.',
+    toddlerTryout: 'Piraat ütleb: ahoi! Piraadil on laev. Laev õõtsub: kiiga-kaaga. Ahoi!',
     toddlerReindeer: 'Välk peitis porgandi lumme. See on piraadi aare! Kus see on? Kaevame!',
   },
   {
@@ -528,7 +528,7 @@ export const TOPICS: Topic[] = [
     reindeer:
       'Ta käis eile ringi, laudlina seljas nagu printsessi mantel ja käbi sarvede vahel. Kõik pidid talle kummardama. Mina kummardasin ja tema kummardas vastu – nii sügavalt, et kukkus.',
     toddlerTryout: 'Printsessil on kroon. Kroon särab ja sädeleb. Paneme krooni pähe!',
-    toddlerReindeer: 'Välk pani pähe krooni. Nüüd on Välk printsess! Ta kummardab: kummar!',
+    toddlerReindeer: 'Välk pani pähe krooni. Nüüd on Välk printsess! Ta teeb sügava kummarduse. Kummarda sina ka!',
   },
   {
     id: 'superheroes',
@@ -549,13 +549,13 @@ export const TOPICS: Topic[] = [
     id: 'peppa',
     label: 'Põrsas Peppa',
     group: 'characters',
-    match: /peppa|põrsa/i,
+    match: /peppa/i,
     mentions: /peppa/i,
     tryout:
       'Proovisin naerda täpselt nagu Põrsas Peppa: röh-röh-röh. Päkapikud arvasid, et laudast on põrsas välja pääsenud, ja otsisid terve õhtu. Mina ei julgenud öelda, et see olin mina.',
     reindeer:
       'Ta hüppab Põrsas Peppa moodi heinakuhjas ja röhib: röh-röh! Hein lendab igale poole ja kõik päkapikud naeravad. Laudas pole kunagi nii lõbus olnud.',
-    toddlerTryout: 'Peppa ütleb: röh-röh! Peppa hüppab: hüpp! Hüppame nagu Peppa!',
+    toddlerTryout: 'Peppa ütleb: röh-röh! Peppa hüppab porilompi: lirts! Hüppame ka!',
     toddlerReindeer: 'Välk hüppas heinas nagu Peppa: hüpp-hüpp! Ja ütles: röh-röh! Naljakas Välk!',
   },
   {
@@ -565,7 +565,7 @@ export const TOPICS: Topic[] = [
     match: /käpapatrull|paw patrol/i,
     mentions: /käpapatrull/i,
     tryout:
-      'Mängisime töökojas Käpapatrulli. Mina olin päästja, kes otsib kadunud asju. Leidsin kaks kinnast, ühe sussi ja Jõuluvana prillid – need olid tal kogu aeg peas.',
+      'Mängisime töökojas Käpapatrulli. Mina mängisin päästjat, kes otsis kadunud asju. Leidsin kaks kinnast, ühe sussi ja Jõuluvana prillid – need olid tal kogu aeg peas.',
     reindeer:
       'Ta on loonud oma Käpapatrulli. Kui kuskil midagi juhtub, kihutab ta kohale. Eile päästis ta päkapiku, kes oli kingikuhja alla jäänud. Päkapikk otsis seal tegelikult lihtsalt pliiatsit.',
     toddlerTryout: 'Käpapatrull tuleb appi! Jookseme: tipa-tapa. Appi, appi – hurraa!',
@@ -593,7 +593,7 @@ export const TOPICS: Topic[] = [
     match: /riisipu/i,
     mentions: /riisipu/i,
     tryout:
-      'Keetsin hommikusöögiks riisiputru. Segasin ja segasin, siis unustasin hetkeks segamise. Puder kasvas üle poti ääre ja peaaegu ukseni. Päkapikud ütlesid, et nii palju putru pole nad kunagi näinud.',
+      'Tahtsin kõigile riisiputru keeta. Panin poti tulele, aga siis tuli Välk oma kadunud kellukest otsima. Otsisime nii kaua, et puder keeb üle poti ääre. Üks päkapikk küsis: „Kas sa keedad terve põhjapõdrakarja jaoks?“',
     reindeer:
       'Ta on avastanud riisipudru. Igal hommikul seisab ta köögiukse taga ja ootab, kas jääb üle. Kui jääb, lakub ta kausi nii puhtaks, et seda pole vaja pestagi.',
     toddlerTryout: 'Puder on soe. Puhume: fuu-fuu! Võtame lusikaga: amps! Mmm, riisipuder!',
@@ -621,7 +621,7 @@ export const TOPICS: Topic[] = [
     tryout:
       'Tegin talvel jäätist: lumi, natuke moosi ja tilk piima. Panin kausi aknalauale külmuma. Hommikul oli kauss tühi ja Välgu ninal oli moosi. Ta väitis, et ei tea midagi.',
     reindeer:
-      'Ta on avastanud, et jäätise kausi saab väga puhtaks lakkuda. Nüüd seisab ta iga kord köögis, kui keegi jäätist teeb. Kui ta mõnikord ootamatult aevastab, on tal nina peal vahukoort.',
+      'Ta on avastanud, et jäätise kausi saab väga puhtaks lakkuda. Nüüd seisab ta iga kord köögis, kui keegi jäätist teeb. Eile pistis ta nina nii sügavale kaussi, et kõndis terve õhtu, vahukoor ninaotsas.',
     toddlerTryout: 'Jäätis on külm. Limps-limps! Jäätis on magus. Mmm, jäätis!',
     toddlerReindeer: 'Välk limpsis lund: limps! Ta arvas, et see on jäätis. Lumi on külm!',
   },
