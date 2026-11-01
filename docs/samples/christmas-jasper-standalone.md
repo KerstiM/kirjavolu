@@ -84,7 +84,7 @@ _Sinu sõber · Päkapikk Tuduja_
 
 Põhjapõder Välk käitub viimasel ajal imelikult.
 
-Ta on leidnud Miki Hiire koomiksi ja vaatab seda iga päev. Lugeda ta ei oska, aga pildid meeldivad. Kõige naljakamas kohas norskab ta naerda nii, et hein lendab.
+Ta on leidnud Miki Hiire koomiksi ja vaatab seda iga päev. Lugeda ta ei oska, aga pildid meeldivad. Kõige naljakama pildi juures hakkab ta nii kõvasti naerma, et hein lendab.
 
 Kust ta selle mõtte sai? Kahtlustan, et keegi on talle sinust rääkinud.
 
