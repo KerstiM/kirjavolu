@@ -7,7 +7,7 @@ Eestikeelne veebirakendus, mis aitab lapsevanematel luua lapsele personaalseid m
 ## Funktsioonid
 - Kuus sisutüüpi, igaühel oma loomisvoog ja seaded
 - 11 sündmust (jõulud, lihavõtted, sünnipäev, halloween, mardi- ja kadripäev, vastlapäev, sõbrapäev, kooliaasta algus, suvevaheaeg, piimahammas, tavaline päev)
-- Laste profiilid (lisamine, muutmine, kustutamine), näidisprofiilid Ruben, Jasper ja Brita
+- Laste profiilid (lisamine, muutmine, kustutamine); alguses on nimekiri tühi, näidisprofiilid Ruben, Jasper ja Brita saab lisada ühe nupuga
 - Ühised elamused õdedele-vendadele: ülesanded jagatakse vanuse järgi
 - **Stsenaariumipõhised jõulukirjad**: 7 või 24 jõulukirja sari kirjutatakse terviklikest, käsitsi kirjutatud lugudest – igal kirjal on üks sündmus algusest lõpuni, mitte juhuslikult kokku pandud lõigud. Kogu sari planeeritakse enne kirjutamist (järjejutu etapid, iseseisvad lood, pere sündmused, ülesanded, isikupärastus) ja kontrollitakse automaatselt (kordused, ajajärjestus, saladused, mõistatuste vastused, kaardi pikkus). Vt [docs/scenario-engine.md](docs/scenario-engine.md)
 - **Seotud pere sarjad**: mitme lapse puhul saab iga laps oma kirjasarja samast päkapikumaailmast – igal lapsel on huvide järgi välja pakutud abiline (nt Kõpsu-Mõpsu Kuubikuvõlur, Tipp-Topp Riisiterake) oma häälega, esimeses kirjas tutvustatakse ka õdede-vendade abilisi, umbes iga viies päev on paarisülesanne (vanem teeb nooremale midagi ja mõlema kiri teab sellest) ning viimases kirjas lõpetavad kõik koos. Eelvaates on iga lapse sari omas paigutuses

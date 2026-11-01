@@ -32,7 +32,7 @@ watch(overflow, (value) => emit('overflow', value), { immediate: true })
     </header>
     <span class="mini__face"><AnimalFace :animal="animalFor(index)" /></span>
     <button type="button" class="card-edit no-print" :aria-label="`Muuda: ${number}. kaart`" @click="emit('edit')">
-      <Pencil :size="11" aria-hidden="true" /> Muuda
+      <span class="card-edit__pill"><Pencil :size="11" aria-hidden="true" /> Muuda</span>
     </button>
     <div ref="body" class="mini__body">
       <div class="mini__inner">
@@ -82,6 +82,17 @@ watch(overflow, (value) => emit('overflow', value), { immediate: true })
   bottom: 1.6mm;
   left: 1.6mm;
   z-index: 2;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  &:hover .card-edit__pill,
+  &:focus-visible .card-edit__pill {
+    border-color: #6b5aa8;
+  }
+}
+.card-edit__pill {
   display: inline-flex;
   align-items: center;
   gap: 1mm;
@@ -93,11 +104,14 @@ watch(overflow, (value) => emit('overflow', value), { immediate: true })
   font-size: 7.5pt;
   font-weight: 600;
   color: #54458c;
-  cursor: pointer;
-  transition: opacity 0.15s ease;
-  &:hover,
-  &:focus-visible {
-    border-color: #6b5aa8;
+}
+/* On a touch screen the cards are shown small, so the whole card opens the editor. */
+@media (hover: none) {
+  .card-edit {
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    padding: 1.6mm;
   }
 }
 /* With a mouse the button appears on hover or keyboard focus; on touch screens it is always visible. */

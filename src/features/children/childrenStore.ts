@@ -41,8 +41,8 @@ function cleanDraft(draft: ChildProfileDraft): ChildProfileDraft {
 }
 
 export const useChildrenStore = defineStore('children', () => {
-  const stored = loadState()
-  const children = ref<ChildProfile[]>(stored.demoSeeded ? stored.children : clone(DEMO_CHILDREN))
+  // A new family starts empty; the demo profiles are only added on request.
+  const children = ref<ChildProfile[]>(loadState().children)
 
   function byId(id: string): ChildProfile | undefined {
     return children.value.find((child) => child.id === id)

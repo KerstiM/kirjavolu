@@ -83,7 +83,7 @@ onBeforeUnmount(() => {
         <label class="dialog__label" for="item-editor-body">Tekst</label>
         <textarea id="item-editor-body" ref="bodyField" v-model="draft.body" class="textarea" :rows="rows" />
         <p class="dialog__hint">
-          Tühi rida alustab uut lõiku.<template v-if="fitHint"> {{ words }} sõna – kaardile mahub mugavalt umbes 70–100 sõna.</template>
+          Tühi rida alustab uut lõiku.<template v-if="fitHint">{{ ' ' }}{{ words }} sõna – kaardile mahub mugavalt umbes 70–100 sõna.</template>
         </p>
         <template v-if="item.signature !== undefined">
           <label class="dialog__label" for="item-editor-signature">Allkiri</label>
@@ -170,6 +170,19 @@ onBeforeUnmount(() => {
 }
 .dialog__spacer {
   flex: 1;
+}
+// On a phone "Uus variant" and "Tühista" share a row and "Salvesta" gets the full width below.
+@media (max-width: 520px) {
+  .dialog__actions .action {
+    flex: 1;
+    justify-content: center;
+  }
+  .dialog__actions .action--primary {
+    flex-basis: 100%;
+  }
+  .dialog__spacer {
+    display: none;
+  }
 }
 .action {
   display: inline-flex;

@@ -211,4 +211,18 @@ function outOfRange(event: FamilyEvent): boolean {
     grid-row: 2;
   }
 }
+// On a phone the date shares a row with the remove button; the event and its detail get full rows.
+@media (max-width: 520px) {
+  .event {
+    grid-template-columns: 1fr auto;
+  }
+  .event__remove {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .event__field:not(:first-child) {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+}
 </style>

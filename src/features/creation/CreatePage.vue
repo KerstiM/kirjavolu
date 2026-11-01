@@ -158,7 +158,9 @@ async function create(): Promise<void> {
         Edasi <ArrowRight aria-hidden="true" />
       </BaseButton>
       <BaseButton v-else size="lg" :disabled="busy" @click="create">
-        <WandSparkles aria-hidden="true" /> {{ busy ? 'Loon…' : 'Loo ja vaata eelvaadet' }}
+        <WandSparkles aria-hidden="true" />
+        <template v-if="busy">Loon…</template>
+        <template v-else><span class="wide-only">Loo ja vaata eelvaadet</span><span class="narrow-only">Loo</span></template>
       </BaseButton>
     </footer>
   </div>
@@ -194,6 +196,32 @@ async function create(): Promise<void> {
   margin-top: 2rem;
   padding: 1rem 0;
   background: linear-gradient(transparent, var(--bg) 35%);
+
+  // On a phone the bar sits over the choices, so it gets a solid edge-to-edge background
+  // and the main action takes the remaining width.
+  @media (max-width: 600px) {
+    gap: 0.75rem;
+    margin-inline: -1rem;
+    padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -6px 16px rgb(0 0 0 / 0.04);
+
+    > :last-child {
+      flex: 1;
+    }
+  }
+}
+.narrow-only {
+  display: none;
+}
+@media (max-width: 600px) {
+  .wide-only {
+    display: none;
+  }
+  .narrow-only {
+    display: inline;
+  }
 }
 .error-box {
   margin-top: 1.5rem;

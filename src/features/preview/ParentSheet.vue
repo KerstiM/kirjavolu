@@ -125,6 +125,36 @@ const solved = computed(() => props.content.items.filter((item) => item.answer |
     font-weight: 600;
     white-space: nowrap;
   }
+
+  // On a phone each row becomes a small block: the part on top, answer and note below it.
+  @media screen and (max-width: 600px) {
+    thead {
+      display: none;
+    }
+    tr,
+    th,
+    td {
+      display: block;
+    }
+    tr {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--line);
+    }
+    tbody th,
+    td {
+      padding: 0;
+      border: 0;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+    td:empty {
+      display: none;
+    }
+    td:last-child {
+      color: var(--ink-soft);
+      font-size: 0.85rem;
+    }
+  }
 }
 @media print {
   .parent-sheet {
