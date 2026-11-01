@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import type { Decoration, GeneratedContent, GeneratedItem, PrintableLayout } from '../../domain/models'
 import { deleteImage } from '../../utils/imageStore'
 import { loadState } from '../../utils/storage'
+import { defaultLayoutFor } from '../../domain/generators/templateGenerator'
 
 export const useCreationsStore = defineStore('creations', () => {
   const creations = ref<GeneratedContent[]>(loadState().creations)
@@ -42,6 +43,23 @@ export const useCreationsStore = defineStore('creations', () => {
     Object.assign(item, patch, { edited: true })
   }
 
+  /**
+   * Puts the texts of new choices into an existing creation. Its id, decoration and a
+   * layout the parent picked stay; a default layout follows the new choices (e.g. 24 → 1 letter).
+   */
+  function applyChoices(id: string, next: GeneratedContent): void {
+    const creation = byId(id)
+    if (!creation) return
+    const layoutWasDefault = creation.layout === defaultLayoutFor(creation.request)
+    creation.title = next.title
+    creation.subtitle = next.subtitle
+    creation.request = next.request
+    creation.items = next.items
+    creation.instructions = next.instructions
+    creation.generator = next.generator
+    if (layoutWasDefault) creation.layout = next.layout
+  }
+
   function setLayout(id: string, layout: PrintableLayout): void {
     const creation = byId(id)
     if (creation) creation.layout = layout
@@ -52,5 +70,5 @@ export const useCreationsStore = defineStore('creations', () => {
     if (creation && title.trim()) creation.title = title.trim()
   }
 
-  return { creations, byId, add, remove, setDecoration, updateItem, editItem, setLayout, rename }
+  return { creations, byId, add, remove, setDecoration, updateItem, editItem, applyChoices, setLayout, rename }
 })

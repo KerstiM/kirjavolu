@@ -10,11 +10,10 @@ import type {
 import { DEFAULT_GENERAL, defaultOptions } from '../../domain/defaults'
 import { clone } from '../../utils/clone'
 
+/** Two questions, then the preview, where everything else can be changed beside the letters. */
 export const WIZARD_STEPS = [
-  { id: 'type', label: 'Mida luua?' },
+  { id: 'what', label: 'Mida ja mis puhul?' },
   { id: 'children', label: 'Kellele?' },
-  { id: 'occasion', label: 'Mis puhul?' },
-  { id: 'customize', label: 'Kohanda' },
 ] as const
 
 export interface WizardState {
@@ -32,9 +31,7 @@ export interface WizardInit {
   contentType?: ContentTypeId
   occasionId?: OccasionId
   childIds?: string[]
-  /** The family has exactly one child, so "Kellele?" needs no answer. */
-  onlyChild?: boolean
-  /** Choices of an earlier creation, to change them: the wizard opens at "Kohanda". */
+  /** Choices of an earlier creation, to change them: the wizard opens at "Kellele?". */
   restore?: { general: GeneralOptions; options: ContentOptionsMap[ContentTypeId] }
 }
 
@@ -62,8 +59,6 @@ export function carryOverOptions(
 }
 
 export function useWizard(init: WizardInit = {}) {
-  // Steps already answered on arrival (occasion from the home page, the only child) are skipped.
-  const known = new Set<WizardStepId>()
   const state = reactive<WizardState>(initialState(init))
   let defaults = defaultOptions(init.occasionId ?? 'everyday')
 
@@ -82,14 +77,10 @@ export function useWizard(init: WizardInit = {}) {
 
   /** Starts over with new answers, e.g. "Loo uus" while the wizard is already open. */
   function reset(from: WizardInit = {}): void {
-    known.clear()
-    if (from.occasionId) known.add('occasion')
-    if (from.onlyChild || from.restore) known.add('children')
     Object.assign(state, initialState(from))
     defaults = defaultOptions(from.occasionId ?? 'everyday')
-    if (from.contentType) known.add('type')
-    state.step = firstOpenStep(0)
-    known.delete('type')
+    // Type and occasion from a home page card: straight to "Kellele?", "Tagasi" still changes them.
+    state.step = from.contentType && from.occasionId ? 1 : 0
   }
   reset(init)
 
@@ -103,39 +94,16 @@ export function useWizard(init: WizardInit = {}) {
   )
 
   function answered(id: WizardStepId): boolean {
-    if (id === 'type') return state.contentType !== null
-    if (id === 'children') return state.childIds.length > 0
-    if (id === 'occasion') return state.occasionId !== null
-    return false
+    if (id === 'what') return state.contentType !== null && state.occasionId !== null
+    return state.childIds.length > 0
   }
 
-  function firstOpenStep(from: number): number {
-    let step = from
-    while (step < WIZARD_STEPS.length - 1) {
-      const id = WIZARD_STEPS[step]?.id as WizardStepId
-      if (!(known.has(id) && answered(id))) break
-      step++
-    }
-    return step
-  }
-
-  const canProceed = computed(() => {
-    switch (WIZARD_STEPS[state.step]?.id) {
-      case 'type':
-        return state.contentType !== null
-      case 'children':
-        return state.childIds.length > 0
-      case 'occasion':
-        return state.occasionId !== null
-      default:
-        return true
-    }
-  })
+  const canProceed = computed(() => answered(WIZARD_STEPS[state.step]?.id ?? 'what'))
 
   const isLastStep = computed(() => state.step === WIZARD_STEPS.length - 1)
 
   function next(): void {
-    if (canProceed.value && !isLastStep.value) state.step = firstOpenStep(state.step + 1)
+    if (canProceed.value && !isLastStep.value) state.step++
   }
 
   function back(): void {

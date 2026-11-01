@@ -1,4 +1,4 @@
-import type { AgeBand, ChildProfile, Difficulty } from '../models'
+import type { AgeBand, ChildProfile, Difficulty, ReadingLevel } from '../models'
 import { joinList, nameCase, namesInCase } from '../text/estonian'
 import { findInterestHooks, type InterestHook } from '../../data/templates/interests'
 import { interestTexts } from '../../data/topics'
@@ -26,6 +26,14 @@ export function ageBand(child: Pick<ChildProfile, 'age' | 'readingLevel'>): AgeB
   if (child.age <= 7) return child.readingLevel === 'advanced' && child.age >= 7 ? 'older' : 'young'
   if (child.readingLevel === 'read-aloud' || child.readingLevel === 'beginner') return 'young'
   return 'older'
+}
+
+/** A likely reading ability for an age, so a quick profile needs only the age; the parent can change it. */
+export function readingLevelForAge(age: number): ReadingLevel {
+  if (age <= 4) return 'read-aloud'
+  if (age <= 7) return 'beginner'
+  if (age <= 9) return 'independent'
+  return 'advanced'
 }
 
 /**

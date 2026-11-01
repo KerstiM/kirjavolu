@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { UsersRound } from 'lucide-vue-next'
+import { Plus, UsersRound } from 'lucide-vue-next'
 import type { ChildProfile } from '../../../domain/models'
 import { READING_LEVEL_LABELS } from '../../../domain/models'
 import { ageLabel } from '../../../domain/text/estonian'
@@ -9,7 +9,7 @@ import BaseButton from '../../../components/ui/BaseButton.vue'
 import EmptyState from '../../../components/ui/EmptyState.vue'
 
 const props = defineProps<{ children: ChildProfile[]; selected: string[] }>()
-const emit = defineEmits<{ toggle: [id: string]; selectAll: [] }>()
+const emit = defineEmits<{ toggle: [id: string]; selectAll: []; add: [] }>()
 
 const shared = computed(() => props.selected.length > 1)
 </script>
@@ -23,9 +23,9 @@ const shared = computed(() => props.selected.length > 1)
       v-if="children.length === 0"
       :icon="UsersRound"
       title="Profiile pole veel"
-      text="Lisa vähemalt üks lapse profiil, et tekstid saaksid teda nimepidi kõnetada."
+      text="Lisa laps – piisab nimest ja vanusest. Tekstid kõnetavad teda nimepidi."
     >
-      <BaseButton to="/lapsed">Lisa laps</BaseButton>
+      <BaseButton @click="emit('add')"><Plus aria-hidden="true" /> Lisa laps</BaseButton>
     </EmptyState>
 
     <template v-else>
@@ -42,6 +42,7 @@ const shared = computed(() => props.selected.length > 1)
         />
       </div>
       <div class="step-actions-inline">
+        <BaseButton variant="ghost" size="sm" @click="emit('add')"><Plus aria-hidden="true" /> Lisa laps</BaseButton>
         <BaseButton v-if="children.length > 1" variant="ghost" size="sm" @click="emit('selectAll')">Vali kõik</BaseButton>
         <BaseButton variant="ghost" size="sm" to="/lapsed">Halda profiile</BaseButton>
       </div>

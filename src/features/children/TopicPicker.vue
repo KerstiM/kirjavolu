@@ -4,6 +4,8 @@ import { TOPIC_GROUPS, TOPICS, type TopicId } from '../../data/topics'
 
 /** Topics from the list, grouped; the letters have real stories for each of them. */
 const model = defineModel<TopicId[]>({ required: true })
+/** Most topics that may be picked, e.g. 3 in the quick profile; the rest are disabled once reached. */
+const props = defineProps<{ max?: number }>()
 
 const groups = TOPIC_GROUPS.map((group) => ({
   ...group,
@@ -11,6 +13,7 @@ const groups = TOPIC_GROUPS.map((group) => ({
 }))
 
 const picked = computed(() => new Set(model.value))
+const full = computed(() => props.max !== undefined && model.value.length >= props.max)
 
 function toggle(id: TopicId): void {
   model.value = picked.value.has(id) ? model.value.filter((existing) => existing !== id) : [...model.value, id]
@@ -26,12 +29,13 @@ function toggle(id: TopicId): void {
           v-for="topic in group.topics"
           :key="topic.id"
           class="topics__option"
-          :class="{ 'is-active': picked.has(topic.id) }"
+          :class="{ 'is-active': picked.has(topic.id), 'is-disabled': full && !picked.has(topic.id) }"
         >
           <input
             type="checkbox"
             class="visually-hidden"
             :checked="picked.has(topic.id)"
+            :disabled="full && !picked.has(topic.id)"
             @change="toggle(topic.id)"
           />
           <span>{{ topic.label }}</span>
@@ -83,6 +87,13 @@ function toggle(id: TopicId): void {
     border-color: var(--lavender);
     color: var(--lavender-ink);
     font-weight: 600;
+  }
+  &.is-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    &:hover {
+      border-color: var(--line-strong);
+    }
   }
   &:has(input:focus-visible) {
     outline: 3px solid var(--focus);
