@@ -6,7 +6,7 @@ import { patternsFor, PATTERN_LABELS } from '@/domain/patterns'
 import PrintableItem from '@/features/preview/PrintableItem.vue'
 import PuzzlePiece from '@/features/preview/decoration/PuzzlePiece.vue'
 import AssemblyGuide from '@/features/preview/decoration/AssemblyGuide.vue'
-import type { GeneratedItem } from '@/domain/models'
+import { EMPTY_DECORATION, sheetBackground, type GeneratedItem } from '@/domain/models'
 
 describe('puzzle grid', () => {
   it('24 advent letters on a landscape photo form a full 6 × 4 grid', () => {
@@ -98,5 +98,34 @@ describe('decorated printable items', () => {
     expect(screen.getByText('Pusle kokkupanek')).toBeInTheDocument()
     const extras = grid.cells - 7
     expect(document.querySelectorAll('.piece')).toHaveLength(extras)
+  })
+})
+
+describe('sheet background per child', () => {
+  const image = { id: 'shared', width: 800, height: 600 }
+  const own = { id: 'mia', width: 800, height: 600 }
+  const shared = { ...EMPTY_DECORATION, image, imageAsBackground: true }
+
+  it('follows the shared background unless the child has a choice of their own', () => {
+    expect(sheetBackground(shared, 'jasper').image).toBe(image)
+    expect(sheetBackground({ ...EMPTY_DECORATION, pattern: 'stars' }, 'jasper').pattern).toBe('stars')
+  })
+
+  it('gives a child their own picture or no background at all', () => {
+    const decoration = {
+      ...shared,
+      childDecorations: {
+        mia: { background: 'image' as const, image: own },
+        brita: { background: 'none' as const, image: null },
+      },
+    }
+    expect(sheetBackground(decoration, 'mia').image).toBe(own)
+    expect(sheetBackground(decoration, 'brita')).toEqual({ image: null, pattern: null, posterArt: false })
+    expect(sheetBackground(decoration, 'jasper').image).toBe(image)
+  })
+
+  it('falls back to the shared background while an own picture is not uploaded yet', () => {
+    const decoration = { ...shared, childDecorations: { mia: { background: 'image' as const, image: null } } }
+    expect(sheetBackground(decoration, 'mia').image).toBe(image)
   })
 })

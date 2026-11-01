@@ -15,6 +15,10 @@ const props = defineProps<{
   imageUrl: string | null
   /** Puzzle poster: a picture spans the whole poster, and the drawn landscape is one of the choices. */
   poster?: boolean
+  /** Toddler card sheets: the picture is a background behind the cards, never cut into pieces. */
+  mini?: boolean
+  /** Some child has an own picture, so the strength slider is needed even without a shared one. */
+  childImage?: boolean
 }>()
 const emit = defineEmits<{ update: [decoration: Decoration] }>()
 
@@ -28,6 +32,13 @@ const background = computed<BackgroundChoice>(() => {
   if (props.poster && props.decoration.posterArt) return 'poster-art'
   return props.decoration.pattern ?? 'none'
 })
+// On card sheets the picture is behind the cards, so it can be shown at full strength.
+const cardSheets = computed(() => !!props.poster || !!props.mini)
+const maxOpacity = computed(() => (cardSheets.value ? 1 : 0.6))
+const opacity = computed(() => (cardSheets.value ? (props.decoration.cardImageOpacity ?? 1) : props.decoration.imageOpacity))
+function setOpacity(value: number): void {
+  update(cardSheets.value ? { cardImageOpacity: value } : { imageOpacity: value })
+}
 const grid = computed(() =>
   props.decoration.image ? computeGrid(props.itemCount, props.decoration.image.width / props.decoration.image.height) : null,
 )
@@ -57,7 +68,7 @@ async function onFile(event: Event): Promise<void> {
     const image = await saveImage(file)
     // A fresh picture becomes the puzzle by default – that is the main reason to upload one.
     // On the poster that means the picture behind the cards.
-    update(props.poster ? { image, puzzle: true, imageAsBackground: true, posterArt: false, pattern: null } : { image, puzzle: true })
+    update(cardSheets.value ? { image, puzzle: true, imageAsBackground: true, posterArt: false, pattern: null } : { image, puzzle: true })
   } catch {
     error.value = 'Pilti ei õnnestunud salvestada. Proovi teist pilti või teist brauserit.'
   } finally {
@@ -105,18 +116,20 @@ function removeImage(): void {
         <input type="checkbox" :checked="decoration.inkSaver" @change="update({ inkSaver: !decoration.inkSaver })" />
         <span>Säästa tinti – muster ainult raamina</span>
       </label>
-      <label v-if="background === 'image'" class="range-field">
-        <span>Pildi heledus</span>
+      <label v-if="background === 'image' || childImage" class="range-field">
+        <span>Pildi tugevus</span>
+        <span class="range-field__end" aria-hidden="true">hele</span>
         <input
           type="range"
           class="range"
           min="0.1"
-          max="0.6"
+          :max="maxOpacity"
           step="0.05"
-          :value="decoration.imageOpacity"
+          :value="opacity"
           aria-label="Taustapildi tugevus"
-          @input="update({ imageOpacity: Number(($event.target as HTMLInputElement).value) })"
+          @input="setOpacity(Number(($event.target as HTMLInputElement).value))"
         />
+        <span class="range-field__end" aria-hidden="true">tugev</span>
       </label>
     </fieldset>
 
@@ -140,7 +153,7 @@ function removeImage(): void {
       <p v-if="poster && background === 'image'" class="decor__hint" role="status">
         Pusleplakatil on see pilt kogu plakati taust – kui kõik kaardid on koos, tuleb pilt välja.
       </p>
-      <template v-if="decoration.image && grid && !poster">
+      <template v-if="decoration.image && grid && !cardSheets">
         <label class="check">
           <input type="checkbox" :checked="decoration.puzzle" @change="update({ puzzle: !decoration.puzzle })" />
           <span>Lõika pilt tükkideks (iga osa juurde üks tükk)</span>
@@ -269,6 +282,10 @@ function removeImage(): void {
   .range {
     max-width: 14rem;
   }
+}
+.range-field__end {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
 }
 .upload-row {
   display: flex;
