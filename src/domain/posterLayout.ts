@@ -13,6 +13,8 @@ export const POSTER_HEIGHT_MM = 262
 
 const COLUMNS_PER_PAGE = 2
 const MAX_ROWS_PER_PAGE = 4
+/** Taller cards for long texts: at most two rows per sheet, so the poster takes more sheets. */
+const MAX_ROWS_PER_PAGE_LARGE = 2
 
 export interface PosterLayout {
   count: number
@@ -39,11 +41,11 @@ export interface PosterPage {
   pageRow: number
 }
 
-export function computePoster(count: number): PosterLayout {
+export function computePoster(count: number, { large = false } = {}): PosterLayout {
   const n = Math.max(1, Math.floor(count))
   const cols = n > 12 ? 4 : 2
   const rows = Math.ceil(n / cols)
-  const pageRows = Math.ceil(rows / MAX_ROWS_PER_PAGE)
+  const pageRows = Math.ceil(rows / (large ? MAX_ROWS_PER_PAGE_LARGE : MAX_ROWS_PER_PAGE))
   const rowsPerPage = Math.ceil(rows / pageRows)
   const pageCols = cols / COLUMNS_PER_PAGE
   return {

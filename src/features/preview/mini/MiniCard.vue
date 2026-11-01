@@ -8,7 +8,7 @@ import AnimalFace from './AnimalFace.vue'
 import { animalFor, colorFor } from './animals'
 
 /** Toddler card: big number, an animal face and a few large words to read aloud. */
-const props = defineProps<{ item: GeneratedItem; index: number; uppercase: boolean }>()
+const props = defineProps<{ item: GeneratedItem; index: number; uppercase: boolean; smallText?: boolean }>()
 const emit = defineEmits<{ overflow: [value: boolean]; edit: [] }>()
 
 const body = ref<HTMLElement | null>(null)
@@ -16,9 +16,9 @@ const number = computed(() => (props.item.date ? Number(props.item.date.slice(8,
 const weekday = computed(() => (props.item.date ? weekdayName(props.item.date) : ''))
 const text = computed(() => props.item.body.split(/\n{2,}/).filter((p) => p.trim()))
 
-const { overflow } = useFitText(body, [() => props.item.body, () => props.uppercase], {
+const { overflow } = useFitText(body, [() => props.item.body, () => props.uppercase, () => props.smallText], {
   maxPt: () => 13,
-  minPt: 9,
+  minPt: () => (props.smallText ? 7 : 9),
   headroom: () => (props.uppercase ? 0.88 : 0.95),
 })
 watch(overflow, (value) => emit('overflow', value), { immediate: true })

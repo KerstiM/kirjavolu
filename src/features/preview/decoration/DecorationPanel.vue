@@ -6,25 +6,28 @@ import { isSuggestedPattern, PATTERN_LABELS, patternsFor } from '../../../domain
 import { computeGrid } from '../../../domain/puzzleGrid'
 import { saveImage } from '../../../utils/imageStore'
 import PatternBackground from './PatternBackground.vue'
+import PosterArt from '../poster/PosterArt.vue'
 
 const props = defineProps<{
   decoration: Decoration
   occasionId: OccasionId
   itemCount: number
   imageUrl: string | null
-  /** On the puzzle poster the picture always spans the whole poster. */
+  /** Puzzle poster: a picture spans the whole poster, and the drawn landscape is one of the choices. */
   poster?: boolean
 }>()
 const emit = defineEmits<{ update: [decoration: Decoration] }>()
 
-type BackgroundChoice = 'none' | 'image' | PatternId
+type BackgroundChoice = 'none' | 'image' | 'poster-art' | PatternId
 
 const uploading = ref(false)
 const error = ref('')
 const patterns = computed(() => patternsFor(props.occasionId))
-const background = computed<BackgroundChoice>(() =>
-  props.decoration.imageAsBackground && props.decoration.image ? 'image' : (props.decoration.pattern ?? 'none'),
-)
+const background = computed<BackgroundChoice>(() => {
+  if (props.decoration.imageAsBackground && props.decoration.image) return 'image'
+  if (props.poster && props.decoration.posterArt) return 'poster-art'
+  return props.decoration.pattern ?? 'none'
+})
 const grid = computed(() =>
   props.decoration.image ? computeGrid(props.itemCount, props.decoration.image.width / props.decoration.image.height) : null,
 )
@@ -34,8 +37,9 @@ function update(patch: Partial<Decoration>): void {
 }
 
 function chooseBackground(choice: BackgroundChoice): void {
-  if (choice === 'image') update({ imageAsBackground: true, pattern: null })
-  else update({ imageAsBackground: false, pattern: choice === 'none' ? null : choice })
+  if (choice === 'image') update({ imageAsBackground: true, posterArt: false, pattern: null })
+  else if (choice === 'poster-art') update({ imageAsBackground: false, posterArt: true, pattern: null })
+  else update({ imageAsBackground: false, posterArt: false, pattern: choice === 'none' ? null : choice })
 }
 
 async function onFile(event: Event): Promise<void> {
@@ -52,7 +56,8 @@ async function onFile(event: Event): Promise<void> {
   try {
     const image = await saveImage(file)
     // A fresh picture becomes the puzzle by default – that is the main reason to upload one.
-    update({ image, puzzle: true })
+    // On the poster that means the picture behind the cards.
+    update(props.poster ? { image, puzzle: true, imageAsBackground: true, posterArt: false, pattern: null } : { image, puzzle: true })
   } catch {
     error.value = 'Pilti ei õnnestunud salvestada. Proovi teist pilti või teist brauserit.'
   } finally {
@@ -83,7 +88,14 @@ function removeImage(): void {
           <span>{{ PATTERN_LABELS[pattern] }}<span v-if="isSuggestedPattern(occasionId, pattern)" class="visually-hidden"> (sobib sündmusega)</span></span>
           <span v-if="isSuggestedPattern(occasionId, pattern)" class="swatch__star" aria-hidden="true">★</span>
         </label>
-        <label v-if="decoration.image && imageUrl && !poster" class="swatch" :class="{ 'is-active': background === 'image' }">
+        <label v-if="poster" class="swatch" :class="{ 'is-active': background === 'poster-art' }">
+          <input type="radio" class="visually-hidden" name="bg" :checked="background === 'poster-art'" @change="chooseBackground('poster-art')" />
+          <span class="swatch__preview" aria-hidden="true">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><PosterArt :occasion-id="occasionId" :width-mm="100" :height-mm="100" /></svg>
+          </span>
+          <span>Plakatipilt</span>
+        </label>
+        <label v-if="decoration.image && imageUrl" class="swatch" :class="{ 'is-active': background === 'image' }">
           <input type="radio" class="visually-hidden" name="bg" :checked="background === 'image'" @change="chooseBackground('image')" />
           <span class="swatch__preview" aria-hidden="true"><img :src="imageUrl" alt="" /></span>
           <span>Oma pilt</span>
@@ -125,7 +137,7 @@ function removeImage(): void {
         </button>
       </div>
       <p v-if="error" class="decor__error" role="alert">{{ error }}</p>
-      <p v-if="poster && decoration.image" class="decor__hint" role="status">
+      <p v-if="poster && background === 'image'" class="decor__hint" role="status">
         Pusleplakatil on see pilt kogu plakati taust – kui kõik kaardid on koos, tuleb pilt välja.
       </p>
       <template v-if="decoration.image && grid && !poster">
@@ -231,7 +243,9 @@ function removeImage(): void {
   border-radius: 8px;
   background: #fff;
   border: 1px solid var(--line);
-  img {
+  img,
+  svg {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;

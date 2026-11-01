@@ -20,7 +20,16 @@ export interface Decoration {
   puzzle: boolean
   /** Print card texts in capital letters for beginning readers; unset = decide by age. */
   uppercase?: boolean
+  /** The drawn landscape behind the puzzle poster. Off unless the parent picks it. */
+  posterArt?: boolean
+  /**
+   * What to do when card texts are too long: bigger poster cards (more sheets) or
+   * smaller letters. Unset = normal.
+   */
+  cardFit?: CardFit
 }
+
+export type CardFit = 'normal' | 'larger' | 'smaller'
 
 export const EMPTY_DECORATION: Decoration = {
   pattern: null,
