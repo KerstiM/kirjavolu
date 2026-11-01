@@ -21,6 +21,12 @@ describe('poster geometry', () => {
     expect(computePoster(24)).toMatchObject({ cols: 4, rows: 6, rowsPerPage: 3, pageCols: 2, pageRows: 2, pages: 4 })
   })
 
+  it('larger cards for long texts: two rows per sheet, more sheets', () => {
+    expect(computePoster(24, { large: true })).toMatchObject({ cols: 4, rows: 6, rowsPerPage: 2, pageRows: 3, pages: 6 })
+    expect(computePoster(7, { large: true })).toMatchObject({ rowsPerPage: 2, pages: 2 })
+    expect(computePoster(24, { large: true }).cellHeightMm).toBeGreaterThan(computePoster(24).cellHeightMm)
+  })
+
   it('follows a snake path: down, up, down, up', () => {
     const layout = computePoster(24)
     expect(cellOf(0, layout)).toEqual({ col: 0, row: 0 })
@@ -98,6 +104,15 @@ describe('poster components', () => {
     expect(screen.getByText('Jasper · 24 maagilist kirja, leht 3/4: pildi alumine pool, vasak')).toBeInTheDocument()
     expect(screen.getByText('1. detsember')).toBeInTheDocument()
     expect(screen.getAllByText('teisipäev').length).toBeGreaterThan(0)
+  })
+
+  it('draws no picture and no path unless the parent picks the poster picture', () => {
+    const props = { items, occasionId: 'christmas' as const, title: 'x', imageUrl: null, pattern: null, uppercase: false }
+    const { unmount } = render(PosterBoard, { props })
+    expect(document.querySelectorAll('.sheet__layer polyline')).toHaveLength(0)
+    unmount()
+    render(PosterBoard, { props: { ...props, art: true } })
+    expect(document.querySelectorAll('.sheet__layer polyline').length).toBeGreaterThan(0)
   })
 
   it('uses the uploaded picture across the whole poster', () => {

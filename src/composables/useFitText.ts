@@ -8,7 +8,7 @@ import { nextTick, onMounted, ref, watch, type Ref, type WatchSource } from 'vue
 export function useFitText(
   el: Ref<HTMLElement | null>,
   sources: WatchSource[],
-  options: { maxPt: () => number; minPt: number; stepPt?: number; headroom?: () => number },
+  options: { maxPt: () => number; minPt: () => number; stepPt?: number; headroom?: () => number },
 ): { fontPt: Ref<number>; overflow: Ref<boolean> } {
   const fontPt = ref(options.maxPt())
   const overflow = ref(false)
@@ -24,7 +24,8 @@ export function useFitText(
     const room = options.headroom?.() ?? 0.96
     const fits = () => (inner ? inner.offsetHeight : node.scrollHeight) <= node.clientHeight * room
     // Layout is synchronous: each assignment can be measured right away.
-    while (!fits() && size - step >= options.minPt) {
+    const min = options.minPt()
+    while (!fits() && size - step >= min) {
       size -= step
       node.style.fontSize = `${size}pt`
     }

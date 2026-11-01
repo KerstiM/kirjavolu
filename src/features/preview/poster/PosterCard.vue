@@ -5,7 +5,14 @@ import type { GeneratedItem } from '../../../domain/models'
 import { formatDayMonth, weekdayName } from '../../../domain/text/estonian'
 import { useFitText } from '../../../composables/useFitText'
 
-const props = defineProps<{ item: GeneratedItem; uppercase: boolean }>()
+const props = defineProps<{
+  item: GeneratedItem
+  uppercase: boolean
+  /** Let long texts shrink further instead of overflowing. */
+  smallText?: boolean
+  /** Changes when the card size changes, so the text is fitted again. */
+  sizeKey?: string
+}>()
 const emit = defineEmits<{ overflow: [value: boolean]; edit: [] }>()
 
 const body = ref<HTMLElement | null>(null)
@@ -22,9 +29,9 @@ const paragraphs = computed(() => {
   return list
 })
 
-const { overflow } = useFitText(body, [() => props.item.body, () => props.uppercase], {
+const { overflow } = useFitText(body, [() => props.item.body, () => props.uppercase, () => props.smallText, () => props.sizeKey], {
   maxPt: () => (props.uppercase ? 10.5 : 11),
-  minPt: 7.5,
+  minPt: () => (props.smallText ? 6 : 7.5),
   // Capital letters come out wider in print than on screen: keep more room.
   headroom: () => (props.uppercase ? 0.88 : 0.95),
 })

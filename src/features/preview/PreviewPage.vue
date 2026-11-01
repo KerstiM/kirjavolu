@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue'
 import { ArrowLeft, Download, FileQuestion, Printer, Plus, SlidersHorizontal } from 'lucide-vue-next'
-import type { CertificateStyle, ChildProfile, Decoration, GeneratedItem, PrintableLayout } from '../../domain/models'
+import type { CardFit, CertificateStyle, ChildProfile, Decoration, GeneratedItem, PrintableLayout } from '../../domain/models'
 import { EMPTY_DECORATION } from '../../domain/models'
 import { computeGrid } from '../../domain/puzzleGrid'
 import { useStoredImage } from '../../composables/useStoredImage'
@@ -113,6 +113,23 @@ const overflowCount = computed(() => Object.values(overflowByGroup.value).reduce
 function setOverflow(key: string, count: number): void {
   overflowByGroup.value = { ...overflowByGroup.value, [key]: count }
 }
+
+/** Long texts: the parent decides between bigger poster cards and smaller letters. */
+const cardFit = computed({
+  get: (): CardFit => decoration.value.cardFit ?? 'normal',
+  set: (value: CardFit) => setDecoration({ ...decoration.value, cardFit: value }),
+})
+const cardFitOptions = computed<{ value: CardFit; label: string }[]>(() => [
+  { value: 'normal', label: 'Tavaline' },
+  ...(isPoster.value ? [{ value: 'larger' as const, label: 'Suuremad kaardid' }] : []),
+  { value: 'smaller', label: 'Väiksem tekst' },
+])
+const showCardFit = computed(() => (isPoster.value || isMini.value) && (overflowCount.value > 0 || cardFit.value !== 'normal'))
+const cardFitHint = computed(() => {
+  if (cardFit.value === 'larger') return 'Plakat tuleb rohkematele lehtedele: kaardid on kõrgemad ja pilt suurem.'
+  if (cardFit.value === 'smaller') return 'Pikemate kaartide tekst läheb väiksemaks, kuni see mahub.'
+  return 'Vali, kas kaardid lähevad suuremaks või tekst väiksemaks. Või lühenda teksti kaardil „Muuda“.'
+})
 
 const posterTitle = computed(() =>
   content.value ? `${content.value.request.children.map((child) => child.name).join(', ')} · ${content.value.title}` : '',
@@ -248,8 +265,16 @@ function exportText(): void {
           Teksti muutmiseks vajuta kaardil „Muuda“. PDF-i saamiseks vali printimisaknas „Salvesta PDF-ina“.
         </p>
         <p v-if="(isPoster || isMini) && overflowCount > 0" class="controls__warn" role="status">
-          {{ overflowCount }} kaardil on tekst liiga pikk. Vajuta nendel kaartidel „Muuda“ ja lühenda.
+          {{ overflowCount }} kaardil on tekst liiga pikk.
         </p>
+        <SegmentedControl
+          v-if="showCardFit"
+          v-model="cardFit"
+          name="card-fit"
+          label="Pikad tekstid"
+          :options="cardFitOptions"
+          :hint="cardFitHint"
+        />
         <p class="controls__note">{{ content.generator.label }}.</p>
       </aside>
 
@@ -286,8 +311,11 @@ function exportText(): void {
           :items="group.entries.map((entry) => entry.item)"
           :occasion-id="content.request.occasionId"
           :title="groupTitle(group)"
-          :image-url="decoration.image ? imageUrl : null"
+          :image-url="decoration.image && decoration.imageAsBackground ? imageUrl : null"
           :pattern="decoration.pattern"
+          :art="!!decoration.posterArt"
+          :large="cardFit === 'larger'"
+          :small-text="cardFit === 'smaller'"
           :uppercase="groupUppercase(group)"
           @overflow-count="(count) => setOverflow(group.key, count)"
           @edit="openEditor"
@@ -297,6 +325,7 @@ function exportText(): void {
           :items="group.entries.map((entry) => entry.item)"
           :title="groupTitle(group)"
           :uppercase="groupUppercase(group)"
+          :small-text="cardFit === 'smaller'"
           @overflow-count="(count) => setOverflow(group.key, count)"
           @edit="openEditor"
         />

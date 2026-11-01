@@ -6,7 +6,7 @@ import { PAGE_HEIGHT_MM, PAGE_WIDTH_MM, POSTER_HEIGHT_MM } from '../../../domain
 import MiniCard from './MiniCard.vue'
 
 /** Sheets of toddler cards: 12 per A4 page in two columns, with cut lines. */
-const props = defineProps<{ items: GeneratedItem[]; title: string; uppercase: boolean }>()
+const props = defineProps<{ items: GeneratedItem[]; title: string; uppercase: boolean; smallText?: boolean }>()
 const emit = defineEmits<{ overflowCount: [count: number]; edit: [itemId: string] }>()
 
 const pages = computed(() => miniPages(props.items.length))
@@ -61,6 +61,7 @@ function onOverflow(index: number, value: boolean): void {
             :item="items[slot.index] as GeneratedItem"
             :index="slot.index"
             :uppercase="uppercase"
+            :small-text="smallText"
             @overflow="(value) => onOverflow(slot.index, value)"
             @edit="emit('edit', (items[slot.index] as GeneratedItem).id)"
           />

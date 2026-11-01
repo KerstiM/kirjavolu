@@ -25,10 +25,18 @@ const props = defineProps<{
   imageUrl: string | null
   pattern: PatternId | null
   uppercase: boolean
+  /** The drawn landscape behind the cards (when there is no own picture). */
+  art?: boolean
+  /** Taller cards for long texts; the poster takes more sheets. */
+  large?: boolean
+  smallText?: boolean
 }>()
 const emit = defineEmits<{ overflowCount: [count: number]; edit: [itemId: string] }>()
 
-const layout = computed(() => computePoster(props.items.length))
+const layout = computed(() => computePoster(props.items.length, { large: props.large }))
+const sizeKey = computed(() => `${layout.value.cellWidthMm}x${layout.value.cellHeightMm}`)
+// The path from card to card belongs to a picture; on a plain poster the dates show the order.
+const showPath = computed(() => !!props.imageUrl || props.art)
 const pages = computed(() => posterPages(layout.value))
 const geometry = computed(() => pathGeometry(layout.value))
 const posterWidth = computed(() => layout.value.pageCols * PAGE_WIDTH_MM)
@@ -111,13 +119,15 @@ onBeforeUnmount(() => observer?.disconnect())
       <div class="sheet__poster" :style="{ height: `${POSTER_HEIGHT_MM}mm` }">
         <img v-if="imageUrl" :src="imageUrl" alt="" class="sheet__image" :style="imageStyle(page)" />
         <svg class="sheet__layer" :viewBox="pageViewBox(page)" preserveAspectRatio="none" aria-hidden="true">
-          <PosterArt v-if="!imageUrl" :occasion-id="occasionId" :width-mm="posterWidth" :height-mm="posterHeight" />
-          <polyline :points="trackPoints" fill="none" stroke="#33305e" stroke-width="6.4" stroke-linejoin="round" stroke-linecap="round" />
-          <polyline :points="trackPoints" fill="none" stroke="#f2c46d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" />
-          <g v-for="(s, i) in geometry.stations" :key="i">
-            <circle :cx="s.x" :cy="s.y" r="5" fill="#f2c46d" stroke="#33305e" stroke-width="1.3" />
-            <circle :cx="s.x" :cy="s.y" r="1.7" fill="#33305e" />
-          </g>
+          <PosterArt v-if="art && !imageUrl" :occasion-id="occasionId" :width-mm="posterWidth" :height-mm="posterHeight" />
+          <template v-if="showPath">
+            <polyline :points="trackPoints" fill="none" stroke="#33305e" stroke-width="6.4" stroke-linejoin="round" stroke-linecap="round" />
+            <polyline :points="trackPoints" fill="none" stroke="#f2c46d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" />
+            <g v-for="(s, i) in geometry.stations" :key="i">
+              <circle :cx="s.x" :cy="s.y" r="5" fill="#f2c46d" stroke="#33305e" stroke-width="1.3" />
+              <circle :cx="s.x" :cy="s.y" r="1.7" fill="#33305e" />
+            </g>
+          </template>
         </svg>
         <PatternBackground v-if="pattern && !imageUrl" :pattern="pattern" :ink-saver="false" class="sheet__pattern" />
 
@@ -126,6 +136,8 @@ onBeforeUnmount(() => observer?.disconnect())
             v-if="itemAt(cell, layout) !== null"
             :item="items[itemAt(cell, layout) as number] as GeneratedItem"
             :uppercase="uppercase"
+            :small-text="smallText"
+            :size-key="sizeKey"
             @overflow="(value) => onOverflow((items[itemAt(cell, layout) as number] as GeneratedItem).id, value)"
             @edit="emit('edit', (items[itemAt(cell, layout) as number] as GeneratedItem).id)"
           />
