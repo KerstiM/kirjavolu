@@ -145,7 +145,9 @@ export function generateLetters(
     // A reply to yesterday must come first, or the child cannot connect it to the question.
     const answerLine = extra.reply ?? threads.get(i - 1)?.answerNext(audience.v)
     // A paired sibling task or a real family event replaces the day's ordinary task.
-    const dayTask = extra.task ?? extra.challenge ?? extra.event ?? thread?.ask(audience.v)
+    // An event and a challenge on the same day are both told, the event first.
+    const familyToday = [extra.event, extra.challenge].filter(Boolean).join(' ')
+    const dayTask = extra.task ?? (familyToday || thread?.ask(audience.v))
     const opening =
       i === 0
         ? (extra.opening ?? `Tere! ${ctx.line(p.pick(FIRST_LETTER_INTRO, 'intro'))}`)

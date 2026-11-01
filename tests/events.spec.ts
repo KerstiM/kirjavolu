@@ -129,3 +129,36 @@ describe('family events editor', () => {
     expect(emitted()['update:sundaySweets']!.at(-1)).toEqual([true])
   })
 })
+
+describe('an event always shows on its day', () => {
+  const kinds: FamilyEvent['kind'][] = ['forest', 'ski', 'visit', 'performance', 'hobby', 'baking', 'party', 'custom']
+  const title = 'Ormi sünnipäev'
+
+  it('names the parent’s title for every kind of event and every age, linked or shared', () => {
+    for (const kind of kinds) {
+      for (const options of [{}, { mode: 'shared' as const }, { connected: true }]) {
+        const items = runTemplates(request([ev('2026-12-15', kind, title)], options)).items
+        const today = items.filter((item) => item.date === '2026-12-15')
+        expect(today.length, `${kind} ${JSON.stringify(options)}`).toBeGreaterThan(0)
+        for (const item of today) expect(item.body, `${kind} ${item.childId} ${JSON.stringify(options)}`).toContain(title)
+      }
+    }
+  })
+
+  it('congratulates on a birthday, also on a toddler card', () => {
+    const items = runTemplates(request([ev('2026-12-15', 'party', title)])).items
+    expect(on(items, BRITA.id, 15)).toContain('Täna on Ormi sünnipäev! Palju õnne!')
+    expect(on(items, RUBEN.id, 15)).toContain('Palju õnne!')
+  })
+
+  it('tells two events of the same day, and an event next to a challenge', () => {
+    const items = runTemplates(
+      request([ev('2026-12-15', 'party', title), ev('2026-12-15', 'hobby', 'judotrenn', [RUBEN.id])], {
+        challenges: [{ id: 'c', childId: RUBEN.id, kind: 'tidy', start: '2026-12-15', end: '2026-12-17', title: '' }],
+      }),
+    ).items
+    expect(on(items, RUBEN.id, 15)).toContain(title)
+    expect(on(items, RUBEN.id, 15)).toContain('judotrenn')
+    expect(on(items, JASPER.id, 15)).toContain(title)
+  })
+})

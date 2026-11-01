@@ -212,15 +212,17 @@ export function planCollection(
     const extras = extrasOf.get(p.child.id) as ReturnType<typeof familyExtras>
     for (let index = 0; index < count; index++) {
       const extra = extras(index)
-      const text = extra.challenge ?? extra.event
-      const kind = extra.challenge ? 'challenge' : 'event'
+      // The family's event leads; a challenge on the same day follows it rather than replacing it.
+      const [text, ...more] = [extra.event, extra.challenge].filter((t): t is string => !!t)
+      const kind = extra.event ? 'event' : 'challenge'
       const existing = slotOf(p)[index]
       if (text && existing) {
         // First and last letters keep their frame; the family's plan is added after it.
-        existing.addenda.push(text)
+        existing.addenda.push(text, ...more)
         existing.prep.push(...(extra.prep ?? []))
       } else if (text) {
         const entry = day(p, index, { kind, text })
+        entry.addenda.push(...more)
         entry.prep.push(...(extra.prep ?? []))
         slotOf(p)[index] = entry
       }
