@@ -121,23 +121,28 @@ export function familyExtras(
 
   return (index) => {
     const extras: FamilyDayExtras = {}
-    const event = events.find(
+    // Every event of the day is told: a birthday and a trip on the same day both belong in the letter.
+    const todays = events.filter(
       (candidate) =>
         eventIndex(candidate, startDate, count) === index &&
         children.some((child) => takesPart(candidate, child.id)),
     )
-    if (event) {
-      const others = request.children.filter(
-        (child) => !ids.has(child.id) && takesPart(event, child.id),
-      )
-      extras.event = EVENT_TEMPLATES[event.kind][band]({
-        v,
-        title: event.title.trim(),
-        helper,
-        othersAllative: others.length > 0 ? namesInCase(others, 'allative') : '',
-      })
-      const prep = EVENT_TEMPLATES[event.kind].prep
-      if (prep) extras.prep = [prep]
+    if (todays.length > 0) {
+      extras.event = todays
+        .map((event) => {
+          const others = request.children.filter(
+            (child) => !ids.has(child.id) && takesPart(event, child.id),
+          )
+          return EVENT_TEMPLATES[event.kind][band]({
+            v,
+            title: event.title.trim(),
+            helper,
+            othersAllative: others.length > 0 ? namesInCase(others, 'allative') : '',
+          })
+        })
+        .join(' ')
+      const prep = todays.flatMap((event) => EVENT_TEMPLATES[event.kind].prep ?? [])
+      if (prep.length > 0) extras.prep = prep
     }
     // Challenges speak to one child; a shared letter for several children skips them.
     const challenge =

@@ -1,12 +1,22 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
-import type { GeneratedItem } from '../../../domain/models'
+import type { GeneratedItem, PatternId } from '../../../domain/models'
 import { miniPages, MINI_ROWS } from '../../../domain/miniLayout'
 import { PAGE_HEIGHT_MM, PAGE_WIDTH_MM, POSTER_HEIGHT_MM } from '../../../domain/posterLayout'
+import PatternBackground from '../decoration/PatternBackground.vue'
 import MiniCard from './MiniCard.vue'
 
 /** Sheets of toddler cards: 12 per A4 page in two columns, with cut lines. */
-const props = defineProps<{ items: GeneratedItem[]; title: string; uppercase: boolean; smallText?: boolean }>()
+const props = defineProps<{
+  items: GeneratedItem[]
+  title: string
+  uppercase: boolean
+  smallText?: boolean
+  /** Behind the cards of every sheet: an own picture or a pattern, or nothing. */
+  backgroundUrl?: string | null
+  backgroundOpacity?: number
+  pattern?: PatternId | null
+}>()
 const emit = defineEmits<{ overflowCount: [count: number]; edit: [itemId: string] }>()
 
 const pages = computed(() => miniPages(props.items.length))
@@ -51,6 +61,8 @@ function onOverflow(index: number, value: boolean): void {
       :style="{ width: `${PAGE_WIDTH_MM}mm`, height: `${PAGE_HEIGHT_MM}mm` }"
     >
       <div class="mini-sheet__area" :style="{ height: `${POSTER_HEIGHT_MM}mm` }">
+        <img v-if="backgroundUrl" :src="backgroundUrl" alt="" class="mini-sheet__image" :style="{ opacity: backgroundOpacity ?? 1 }" />
+        <PatternBackground v-else-if="pattern" :pattern="pattern" :ink-saver="false" class="mini-sheet__pattern" />
         <div
           v-for="slot in page"
           :key="slot.index"
@@ -92,6 +104,20 @@ function onOverflow(index: number, value: boolean): void {
 }
 .mini-sheet__area {
   position: relative;
+  overflow: hidden;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+.mini-sheet__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+.mini-sheet__pattern {
+  opacity: 0.6;
 }
 .mini-cell {
   position: absolute;

@@ -2,10 +2,11 @@
 import { computed, onBeforeUnmount, ref } from 'vue'
 import { ArrowLeft, Download, FileQuestion, Printer, Plus, SlidersHorizontal } from 'lucide-vue-next'
 import type { CardFit, CertificateStyle, ChildProfile, Decoration, GeneratedItem, PrintableLayout } from '../../domain/models'
-import { EMPTY_DECORATION } from '../../domain/models'
+import { EMPTY_DECORATION, sheetBackground } from '../../domain/models'
 import { computeGrid } from '../../domain/puzzleGrid'
-import { useStoredImage } from '../../composables/useStoredImage'
+import { useStoredImage, useStoredImages } from '../../composables/useStoredImage'
 import DecorationPanel from './decoration/DecorationPanel.vue'
+import ChildBackgrounds from './decoration/ChildBackgrounds.vue'
 import PosterBoard from './poster/PosterBoard.vue'
 import MiniSheet from './mini/MiniSheet.vue'
 import ItemEditorDialog from './ItemEditorDialog.vue'
@@ -100,6 +101,28 @@ function groupLayout(group: ItemGroup): PrintableLayout {
 }
 const isPoster = computed(() => groups.value.some((group) => groupLayout(group) === 'poster'))
 const isMini = computed(() => groups.value.some((group) => groupLayout(group) === 'mini'))
+/** Each child's sheets may have their own picture or no background at all. */
+function groupBackground(group: ItemGroup) {
+  return sheetBackground(decoration.value, group.child?.id)
+}
+const childImageIds = computed(() =>
+  Object.values(decoration.value.childDecorations ?? {}).flatMap((own) => (own.image ? [own.image.id] : [])),
+)
+const childImageUrls = useStoredImages(() => childImageIds.value)
+function groupImageUrl(group: ItemGroup): string | null {
+  const image = groupBackground(group).image
+  if (!image) return null
+  return image.id === decoration.value.image?.id ? imageUrl.value : (childImageUrls.value[image.id] ?? null)
+}
+const childRows = computed(() =>
+  groups.value.flatMap((group) => (group.child ? [{ id: group.child.id, name: group.child.name, mini: groupLayout(group) === 'mini' }] : [])),
+)
+const anyChildImage = computed(() =>
+  groups.value.some((group) => {
+    const image = groupBackground(group).image
+    return !!image && image.id !== decoration.value.image?.id
+  }),
+)
 function groupUppercase(group: ItemGroup): boolean {
   if (decoration.value.uppercase !== undefined || !group.child) return uppercase.value
   return ageBand(group.child) !== 'older'
@@ -284,6 +307,15 @@ function exportText(): void {
         :item-count="content.items.length"
         :image-url="imageUrl"
         :poster="isPoster"
+        :mini="isMini"
+        :child-image="anyChildImage"
+        @update="setDecoration"
+      />
+      <ChildBackgrounds
+        v-if="childRows.length > 1"
+        :children="childRows"
+        :decoration="decoration"
+        :image-urls="childImageUrls"
         @update="setDecoration"
       />
 
@@ -311,9 +343,10 @@ function exportText(): void {
           :items="group.entries.map((entry) => entry.item)"
           :occasion-id="content.request.occasionId"
           :title="groupTitle(group)"
-          :image-url="decoration.image && decoration.imageAsBackground ? imageUrl : null"
-          :pattern="decoration.pattern"
-          :art="!!decoration.posterArt"
+          :image-url="groupImageUrl(group)"
+          :image-opacity="decoration.cardImageOpacity ?? 1"
+          :pattern="groupBackground(group).pattern"
+          :art="groupBackground(group).posterArt"
           :large="cardFit === 'larger'"
           :small-text="cardFit === 'smaller'"
           :uppercase="groupUppercase(group)"
@@ -326,6 +359,9 @@ function exportText(): void {
           :title="groupTitle(group)"
           :uppercase="groupUppercase(group)"
           :small-text="cardFit === 'smaller'"
+          :background-url="groupImageUrl(group)"
+          :background-opacity="decoration.cardImageOpacity ?? 1"
+          :pattern="groupBackground(group).pattern"
           @overflow-count="(count) => setOverflow(group.key, count)"
           @edit="openEditor"
         />
@@ -336,9 +372,9 @@ function exportText(): void {
             :item="entry.item"
             :certificate-style="certificateStyle"
             :busy="busyItem === entry.item.id"
-            :pattern="decoration.pattern"
+            :pattern="groupBackground(group).pattern"
             :ink-saver="decoration.inkSaver"
-            :background-url="decoration.imageAsBackground ? imageUrl : null"
+            :background-url="groupImageUrl(group)"
             :background-opacity="decoration.imageOpacity"
             :uppercase="groupUppercase(group)"
             :piece="puzzle ? { ...puzzle, index: entry.index, maxCm: pieceMaxCm } : null"

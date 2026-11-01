@@ -15,3 +15,20 @@ export function useStoredImage(id: () => string | undefined): Ref<string | null>
   )
   return url
 }
+
+/** Loads several uploaded pictures at once: id → data URL, for the ids currently asked for. */
+export function useStoredImages(ids: () => string[]): Ref<Record<string, string>> {
+  const urls = ref<Record<string, string>>({})
+  watch(
+    () => ids().join(' '),
+    async () => {
+      const wanted = [...new Set(ids())]
+      const loaded = await Promise.all(wanted.map(async (id) => [id, urls.value[id] ?? (await loadImage(id))] as const))
+      // Ignore results for ids that have been replaced in the meantime.
+      if (wanted.join(' ') !== [...new Set(ids())].join(' ')) return
+      urls.value = Object.fromEntries(loaded.filter((entry): entry is [string, string] => !!entry[1]))
+    },
+    { immediate: true },
+  )
+  return urls
+}

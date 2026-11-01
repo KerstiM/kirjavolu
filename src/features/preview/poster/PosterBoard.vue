@@ -23,6 +23,8 @@ const props = defineProps<{
   occasionId: OccasionId
   title: string
   imageUrl: string | null
+  /** How strongly the own picture shows, 0.1–1. */
+  imageOpacity?: number
   pattern: PatternId | null
   uppercase: boolean
   /** The drawn landscape behind the cards (when there is no own picture). */
@@ -117,10 +119,16 @@ onBeforeUnmount(() => observer?.disconnect())
       :style="{ width: `${PAGE_WIDTH_MM}mm`, height: `${PAGE_HEIGHT_MM}mm` }"
     >
       <div class="sheet__poster" :style="{ height: `${POSTER_HEIGHT_MM}mm` }">
-        <img v-if="imageUrl" :src="imageUrl" alt="" class="sheet__image" :style="imageStyle(page)" />
+        <img v-if="imageUrl" :src="imageUrl" alt="" class="sheet__image" :style="{ ...imageStyle(page), opacity: imageOpacity ?? 1 }" />
         <svg class="sheet__layer" :viewBox="pageViewBox(page)" preserveAspectRatio="none" aria-hidden="true">
           <PosterArt v-if="art && !imageUrl" :occasion-id="occasionId" :width-mm="posterWidth" :height-mm="posterHeight" />
-          <template v-if="showPath">
+          <!-- On an own picture a thin line is enough: the wide road would cover the photo. -->
+          <template v-if="showPath && imageUrl">
+            <polyline :points="trackPoints" fill="none" stroke="#33305e" stroke-opacity="0.55" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" />
+            <polyline :points="trackPoints" fill="none" stroke="#fff" stroke-width="0.7" stroke-linejoin="round" stroke-linecap="round" />
+            <circle v-for="(s, i) in geometry.stations" :key="i" :cx="s.x" :cy="s.y" r="1.6" fill="#fff" stroke="#33305e" stroke-width="0.5" />
+          </template>
+          <template v-else-if="showPath">
             <polyline :points="trackPoints" fill="none" stroke="#33305e" stroke-width="6.4" stroke-linejoin="round" stroke-linecap="round" />
             <polyline :points="trackPoints" fill="none" stroke="#f2c46d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" />
             <g v-for="(s, i) in geometry.stations" :key="i">
