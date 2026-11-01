@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { track } from '../../app/analytics'
 import { nextTick, ref } from 'vue'
 import { Plus, Users } from 'lucide-vue-next'
 import type { ChildProfile, ChildProfileDraft } from '../../domain/models'
@@ -31,6 +32,7 @@ function save(draft: ChildProfileDraft): void {
     announcement.value = `${genitive(draft.name, draft.nameGenitive)} profiil on salvestatud.`
   } else {
     store.add(draft)
+    track('child_added', { from: 'profiles' })
     announcement.value = `${draft.name} on lisatud.`
   }
   editing.value = null

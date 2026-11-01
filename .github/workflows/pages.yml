@@ -33,6 +33,10 @@ jobs:
       - run: npm run build
         env:
           GITHUB_PAGES: 'true'
+          # Umami usage counts: the website id is a repository variable (Settings → Secrets and
+          # variables → Actions → Variables). Without it the site is built without analytics.
+          VITE_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
+          VITE_UMAMI_DOMAINS: kerstim.github.io
       # Pages knows nothing about the app's routes: unknown paths (e.g. a refreshed
       # /looming/…) get index.html and the router takes over.
       - run: cp dist/index.html dist/404.html

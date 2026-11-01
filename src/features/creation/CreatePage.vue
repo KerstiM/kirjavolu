@@ -16,6 +16,7 @@ import QuickChildDialog from '../children/QuickChildDialog.vue'
 import type { ChildProfileDraft } from '../../domain/models'
 import { useWizard, WIZARD_STEPS, type WizardInit } from './useWizard'
 import { newCreationRequests } from './newCreation'
+import { track } from '../../app/analytics'
 
 const route = useRoute()
 const router = useRouter()
@@ -46,9 +47,15 @@ function initFromRoute(): WizardInit {
   }
 }
 
-const wizard = useWizard(initFromRoute())
+/** Counts a fresh start (not reopening an earlier creation) with what the link already chose. */
+function start(init: WizardInit): WizardInit {
+  if (!init.restore) track('wizard_start', { type: init.contentType ?? 'none', occasion: init.occasionId ?? 'none' })
+  return init
+}
+
+const wizard = useWizard(start(initFromRoute()))
 const { state } = wizard
-watch([() => route.query, newCreationRequests], () => wizard.reset(initFromRoute()))
+watch([() => route.query, newCreationRequests], () => wizard.reset(start(initFromRoute())))
 
 const errors = ref<string[]>([])
 const busy = ref(false)
@@ -78,6 +85,7 @@ watch(
 const addingChild = ref(false)
 function addChild(draft: ChildProfileDraft): void {
   const child = childrenStore.add(draft)
+  track('child_added', { from: 'wizard' })
   state.childIds = [...state.childIds, child.id]
   addingChild.value = false
 }

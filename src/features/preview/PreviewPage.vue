@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { ArrowLeft, Download, FileQuestion, Printer, Plus, UsersRound } from 'lucide-vue-next'
 import type { CardFit, CertificateStyle, ChildProfile, Decoration, GeneralOptions, GeneratedContent, GeneratedItem, GenerationRequest, PrintableLayout } from '../../domain/models'
 import { EMPTY_DECORATION, sheetBackground } from '../../domain/models'
@@ -22,12 +22,28 @@ import { useCreationsStore } from './creationsStore'
 import PrintableItem from './PrintableItem.vue'
 import ParentSheet from './ParentSheet.vue'
 import CustomizePanel from './CustomizePanel.vue'
+import { track } from '../../app/analytics'
 
 const props = defineProps<{ id: string }>()
 const store = useCreationsStore()
 const generator = useGenerator()
 
 const content = computed(() => store.byId(props.id))
+// Counted once per opened creation, not again when its choices change.
+watch(
+  () => props.id,
+  () => {
+    const current = content.value
+    if (!current) return
+    track('preview_shown', {
+      type: current.request.contentType,
+      occasion: current.request.occasionId,
+      items: current.items.length,
+      children: current.request.children.length,
+    })
+  },
+  { immediate: true },
+)
 const busyItem = ref<string | null>(null)
 const status = ref('')
 let statusTimer: ReturnType<typeof setTimeout> | undefined
@@ -284,6 +300,7 @@ function cleanupPrint(): void {
   document.body.classList.remove('print-all', 'print-child', 'print-parent')
 }
 function print(mode: PrintMode): void {
+  if (content.value) track('print_clicked', { type: content.value.request.contentType, layout: rawLayout.value, mode })
   cleanupPrint()
   document.body.classList.add(`print-${mode}`)
   window.addEventListener('afterprint', cleanupPrint, { once: true })
