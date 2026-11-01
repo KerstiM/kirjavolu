@@ -6,6 +6,7 @@ import { SAMPLE_CHILD as child, sampleRequest } from '../../data/demo/sample'
 import { useGenerator } from '../../composables/useGenerator'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import PrintableItem from '../preview/PrintableItem.vue'
+import { track } from '../../app/analytics'
 
 /**
  * "Vaata näidet": the first letter of a sample 24-letter Christmas series, written
@@ -15,6 +16,7 @@ const generator = useGenerator()
 const letter = ref<GeneratedItem | null>(null)
 
 onMounted(async () => {
+  track('sample_shown', {})
   const content = await generator.generate(sampleRequest())
   letter.value = content.items[0] ?? null
 })

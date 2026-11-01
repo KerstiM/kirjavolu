@@ -28,6 +28,20 @@ Eestikeelne veebirakendus, mis aitab lapsevanematel luua lapsele personaalseid m
 - Puslepilt (teistes paigutustes): oma pilt jagatakse tükkideks ja iga osa allserva tuleb nummerdatud väljalõigatav puslekild; lapsevanema lehel on kokkupaneku juhend ja vajadusel lisatükid
 - Andmed salvestatakse brauseri localStorage'isse versioonitud skeemiga
 
+## Kasutusstatistika
+Avalik leht loendab küpsisteta [Umamiga](https://umami.is), mitu inimest jõuab loomise eri sammudeni. Saadetakse ainult need sündmused (`src/app/analytics.ts`), väljadeks on ainult valikud ja arvud, mitte lapse andmed:
+
+| Sündmus | Millal | Andmed |
+|---|---|---|
+| `wizard_start` | viisard avati (mitte vana loomingu muutmiseks) | tüüp ja tähtpäev, kui kaart need valis |
+| `child_added` | laps lisati | kas viisardis või lehel „Lapsed“ |
+| `preview_shown` | looming avati eelvaates | tüüp, tähtpäev, osade ja laste arv |
+| `print_clicked` | vajutati „Prindi / PDF“ | tüüp, paigutus, mida prinditi |
+| `sample_shown` | avati „Vaata näidet“ | – |
+| `paywall_shown`, `purchase` | Jõulupassi jaoks, veel ei saadeta | – |
+
+Statistika lülitub sisse ainult siis, kui ehitamisel on olemas `VITE_UMAMI_WEBSITE_ID` (GitHubi repo muutuja `UMAMI_WEBSITE_ID`). Arendus ja testid ei loenda midagi ning „Do Not Track“ seadega külastajaid ei loendata.
+
 ## Demo
 https://kerstim.github.io/kirjavolu/ – uuendatakse automaatselt iga `main`-i muudatusega (`.github/workflows/pages.yml`). Andmed (laste profiilid, loodud kirjad) jäävad iga külastaja enda brauserisse.
 
