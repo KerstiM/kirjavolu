@@ -28,6 +28,10 @@ Eestikeelne veebirakendus, mis aitab lapsevanematel luua lapsele personaalseid m
 - Puslepilt (teistes paigutustes): oma pilt jagatakse tükkideks ja iga osa allserva tuleb nummerdatud väljalõigatav puslekild; lapsevanema lehel on kokkupaneku juhend ja vajadusel lisatükid
 - Andmed salvestatakse brauseri localStorage'isse versioonitud skeemiga
 
+## Majutus ja kolimine aadressile kirjavolu.ee
+- **Cloudflare Workers** (`wrangler.jsonc`, `worker/index.ts`) serveerib rakendust kaustast `dist/` ja vastab aadressidele `/api/…` (praegu `/api/health`). Deploy: `.github/workflows/cloudflare.yml`, mis käivitub alles siis, kui repos on muutuja `CLOUDFLARE_ACCOUNT_ID` ja saladus `CLOUDFLARE_API_TOKEN`. Kohalikult `npm run worker:dev`.
+- **Andmete ülekanne.** Brauseri mälu kuulub ühele aadressile, seega kolimisel kaovad muidu profiilid ja loomingud. Kui GitHub Pagesi ehitusel on repo muutuja `MOVED_TO` (nt `https://kirjavolu.ee`), näitab vana aadress ribaga „Kirjavõlu kolis…“ ja nupuga „Vii andmed üle“. Nupp avab uue aadressi lehe `/kolin` ning annab lapsed, loomingud ja pildid `postMessage` kaudu üle; kumbki pool võtab sõnumeid vastu ainult teise täpselt aadressilt ja serverit see ei läbi. Andmeteta külastaja suunatakse kohe uuele aadressile. Loogika: `src/app/transfer.ts`.
+
 ## Kasutusstatistika
 Avalik leht loendab küpsisteta [Umamiga](https://umami.is), mitu inimest jõuab loomise eri sammudeni. Saadetakse ainult need sündmused (`src/app/analytics.ts`), väljadeks on ainult valikud ja arvud, mitte lapse andmed:
 

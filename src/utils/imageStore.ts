@@ -82,6 +82,11 @@ export async function loadImage(id: string): Promise<string | null> {
   }
 }
 
+/** Stores a picture under a known id, e.g. one carried over from the old address. */
+export async function storeImageData(id: string, dataUrl: string): Promise<void> {
+  await withStore('readwrite', (store) => store.put({ id, dataUrl } satisfies ImageRecord))
+}
+
 export async function deleteImage(id: string): Promise<void> {
   try {
     await withStore('readwrite', (store) => store.delete(id))

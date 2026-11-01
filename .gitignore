@@ -13,3 +13,7 @@ coverage
 .idea
 *.log
 .claude/settings.local.json
+
+# Cloudflare local state
+.wrangler
+.dev.vars

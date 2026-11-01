@@ -2,13 +2,17 @@
 import { RouterView, useRoute } from 'vue-router'
 import AppHeader from '../components/layout/AppHeader.vue'
 import AppFooter from '../components/layout/AppFooter.vue'
+import MoveBanner from '../features/moving/MoveBanner.vue'
 
 const route = useRoute()
+// Set only on the old address once the new one is live.
+const movedTo = import.meta.env.VITE_MOVED_TO
 </script>
 
 <template>
   <a href="#main" class="skip-link no-print">Liigu sisu juurde</a>
   <AppHeader />
+  <MoveBanner v-if="movedTo" :target="movedTo" />
   <main id="main" tabindex="-1" class="app-main">
     <!--
       A time-based CSS animation instead of <Transition>: Transition swaps classes in

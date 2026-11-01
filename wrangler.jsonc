@@ -1,0 +1,18 @@
+{
+  // Kirjavõlu on Cloudflare Workers: the app from dist/ plus the API under /api/.
+  // Deployed by .github/workflows/cloudflare.yml; locally `npm run worker:dev`.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kirjavolu",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-15",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    // Routes such as /looming/… are the app's own; a refresh gets index.html.
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "observability": { "enabled": true }
+  // When kirjavolu.ee is active in Cloudflare, add:
+  // "routes": [{ "pattern": "kirjavolu.ee", "custom_domain": true }, { "pattern": "www.kirjavolu.ee", "custom_domain": true }]
+}

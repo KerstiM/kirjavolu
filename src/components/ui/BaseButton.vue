@@ -7,10 +7,12 @@ const props = withDefaults(
     variant?: 'primary' | 'secondary' | 'ghost' | 'danger'
     size?: 'sm' | 'md' | 'lg'
     to?: RouteLocationRaw
+    /** A link out of the app, e.g. to the new address. */
+    href?: string
     type?: 'button' | 'submit'
     disabled?: boolean
   }>(),
-  { variant: 'primary', size: 'md', type: 'button', to: undefined, disabled: false },
+  { variant: 'primary', size: 'md', type: 'button', to: undefined, href: undefined, disabled: false },
 )
 
 const classes = computed(() => ['btn', `btn--${props.variant}`, `btn--${props.size}`])
@@ -20,6 +22,9 @@ const classes = computed(() => ['btn', `btn--${props.variant}`, `btn--${props.si
   <RouterLink v-if="to" :to="to" :class="classes">
     <slot />
   </RouterLink>
+  <a v-else-if="href" :href="href" :class="classes">
+    <slot />
+  </a>
   <button v-else :type="type" :class="classes" :disabled="disabled">
     <slot />
   </button>

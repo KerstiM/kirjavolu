@@ -14,7 +14,7 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./tests/setup.ts'],
-    include: ['tests/**/*.spec.ts'],
+    include: ['tests/**/*.spec.ts', 'worker/**/*.spec.ts'],
     // Previews of 72-letter family series render slowly in jsdom while other files run in parallel.
     testTimeout: 15_000,
   },

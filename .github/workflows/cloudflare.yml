@@ -1,0 +1,42 @@
+name: Cloudflare
+
+# Deploys Kirjavõlu (app + /api) to Cloudflare Workers. Runs only once the repository
+# has the variable CLOUDFLARE_ACCOUNT_ID and the secret CLOUDFLARE_API_TOKEN
+# (Settings → Secrets and variables → Actions); until then GitHub Pages stays the only site.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: vars.CLOUDFLARE_ACCOUNT_ID != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test
+      - run: npm run build
+        env:
+          VITE_UMAMI_WEBSITE_ID: ${{ vars.UMAMI_WEBSITE_ID }}
+          VITE_UMAMI_DOMAINS: kirjavolu.ee,www.kirjavolu.ee
+          # The old address may hand over its saved children and creations (/kolin).
+          VITE_TRANSFER_FROM: https://kerstim.github.io
+      - run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
