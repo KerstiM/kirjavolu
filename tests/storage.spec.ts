@@ -30,13 +30,16 @@ describe('storage', () => {
 describe('children store', () => {
   beforeEach(() => setActivePinia(createPinia()))
 
-  it('seeds demo profiles on first launch', () => {
-    expect(useChildrenStore().children.map((c) => c.name)).toEqual(['Ruben', 'Jasper', 'Brita'])
+  it('starts with no profiles and adds the demo profiles only on request', () => {
+    const store = useChildrenStore()
+    expect(store.children).toHaveLength(0)
+    store.restoreDemo()
+    expect(store.children.map((c) => c.name)).toEqual(['Ruben', 'Jasper', 'Brita'])
   })
 
-  it('respects deleted demo profiles after saving', () => {
-    saveState({ schemaVersion: SCHEMA_VERSION, children: [], creations: [], demoSeeded: true })
-    expect(useChildrenStore().children).toHaveLength(0)
+  it('keeps saved profiles', () => {
+    saveState({ schemaVersion: SCHEMA_VERSION, children: [RUBEN], creations: [], demoSeeded: true })
+    expect(useChildrenStore().children.map((c) => c.name)).toEqual(['Ruben'])
   })
 
   it('adds, updates and removes profiles with cleaned lists', () => {

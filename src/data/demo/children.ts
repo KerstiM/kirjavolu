@@ -2,7 +2,7 @@ import type { ChildProfile } from '../../domain/models'
 
 const created = '2026-01-01T00:00:00.000Z'
 
-/** Editable demonstration profiles shown on first launch. */
+/** Editable demonstration profiles, added only when the parent asks for them. */
 export const DEMO_CHILDREN: ChildProfile[] = [
   {
     id: 'demo-ruben',

@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { computed, nextTick, ref } from 'vue'
-import { Plus, RotateCcw, Users } from 'lucide-vue-next'
+import { nextTick, ref } from 'vue'
+import { Plus, Users } from 'lucide-vue-next'
 import type { ChildProfile, ChildProfileDraft } from '../../domain/models'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import EmptyState from '../../components/ui/EmptyState.vue'
-import { DEMO_CHILDREN } from '../../data/demo/children'
 import { genitive, nameCase } from '../../domain/text/estonian'
 import ChildCard from './ChildCard.vue'
 import ChildForm from './ChildForm.vue'
@@ -13,8 +12,6 @@ import { emptyChildDraft, useChildrenStore } from './childrenStore'
 const store = useChildrenStore()
 const editing = ref<{ mode: 'add' } | { mode: 'edit'; child: ChildProfile } | null>(null)
 const announcement = ref('')
-
-const missingDemo = computed(() => DEMO_CHILDREN.some((demo) => !store.byId(demo.id)))
 
 function toDraft(child: ChildProfile): ChildProfileDraft {
   // Omit metadata; the rest is the editable draft.
@@ -58,9 +55,6 @@ function remove(child: ChildProfile): void {
         </p>
       </div>
       <div v-if="!editing" class="head-actions">
-        <BaseButton v-if="missingDemo" variant="ghost" size="sm" @click="store.restoreDemo()">
-          <RotateCcw aria-hidden="true" /> Taasta näidisprofiilid
-        </BaseButton>
         <BaseButton @click="openForm({ mode: 'add' })"><Plus aria-hidden="true" /> Lisa laps</BaseButton>
       </div>
     </div>

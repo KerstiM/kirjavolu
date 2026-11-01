@@ -7,13 +7,14 @@ import App from '@/app/App.vue'
 import { routes } from '@/app/router'
 import ChildForm from '@/features/children/ChildForm.vue'
 import PrintableItem from '@/features/preview/PrintableItem.vue'
-import { emptyChildDraft } from '@/features/children/childrenStore'
+import { emptyChildDraft, useChildrenStore } from '@/features/children/childrenStore'
 import { useCreationsStore } from '@/features/preview/creationsStore'
 import type { GeneratedItem } from '@/domain/models'
 
-async function renderApp(path: string) {
+async function renderApp(path: string, { demo = true } = {}) {
   const pinia = createPinia()
   setActivePinia(pinia)
+  if (demo) useChildrenStore().restoreDemo()
   const router = createRouter({ history: createMemoryHistory(), routes })
   router.push(path)
   await router.isReady()
@@ -111,6 +112,13 @@ describe('creation flow', () => {
   it('cannot continue without choosing a content type', async () => {
     await renderApp('/loo')
     expect(await screen.findByRole('button', { name: /Edasi/ })).toBeDisabled()
+  })
+
+  it('asks a new family to add a child first', async () => {
+    const { user } = await renderApp('/loo', { demo: false })
+    await user.click(await screen.findByRole('radio', { name: /Personaalne lugu/ }))
+    expect(await screen.findByText('Profiile pole veel')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Edasi/ })).toBeDisabled()
   })
 
   it('prefills type and occasion from the homepage link', async () => {

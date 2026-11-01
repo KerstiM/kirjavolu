@@ -158,9 +158,32 @@ function remove(id: string): void {
     cursor: not-allowed;
   }
 }
+// Narrower screens: child and challenge on the first row next to the remove button, dates below.
 @media (max-width: 760px) {
   .challenge {
     grid-template-columns: 1fr 1fr auto;
+  }
+  .challenge__remove {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .challenge__field:nth-child(3) {
+    grid-column: 1;
+  }
+  .challenge__field:nth-child(4) {
+    grid-column: 2;
+  }
+}
+// On a phone every field gets its own row; only the child shares a row with the remove button.
+@media (max-width: 520px) {
+  .challenge {
+    grid-template-columns: 1fr auto;
+  }
+  .challenge__remove {
+    grid-column: 2;
+  }
+  .challenge__field:not(:first-child) {
+    grid-column: 1 / -1;
   }
 }
 </style>

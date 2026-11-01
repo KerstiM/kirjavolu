@@ -36,7 +36,9 @@ const classes = computed(() => ['btn', `btn--${props.variant}`, `btn--${props.si
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
+  max-width: 100%;
   white-space: nowrap;
+  text-align: center;
   transition:
     background 0.15s ease,
     border-color 0.15s ease,
@@ -49,6 +51,10 @@ const classes = computed(() => ['btn', `btn--${props.variant}`, `btn--${props.si
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+  // A long label wraps on a narrow screen instead of widening the page.
+  @media (max-width: 520px) {
+    white-space: normal;
   }
   :deep(svg) {
     width: 1.1em;
