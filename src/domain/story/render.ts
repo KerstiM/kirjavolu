@@ -3,6 +3,7 @@ import { formatDate, joinList, nameCase } from '../text/estonian'
 import { createRng, hashSeed } from '../text/random'
 import type { DraftItem } from '../generators/context'
 import { HELPER_TITLE } from '../../data/templates/helper'
+import { getTopic } from '../../data/topics'
 import { VOICES } from './characters'
 import { scenarioIn, type ScenarioLibrary } from './library'
 import type { CollectionPlan, PlannedChild, PlannedDay } from './planner'
@@ -117,6 +118,7 @@ export function contextFor(
     siblings: joinList(siblings.map((o) => o.child.name)),
     siblingCount: siblings.length,
     uses: (hook) => d.personalizationIds.includes(hook),
+    topic: d.personalizationIds[0] ? getTopic(d.personalizationIds[0]) : undefined,
     knows: (fact) => known.has(fact),
     happened: (fact) => (plan.facts.get(fact) ?? Infinity) < d.index,
     pick: (options) => rng.pick(options),

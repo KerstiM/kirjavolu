@@ -1,5 +1,6 @@
 import type { AgeBand, Length, OccasionId, Tone } from '../models'
 import type { NameCase } from '../text/estonian'
+import type { Topic, TopicId } from '../../data/topics'
 
 /**
  * Scenario-based story model. A scenario is one complete, hand-written event
@@ -10,19 +11,8 @@ import type { NameCase } from '../text/estonian'
 
 export type Band = AgeBand
 
-/** Personalization hooks a scenario can carry; matched from the child profile (see hooks.ts). */
-export type HookId =
-  | 'rubik'
-  | 'codes'
-  | 'riddles'
-  | 'comics'
-  | 'porridge'
-  | 'peppa'
-  | 'animals'
-  | 'lego'
-  | 'space'
-  | 'drawing'
-  | 'music'
+/** Personalization hooks a scenario can carry: the topics of the profile list (see data/topics.ts). */
+export type HookId = TopicId
 
 /**
  * The other helpers of the shared world, by role. In a family series these are the
@@ -51,6 +41,8 @@ export interface ScenarioContext {
   siblingCount: number
   /** True when the plan activated this personalization hook for this letter. */
   uses: (hook: HookId) => boolean
+  /** The topic a topic scenario (`topicSlot`) is told about; undefined elsewhere. */
+  topic: Topic | undefined
   /** True when this child has already been told this fact in an earlier letter. */
   knows: (fact: string) => boolean
   /** True when the fact happened in the shared world before today (told to any child). */
@@ -121,6 +113,11 @@ export interface Scenario {
   hooks?: HookId[]
   /** Only for children who have one of the hooks (the story is about that interest). */
   onlyWithHook?: boolean
+  /**
+   * The story is told about one of the child's topics, whichever the plan picks
+   * (`c.topic`). Set together with onlyWithHook; `hooks` lists every topic it can tell.
+   */
+  topicSlot?: boolean
   /** Motifs used to avoid similar letters on neighbouring days: 'reindeer', 'kitchen' … */
   tags: string[]
   tones?: Tone[]

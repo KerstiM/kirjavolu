@@ -35,13 +35,16 @@ describe('ChildForm', () => {
     const user = userEvent.setup()
     const { emitted } = render(ChildForm, { props: { initial: emptyChildDraft(), mode: 'add' } })
     await user.type(screen.getByLabelText('Nimi'), 'Mart')
-    await user.type(screen.getByLabelText('Huvid ja hobid'), 'jalgpall, lego')
+    await user.type(screen.getByLabelText('Muud huvid ja hobid'), 'jalgpall, lego')
+    await user.click(screen.getByRole('checkbox', { name: 'Dinosaurused' }))
+    await user.click(screen.getByRole('checkbox', { name: 'Pannkoogid' }))
     await user.type(screen.getByLabelText('Nimi omastavas käändes (valikuline)'), 'Mardi')
     await user.click(screen.getByRole('button', { name: 'Lisa laps' }))
     const saved = emitted<[ReturnType<typeof emptyChildDraft>]>().save?.[0]?.[0]
     expect(saved?.name).toBe('Mart')
     expect(saved?.interests).toEqual(['jalgpall', 'lego'])
     expect(saved?.nameGenitive).toBe('Mardi')
+    expect(saved?.topics).toEqual(['dinosaurs', 'pancakes'])
   })
 })
 

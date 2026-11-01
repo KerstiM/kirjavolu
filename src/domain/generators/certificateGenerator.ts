@@ -1,6 +1,7 @@
 import type { CertificateStyle, OccasionId, ParentInstruction, RequestFor, Tone } from '../models'
 import { formatDate, todayIso } from '../text/estonian'
 import { findInterestHooks } from '../../data/templates/interests'
+import { interestTexts } from '../../data/topics'
 import { createContext, notesInstruction, paragraphs, type DraftItem, type TypeResult } from './context'
 
 export const DEFAULT_ACHIEVEMENTS: Record<OccasionId, string> = {
@@ -73,7 +74,7 @@ export function generateCertificates(request: RequestFor<'certificate'>, variant
         forChild: child.name,
       }
     }
-    const hook = findInterestHooks([...child.interests, ...child.favorites])[0]
+    const hook = findInterestHooks(interestTexts(child))[0]
     const wishes = p.pickMany(WISHES[general.tone], 'wish', general.length === 'short' ? 1 : 2)
     return {
       kind: 'certificate',

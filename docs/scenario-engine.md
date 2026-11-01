@@ -90,10 +90,20 @@ voice and holds their sign-offs.
 The band comes from age and reading level (`ageBand`) and the difficulty setting
 (`adjustBand`), so a strong six-year-old reader can get the older letters.
 
-**Personalization** (`hooks.ts`). A hook (`rubik`, `codes`, `riddles`, `comics`,
-`porridge`, `peppa`, …) is found in the profile with `match`; a scenario lists the
-hooks its story can carry and branches on `c.uses(hook)` inside the event (the elf
-thinks of the child while solving the puzzle box – no “I heard you like …”).
+**Personalization** (`hooks.ts`, `data/topics.ts`). The parent picks topics for the
+child from a list of about 40 (`TOPICS`, grouped: games and stories, animals, sport,
+creativity, science, puzzles, cartoon characters, foods). Every topic is a hook;
+free-text interests that match a topic's `match` count too. Free text that matches
+nothing is only quoted in the short-letter templates: without a language model it
+cannot be declined or woven into a story.
+
+A scenario lists the hooks its story can carry and branches on `c.uses(hook)` inside
+the event (the elf thinks of the child while solving the puzzle box – no “I heard
+you like …”). Two topic scenarios (`data/scenarios/christmas/topics.ts`,
+`topicSlot`) work with any topic: the elf tries the child's interest on a free
+evening (`tryout`), and reindeer Välk catches it (`reindeer`); each topic brings
+these middles hand-written, plus one-line toddler versions. The planner tells one
+topic per such letter – the one the child has heard least about.
 The planner only activates hooks that are in the profile and that really change
 that band's text (`effectiveHooks`), at most `PERSONALIZATION.perHookPer24` times
 per hook and `minGap` days apart, aiming at `share` of personal letters. The rest
@@ -202,11 +212,15 @@ just written into scenarios – keep their traits consistent. A new narrator voi
 is a new band text; describe it in `VOICES` (`characters.ts`). Persona names and
 titles come from `personasFor` and can be changed by the parent.
 
-### Add a personalization hook
+### Add a topic
 
-Add an id to `HookId` (`types.ts`) and an entry to `PERSONAL_HOOKS` (`hooks.ts`)
-with `match` (profile) and `mentions` (how the letter text refers to it), then
-branch on `c.uses('<id>')` in the scenarios that can carry it.
+Add an id to `TopicId` and an entry to `TOPICS` (`data/topics.ts`) with `match`
+(free-text profile fields), `mentions` (a word only a letter about this topic would
+use – the validator reports unplanned mentions, so keep it narrow) and the four
+texts for the topic scenarios. `validateLibrary` renders both topic scenarios with
+every topic and checks card length and that no text mentions another topic. The
+topic then shows up on the profile form. Hand-written scenarios can also branch on
+`c.uses('<id>')`.
 
 ### Add an occasion
 
@@ -237,7 +251,9 @@ npx vitest run -u tests/golden.spec.ts  # regenerate the sample collections
   “if the child answered” branches. Stories are written to work without replies.
 - Some longer older-reader letters print at 7.5–8 pt on the 24-card poster; the
   validator warns and the parent can shorten or switch to a page layout.
-- Hooks exist for the interests in the demo profiles and a few common ones; other
-  interests are not used in the story (by design – no generic “I heard you like X”).
+- Only topics from the list reach the story; other free-text interests are quoted in
+  short letters only (by design – no generic “I heard you like X”). A series tells
+  at most two topic stories per child (one per topic scenario), plus any
+  hand-written scenario that branches on one of the child's topics.
 - Regenerating one letter in an old creation (made before this change) uses the new
   engine for that letter only.

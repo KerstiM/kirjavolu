@@ -1,3 +1,5 @@
+import type { TopicId } from '../../data/topics'
+
 export type ReadingLevel = 'read-aloud' | 'beginner' | 'independent' | 'advanced'
 
 export interface ChildProfile {
@@ -8,6 +10,9 @@ export interface ChildProfile {
   age: number
   readingLevel: ReadingLevel
   personality: string
+  /** Topics picked from the list; letters can tell real stories about these. Missing in older profiles. */
+  topics?: TopicId[]
+  /** Free-text interests, mentioned only in the short-letter templates. */
   interests: string[]
   favorites: string[]
   foods: string[]

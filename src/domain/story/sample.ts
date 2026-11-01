@@ -1,3 +1,4 @@
+import { getTopic } from '../../data/topics'
 import type { Band, HookId, Scenario, ScenarioContext } from './types'
 
 /**
@@ -17,6 +18,7 @@ export function sampleContext(
     siblings: 'Mirtel-Liisa ja Karl-Eerik',
     siblingCount: 2,
     uses: (hook) => hooks.includes(hook),
+    topic: hooks[0] ? getTopic(hooks[0]) : undefined,
     knows: () => true,
     happened: () => true,
     pick: (options) => options[0] as never,

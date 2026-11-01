@@ -1,4 +1,5 @@
 import type { ChildProfile } from '../models'
+import { pickedTopics, TOPICS } from '../../data/topics'
 import type { HookId } from './types'
 
 /**
@@ -16,85 +17,14 @@ export interface PersonalHook {
   mentions: RegExp
 }
 
-export const PERSONAL_HOOKS: PersonalHook[] = [
-  {
-    id: 'rubik',
-    label: 'Rubiku kuubik',
-    match: /rubik|kuubik/i,
-    fields: ['interests', 'favorites'],
-    mentions: /(?<!jää)kuubik/i,
-  },
-  {
-    id: 'codes',
-    label: 'salakoodid',
-    match: /salakood|kood|šifr|salakiri/i,
-    fields: ['interests', 'favorites'],
-    mentions: /salakoodi|koodimeist/i,
-  },
-  {
-    id: 'riddles',
-    label: 'mõistatused',
-    match: /mõistatus|nuputa|nuputamis/i,
-    fields: ['interests', 'favorites', 'details'],
-    mentions: /mõistatusesõb|nuputaja/i,
-  },
-  {
-    id: 'comics',
-    label: 'Miki Hiire koomiksid',
-    match: /miki|mickey|koomiks|donald/i,
-    fields: ['interests', 'favorites'],
-    mentions: /miki hii|koomiksisõb|koomiksilugeja/i,
-  },
-  {
-    id: 'porridge',
-    label: 'riisipuder',
-    match: /riisipu/i,
-    fields: ['foods', 'details'],
-    mentions: /riisipu/i,
-  },
-  {
-    id: 'peppa',
-    label: 'Põrsas Peppa',
-    match: /peppa|põrsa/i,
-    fields: ['interests', 'favorites'],
-    mentions: /peppa/i,
-  },
-  {
-    id: 'animals',
-    label: 'loomad',
-    match: /loom|kass|koer|hobu/i,
-    fields: ['interests', 'favorites'],
-    mentions: /loomasõb/i,
-  },
-  {
-    id: 'lego',
-    label: 'klotsid',
-    match: /lego|klots/i,
-    fields: ['interests', 'favorites'],
-    mentions: /klotsimeist|klotsiehit/i,
-  },
-  {
-    id: 'space',
-    label: 'kosmos',
-    match: /kosmos|planeet|raket|astronau/i,
-    fields: ['interests', 'favorites'],
-    mentions: /astronau|planeedi/i,
-  },
-  {
-    id: 'drawing',
-    label: 'joonistamine',
-    match: /joonist|maali|kunst/i,
-    fields: ['interests', 'favorites'],
-    mentions: /kunstnik/i,
-  },
-  {
-    id: 'music',
-    label: 'muusika',
-    match: /muusik|laul|klaver|pill/i,
-    fields: ['interests', 'favorites'],
-    mentions: /muusik/i,
-  },
-]
+/** Every topic of the list is a hook; food topics are looked for among foods. */
+export const PERSONAL_HOOKS: PersonalHook[] = TOPICS.map((topic) => ({
+  id: topic.id,
+  label: topic.label,
+  match: topic.match,
+  fields: topic.group === 'food' ? ['foods', 'details'] : ['interests', 'favorites', 'details'],
+  mentions: topic.mentions,
+}))
 
 export function getHook(id: HookId): PersonalHook {
   const hook = PERSONAL_HOOKS.find((candidate) => candidate.id === id)
@@ -102,9 +32,12 @@ export function getHook(id: HookId): PersonalHook {
   return hook
 }
 
-/** Hooks supported by the child's profile. Only these may be used in the child's letters. */
+/**
+ * Hooks supported by the child's profile: the picked topics, and topics found in the
+ * free-text fields. Only these may be used in the child's letters.
+ */
 export function profileHooks(child: ChildProfile): Set<HookId> {
-  const result = new Set<HookId>()
+  const result = new Set<HookId>(pickedTopics(child).map((topic) => topic.id))
   for (const hook of PERSONAL_HOOKS) {
     const texts = hook.fields.flatMap((field) => {
       const value = child[field]

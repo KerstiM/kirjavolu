@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { pickedTopics } from '../../data/topics'
 import { computed } from 'vue'
 import { Pencil, Trash2 } from 'lucide-vue-next'
 import type { ChildProfile } from '../../domain/models'
@@ -10,7 +11,9 @@ defineEmits<{ edit: []; remove: [] }>()
 
 const palette = ['lavender', 'coral', 'sage', 'gold'] as const
 const tone = computed(() => palette[props.child.name.length % palette.length])
-const tags = computed(() => [...props.child.interests, ...props.child.favorites, ...props.child.foods].slice(0, 6))
+const tags = computed(() =>
+  [...pickedTopics(props.child).map((topic) => topic.label), ...props.child.interests, ...props.child.favorites, ...props.child.foods].slice(0, 6),
+)
 </script>
 
 <template>

@@ -141,6 +141,8 @@ export function planCollection(
         uses.length < maxPerHook && uses.every((u) => Math.abs(index - u) >= PERSONALIZATION.minGap)
       )
     })
+  const usesOf = (p: PlannedChild, hook: HookId) =>
+    hookUses.get(`${p.child.id}:${hook}`)?.length ?? 0
   const markPersonal = (p: PlannedChild, index: number, hooks: HookId[]) => {
     if (hooks.length === 0) return
     for (const hook of hooks) {
@@ -178,7 +180,13 @@ export function planCollection(
   }
   const assign = (p: PlannedChild, index: number, s: Scenario, stageId?: string) => {
     const entry = day(p, index, { kind: 'scenario', scenarioId: s.id, stageId, activity: false })
-    entry.personalizationIds = canPersonalize(p, s, index)
+    const hooks = canPersonalize(p, s, index)
+    // A topic story is about one topic: the one this child has heard least about so far.
+    entry.personalizationIds = s.topicSlot
+      ? [...hooks]
+          .sort((a, b) => usesOf(p, a) - usesOf(p, b))
+          .slice(0, 1)
+      : hooks
     markPersonal(p, index, entry.personalizationIds)
     slotOf(p)[index] = entry
     usedBy.get(p.child.id)?.add(s.id)
@@ -403,7 +411,8 @@ export function planCollection(
       const activity = s.activities?.[p.band]
       const length = request.general.length
       const room = length !== 'short' && index - lastActivity >= ACTIVITY_GAP[length]
-      if (activity && (activity.essential || room) && !(activity.reveal && index === last)) {
+      // A puzzle's answer goes into the next letter; the farewell has no room for it.
+      if (activity && (activity.essential || room) && !(activity.reveal && index >= last - 1)) {
         entry.content.activity = true
         lastActivity = index
         if (activity.answer) entry.answer = activity.answer

@@ -7,6 +7,7 @@ import { usesScenarioEngine } from '@/domain/story/scenarioLetters'
 import { profileHooks } from '@/domain/story/hooks'
 import { CARD_HARD_LIMITS, validateCollection, validateLibrary } from '@/domain/story/validate'
 import { STAR_ARC } from '@/data/scenarios/christmas/starArc'
+import { TOPICS } from '@/data/topics'
 import type { ChildProfile, RequestFor } from '@/domain/models'
 import type { DraftItem } from '@/domain/generators/context'
 import { BRITA, JASPER, makeRequest, RUBEN } from './helpers'
@@ -305,6 +306,7 @@ describe('personalization', () => {
       ...JASPER,
       id: 'plain',
       name: 'Mia',
+      topics: [],
       favorites: [],
       foods: [],
       interests: [],
@@ -489,5 +491,48 @@ describe('editing flow', () => {
     expect(content.items.filter((item, i) => i !== index).map((item) => item.body)).not.toContain(
       after.body,
     )
+  })
+})
+
+describe('topics from the profile list', () => {
+  const fan = (topics: ChildProfile['topics'], age = 7): ChildProfile => ({
+    ...JASPER,
+    id: `fan-${topics?.join('-')}`,
+    name: 'Mia',
+    age,
+    topics,
+    interests: [],
+    favorites: [],
+    foods: [],
+    details: '',
+  })
+
+  it('tells a story about a picked topic that has no hand-written scenario', () => {
+    for (const topic of TOPICS) {
+      const child = fan([topic.id])
+      const { plan, items } = build(christmas([child], { connected: false }))
+      const personal = plan.days.filter((d) => d.personalizationIds.includes(topic.id))
+      expect(personal.length, topic.id).toBeGreaterThanOrEqual(1)
+      const errors = validateCollection(plan, items, library).filter((i) => i.severity === 'error')
+      expect(errors, topic.id).toEqual([])
+    }
+  })
+
+  it('tells one topic per topic letter and spreads the letters over the topics', () => {
+    const child = fan(['football', 'dinosaurs', 'pancakes'])
+    const { plan } = build(christmas([child], { connected: false }))
+    const topicDays = plan.days.filter(
+      (d) => d.content.kind === 'scenario' && d.content.scenarioId.startsWith('topic-'),
+    )
+    expect(topicDays).toHaveLength(2)
+    for (const d of topicDays) expect(d.personalizationIds).toHaveLength(1)
+    expect(new Set(topicDays.map((d) => d.personalizationIds[0])).size).toBe(2)
+  })
+
+  it('gives a toddler the one-line version of the topic story', () => {
+    const { items, plan } = build(christmas([fan(['trains'], 1)], { connected: false }))
+    const index = plan.days.findIndex((d) => d.personalizationIds.includes('trains'))
+    expect(index).toBeGreaterThan(-1)
+    expect(items[index]?.body).toMatch(/Tšuhh|tšuhh|Tuut|tuut/)
   })
 })

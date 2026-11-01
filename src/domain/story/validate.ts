@@ -3,7 +3,8 @@ import { ageBand } from '../generators/audience'
 import { getHook, PERSONAL_HOOKS, profileHooks } from './hooks'
 import { scenarioIn, type ScenarioLibrary } from './library'
 import type { CollectionPlan, PlannedChild, PlannedDay } from './planner'
-import type { Band, HookId } from './types'
+import type { Band, HookId, Scenario, Variant } from './types'
+import { TOPICS } from '../../data/topics'
 import { effectiveHooks, sampleContext } from './sample'
 
 /**
@@ -500,6 +501,7 @@ export function validateLibrary(library: ScenarioLibrary): string[] {
       if (band === 'toddler' && plain.length > 1)
         errors.push(`${s.id}: väikelapse kaart peab olema üks lõik`)
     }
+    if (s.topicSlot) errors.push(...validateTopicSlot(s))
     if (s.readAloud) {
       if (!s.variants.toddler) errors.push(`${s.id}: ettelugemise tekst ilma väikelapse kaardita`)
       const paragraphs = s.readAloud(sampleContext([])).filter((p): p is string => Boolean(p))
@@ -527,6 +529,45 @@ export function validateLibrary(library: ScenarioLibrary): string[] {
       errors.push(`${arc.id}: etappide asukohad pole kasvavas järjekorras`)
     if (!established.has(arc.resolves))
       errors.push(`${arc.id}: lahendust „${arc.resolves}“ ei loo ükski etapp`)
+  }
+  return errors
+}
+
+/**
+ * A topic story is told with every topic of the list: each one must fit the card,
+ * start its paragraphs properly and talk only about its own topic.
+ */
+function validateTopicSlot(s: Scenario): string[] {
+  const errors: string[] = []
+  const texts: [string, Band | 'readAloud', Variant | undefined][] = [
+    ...(Object.keys(s.variants) as Band[]).map((band): [string, Band, Variant | undefined] => [
+      band,
+      band,
+      s.variants[band],
+    ]),
+    ['ettelugemine', 'readAloud', s.readAloud],
+  ]
+  for (const topic of TOPICS) {
+    for (const [name, band, variant] of texts) {
+      if (!variant) continue
+      const paragraphs = variant(sampleContext([topic.id])).filter((p): p is string => Boolean(p))
+      const text = paragraphs.join('\n\n')
+      const where = `${s.id}/${name}/${topic.id}`
+      for (const paragraph of paragraphs) {
+        if (!/^[„A-ZÕÄÖÜŠŽ0-9"]/.test(paragraph))
+          errors.push(`${where}: lõik ei alga suure tähega: „${paragraph.slice(0, 30)}“`)
+      }
+      const limit =
+        band === 'readAloud' || band === 'young'
+          ? CARD_LIMITS.young - 80
+          : CARD_LIMITS[band] - (band === 'toddler' ? 45 : 80)
+      if (text.length > limit) errors.push(`${where}: liiga pikk kaardi jaoks (${text.length} märki)`)
+      if (band === 'toddler' && paragraphs.length > 1) errors.push(`${where}: väikelapse kaart peab olema üks lõik`)
+      for (const other of PERSONAL_HOOKS) {
+        if (other.id !== topic.id && other.mentions.test(stripNames(text, ['Meister'])))
+          errors.push(`${where}: mainib teist teemat „${other.label}“`)
+      }
+    }
   }
   return errors
 }

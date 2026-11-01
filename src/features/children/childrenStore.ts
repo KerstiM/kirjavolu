@@ -4,6 +4,7 @@ import type { ChildProfile, ChildProfileDraft } from '../../domain/models'
 import { DEMO_CHILDREN } from '../../data/demo/children'
 import { createId } from '../../utils/id'
 import { loadState } from '../../utils/storage'
+import { isTopicId } from '../../data/topics'
 import { clone } from '../../utils/clone'
 
 export function emptyChildDraft(): ChildProfileDraft {
@@ -13,6 +14,7 @@ export function emptyChildDraft(): ChildProfileDraft {
     age: 6,
     readingLevel: 'beginner',
     personality: '',
+    topics: [],
     interests: [],
     favorites: [],
     foods: [],
@@ -31,6 +33,7 @@ function cleanDraft(draft: ChildProfileDraft): ChildProfileDraft {
   return {
     ...draft,
     name: draft.name.trim(),
+    topics: [...new Set((draft.topics ?? []).filter(isTopicId))],
     nameGenitive: draft.nameGenitive?.trim() || undefined,
     interests: cleanList(draft.interests),
     favorites: cleanList(draft.favorites),

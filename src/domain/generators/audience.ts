@@ -1,6 +1,7 @@
 import type { AgeBand, ChildProfile, Difficulty } from '../models'
 import { joinList, nameCase, namesInCase } from '../text/estonian'
 import { findInterestHooks, type InterestHook } from '../../data/templates/interests'
+import { interestTexts } from '../../data/topics'
 
 export interface Audience {
   children: ChildProfile[]
@@ -55,7 +56,7 @@ export function buildAudience(children: ChildProfile[]): Audience {
     readerBands.length === 0 ? 'toddler' : readerBands.includes('young') ? 'young' : 'older'
   const names = joinList(children.map((child) => nameCase(child, 'nominative')))
   const hooks = children.flatMap((child) =>
-    findInterestHooks([...child.interests, ...child.favorites]).map((hook) => ({ child, hook })),
+    findInterestHooks(interestTexts(child)).map((hook) => ({ child, hook })),
   )
   return {
     children,
