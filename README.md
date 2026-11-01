@@ -6,6 +6,7 @@ Eestikeelne veebirakendus, mis aitab lapsevanematel luua lapsele personaalseid m
 
 ## Funktsioonid
 - Kuus sisutüüpi, igaühel oma loomisvoog ja seaded
+- **Kolm ekraani eelvaateni**: „Mida ja mis puhul?“ → „Kellele?“ → eelvaade. Avalehe hooajakaart (nt „24 päkapikukirja“) täidab tüübi ja tähtpäeva ette ning avab kohe „Kellele?“. Lapse saab lisada otse viisardis (nimi, vanus, kuni 3 huvi; lugemisoskus pakutakse vanuse järgi). „Vaata näidet“ (`/naide`) näitab näidislapse 1. detsembri kirja ilma andmeid sisestamata
 - 11 sündmust (jõulud, lihavõtted, sünnipäev, halloween, mardi- ja kadripäev, vastlapäev, sõbrapäev, kooliaasta algus, suvevaheaeg, piimahammas, tavaline päev)
 - Laste profiilid (lisamine, muutmine, kustutamine); alguses on nimekiri tühi, näidisprofiilid Ruben, Jasper ja Brita saab lisada ühe nupuga
 - Umbes 40 huviteemat, mille lapsevanem valib loendist; iga teema kohta on kirjades käsitsi kirjutatud lood
@@ -19,7 +20,7 @@ Eestikeelne veebirakendus, mis aitab lapsevanematel luua lapsele personaalseid m
 - **Salajane abiline** (jõulud, vanim laps, 12+ kirja): kutse koos reeglitega (vastama ei pea – nõusolek tähendab saladuse hoidmist), salamissioonid nooremate heaks pakkumistena ja viimases kirjas tiitel „päkapikkude abiline“; nooremate kirjad sellest ei räägi
 - **Iga päeva ettevalmistus**: lapsevanema lehel on iga lapse ja päeva kohta kirjas, mis sussi panna või ette valmistada (komm, katsevahendid, raamat ettelugemiseks jne)
 - **Pere sündmused ja reeglid**: lapsevanem lisab kuupäevaga sündmused (metsaretk, suusatamine, külaskäik, esinemine, trenn, piparkoogipäev, pidu või muu) ja valib osalejad; selle päeva kiri räägib sündmusest igale lapsele vanusele sobivalt. Reegel „maiustused ainult pühapäeviti“ selgitatakse esimeses kirjas, pühapäeva kirjades on komm ja lapsevanema lehel on komme vajavad kuupäevad
-- Eelvaade: tekstide muutmine (ka plakatil ja väikelapse kaartidel – nupp „Muuda“ avab redaktori), ühe osa uuesti genereerimine (käsitsi muudetud teksti puhul küsitakse kinnitust), kolm prindipaigutust, printimine/PDF, tekstifaili eksport
+- Eelvaade: kõik valikud (kirjade arv, saatja, järjejutt, pere sündmused, väljakutsed, toon) on eelvaate kõrval paneelis ja tekstid uuenevad kohe (käsitsi muudetud tekstide puhul küsitakse enne kinnitust); printimise valmisseadistused „Kaardid sussi sisse“, „Pusleplakat“ ja „Terve leht“, ülejäänu „Rohkem valikuid“ all; tekstide muutmine (ka plakatil ja väikelapse kaartidel – nupp „Muuda“ avab redaktori), ühe osa uuesti genereerimine (käsitsi muudetud teksti puhul küsitakse kinnitust), printimine/PDF, tekstifaili eksport
 - Lapsevanema juhised ja vastused on lapsele mõeldud materjalist eraldi
 - Kujundus: 8 SVG-taustamustrit (sündmusele sobivad eespool), tinti säästev raamirežiim või oma pilt heleda taustana
 - **Pusleplakat**: 7+ kirjaga sari prinditakse kaartidena, mis on paigutatud ussirada pidi (1. veerg alla, 2. üles jne) mitmele A4 lehele. Rada ja jaamad ühendavad päevi ning taustaks on sinu pilt või automaatne maastik. Kaardid lõigatakse lahti ja jõuludeks pannakse kokku terveks plakatiks. Igal lehel on märge („leht 1/4: pildi ülemine pool, vasak“), kaartidel kuupäev koos nädalapäevaga, tekst sobitub automaatselt ja alles lugema õppijale saab valida trükitähed

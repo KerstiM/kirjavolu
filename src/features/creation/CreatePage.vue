@@ -10,10 +10,10 @@ import { useGenerator } from '../../composables/useGenerator'
 import { useChildrenStore } from '../children/childrenStore'
 import { useCreationsStore } from '../preview/creationsStore'
 import WizardProgress from './WizardProgress.vue'
-import StepType from './steps/StepType.vue'
+import StepWhat from './steps/StepWhat.vue'
 import StepChildren from './steps/StepChildren.vue'
-import StepOccasion from './steps/StepOccasion.vue'
-import StepCustomize from './steps/StepCustomize.vue'
+import QuickChildDialog from '../children/QuickChildDialog.vue'
+import type { ChildProfileDraft } from '../../domain/models'
 import { useWizard, WIZARD_STEPS, type WizardInit } from './useWizard'
 import { newCreationRequests } from './newCreation'
 
@@ -43,7 +43,6 @@ function initFromRoute(): WizardInit {
     contentType: isContentTypeId(queryType) ? queryType : undefined,
     occasionId: isOccasionId(queryOccasion) ? queryOccasion : undefined,
     childIds: childrenStore.children.length === 1 ? [childrenStore.children[0]?.id ?? ''] : [],
-    onlyChild: childrenStore.children.length === 1,
   }
 }
 
@@ -75,10 +74,12 @@ watch(
   },
 )
 
-// Steps with a single choice move on by themselves once something is picked.
-function pick<K extends 'contentType' | 'occasionId'>(key: K, value: (typeof state)[K]): void {
-  state[key] = value
-  if (value !== null) wizard.next()
+// A child added here is selected at once, so the parent never has to leave the wizard.
+const addingChild = ref(false)
+function addChild(draft: ChildProfileDraft): void {
+  const child = childrenStore.add(draft)
+  state.childIds = [...state.childIds, child.id]
+  addingChild.value = false
 }
 
 function selectAll(): void {
@@ -115,35 +116,23 @@ async function create(): Promise<void> {
     </header>
 
     <div ref="stepHeading" class="wizard__body">
-      <StepType
-        v-if="WIZARD_STEPS[state.step]?.id === 'type'"
-        :model-value="state.contentType"
-        :occasion-id="state.occasionId"
-        @update:model-value="(value) => pick('contentType', value)"
+      <StepWhat
+        v-if="WIZARD_STEPS[state.step]?.id === 'what'"
+        v-model:content-type="state.contentType"
+        v-model:occasion-id="state.occasionId"
+        @done="wizard.next()"
       />
       <StepChildren
-        v-else-if="WIZARD_STEPS[state.step]?.id === 'children'"
+        v-else
         :children="childrenStore.children"
         :selected="state.childIds"
         @toggle="wizard.toggleChild"
         @select-all="selectAll"
-      />
-      <StepOccasion
-        v-else-if="WIZARD_STEPS[state.step]?.id === 'occasion'"
-        :model-value="state.occasionId"
-        :content-type="state.contentType"
-        @update:model-value="(value) => pick('occasionId', value)"
-      />
-      <StepCustomize
-        v-else-if="state.contentType && state.occasionId"
-        v-model:general="state.general"
-        v-model:options="state.options"
-        :content-type="state.contentType"
-        :occasion-id="state.occasionId"
-        :child-count="state.childIds.length"
-        :children="childrenStore.children.filter((c) => state.childIds.includes(c.id))"
+        @add="addingChild = true"
       />
     </div>
+
+    <QuickChildDialog v-if="addingChild" @save="addChild" @close="addingChild = false" />
 
     <div v-if="errors.length" class="error-box" role="alert">
       <p v-for="error in errors" :key="error">{{ error }}</p>
@@ -157,10 +146,10 @@ async function create(): Promise<void> {
       <BaseButton v-if="!wizard.isLastStep.value" :disabled="!wizard.canProceed.value" @click="wizard.next()">
         Edasi <ArrowRight aria-hidden="true" />
       </BaseButton>
-      <BaseButton v-else size="lg" :disabled="busy" @click="create">
+      <BaseButton v-else size="lg" :disabled="busy || !wizard.canProceed.value" @click="create">
         <WandSparkles aria-hidden="true" />
         <template v-if="busy">Loon…</template>
-        <template v-else><span class="wide-only">Loo ja vaata eelvaadet</span><span class="narrow-only">Loo</span></template>
+        <template v-else><span class="wide-only">Loo ja vaata eelvaadet</span><span class="narrow-only">Vaata eelvaadet</span></template>
       </BaseButton>
     </footer>
   </div>

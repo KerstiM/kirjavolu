@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { ArrowRight, Users } from 'lucide-vue-next'
+import { ArrowRight, Eye, Users } from 'lucide-vue-next'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import { CONTENT_TYPES } from '../../domain/contentTypes'
 import { OCCASIONS } from '../../domain/occasions/occasions'
@@ -31,7 +31,11 @@ const tones = ['lavender', 'coral', 'sage', 'gold', 'coral', 'lavender'] as cons
               Alusta loomist
               <ArrowRight aria-hidden="true" />
             </BaseButton>
-            <BaseButton to="/lapsed" variant="secondary" size="lg">
+            <BaseButton to="/naide" variant="secondary" size="lg">
+              <Eye aria-hidden="true" />
+              Vaata näidet
+            </BaseButton>
+            <BaseButton v-if="childrenStore.children.length" to="/lapsed" variant="ghost" size="lg">
               <Users aria-hidden="true" />
               Laste profiilid
             </BaseButton>

@@ -16,6 +16,8 @@ const props = defineProps<{
   backgroundOpacity?: number
   piece?: { imageUrl: string; grid: PuzzleGrid; index: number; maxCm: number } | null
   uppercase?: boolean
+  /** A sample to look at: no editing tools. */
+  readonly?: boolean
 }>()
 const emit = defineEmits<{ edit: []; regenerate: [] }>()
 
@@ -41,7 +43,7 @@ const kindClass = computed(() => [
       :style="{ opacity: backgroundOpacity ?? 0.25 }"
     />
     <PatternBackground v-else-if="pattern" :pattern="pattern" :ink-saver="!!inkSaver" />
-    <div class="paper__tools no-print">
+    <div v-if="!readonly" class="paper__tools no-print">
       <span v-if="item.edited" class="edited-badge">Muudetud</span>
       <button type="button" class="tool" :aria-label="`Muuda: ${item.label}`" @click="emit('edit')">
         <Pencil :size="15" aria-hidden="true" /><span>Muuda</span>

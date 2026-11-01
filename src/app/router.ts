@@ -16,6 +16,12 @@ export const routes: RouteRecordRaw[] = [
     meta: { title: 'Loo uus' },
   },
   {
+    path: '/naide',
+    name: 'sample',
+    component: () => import('../features/home/DemoPage.vue'),
+    meta: { title: 'Näide' },
+  },
+  {
     path: '/looming/:id',
     name: 'preview',
     component: () => import('../features/preview/PreviewPage.vue'),
