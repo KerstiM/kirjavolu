@@ -6,6 +6,7 @@ import { validateChildProfile, type FieldErrors } from '../../domain/validation'
 import { genitive } from '../../domain/text/estonian'
 import FormField from '../../components/ui/FormField.vue'
 import ListInput from '../../components/ui/ListInput.vue'
+import TopicPicker from './TopicPicker.vue'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import { clone } from '../../utils/clone'
 
@@ -13,6 +14,10 @@ const props = defineProps<{ initial: ChildProfileDraft; mode: 'add' | 'edit' }>(
 const emit = defineEmits<{ save: [draft: ChildProfileDraft]; cancel: [] }>()
 
 const draft = reactive<ChildProfileDraft>(clone({ ...props.initial }))
+const topics = computed({
+  get: () => draft.topics ?? [],
+  set: (value) => (draft.topics = value),
+})
 const errors = ref<FieldErrors>({})
 const submitted = ref(false)
 
@@ -90,10 +95,22 @@ function revalidate(): void {
     </fieldset>
 
     <fieldset class="group">
-      <legend>Huvid ja lemmikud</legend>
-      <p class="group__hint">Eralda mitu asja komadega. Mida konkreetsem, seda isiklikumad tekstid.</p>
+      <legend>Mis lapsele meeldib?</legend>
+      <p class="group__hint">
+        Vali loendist kõik, mis sobib. Iga teema kohta on kirjades valmis lood – näiteks päkapikk proovib ise
+        jalgpalli või põhjapõder Välk hakkab dinosauruseks.
+      </p>
+      <TopicPicker v-model="topics" />
+    </fieldset>
+
+    <fieldset class="group">
+      <legend>Veel huvisid ja lemmikuid</legend>
+      <p class="group__hint">
+        Mida loendis pole, kirjuta siia ja eralda komadega. Lühemates kirjades mainime neid nimepidi, aga
+        jõulusarja lugudesse jõuavad ainult loendist valitud teemad.
+      </p>
       <div class="grid grid--2">
-        <FormField id="child-interests" label="Huvid ja hobid" hint="nt Rubiku kuubik, jalgpall, joonistamine">
+        <FormField id="child-interests" label="Muud huvid ja hobid" hint="nt linnuvaatlus, kalapüük">
           <template #default="{ describedBy }">
             <ListInput id="child-interests" v-model="draft.interests" :described-by="describedBy" />
           </template>
@@ -103,7 +120,7 @@ function revalidate(): void {
             <ListInput id="child-favorites" v-model="draft.favorites" :described-by="describedBy" />
           </template>
         </FormField>
-        <FormField id="child-foods" label="Lemmiktoidud" hint="nt riisipuder, pannkoogid">
+        <FormField id="child-foods" label="Muud lemmiktoidud" hint="nt kartulipuder, mustikad">
           <template #default="{ describedBy }">
             <ListInput id="child-foods" v-model="draft.foods" :described-by="describedBy" />
           </template>

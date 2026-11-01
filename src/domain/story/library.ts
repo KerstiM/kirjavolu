@@ -6,6 +6,7 @@ import { WORLD_SCENARIOS } from '../../data/scenarios/christmas/world'
 import { OLDER_SCENARIOS } from '../../data/scenarios/christmas/older'
 import { YOUNG_SCENARIOS } from '../../data/scenarios/christmas/young'
 import { TODDLER_SCENARIOS } from '../../data/scenarios/christmas/toddler'
+import { TOPIC_SCENARIOS } from '../../data/scenarios/christmas/topics'
 
 /** Everything the planner may use for one occasion. */
 export interface ScenarioLibrary {
@@ -23,6 +24,7 @@ export const CHRISTMAS_LIBRARY: ScenarioLibrary = {
     ...OLDER_SCENARIOS,
     ...YOUNG_SCENARIOS,
     ...TODDLER_SCENARIOS,
+    ...TOPIC_SCENARIOS,
   ],
   arcs: [STAR_ARC],
 }

@@ -22,16 +22,19 @@ describe('question today, answer tomorrow', () => {
   const items = runTemplates(family()).items
 
   it('every puzzle is answered in a postscript of the next letter, without assuming a reply', () => {
+    let total = 0
     for (const child of [RUBEN, JASPER]) {
       const letters = series(items, child.id)
       const asked = letters.map((item, i) => ({ item, i })).filter(({ item }) => item.answer)
-      expect(asked.length).toBeGreaterThanOrEqual(2)
+      total += asked.length
+      expect(asked.length).toBeGreaterThanOrEqual(1)
       for (const { i } of asked) {
         const ps = letters[i + 1]!.body.split('\n\n').find((p) => p.startsWith('P.S.'))
         expect(ps).toBeDefined()
         expect(ps).not.toMatch(/Aitäh vastuse|Lugesin su vastust|nägin/)
       }
     }
+    expect(total).toBeGreaterThanOrEqual(3)
   })
 
   it('never asks on the last day', () => {

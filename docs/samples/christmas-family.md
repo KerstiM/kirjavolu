@@ -104,11 +104,11 @@ _Nuputades · Kõpsu-Mõpsu_
 
 **Kallis Ruben!**
 
-Töökojal on oma seinaleht „Põhjanaela Postimees“ ja sel nädalal oli koomiksi joonistamise kord minul.
+Eile õhtul hõikasid kõik töökojas ühte nime: „Pisi-Pätsi! Pisi-Pätsi!“ Ta on meist kõige pisem ja kaob vahel ära lihtsalt seepärast, et teda on nii vähe.
 
-Joonistasin kolm pilti. Esimesel vaatab põhjapõder Välk peeglisse. Teisel näeb ta, et tal on sarvede vahel lind. Kolmandal on lind sinna pesa ehitanud ja Välk ei julge enam pead liigutada.
+Otsisime riiulitelt, tööpinkide alt ja pudrupotist. Siis kuulsin ahju juurest õrna norskamist.
 
-Joonistades mõtlesin Miki Hiire koomiksitele, mida sina loed: seal on ka alati hetk, kus kõik läheb viltu – ja just siis läheb huvitavaks. Minu lugu on muide tõsi. Välk liigub juba neljandat päeva väga ettevaatlikult.
+Ahju ääres kuivas minu vana kinnas. Selle sees, pöidla kohal, magas Pisi-Pätsi – soe, rahul ja natuke villane. Me ei äratanud teda. Teist kinnast kuivatan nüüd mujal.
 
 _Sinu · Kõpsu-Mõpsu_
 
@@ -162,11 +162,11 @@ _Tervitustega põhjast · Kõpsu-Mõpsu_
 
 **Kallis Ruben!**
 
-Teeme sel aastal piparkoogidest töökoja mudeli. Seinad on valmis, aknad on suhkrust ja korstnast tuleb vatist suitsu. Probleem on katus.
+Töökojal on oma seinaleht „Põhjanaela Postimees“ ja sel nädalal oli koomiksi joonistamise kord minul.
 
-Katus libiseb maha. Proovisime kuus korda. Mina arvutasin nurgad välja, Tipp-Topp keetis paksema glasuuri, ja seitsmendal korral jäi katus paigale.
+Joonistasin kolm pilti. Esimesel vaatab põhjapõder Välk peeglisse. Teisel näeb ta, et tal on sarvede vahel lind. Kolmandal on lind sinna pesa ehitanud ja Välk ei julge enam pead liigutada.
 
-Täna hommikul oli maja ühel nurgal suur ümmargune auk. Põhjapõder Välk vaatas lakke ja tegi näo, nagu poleks ta elus piparkooki näinud. Tal oli glasuur ninal.
+Joonistades mõtlesin Miki Hiire koomiksitele, mida sina loed: seal on ka alati hetk, kus kõik läheb viltu – ja just siis läheb huvitavaks. Minu lugu on muide tõsi. Välk liigub juba neljandat päeva väga ettevaatlikult.
 
 _Töökoja nurgast · Kõpsu-Mõpsu_
 
@@ -190,11 +190,11 @@ _Sinu · Kõpsu-Mõpsu_
 
 **Kallis Ruben!**
 
-Eile õhtul tuli tuisk, mille sarnast ma ei mäleta. Aknad olid valged, korsten ulgus ja põhjapõdrad pugesid laudas üksteise vastu.
+Eile oli päkapikkude iga-aastane suusavõistlus ümber Jõuluvana kuusiku. Mina pole kunagi võitnud ega kavatse ka sel aastal sellega alustada.
 
-Keset ööd koputas keegi töökoja uksele. Ukse taga istus jänesepere – ema, isa ja viis poega –, kõik lumest valged. Lasime nad sisse.
+Valin alati kõige ilusama tee: üle külmunud oja, vana kuuse alt ja läbi kitsa oru, kus lumi sädeleb. See on küll pikem, aga see-eest vaiksem.
 
-Hommikuks olid nad ära söönud kõik porgandid, mis pidid saama lumememmede ninadeks. Lumememmed jäävad sel aastal ninata. Jänesed jäävad talveks puuriida taha elama.
+Jõudsin finišisse viimasena, kui teised juba kakaod jõid. Tipp-Topp oli mulle tassi alles hoidnud. Kakao oli küll jahtunud, aga ma ei öelnud talle seda.
 
 P.S. Raamatu sõna oli TÄHELIND. Raamat kirjutab, et tähelinnud korjavad talvel kokku valgust, mis on kuhugi kaotsi läinud – ja et inimesed näevad neid väga harva.
 
@@ -284,11 +284,7 @@ Kui tähed kustuvad, / Astu trepist üles. / Katusel on / Aega ja / Ootab üks t
 
 Esmapilgul tundub see lihtsalt kehva luuletusena. Salakoodimeister aga teab, et nii kehv luuletus ei saa olla juhuslik. Mina taipasin alles kolmanda tassi tee juures, kust otsida.
 
-Kas sina leiad peidetud sõna? Vaata ridade algusi. Homme ütlen, mis seal oli.
-
 _Mõtlikult · Kõpsu-Mõpsu_
-
-> Vastus: KAKAO (ridade esimesed tähed)
 
 ### 24. detsember 2026
 
@@ -301,8 +297,6 @@ Täna lõpetavad kõik päkapikud – Kõpsu-Mõpsu, Tipp-Topp ja Pisi-Pätsi �
 Mul oli sinu juures hea. Pakkisin tööriistad kotti ja otsisin kaua oma prille – need olid mul ninal. Häid jõule, Ruben!
 
 Selle kirjaga nimetan su ametlikult päkapikkude abiliseks 2026. Tiitel kehtib terve aasta – kui majas on kunagi vaja salajast abi, tead nüüd, kuidas seda teha.
-
-P.S. Eilse sedeli ridade esitähed andsid sõna KAKAO. Kakao oli kuum, katus külm ja kutsujaks oli Tipp-Topp.
 
 _Tervitustega põhjast · Kõpsu-Mõpsu_
 
@@ -340,11 +334,11 @@ _Sinu sõber · Tipp-Topp_
 
 **Kallis Jasper!**
 
-Ma tahtsin eile kõigile päkapikkudele üllatust teha ja keetsin riisiputru. Sina tead ju ka, et see on pudrudest kõige parem!
+Eile oli töökojas vaba õhtu ja ma mõtlesin sinu peale.
 
-Ma segasin ja segasin. Aga puder kasvas ja kasvas. Mulks! Mulks! Lõpuks ronis ta üle ääre ja läks trepist alla.
+Kirjutasin ise ühe mõistatuse: „Mis on valge ja külm ning kaob, kui seda soojas käes hoida?“ Lugesin selle töökojas ette ja kõik päkapikud hüüdsid kohe: „Lumi!“ Järgmine tuleb raskem.
 
-Jõuluvana sõi kaks kaussi otse trepi pealt ja ütles: „Parim puder!“ Minu põsed läksid punaseks. Ja kleepuvaks.
+Nüüd saan aru, miks see sulle nii meeldib. Homme proovin uuesti!
 
 _Jahusena · Tipp-Topp_
 
@@ -372,19 +366,15 @@ _Hüpates · Tipp-Topp_
 
 **Kallis Jasper!**
 
-Eile pidasime mõistatusvõistlust: mina ja põhjapõder Välk. Välk teab ainult ühte mõistatust: „Kes on kõige ilusam põhjapõder?“ Vastus on alati „Välk“.
+Põhjapõder Välk käitub viimasel ajal imelikult.
 
-Mina esitasin talle päris mõistatuse. Sina oled ju mõistatusesõber – see on sulle ka:
+Ta on avastanud riisipudru. Igal hommikul seisab ta köögiukse taga ja ootab, kas jääb üle. Kui jääb, lakub ta kausi nii puhtaks, et seda pole vaja pestagi.
 
-Valge, aga ei ole suhkur. Külm, aga ei ole jäätis. Tuleb taevast ja sulab peos. Mis see on?
-
-Homme ütlen vastuse.
+Kust ta selle mõtte sai? Kahtlustan, et keegi on talle sinust rääkinud.
 
 P.S. Täna on pühapäev, nii et sussis on üks komm.
 
 _Sinu sõber · Tipp-Topp_
-
-> Vastus: lumi
 
 > Valmista ette: komm sussi
 
@@ -392,13 +382,11 @@ _Sinu sõber · Tipp-Topp_
 
 **Kallis Jasper!**
 
-Kas sa tead, mis on virmalised? Need on rohelised ja lillad tuled, mis tantsivad öösel taevas. Eile ma nägin neid!
+Eile oli nii tugev tuisk, et aknast ei paistnud midagi. Huuuu! tegi tuul.
 
-Kõige naljakam oli see, et Kõpsu-Mõpsu istus terve õhtu katusel ja ootas neid. Aga ta jäi magama! Kass Nurr pidi ta üles äratama.
+Öösel koputas keegi uksele: kopp-kopp. Ukse taga olid seitse lumist jänest! Lasime nad sooja.
 
-Mina võitsin virmaliste võistluse ja sain kõige pehmema pingi. Aga ma hoian sellel ka talle kohta. Ta on ju minu sõber.
-
-P.S. Eilse mõistatuse vastus oli: lumi. Välk arvas, et jäätis.
+Nad sõid ära kõik lumememmede porgandid. Nüüd elavad nad puuriida taga ja ma viin neile igal hommikul kapsalehti.
 
 _Sinu · Tipp-Topp_
 
@@ -430,23 +418,29 @@ _Hüpates · Tipp-Topp_
 
 **Kallis Jasper!**
 
-Töökojas on üks tuba, kus hoitakse sädelust. Sinna tohib minna ainult hiilides ja hinge kinni hoides.
+Eile pidasime mõistatusvõistlust: mina ja põhjapõder Välk. Välk teab ainult ühte mõistatust: „Kes on kõige ilusam põhjapõder?“ Vastus on alati „Välk“.
 
-Mina läksin eile sinna paelu tooma – ja mul hakkas nina sügelema. Aaa… aaa… AATŠIHH!
+Mina esitasin talle päris mõistatuse. Sina oled ju mõistatusesõber – see on sulle ka:
 
-Nüüd sädeleb kõik: seinad, laud, kass ja Jõuluvana habe. Jõuluvana vaatas peeglisse ja ütles, et nii pidulik pole ta kunagi olnud.
+Valge, aga ei ole suhkur. Külm, aga ei ole jäätis. Tuleb taevast ja sulab peos. Mis see on?
+
+Homme ütlen vastuse.
 
 _Kiirelt-kiirelt · Tipp-Topp_
+
+> Vastus: lumi
 
 ### 11. detsember 2026
 
 **Kallis Jasper!**
 
-Kas sa tead, miks päkapikud putru armastavad? Vanasti jäeti jõuluõhtul päkapikule kauss putru ja ta hoidis selle eest aasta otsa talu loomi.
+Kas sa tead, mis on virmalised? Need on rohelised ja lillad tuled, mis tantsivad öösel taevas. Eile ma nägin neid!
 
-Sina sööd ju ka kõige meelsamini riisiputru – sa tead, et see on õige puder!
+Kõige naljakam oli see, et Kõpsu-Mõpsu istus terve õhtu katusel ja ootas neid. Aga ta jäi magama! Kass Nurr pidi ta üles äratama.
 
-Mina olen töökoja pudrukeetja. Eile küsis Jõuluvana kolm korda juurde. Neljandal korral ütlesin, et pada on tühi. Polnud – aga mul oli endal ka kõht tühi.
+Mina võitsin virmaliste võistluse ja sain kõige pehmema pingi. Aga ma hoian sellel ka talle kohta. Ta on ju minu sõber.
+
+P.S. Eilse mõistatuse vastus oli: lumi. Välk arvas, et jäätis.
 
 _Hüpates · Tipp-Topp_
 
@@ -454,11 +448,11 @@ _Hüpates · Tipp-Topp_
 
 **Kallis Jasper!**
 
-Arva ära, mis eile juhtus! Kass Nurr oli kadunud. Me otsisime ja otsisime.
+Ma tahtsin eile kõigile päkapikkudele üllatust teha ja keetsin riisiputru. Sina tead ju ka, et see on pudrudest kõige parem!
 
-Siis kuulsin, et üks kingipakk teeb: nurr-nurr-nurr. Pakid ju ei nurru! Tegin paela lahti – ja seal ta oligi!
+Ma segasin ja segasin. Aga puder kasvas ja kasvas. Mulks! Mulks! Lõpuks ronis ta üle ääre ja läks trepist alla.
 
-Nurr oli karbis magama jäänud ja keegi oli ta kogemata ära pakkinud. Peaaegu oleks ta Lapimaale sõitnud.
+Jõuluvana sõi kaks kaussi otse trepi pealt ja ütles: „Parim puder!“ Minu põsed läksid punaseks. Ja kleepuvaks.
 
 _Jahusena · Tipp-Topp_
 
@@ -482,11 +476,11 @@ _Sinu · Tipp-Topp_
 
 **Kallis Jasper!**
 
-Ma keetsin eile kõige paksema glasuuri, mida maailm on näinud. Lusikas jäi sinna püsti!
+Mul oli eile luksumine! Aga mitte tavaline – iga kord, kui ma luksusin, helisesid töökojas kõik kellukesed: kõlin!
 
-Sellega kleepisime piparkoogimaja katuse kinni. Varem see muudkui libises maha. Nüüd hoiab!
+Proovisin vett juua, hinge kinni hoida ja pea peal seista. Ei aidanud. Kõlin! Kõlin!
 
-Aga täna hommikul oli majal üks nurk puudu. Ja põhjapõder Välk vaatas lakke. Tal oli glasuur nina peal. Hmm… kes küll?
+Lõpuks hiilis põhjapõder Välk mulle selja taha ja ütles kõrva: „Pöö!“ Ehmusin nii, et luksumine läks ära. Kellukesed on nüüd vaiksed. Peaaegu kahju.
 
 _Kiirelt-kiirelt · Tipp-Topp_
 
@@ -502,11 +496,11 @@ _Tervitustega köögist · Tipp-Topp_
 
 **Kallis Jasper!**
 
-Eile oli nii tugev tuisk, et aknast ei paistnud midagi. Huuuu! tegi tuul.
+Eile oli suur suusavõistlus! Mina sõitsin nii kiiresti, et müts lendas peast. Teiseks tulin!
 
-Öösel koputas keegi uksele: kopp-kopp. Ukse taga olid seitse lumist jänest! Lasime nad sooja.
+Esimesena jõudis finišisse põhjapõder Välk, kuigi ta ei olnudki võistleja – ta jooksis lihtsalt kogemata rajale.
 
-Nad sõid ära kõik lumememmede porgandid. Nüüd elavad nad puuriida taga ja ma viin neile igal hommikul kapsalehti.
+Kõpsu-Mõpsu tuli viimasena. Ta ütles, et valis ilusama tee. Mina hoidsin talle kakaotassi alles.
 
 _Sinu sõber · Tipp-Topp_
 
@@ -526,11 +520,11 @@ _Hüpates · Tipp-Topp_
 
 **Kallis Jasper!**
 
-Mul oli eile luksumine! Aga mitte tavaline – iga kord, kui ma luksusin, helisesid töökojas kõik kellukesed: kõlin!
+Töökojas oli pesupäev. Ma panin sokid paaridesse ja üks sokk jäi üle: punane, valgete triipudega. Paariline oli kadunud.
 
-Proovisin vett juua, hinge kinni hoida ja pea peal seista. Ei aidanud. Kõlin! Kõlin!
+Otsisin terve päeva. Kapist, voodi alt, pesukorvist. Ei kusagil!
 
-Lõpuks hiilis põhjapõder Välk mulle selja taha ja ütles kõrva: „Pöö!“ Ehmusin nii, et luksumine läks ära. Kellukesed on nüüd vaiksed. Peaaegu kahju.
+Õhtul tuli põhjapõder Välk tallist välja ja see sokk oli tal ühe kõrva peal. Ta ei öelnud midagi – ta on ju põder –, aga ta nägi välja väga uhke. Las kannab.
 
 _Kiirelt-kiirelt · Tipp-Topp_
 
@@ -586,17 +580,13 @@ _Sinu · Tipp-Topp_
 
 **Kallis Jasper!**
 
-Ma küpsetasin eile piparkooke. Plaadil oli neli rida ja igas reas viis piparkooki.
+Töökojas on üks tuba, kus hoitakse sädelust. Sinna tohib minna ainult hiilides ja hinge kinni hoides.
 
-Siis tuli põhjapõder Välk ja sõi ära kolm. Siis tuli kass Nurr ja nuusutas ühte, aga ei söönud. Siis tulin mina ja sõin ühe – ainult proovimiseks.
+Mina läksin eile sinna paelu tooma – ja mul hakkas nina sügelema. Aaa… aaa… AATŠIHH!
 
-Nüüd on nuputamise kord sinul:
-
-Mitu piparkooki jäi plaadile?
+Nüüd sädeleb kõik: seinad, laud, kass ja Jõuluvana habe. Jõuluvana vaatas peeglisse ja ütles, et nii pidulik pole ta kunagi olnud.
 
 _Jahusena · Tipp-Topp_
-
-> Vastus: 16 piparkooki (20 − 3 − 1)
 
 ### 24. detsember 2026
 
@@ -607,8 +597,6 @@ Täna on jõululaupäev! Töökoda on vaikseks jäänud ja kingid on kelgul. Tä
 Täna lõpetavad kõik päkapikud – Kõpsu-Mõpsu, Tipp-Topp ja Pisi-Pätsi – oma töö ja lähevad koos põhja tagasi.
 
 Ma pesin viimase pudrupoti puhtaks ja panin mütsi pähe. Ma hakkan sind igatsema! Häid jõule, Jasper!
-
-P.S. Eilse piparkoogiülesande vastus: 16. Nurri nuusutatud piparkook on ka alles.
 
 _Sinu sõber · Tipp-Topp_
 
@@ -668,7 +656,7 @@ _Kalli-kalli · Pisi-Pätsi_
 
 **Kallis Brita!**
 
-Kes ütleb: röh-röh? Põrsas, nagu Peppa! Kes ütleb: mjäu? Kiisu! Kes ütleb: mõmm? Karu!
+Väljas tuiskab: huuu! Kopp-kopp! Kes tuli? Jänkud tulid! Jänku hüppab: hopp-hopp. Kas sina oskad hüpata nagu jänku?
 
 _Sinu pisike sõber · Pisi-Pätsi_
 
@@ -676,7 +664,7 @@ _Sinu pisike sõber · Pisi-Pätsi_
 
 **Kallis Brita!**
 
-Kelk sõidab mäest alla: vuhh! Hoia kinni! Ja jälle üles: tõmba-tõmba.
+Kes ütleb: röh-röh? Põrsas, nagu Peppa! Kes ütleb: mjäu? Kiisu! Kes ütleb: mõmm? Karu!
 
 _Kalli-kalli · Pisi-Pätsi_
 
@@ -708,7 +696,7 @@ _Kalli-kalli · Pisi-Pätsi_
 
 **Kallis Brita!**
 
-Kus on kiisu? Kingikotis! Kiisu teeb: nurr-nurr. Kiisu magab. Paitame kiisut: silita-silita.
+Lumi on valge. Lumi teeb krõps-krõps. Astume koos: krõps, krõps, krõps!
 
 _Sinu pisike sõber · Pisi-Pätsi_
 
@@ -716,7 +704,7 @@ _Sinu pisike sõber · Pisi-Pätsi_
 
 **Kallis Brita!**
 
-Ma küpsetasin piparkoogi. Piparkook on südame kujuga. Süda on sulle! Mõnus-mõnus. Täna on pühapäev ja sussis on väike üllatus!
+Kus on kiisu? Kingikotis! Kiisu teeb: nurr-nurr. Kiisu magab. Paitame kiisut: silita-silita. Täna on pühapäev ja sussis on väike üllatus!
 
 _Musi · Pisi-Pätsi_
 
@@ -742,7 +730,7 @@ _Musi · Pisi-Pätsi_
 
 **Kallis Brita!**
 
-Väljas tuiskab: huuu! Kopp-kopp! Kes tuli? Jänkud tulid! Jänku hüppab: hopp-hopp. Kas sina oskad hüpata nagu jänku?
+Orav hüppab oksal. Hüpp! Oraval on pähkel. Krõbin-krõbin. Orav sööb.
 
 _Kallistusega · Pisi-Pätsi_
 
@@ -758,7 +746,7 @@ _Musi · Pisi-Pätsi_
 
 **Kallis Brita!**
 
-Kuusel põlevad tuled. Üks, kaks, kolm! Loeme koos: mitu tuld sinu kodus põleb?
+Mul on pott ja lusikas. Bumm-bumm! Kas sina oskad ka trummi lüüa? Bumm-bumm-bumm!
 
 _Kallistusega · Pisi-Pätsi_
 
@@ -774,7 +762,7 @@ _Sinu pisike sõber · Pisi-Pätsi_
 
 **Kallis Brita!**
 
-Ma kallistasin kaisukaru. Kaisukaru on pehme ja soe. Kallista sina ka oma kaisulooma! Täna on pühapäev ja sussis on väike üllatus!
+Ruben ja Jasper teevad naljaka näo. Tee sina ka! Hi-hi-hii. Täna on pühapäev ja sussis on väike üllatus!
 
 _Musi · Pisi-Pätsi_
 
@@ -792,7 +780,7 @@ _Sinu pisike sõber · Pisi-Pätsi_
 
 **Kallis Brita!**
 
-Kelgul on kellukesed. Kellukesed teevad: kõlin-kõlin! Raputa käsi ka: kõlin-kõlin!
+Piparkoogimaja! Seinad, aken ja katus. Mmm, kui hästi lõhnab. Nuusuta: nuuh-nuuh!
 
 _Kalli-kalli · Pisi-Pätsi_
 
@@ -800,7 +788,7 @@ _Kalli-kalli · Pisi-Pätsi_
 
 **Kallis Brita!**
 
-Ruben ja Jasper teevad naljaka näo. Tee sina ka! Hi-hi-hii.
+Kuusel põlevad tuled. Üks, kaks, kolm! Loeme koos: mitu tuld sinu kodus põleb?
 
 _Kallistusega · Pisi-Pätsi_
 
@@ -825,13 +813,12 @@ _Musi · Pisi-Pätsi_
 - 1. kirjas tutvustab iga päkapikk ka õdede-vendade päkapikke, viimases kirjas lõpetavad kõik koos.
 - 4. detsember: ühine sündmus „Täht on kadunud“ – Ruben, Jasper ja Brita kuulevad sellest igaüks oma päkapiku käest.
 - 5. detsember: Ruben → Jasper (sussi abiline). Mõlema kiri teab sellest.
-- 9. detsember: ühine sündmus „Pisike päkapikk kindas“ – Jasper ja Brita kuulevad sellest igaüks oma päkapiku käest.
+- 7. detsember: ühine sündmus „Jänesed tuisu eest“ – Jasper ja Brita kuulevad sellest igaüks oma päkapiku käest.
+- 9. detsember: ühine sündmus „Pisike päkapikk kindas“ – Ruben, Jasper ja Brita kuulevad sellest igaüks oma päkapiku käest.
 - 10. detsember: Ruben → Brita (ettelugemine). Mõlema kiri teab sellest.
-- 12. detsember: ühine sündmus „Nurrub pakk“ – Jasper ja Brita kuulevad sellest igaüks oma päkapiku käest.
 - 13. detsember: ühine sündmus „Vale kahtlusalune“ – Ruben ja Jasper kuulevad sellest igaüks oma päkapiku käest.
-- 14. detsember: ühine sündmus „Piparkoogimaja katus“ – Ruben ja Jasper kuulevad sellest igaüks oma päkapiku käest.
 - 15. detsember: Jasper → Brita (õpetamine). Mõlema kiri teab sellest.
-- 16. detsember: ühine sündmus „Jänesed tuisu eest“ – Ruben, Jasper ja Brita kuulevad sellest igaüks oma päkapiku käest.
+- 16. detsember: ühine sündmus „Suusavõistlus“ – Ruben ja Jasper kuulevad sellest igaüks oma päkapiku käest.
 - 19. detsember: ühine sündmus „Välk harjutab maandumist“ – Ruben, Jasper ja Brita kuulevad sellest igaüks oma päkapiku käest.
 - 20. detsember: Ruben → Jasper (koos mängimine). Mõlema kiri teab sellest.
 - 21. detsember: ühine sündmus „Täht on leitud“ – Ruben, Jasper ja Brita kuulevad sellest igaüks oma päkapiku käest.

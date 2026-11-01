@@ -1,4 +1,5 @@
 import type { ChildProfile, ElfPersona, OccasionId } from '../../domain/models'
+import { foodTexts, interestTexts, pickedTopics, type TopicId } from '../topics'
 import { findInterestHooks } from './interests'
 
 /** Playful reduplicated names in the spirit of Estonian elf names. */
@@ -31,13 +32,39 @@ const HOOK_TITLES: Record<string, string> = {
   nature: 'Metsatark',
 }
 
+/** Titles for picked topics the interest templates have no title for. */
+const TOPIC_TITLES: Partial<Record<TopicId, string>> = {
+  chess: 'Malemeister',
+  boardgames: 'Täringuvõlur',
+  science: 'Katsetaja',
+  robots: 'Robotimeister',
+  dinosaurs: 'Dinotark',
+  dogs: 'Kutsikakarjane',
+  horses: 'Traavija',
+  skating: 'Jääliugur',
+  skiing: 'Suusatäht',
+  dance: 'Tantsujalg',
+  crafts: 'Meisterdaja',
+  baking: 'Koogimeister',
+  pirates: 'Merekaru',
+  knights: 'Lossivaht',
+  princesses: 'Kroonikandja',
+  superheroes: 'Päästja',
+  pawpatrol: 'Päästja',
+  frozen: 'Lumehelves',
+  pancakes: 'Pannkoogimeister',
+  icecream: 'Jäätisemeister',
+}
+
 export function suggestTitle(child: ChildProfile, toddler: boolean): string {
-  if (child.foods.some((food) => /riisipu/i.test(food))) return 'Riisiterake'
+  if (foodTexts(child).some((food) => /riisipu/i.test(food))) return 'Riisiterake'
   if (toddler) {
-    return [...child.favorites, ...child.interests].some((text) => /peppa|põrsa/i.test(text)) ? 'Roosaninake' : 'Naerunupp'
+    return interestTexts(child).some((text) => /peppa|põrsa/i.test(text)) ? 'Roosaninake' : 'Naerunupp'
   }
-  const hook = findInterestHooks([...child.interests, ...child.favorites])[0]
-  return (hook && HOOK_TITLES[hook.id]) ?? 'Abimeister'
+  const hook = findInterestHooks(interestTexts(child))[0]
+  if (hook && HOOK_TITLES[hook.id]) return HOOK_TITLES[hook.id] as string
+  const topic = pickedTopics(child).find((candidate) => TOPIC_TITLES[candidate.id])
+  return (topic && TOPIC_TITLES[topic.id]) ?? 'Abimeister'
 }
 
 /**
