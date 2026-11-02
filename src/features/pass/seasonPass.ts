@@ -6,6 +6,8 @@
 export interface SeasonPass {
   code: string
   generationsLeft: number
+  /** Single AI letters that may still be rewritten; missing in passes saved before this feature. */
+  fixesLeft?: number
   /** ISO time, the end of 31 January. */
   validUntil: string
 }

@@ -25,6 +25,8 @@ export interface PassEnv {
 }
 
 export const PASS_GENERATIONS = 10
+/** AI rewrites of single letters per pass (the column's default, migrations/0002). */
+export const PASS_FIXES = 30
 /** Where Stripe sends the buyer back after paying; the page asks /api/joulupass/ost for the code. */
 export const RETURN_PATH = '/uus-disain/joulupass'
 const INTEGRATION = 'kirjavolu-joulupass-qhzvtmwr'
@@ -34,6 +36,8 @@ const MAX_EVENT_BYTES = 64 * 1024
 export interface SeasonPass {
   code: string
   generationsLeft: number
+  /** Single letters the AI may still rewrite on request. */
+  fixesLeft: number
   /** ISO time, the end of 31 January in Estonia. */
   validUntil: string
 }
@@ -71,10 +75,11 @@ export interface PassStore {
 export interface PassRow {
   code: string
   generations_left: number
+  fixes_left: number
   valid_until: string
 }
 export const fromRow = (row: PassRow | null): SeasonPass | null =>
-  row && { code: row.code, generationsLeft: row.generations_left, validUntil: row.valid_until }
+  row && { code: row.code, generationsLeft: row.generations_left, fixesLeft: row.fixes_left, validUntil: row.valid_until }
 
 export function d1Store(db: D1Database): PassStore {
   return {
@@ -87,14 +92,14 @@ export function d1Store(db: D1Database): PassStore {
         .bind(code, sessionId, PASS_GENERATIONS, until, new Date().toISOString())
         .run()
       const row = await db
-        .prepare('SELECT code, generations_left, valid_until FROM season_passes WHERE checkout_session_id = ?1')
+        .prepare('SELECT code, generations_left, fixes_left, valid_until FROM season_passes WHERE checkout_session_id = ?1')
         .bind(sessionId)
         .first<PassRow>()
       return fromRow(row)
     },
     async find(code) {
       const row = await db
-        .prepare('SELECT code, generations_left, valid_until FROM season_passes WHERE code = ?1')
+        .prepare('SELECT code, generations_left, fixes_left, valid_until FROM season_passes WHERE code = ?1')
         .bind(code)
         .first<PassRow>()
       return fromRow(row)

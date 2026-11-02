@@ -1,7 +1,7 @@
-import type { ChildProfile, GeneratedContent, GenerationRequest } from '../../domain/models'
+import type { ChildProfile, GeneratedContent, GeneratedItem, GenerationRequest } from '../../domain/models'
 import { DEFAULT_GENERAL, defaultOptions } from '../../domain/defaults'
 import { addDays, formatDate } from '../../domain/text/estonian'
-import { interestTexts } from '../../data/topics'
+import { foodTexts, interestTexts } from '../../data/topics'
 import { createId } from '../../utils/id'
 import { clone } from '../../utils/clone'
 import { savePass, type SeasonPass } from './seasonPass'
@@ -14,7 +14,7 @@ import { savePass, type SeasonPass } from './seasonPass'
 export const AI_SERIES_GENERATOR = 'ai-joulupass'
 const GENERATOR_LABEL = 'Kirjad kirjutas tehisaru (Anthropic Claude) sinu Jõulupassi koodiga'
 
-export type LettersError = 'too_many' | 'not_found' | 'expired' | 'used_up' | 'busy' | 'invalid' | 'failed'
+export type LettersError = 'too_many' | 'not_found' | 'expired' | 'used_up' | 'daily_limit' | 'busy' | 'invalid' | 'failed'
 
 export class LettersRequestError extends Error {
   constructor(readonly reason: LettersError) {
@@ -27,9 +27,39 @@ export const LETTERS_ERROR_TEXTS: Record<LettersError, string> = {
   not_found: 'Seda koodi ei leitud. Sisesta kood allpool uuesti.',
   expired: 'See Jõulupass ei kehti enam.',
   used_up: 'Selle Jõulupassi AI-loomised on otsas.',
+  daily_limit: 'Päkapikud on täna väga palju kirjutanud. Proovi homme uuesti. Loomiskord jäi alles.',
   busy: 'Päkapikk on praegu väga hõivatud. Proovi mõne minuti pärast uuesti. Loomiskord jäi alles.',
   invalid: 'Lapse andmetes on midagi puudu. Kontrolli nime, vanust ja lugemisoskust.',
   failed: 'Kirjade kirjutamine ei õnnestunud. Loomiskord jäi alles, proovi uuesti.',
+}
+
+/** The same reasons when one letter is rewritten: then it is a fix that stays, not a generation. */
+export const FIX_ERROR_TEXTS: Record<LettersError, string> = {
+  ...LETTERS_ERROR_TEXTS,
+  used_up: 'Selle Jõulupassi AI-parandused on otsas. Kirja saad ikka ise muuta.',
+  daily_limit: 'Päkapikud on täna väga palju kirjutanud. Proovi homme uuesti. Parandus jäi alles.',
+  busy: 'Päkapikk on praegu väga hõivatud. Proovi mõne minuti pärast uuesti. Parandus jäi alles.',
+  failed: 'Kirja ümberkirjutamine ei õnnestunud. Parandus jäi alles, proovi uuesti.',
+}
+
+/** This December's plans per child, typed on the Jõulupass page; kept in this browser only. */
+const DECEMBER_KEY = 'kirjavolu.joulupass.detsember'
+
+export function readDecember(childId: string): string {
+  try {
+    return (JSON.parse(localStorage.getItem(DECEMBER_KEY) ?? '{}') as Record<string, string>)[childId] ?? ''
+  } catch {
+    return ''
+  }
+}
+
+export function writeDecember(childId: string, text: string): void {
+  try {
+    const all = JSON.parse(localStorage.getItem(DECEMBER_KEY) ?? '{}') as Record<string, string>
+    localStorage.setItem(DECEMBER_KEY, JSON.stringify({ ...all, [childId]: text }))
+  } catch {
+    // Private windows may refuse; the text is still in the form.
+  }
 }
 
 interface Letter {
@@ -87,28 +117,28 @@ export function seriesContent(child: ChildProfile, letters: Letter[], now = new 
 }
 
 /**
- * Asks the server for the series. Only the first name, age, reading level and interests
- * leave the browser. The pass the server returns has one generation less; it is saved here.
+ * What leaves the browser for the AI: the child's profile as the parent filled it in, without
+ * the notes meant only for the parent, and this December's plans.
  */
-export async function requestPassLetters(
-  code: string,
-  child: ChildProfile,
-): Promise<{ content: GeneratedContent; pass: SeasonPass }> {
+export function seriesChild(child: ChildProfile, december: string) {
+  return {
+    name: child.name,
+    age: child.age,
+    readingLevel: child.readingLevel,
+    interests: interestTexts(child).slice(0, 12),
+    personality: child.personality,
+    family: child.family,
+    foods: foodTexts(child),
+    achievements: child.achievements,
+    details: child.details,
+    december,
+  }
+}
+
+async function post(url: string, body: unknown): Promise<Record<string, unknown>> {
   let response: Response
   try {
-    response = await fetch('/api/joulupass/kirjad', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        code,
-        child: {
-          name: child.name,
-          age: child.age,
-          readingLevel: child.readingLevel,
-          interests: interestTexts(child).slice(0, 6),
-        },
-      }),
-    })
+    response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
   } catch {
     throw new LettersRequestError('failed')
   }
@@ -117,12 +147,50 @@ export async function requestPassLetters(
     const reason = (data as { error?: string } | null)?.error
     throw new LettersRequestError(reason && reason in LETTERS_ERROR_TEXTS ? (reason as LettersError) : 'failed')
   }
-  const { letters, pass } = (data ?? {}) as { letters?: unknown; pass?: SeasonPass }
-  const valid =
-    Array.isArray(letters) &&
-    letters.length === 24 &&
-    letters.every((letter: Partial<Letter>) => typeof letter?.heading === 'string' && typeof letter.body === 'string')
-  if (!valid || typeof pass?.generationsLeft !== 'number') throw new LettersRequestError('failed')
+  const pass = (data as { pass?: SeasonPass } | null)?.pass
+  if (typeof pass?.generationsLeft !== 'number') throw new LettersRequestError('failed')
   savePass(pass)
-  return { content: seriesContent(child, letters as Letter[]), pass }
+  return data as Record<string, unknown>
+}
+
+const isLetter = (letter: Partial<Letter> | null | undefined): letter is Letter =>
+  typeof letter?.heading === 'string' && typeof letter.body === 'string'
+
+/** Asks the server for the series. The pass it returns has one generation less; it is saved here. */
+export async function requestPassLetters(
+  code: string,
+  child: ChildProfile,
+  december = '',
+): Promise<{ content: GeneratedContent; pass: SeasonPass }> {
+  const data = await post('/api/joulupass/kirjad', { code, child: seriesChild(child, december) })
+  const letters = data.letters
+  if (!Array.isArray(letters) || letters.length !== 24 || !letters.every(isLetter)) throw new LettersRequestError('failed')
+  return { content: seriesContent(child, letters), pass: data.pass as SeasonPass }
+}
+
+/**
+ * "Paranda AI-ga": one letter of the series rewritten as the parent asked. The letters before
+ * and after it go along, so the story still fits. Uses one fix of the pass, not a generation.
+ */
+export async function requestLetterFix(
+  code: string,
+  child: ChildProfile,
+  items: GeneratedItem[],
+  index: number,
+  wish: string,
+): Promise<{ letter: Letter; pass: SeasonPass }> {
+  const item = items[index]
+  if (!item) throw new LettersRequestError('invalid')
+  const data = await post('/api/joulupass/parandus', {
+    code,
+    child: seriesChild(child, readDecember(child.id)),
+    day: index + 1,
+    letter: { heading: item.heading, body: item.body, signature: item.signature ?? '' },
+    before: items[index - 1]?.body ?? '',
+    after: items[index + 1]?.body ?? '',
+    wish,
+  })
+  const letter = data.letter as Partial<Letter> | null
+  if (!isLetter(letter)) throw new LettersRequestError('failed')
+  return { letter, pass: data.pass as SeasonPass }
 }
