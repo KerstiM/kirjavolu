@@ -5,7 +5,8 @@
         <strong>Kirjavõlu</strong> · Väikesed maagilised hetked sinu lapsele.
       </p>
       <p class="muted">
-        Tekstid koostatakse sinu brauseris käsitsi kirjutatud mallidest. Andmed jäävad sinu seadmesse.
+        Tekstid tulevad käsitsi kirjutatud mallidest. AI-kirjad ja -lood kirjutab tehisaru ainult siis, kui ise
+        valid. Lapsed ja loomingud jäävad sinu seadmesse.
       </p>
     </div>
   </footer>
