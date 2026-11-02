@@ -147,7 +147,7 @@ function startOver(): void {
   }
 }
 // With the Jõulupass link the bar is one item longer, so "Loo uus" keeps only its plus sooner.
-@media (max-width: 520px) {
+@media (max-width: 640px) {
   .app-header--pass .nav__cta-text {
     position: absolute;
     width: 1px;
