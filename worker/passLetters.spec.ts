@@ -2,6 +2,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import {
   handlePassLetters,
+  parseSeriesInput,
   readSeries,
   seriesPrompt,
   SERIES_LENGTH,
@@ -65,8 +66,9 @@ describe('POST /api/joulupass/kirjad', () => {
     expect(data.letters).toHaveLength(SERIES_LENGTH)
     expect(data.pass.generationsLeft).toBe(9)
     expect(rows.get(CODE)?.generationsLeft).toBe(9)
-    // Only the minimal child data goes to the AI.
-    expect(write).toHaveBeenCalledWith({ name: 'Jasper', age: 6, readingLevel: 'independent', interests: ['mõistatused'] }, 'test-key')
+    // Only what the letters use goes to the AI; anything else in the request is dropped.
+    expect(write).toHaveBeenCalledWith(expect.not.objectContaining({ family: 'x' }), 'test-key')
+    expect(write.mock.calls[0]?.[0]).toMatchObject({ name: 'Jasper', age: 6, readingLevel: 'independent', interests: ['mõistatused'] })
   })
 
   it('refuses an expired code without asking the AI', async () => {
@@ -115,7 +117,7 @@ describe('POST /api/joulupass/kirjad', () => {
     const get = new Request('https://kirjavolu.ee/api/joulupass/kirjad', { headers: { Origin: 'https://kirjavolu.ee' } })
     expect((await handlePassLetters(get, env, deps)).status).toBe(405)
     expect((await handlePassLetters(post({ code: CODE, child: JASPER }, { Origin: 'https://evil.example' }), env, deps)).status).toBe(403)
-    expect((await handlePassLetters(post('x'.repeat(5000)), env, deps)).status).toBe(413)
+    expect((await handlePassLetters(post('x'.repeat(11000)), env, deps)).status).toBe(413)
     expect((await handlePassLetters(post('{nope'), env, deps)).status).toBe(400)
     expect((await handlePassLetters(post({ code: 'nope', child: JASPER }), env, deps)).status).toBe(400)
     expect((await handlePassLetters(post({ code: CODE, child: { ...JASPER, age: 40 } }), env, deps)).status).toBe(400)
@@ -126,10 +128,35 @@ describe('POST /api/joulupass/kirjad', () => {
 })
 
 describe('series', () => {
-  it('hands the child to the model as data inside a tag', () => {
-    expect(seriesPrompt({ name: 'Jasper', age: 6, readingLevel: 'beginner', interests: [] })).toContain(
-      '<laps>\nNimi: Jasper\nVanus: 6\nHuvid: pole teada\n</laps>',
-    )
+  it('keeps the profile and the December plans, trimmed to size, but never the parent notes', () => {
+    const input = parseSeriesInput({
+      ...JASPER,
+      personality: '  uudishimulik ',
+      family: ['ema', 'vend Ruben', 'kass Miisu', 7],
+      foods: ['pannkoogid'],
+      achievements: ['õppis rattaga sõitma'],
+      details: 'd'.repeat(900),
+      december: '12.12 läheme vanaema juurde Valka',
+      parentNotes: 'salajane',
+    })
+    expect(input).toEqual({
+      name: 'Jasper',
+      age: 6,
+      readingLevel: 'independent',
+      interests: ['mõistatused'],
+      personality: 'uudishimulik',
+      family: ['ema', 'vend Ruben', 'kass Miisu'],
+      foods: ['pannkoogid'],
+      achievements: ['õppis rattaga sõitma'],
+      details: 'd'.repeat(600),
+      december: '12.12 läheme vanaema juurde Valka',
+    })
+  })
+
+  it('hands the child and the plans to the model as data inside tags', () => {
+    const prompt = seriesPrompt(parseSeriesInput({ ...JASPER, family: ['kass Miisu'], december: '19.12 jõulupidu' })!)
+    expect(prompt).toContain('<laps>\nNimi: Jasper\nVanus: 6\nHuvid ja lemmikud: mõistatused\nIseloom: pole teada\nPere ja lemmikloomad: kass Miisu\n')
+    expect(prompt).toContain('<detsember>\n19.12 jõulupidu\n</detsember>')
   })
 
   it('accepts exactly 24 letters with text', () => {

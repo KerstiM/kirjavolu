@@ -1,7 +1,7 @@
 import type { ChildProfile, GeneratedContent, GenerationRequest } from '../../domain/models'
 import { DEFAULT_GENERAL, defaultOptions } from '../../domain/defaults'
 import { addDays, formatDate } from '../../domain/text/estonian'
-import { interestTexts } from '../../data/topics'
+import { foodTexts, interestTexts } from '../../data/topics'
 import { createId } from '../../utils/id'
 import { clone } from '../../utils/clone'
 import { savePass, type SeasonPass } from './seasonPass'
@@ -87,27 +87,36 @@ export function seriesContent(child: ChildProfile, letters: Letter[], now = new 
 }
 
 /**
- * Asks the server for the series. Only the first name, age, reading level and interests
- * leave the browser. The pass the server returns has one generation less; it is saved here.
+ * What leaves the browser for the AI: the child's profile as the parent filled it in, without
+ * the notes meant only for the parent, and this December's plans.
  */
+export function seriesChild(child: ChildProfile, december: string) {
+  return {
+    name: child.name,
+    age: child.age,
+    readingLevel: child.readingLevel,
+    interests: interestTexts(child).slice(0, 12),
+    personality: child.personality,
+    family: child.family,
+    foods: foodTexts(child),
+    achievements: child.achievements,
+    details: child.details,
+    december,
+  }
+}
+
+/** Asks the server for the series. The pass it returns has one generation less; it is saved here. */
 export async function requestPassLetters(
   code: string,
   child: ChildProfile,
+  december = '',
 ): Promise<{ content: GeneratedContent; pass: SeasonPass }> {
   let response: Response
   try {
     response = await fetch('/api/joulupass/kirjad', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        code,
-        child: {
-          name: child.name,
-          age: child.age,
-          readingLevel: child.readingLevel,
-          interests: interestTexts(child).slice(0, 6),
-        },
-      }),
+      body: JSON.stringify({ code, child: seriesChild(child, december) }),
     })
   } catch {
     throw new LettersRequestError('failed')

@@ -11,12 +11,11 @@ import TopicPicker from './TopicPicker.vue'
 import { emptyChildDraft } from './childrenStore'
 
 /**
- * A child added without leaving the wizard: only name, age and up to three topics.
+ * A child added without leaving the wizard: only name, age and the topics they like.
  * Everything else can be filled in later on the "Lapsed" page.
  */
 const emit = defineEmits<{ save: [draft: ChildProfileDraft]; close: [] }>()
 
-const MAX_TOPICS = 3
 const draft = reactive<ChildProfileDraft>({ ...emptyChildDraft(), readingLevel: readingLevelForAge(emptyChildDraft().age) })
 const topics = computed({
   get: () => draft.topics ?? [],
@@ -106,9 +105,9 @@ function revalidate(): void {
       </FormField>
 
       <fieldset class="quick-child__topics">
-        <legend>Mis lapsele meeldib? <span class="quick-child__count">(kuni {{ MAX_TOPICS }})</span></legend>
-        <p class="quick-child__hint">Iga teema kohta on kirjades valmis lood. Võid ka vahele jätta.</p>
-        <TopicPicker v-model="topics" :max="MAX_TOPICS" />
+        <legend>Mis lapsele meeldib?</legend>
+        <p class="quick-child__hint">Vali kõik, mis sobib. Iga teema kohta on kirjades valmis lood. Võid ka vahele jätta.</p>
+        <TopicPicker v-model="topics" />
       </fieldset>
 
       <footer class="quick-child__actions">
@@ -149,10 +148,6 @@ function revalidate(): void {
     padding: 0;
     margin-bottom: 0.4rem;
   }
-}
-.quick-child__count {
-  font-weight: 400;
-  color: var(--ink-soft);
 }
 .quick-child__actions {
   position: sticky;

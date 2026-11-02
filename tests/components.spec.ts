@@ -168,13 +168,14 @@ describe('creation flow', () => {
 })
 
 describe('quick child dialog', () => {
-  it('lets at most three topics be picked', async () => {
+  it('lets every topic that fits be picked', async () => {
     const { user } = await renderApp('/loo?tyyp=letter&puhk=christmas', { demo: false })
     await user.click(await screen.findByRole('button', { name: /Lisa laps/ }))
     const dialog = await screen.findByRole('dialog', { name: 'Lisa laps' })
     expect(within(dialog).getByLabelText('Nimi')).toHaveFocus()
-    for (const name of ['Dinosaurused', 'Pannkoogid', 'Jalgpall']) await user.click(within(dialog).getByRole('checkbox', { name }))
-    expect(within(dialog).getByRole('checkbox', { name: 'Loomad' })).toBeDisabled()
+    for (const name of ['Dinosaurused', 'Pannkoogid', 'Jalgpall', 'Loomad']) await user.click(within(dialog).getByRole('checkbox', { name }))
+    expect(within(dialog).getByRole('checkbox', { name: 'Loomad' })).toBeChecked()
+    expect(within(dialog).getAllByRole('checkbox').filter((box) => (box as HTMLInputElement).disabled)).toHaveLength(0)
     await user.keyboard('{Escape}')
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     expect(useChildrenStore().children).toHaveLength(0)

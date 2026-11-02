@@ -130,14 +130,21 @@ describe('AI letters with the Jõulupass', () => {
     vi.stubGlobal('fetch', fetch)
     const { router, pinia } = await open('/uus-disain/joulupass')
     const user = userEvent.setup()
-    await user.click(await screen.findByRole('button', { name: /Loo Rubeni jaoks AI-kirjad/ }))
+    await user.type(await screen.findByLabelText('Selle detsembri plaanid'), '12.12 läheme vanaema juurde')
+    const family = screen.getByLabelText('Pere ja lemmikloomad')
+    await user.clear(family)
+    await user.type(family, 'ema, kass Miisu')
+    await user.click(screen.getByRole('button', { name: /Loo Rubeni jaoks AI-kirjad/ }))
 
     await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/uus-disain\/looming\//))
     const [url, init] = fetch.mock.calls[0] as unknown as [string, RequestInit]
     expect(url).toBe('/api/joulupass/kirjad')
     const body = JSON.parse(String(init.body))
     expect(body.code).toBe('KV-7KQM-3FXA')
-    expect(Object.keys(body.child).sort()).toEqual(['age', 'interests', 'name', 'readingLevel'])
+    expect(body.child).toMatchObject({ name: 'Ruben', family: ['ema', 'kass Miisu'], december: '12.12 läheme vanaema juurde' })
+    expect(body.child).not.toHaveProperty('parentNotes')
+    // What was typed stays in the profile, so it is not asked again.
+    expect(useChildrenStore(pinia).children.find((c) => c.name === 'Ruben')?.family).toEqual(['ema', 'kass Miisu'])
     expect(loadPass()?.generationsLeft).toBe(9)
 
     const creation = useCreationsStore(pinia).creations[0]
