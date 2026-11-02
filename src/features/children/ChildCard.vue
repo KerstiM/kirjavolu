@@ -5,9 +5,14 @@ import { Pencil, Trash2 } from 'lucide-vue-next'
 import type { ChildProfile } from '../../domain/models'
 import { READING_LEVEL_LABELS } from '../../domain/models'
 import { ageLabel, nameCase } from '../../domain/text/estonian'
+import { useDesign } from '../../components/brand/design'
 
 const props = defineProps<{ child: ChildProfile }>()
 defineEmits<{ edit: []; remove: [] }>()
+
+// In the new design the profile is an address label, tilted a little like those in the wizard.
+const design = useDesign()
+const tilt = computed(() => [-0.8, 0.6, -0.4, 0.9][props.child.name.length % 4])
 
 const palette = ['lavender', 'coral', 'sage', 'gold'] as const
 const tone = computed(() => palette[props.child.name.length % palette.length])
@@ -17,10 +22,15 @@ const tags = computed(() =>
 </script>
 
 <template>
-  <article class="child-card" :class="`tone-${tone}`">
+  <article
+    class="child-card"
+    :class="[`tone-${tone}`, { 'child-card--label': design === 'new' }]"
+    :style="design === 'new' ? { '--tilt': `${tilt}deg` } : undefined"
+  >
     <div class="child-card__head">
       <span class="avatar" aria-hidden="true">{{ child.name.charAt(0) }}</span>
       <div class="child-card__id">
+        <span v-if="design === 'new'" class="child-card__to" aria-hidden="true">Kellele:</span>
         <h3>{{ child.name }}</h3>
         <p>{{ ageLabel(child.age) }} · {{ READING_LEVEL_LABELS[child.readingLevel] }}</p>
       </div>
@@ -141,6 +151,67 @@ const tags = computed(() =>
     border-color: var(--lavender);
     color: var(--lavender-ink);
   }
+}
+// --- new design: address label ----------------------------------------------
+.child-card--label {
+  border: 2px solid #f0e2cf;
+  border-radius: 10px;
+  background: #fffdf8;
+  box-shadow: none;
+  transform: rotate(var(--tilt));
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.2s ease;
+  &:hover,
+  &:focus-within {
+    transform: rotate(0) translateY(-3px);
+    box-shadow: 0 5px 0 #f0e2cf;
+  }
+  .child-card__head {
+    align-items: flex-start;
+  }
+  // The initial sits in a postmark instead of a plain circle.
+  .avatar {
+    order: 2;
+    margin-left: auto;
+    background: none;
+    border: 2.5px solid var(--tone-ink);
+    box-shadow:
+      inset 0 0 0 3px #fffdf8,
+      inset 0 0 0 5px var(--tone-ink);
+    font-family: var(--font-print);
+    transform: rotate(-12deg);
+    opacity: 0.85;
+  }
+  .child-card__id {
+    flex: 1;
+    min-width: 0;
+    h3 {
+      padding-bottom: 0.15rem;
+      border-bottom: 2px dashed #ead8bf;
+      font-family: var(--font-print);
+      font-size: 1.45rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    p {
+      margin-top: 0.3rem;
+    }
+  }
+  .icon-btn {
+    border-width: 2px;
+    background: #fff;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    transform: none;
+  }
+}
+.child-card__to {
+  color: var(--ink-faint);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 .icon-btn--danger:hover {
   border-color: rgba(179, 38, 30, 0.4);

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, provide, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft, Download, FileQuestion, Printer, Plus, UsersRound } from 'lucide-vue-next'
 import type { CardFit, CertificateStyle, ChildProfile, Decoration, GeneralOptions, GeneratedContent, GeneratedItem, GenerationRequest, PrintableLayout } from '../../domain/models'
@@ -25,8 +25,12 @@ import ParentSheet from './ParentSheet.vue'
 import CustomizePanel from './CustomizePanel.vue'
 import EnvelopeReveal from './EnvelopeReveal.vue'
 import { track } from '../../app/analytics'
+import TestBar from '../../components/brand/TestBar.vue'
+import { DESIGN_KEY, designPath, type Design } from '../../components/brand/design'
 
-const props = defineProps<{ id: string }>()
+/** "new" at /uus-disain/looming/…: the same preview in the new design, tried out next to the current one. */
+const props = withDefaults(defineProps<{ id: string; design?: Design }>(), { design: 'current' })
+provide(DESIGN_KEY, props.design)
 const store = useCreationsStore()
 const generator = useGenerator()
 
@@ -329,26 +333,32 @@ function exportText(): void {
 </script>
 
 <template>
-  <div v-if="!content" class="container section">
+  <div v-if="!content" class="container section" :class="{ 'design-new': design === 'new' }">
     <EmptyState :icon="FileQuestion" title="Seda loomingut ei leitud" text="See võis olla kustutatud või loodud teises brauseris.">
-      <BaseButton to="/loo"><Plus aria-hidden="true" /> Loo uus</BaseButton>
-      <BaseButton to="/" variant="secondary">Avalehele</BaseButton>
+      <BaseButton :to="designPath(design, '/loo')"><Plus aria-hidden="true" /> Loo uus</BaseButton>
+      <BaseButton :to="designPath(design, '/')" variant="secondary">Avalehele</BaseButton>
     </EmptyState>
   </div>
 
-  <div v-else class="preview">
+  <div v-else class="preview" :class="{ 'preview--new design-new': design === 'new' }">
+    <TestBar
+      v-if="design === 'new'"
+      text="Testvaade: eelvaade uues disainis."
+      link="Vaata praegust"
+      :to="`/looming/${content.id}`"
+    />
     <EnvelopeReveal v-if="revealing && content" :content="content" @done="endReveal" />
     <div class="toolbar no-print">
       <div class="container toolbar__inner">
         <div class="toolbar__title">
-          <BaseButton to="/" variant="ghost" size="sm" aria-label="Tagasi avalehele"><ArrowLeft aria-hidden="true" /></BaseButton>
+          <BaseButton :to="designPath(design, '/')" variant="ghost" size="sm" aria-label="Tagasi avalehele"><ArrowLeft aria-hidden="true" /></BaseButton>
           <div>
             <h1>{{ content.title }}</h1>
             <p>{{ content.subtitle }}</p>
           </div>
         </div>
         <div class="toolbar__actions">
-          <BaseButton :to="{ path: '/loo', query: { muuda: content.id } }" variant="secondary" size="sm"><UsersRound aria-hidden="true" /> <span class="toolbar__label">Lapsed ja tüüp</span></BaseButton>
+          <BaseButton :to="{ path: designPath(design, '/loo'), query: { muuda: content.id } }" variant="secondary" size="sm"><UsersRound aria-hidden="true" /> <span class="toolbar__label">Lapsed ja tüüp</span></BaseButton>
           <BaseButton variant="secondary" size="sm" @click="exportText"><Download aria-hidden="true" /> <span class="toolbar__label">Tekstifail</span></BaseButton>
           <BaseButton size="sm" @click="print(printOptions.some((o) => o.value === printMode) ? printMode : 'all')"><Printer aria-hidden="true" /> Prindi / PDF</BaseButton>
         </div>
@@ -671,6 +681,49 @@ function exportText(): void {
 .child-sheet {
   display: grid;
   gap: 1.25rem;
+}
+
+// New design: a cream desk with the panels as luggage tags, the print panel with an airmail edge.
+.preview--new {
+  .toolbar {
+    background: rgba(253, 246, 236, 0.94);
+    border-bottom: 2px dashed #ecd9bf;
+  }
+  .toolbar__title h1 {
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .print-panel,
+  :deep(.customize) {
+    border: 2px solid #f0e2cf;
+    border-radius: 14px;
+    background: #fffdf8;
+  }
+  .print-panel {
+    position: relative;
+    overflow: hidden;
+    padding-top: 1.4rem;
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto;
+      height: 6px;
+      background: repeating-linear-gradient(
+        -45deg,
+        #e8836b 0 10px,
+        #fffdf8 10px 15px,
+        #7c6bb8 15px 25px,
+        #fffdf8 25px 30px
+      );
+    }
+  }
+  .more {
+    border-top: 2px dashed #ecd9bf;
+  }
+  .child-group__title {
+    font-family: var(--font-print);
+    font-weight: 600;
+  }
 }
 .sheet--page {
   max-width: 720px;
