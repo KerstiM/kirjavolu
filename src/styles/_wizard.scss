@@ -109,3 +109,20 @@
     background: var(--lavender-soft);
   }
 }
+
+// New design (/uus-disain/loo): postcards, stamps and address labels instead of plain cards.
+.postcard-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+}
+.stamp-grid {
+  display: grid;
+  gap: 1.1rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(9.5rem, calc(50% - 0.6rem)), 1fr));
+}
+.label-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+}

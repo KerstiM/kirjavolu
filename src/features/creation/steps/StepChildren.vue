@@ -7,10 +7,13 @@ import { ageLabel } from '../../../domain/text/estonian'
 import ChoiceCard from '../../../components/ui/ChoiceCard.vue'
 import BaseButton from '../../../components/ui/BaseButton.vue'
 import EmptyState from '../../../components/ui/EmptyState.vue'
+import AddressLabel from '../../../components/brand/AddressLabel.vue'
+import { useDesign } from '../../../components/brand/design'
 
 const props = defineProps<{ children: ChildProfile[]; selected: string[] }>()
 const emit = defineEmits<{ toggle: [id: string]; selectAll: []; add: [] }>()
 
+const design = useDesign()
 const shared = computed(() => props.selected.length > 1)
 </script>
 
@@ -29,7 +32,18 @@ const shared = computed(() => props.selected.length > 1)
     </EmptyState>
 
     <template v-else>
-      <div class="choice-grid" role="group" aria-labelledby="step-children-title">
+      <div v-if="design === 'new'" class="label-grid" role="group" aria-labelledby="step-children-title">
+        <AddressLabel
+          v-for="(child, index) in children"
+          :key="child.id"
+          :name="child.name"
+          :details="`${ageLabel(child.age)} · ${READING_LEVEL_LABELS[child.readingLevel]}`"
+          :index="index"
+          :selected="selected.includes(child.id)"
+          @select="emit('toggle', child.id)"
+        />
+      </div>
+      <div v-else class="choice-grid" role="group" aria-labelledby="step-children-title">
         <ChoiceCard
           v-for="child in children"
           :key="child.id"

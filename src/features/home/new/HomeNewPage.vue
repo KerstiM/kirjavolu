@@ -3,9 +3,11 @@ import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { ArrowRight, Eye, FlaskConical } from 'lucide-vue-next'
 import Mascot from '../../../components/brand/Mascot.vue'
+import PostcardCard from '../../../components/brand/PostcardCard.vue'
+import StampCard from '../../../components/brand/StampCard.vue'
+import { STAMP_COLORS } from '../../../components/brand/design'
 import { iconFor } from '../../../components/ui/icons'
 import { CONTENT_TYPES } from '../../../domain/contentTypes'
-import type { OccasionId } from '../../../domain/models'
 import { OCCASIONS } from '../../../domain/occasions/occasions'
 import { isInSeason, sortBySeason } from '../../../domain/occasions/season'
 import { useChildrenStore } from '../../children/childrenStore'
@@ -20,29 +22,8 @@ const occasions = computed(() => sortBySeason(OCCASIONS))
 // The envelope in the picture is addressed to the family's own child when there is one.
 const addressee = computed(() => childrenStore.children[0]?.name ?? 'Mia')
 
-const STAMP_COLORS: Record<OccasionId, string> = {
-  christmas: '#c43b30',
-  easter: '#7fa387',
-  birthday: '#7c6bb8',
-  halloween: '#e0782f',
-  'mardi-kadri': '#8d5a97',
-  vastlapaev: '#4f86b5',
-  valentines: '#d9577a',
-  'school-start': '#3d7a6a',
-  summer: '#e8a33d',
-  'lost-tooth': '#5aa4b8',
-  everyday: '#6b5aa8',
-}
-// Airmail edge colours and a slight tilt per postcard, so they look tossed on a table.
-const POSTCARDS = [
-  { edge: ['#e8836b', '#7c6bb8'], tint: 'var(--coral-soft)', ink: 'var(--coral-ink)', tilt: -1.2 },
-  { edge: ['#7fa387', '#f2c46d'], tint: 'var(--sage-soft)', ink: 'var(--sage-ink)', tilt: 0.8 },
-  { edge: ['#7c6bb8', '#e8836b'], tint: 'var(--lavender-soft)', ink: 'var(--lavender-ink)', tilt: -0.6 },
-  { edge: ['#f2c46d', '#7c6bb8'], tint: 'var(--gold-soft)', ink: '#8a6417', tilt: 1 },
-  { edge: ['#e8836b', '#7fa387'], tint: 'var(--coral-soft)', ink: 'var(--coral-ink)', tilt: -0.9 },
-  { edge: ['#7c6bb8', '#f2c46d'], tint: 'var(--lavender-soft)', ink: 'var(--lavender-ink)', tilt: 0.6 },
-]
-const STAMP_TILTS = [-3, 2, -1, 3, -2, 1.5]
+// Every link leads into the new-design wizard, so the whole new journey can be tried.
+const WIZARD = '/uus-disain/loo'
 </script>
 
 <template>
@@ -62,7 +43,7 @@ const STAMP_TILTS = [-3, 2, -1, 3, -2, 1.5]
             Jõulukirjad, sünnipäevaseiklused, aardejahid ja hambahaldja kirjad. Valmis kahe klõpsuga – prindi ja peida.
           </p>
           <div class="hero__actions">
-            <RouterLink to="/loo" class="chunky chunky--primary">Alusta loomist <ArrowRight :size="18" aria-hidden="true" /></RouterLink>
+            <RouterLink :to="WIZARD" class="chunky chunky--primary">Alusta loomist <ArrowRight :size="18" aria-hidden="true" /></RouterLink>
             <RouterLink to="/naide" class="chunky chunky--secondary"><Eye :size="18" aria-hidden="true" /> Vaata näidet</RouterLink>
           </div>
         </div>
@@ -95,29 +76,14 @@ const STAMP_TILTS = [-3, 2, -1, 3, -2, 1.5]
         <h2 id="new-types-title" class="section-title">Mida meisterdame?</h2>
         <ul class="postcards" role="list">
           <li v-for="(type, index) in CONTENT_TYPES" :key="type.id">
-            <RouterLink
-              :to="{ path: '/loo', query: { tyyp: type.id } }"
-              class="postcard"
-              :style="{
-                '--tilt': `${POSTCARDS[index % POSTCARDS.length]!.tilt}deg`,
-                '--edge-a': POSTCARDS[index % POSTCARDS.length]!.edge[0],
-                '--edge-b': POSTCARDS[index % POSTCARDS.length]!.edge[1],
-                '--tint': POSTCARDS[index % POSTCARDS.length]!.tint,
-                '--card-ink': POSTCARDS[index % POSTCARDS.length]!.ink,
-              }"
-            >
-              <span class="postcard__edge" aria-hidden="true" />
-              <span class="postcard__body">
-                <span class="postcard__text">
-                  <span class="postcard__title">{{ type.title }}</span>
-                  <span class="postcard__tagline">{{ type.tagline }}</span>
-                </span>
-                <span class="postcard__icon" aria-hidden="true">
-                  <component :is="iconFor(type.icon)" :size="20" :stroke-width="1.8" />
-                </span>
-              </span>
-              <span class="postcard__desc">{{ type.description }}</span>
-            </RouterLink>
+            <PostcardCard
+              :to="{ path: WIZARD, query: { tyyp: type.id } }"
+              :title="type.title"
+              :tagline="type.tagline"
+              :description="type.description"
+              :icon="iconFor(type.icon)"
+              :index="index"
+            />
           </li>
         </ul>
       </div>
@@ -128,18 +94,15 @@ const STAMP_TILTS = [-3, 2, -1, 3, -2, 1.5]
         <h2 id="new-occasions-title" class="section-title">Mis puhul?</h2>
         <ul class="stamps" role="list">
           <li v-for="(occasion, index) in occasions" :key="occasion.id">
-            <RouterLink
-              :to="{ path: '/loo', query: { puhk: occasion.id } }"
-              class="stamp"
-              :style="{ '--tilt': `${STAMP_TILTS[index % STAMP_TILTS.length]}deg`, '--stamp': STAMP_COLORS[occasion.id] }"
-            >
-              <span class="stamp__face">
-                <span v-if="isInSeason(occasion.id)" class="stamp__season">Praegu</span>
-                <component :is="iconFor(occasion.icon)" :size="28" :stroke-width="1.7" aria-hidden="true" />
-                <span class="stamp__name">{{ occasion.name }}</span>
-                <span class="stamp__when">{{ occasion.when }}</span>
-              </span>
-            </RouterLink>
+            <StampCard
+              :to="{ path: WIZARD, query: { puhk: occasion.id } }"
+              :name="occasion.name"
+              :when="occasion.when"
+              :icon="iconFor(occasion.icon)"
+              :color="STAMP_COLORS[occasion.id]"
+              :index="index"
+              :badge="isInSeason(occasion.id) ? 'Praegu' : ''"
+            />
           </li>
         </ul>
       </div>
@@ -333,68 +296,6 @@ const STAMP_TILTS = [-3, 2, -1, 3, -2, 1.5]
   padding: 0;
   list-style: none;
 }
-.postcard {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  height: 100%;
-  padding: 0.9rem 1.1rem 1.1rem;
-  border: 2px solid #f0e2cf;
-  border-radius: 16px;
-  background: #fff;
-  color: var(--ink);
-  text-decoration: none;
-  transform: rotate(var(--tilt));
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
-  &:hover {
-    transform: rotate(0) translateY(-4px);
-    box-shadow: 0 10px 0 -4px var(--tint), var(--shadow);
-  }
-  &:focus-visible {
-    outline: 3px solid var(--focus);
-    outline-offset: 3px;
-  }
-}
-.postcard__edge {
-  height: 7px;
-  border-radius: 4px;
-  background: repeating-linear-gradient(90deg, var(--edge-a) 0 12px, #fff 12px 18px, var(--edge-b) 18px 30px, #fff 30px 36px);
-}
-.postcard__body {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-.postcard__text {
-  display: flex;
-  flex-direction: column;
-}
-.postcard__title {
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-.postcard__tagline {
-  color: var(--ink-soft);
-  font-size: 0.9rem;
-}
-.postcard__icon {
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 50%;
-  background: var(--tint);
-  color: var(--card-ink);
-}
-.postcard__desc {
-  padding-top: 0.6rem;
-  border-top: 1.5px dashed #f0e2cf;
-  color: var(--ink-soft);
-  font-size: 0.9rem;
-}
-
 // --- stamps -----------------------------------------------------------------
 .stamps-section {
   background: #f6ead9;
@@ -402,67 +303,10 @@ const STAMP_TILTS = [-3, 2, -1, 3, -2, 1.5]
 }
 .stamps {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(9.5rem, calc(50% - 0.6rem)), 1fr));
   gap: 1.1rem;
   margin: 0;
   padding: 0;
   list-style: none;
-}
-.stamp {
-  display: block;
-  padding: 6px;
-  background: #fff;
-  // Perforated edge: holes only in the padding, the face itself stays whole.
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    radial-gradient(circle 4px at 4px 4px, transparent 98%, #000) -4px -4px / 11px 11px;
-  color: #fff;
-  text-decoration: none;
-  transform: rotate(var(--tilt));
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  &:hover {
-    transform: rotate(0) scale(1.08);
-  }
-  &:focus-visible {
-    outline: 3px solid var(--focus);
-    outline-offset: 4px;
-  }
-}
-.stamp__face {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.2rem;
-  aspect-ratio: 9 / 10;
-  padding: 0.6rem 0.5rem;
-  background: var(--stamp);
-  text-align: center;
-}
-.stamp__name {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.05rem;
-  line-height: 1.15;
-  // Wide enough for the longest one-word names (Piimahammas, Suvevaheaeg) to stay whole.
-  max-width: 100%;
-}
-.stamp__when {
-  font-size: 0.75rem;
-  opacity: 0.85;
-}
-.stamp__season {
-  position: absolute;
-  top: 0.35rem;
-  right: 0.35rem;
-  padding: 0.05rem 0.4rem;
-  border-radius: 999px;
-  background: #fff;
-  color: var(--stamp);
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
 }
 </style>

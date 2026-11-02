@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { ArrowLeft, ArrowRight, WandSparkles } from 'lucide-vue-next'
+import { computed, nextTick, provide, ref, watch } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
+import { ArrowLeft, ArrowRight, FlaskConical, WandSparkles } from 'lucide-vue-next'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import { isContentTypeId, getContentType } from '../../domain/contentTypes'
 import { getOccasion, isOccasionId } from '../../domain/occasions/occasions'
@@ -11,6 +11,7 @@ import { useChildrenStore } from '../children/childrenStore'
 import { useCreationsStore } from '../preview/creationsStore'
 import WizardProgress from './WizardProgress.vue'
 import MascotGuide from '../../components/brand/MascotGuide.vue'
+import { DESIGN_KEY, type Design } from '../../components/brand/design'
 import { mascotLine } from './mascotLines'
 import StepWhat from './steps/StepWhat.vue'
 import StepChildren from './steps/StepChildren.vue'
@@ -19,6 +20,10 @@ import type { ChildProfileDraft } from '../../domain/models'
 import { useWizard, WIZARD_STEPS, type WizardInit } from './useWizard'
 import { newCreationRequests } from './newCreation'
 import { track } from '../../app/analytics'
+
+/** "new" at /uus-disain/loo: the same wizard in the new design, tried out next to the current one. */
+const props = withDefaults(defineProps<{ design?: Design }>(), { design: 'current' })
+provide(DESIGN_KEY, props.design)
 
 const route = useRoute()
 const router = useRouter()
@@ -108,7 +113,7 @@ async function create(): Promise<void> {
     const content = await generator.generate(request)
     creations.add(content)
     // "Back" from the preview returns to these choices instead of an empty wizard.
-    await router.replace({ path: '/loo', query: { muuda: content.id } })
+    await router.replace({ path: route.path, query: { muuda: content.id } })
     // The preview greets a new creation by opening it as post.
     await router.push({ path: `/looming/${content.id}`, query: { uus: '1' } })
   } catch (error) {
@@ -120,6 +125,12 @@ async function create(): Promise<void> {
 </script>
 
 <template>
+  <div class="wizard-page" :class="{ 'wizard-page--new': design === 'new' }">
+  <p v-if="design === 'new'" class="test-bar">
+    <FlaskConical :size="16" aria-hidden="true" />
+    <span>Testvaade: loomise sammud uues disainis.</span>
+    <RouterLink to="/loo">Vaata praegust</RouterLink>
+  </p>
   <div class="container wizard section">
     <header class="wizard__head">
       <span class="eyebrow">Loo uus</span>
@@ -168,11 +179,51 @@ async function create(): Promise<void> {
       </BaseButton>
     </footer>
   </div>
+  </div>
 </template>
 
 <style scoped lang="scss">
 .wizard {
   max-width: 920px;
+}
+// New design: the cream post-office paper and the chunky buttons of the new home page.
+.wizard-page--new {
+  background: #fdf6ec;
+  .wizard__nav {
+    background: linear-gradient(transparent, #fdf6ec 35%);
+    @media (max-width: 600px) {
+      background: #fdf6ec;
+    }
+  }
+  :deep(.btn--primary) {
+    box-shadow: 0 5px 0 var(--lavender-ink);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 0 var(--lavender-ink);
+    }
+    &:active:not(:disabled) {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 var(--lavender-ink);
+    }
+  }
+}
+.test-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem 0.6rem;
+  margin: 0;
+  padding: 0.5rem 1rem;
+  background: var(--lavender-soft);
+  color: var(--lavender-ink);
+  font-size: 0.85rem;
+  font-weight: 500;
+  a {
+    color: inherit;
+    font-weight: 600;
+  }
 }
 .wizard__head {
   margin-bottom: 2rem;
