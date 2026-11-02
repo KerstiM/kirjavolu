@@ -1,5 +1,6 @@
 import { handleSampleLetter, type SampleEnv } from './sampleLetter'
 import { handleLetterFix, handlePassLetters, type LettersEnv } from './passLetters'
+import { handlePassStory, handleStoryFix } from './passStory'
 import { handlePassLookup, handlePurchase, handleStripeWebhook, type PassEnv } from './seasonPass'
 
 /**
@@ -24,6 +25,8 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
   if (pathname === '/api/joulupass/kood') return handlePassLookup(request, env)
   if (pathname === '/api/joulupass/kirjad') return handlePassLetters(request, env)
   if (pathname === '/api/joulupass/parandus') return handleLetterFix(request, env)
+  if (pathname === '/api/joulupass/lugu') return handlePassStory(request, env)
+  if (pathname === '/api/joulupass/lugu/parandus') return handleStoryFix(request, env)
   if (pathname === '/api/stripe/webhook') return handleStripeWebhook(request, env)
   return Response.json({ error: 'not_found' }, { status: 404 })
 }

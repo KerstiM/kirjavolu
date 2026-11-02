@@ -28,7 +28,7 @@
   ],
   "vars": {
     "AI_DAILY_LIMIT": "300",
-    // Jõulupass AI for everyone together per day: whole series and single letters rewritten.
+    // Jõulupass AI for everyone together per day: whole series or stories, and single letters or pages rewritten.
     "PASS_SERIES_DAILY_LIMIT": "100",
     "PASS_FIX_DAILY_LIMIT": "600",
     "STRIPE_PUBLISHABLE_KEY": "pk_test_51UXO8LRrq8t56a303ooxMfaqAfQ6HZ2VvoVoXl5b5IPhtAhNcc3IOTtlXUCKK25KloE4zv5d1KOAy3B1Goppkm7100m79ORWee",
