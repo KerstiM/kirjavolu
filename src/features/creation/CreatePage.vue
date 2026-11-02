@@ -104,7 +104,8 @@ async function create(): Promise<void> {
     creations.add(content)
     // "Back" from the preview returns to these choices instead of an empty wizard.
     await router.replace({ path: '/loo', query: { muuda: content.id } })
-    await router.push(`/looming/${content.id}`)
+    // The preview greets a new creation by opening it as post.
+    await router.push({ path: `/looming/${content.id}`, query: { uus: '1' } })
   } catch (error) {
     errors.value = error instanceof GenerationError ? error.errors : ['Midagi läks valesti. Proovi uuesti.']
   } finally {

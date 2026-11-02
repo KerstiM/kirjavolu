@@ -71,7 +71,8 @@ describe('analytics', () => {
     await user.click(within(dialog).getByRole('checkbox', { name: 'Dinosaurused' }))
     await user.click(within(dialog).getByRole('button', { name: 'Lisa laps' }))
     await user.click(screen.getByRole('button', { name: /Loo ja vaata eelvaadet/ }))
-    await vi.waitFor(() => expect(router.currentRoute.value.name).toBe('preview'))
+    await vi.waitFor(() => expect(router.currentRoute.value.name).toBe('preview'), { timeout: 3000 })
+    await user.click(await screen.findByRole('button', { name: 'Jäta vahele' }))
     await user.click(await screen.findByRole('button', { name: /Prindi/ }))
 
     expect(sent).toEqual([

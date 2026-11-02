@@ -156,6 +156,11 @@ textarea {
   line-height: 1.5;
 }
 
+// The envelope of a new creation covers the page; the page waits underneath.
+body.has-reveal {
+  overflow: hidden;
+}
+
 .page-view {
   animation: page-in 0.22s ease-out;
 }

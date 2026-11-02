@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft, Download, FileQuestion, Printer, Plus, UsersRound } from 'lucide-vue-next'
 import type { CardFit, CertificateStyle, ChildProfile, Decoration, GeneralOptions, GeneratedContent, GeneratedItem, GenerationRequest, PrintableLayout } from '../../domain/models'
 import { EMPTY_DECORATION, sheetBackground } from '../../domain/models'
@@ -22,6 +23,7 @@ import { useCreationsStore } from './creationsStore'
 import PrintableItem from './PrintableItem.vue'
 import ParentSheet from './ParentSheet.vue'
 import CustomizePanel from './CustomizePanel.vue'
+import EnvelopeReveal from './EnvelopeReveal.vue'
 import { track } from '../../app/analytics'
 
 const props = defineProps<{ id: string }>()
@@ -44,6 +46,15 @@ watch(
   },
   { immediate: true },
 )
+// Straight from the wizard the creation arrives in an envelope; a reload or a later visit skips it.
+const route = useRoute()
+const router = useRouter()
+const revealing = computed(() => !!content.value && route.query.uus === '1')
+function endReveal(): void {
+  const { uus: _, ...query } = route.query
+  router.replace({ query })
+}
+
 const busyItem = ref<string | null>(null)
 const status = ref('')
 let statusTimer: ReturnType<typeof setTimeout> | undefined
@@ -326,6 +337,7 @@ function exportText(): void {
   </div>
 
   <div v-else class="preview">
+    <EnvelopeReveal v-if="revealing && content" :content="content" @done="endReveal" />
     <div class="toolbar no-print">
       <div class="container toolbar__inner">
         <div class="toolbar__title">

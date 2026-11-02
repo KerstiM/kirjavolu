@@ -93,6 +93,9 @@ describe('creation flow', () => {
     await vi.waitFor(() => expect(router.currentRoute.value.name).toBe('preview'))
     const title = await screen.findByRole('heading', { level: 1 })
     expect(title.textContent).toContain('Ruben, Jasper ja kadunud sünnipäevatordi juhtum')
+    // A new creation first arrives in an envelope.
+    await user.click(screen.getByRole('button', { name: 'Jäta vahele' }))
+    await vi.waitFor(() => expect(router.currentRoute.value.query.uus).toBeUndefined())
 
     const store = useCreationsStore()
     expect(store.creations).toHaveLength(1)
