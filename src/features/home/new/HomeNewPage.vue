@@ -57,15 +57,15 @@ const WIZARD = designPath('new', '/loo')
             <circle cx="40" cy="60" r="4" fill="#f2c46d" />
             <path class="twinkle" d="M250 30 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 z" fill="#f2c46d" />
             <path class="twinkle twinkle--late" d="M30 150 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2 z" fill="#b8aee6" />
+            <!-- The same envelope as the mascot: one lavender envelope in two tones. -->
             <g class="hero__envelope">
-              <rect x="100" y="70" width="180" height="120" rx="12" fill="#f6e7cf" stroke="#e3cfb4" stroke-width="2" />
-              <path d="M100 76 L190 135 L280 76" fill="#efdcbf" stroke="#e3cfb4" stroke-width="2" />
-              <circle cx="190" cy="135" r="14" fill="#c43b30" />
-              <path d="M190 127 l2.4 5 5.4.6-4 3.8 1 5.4-4.8-2.6-4.8 2.6 1-5.4-4-3.8 5.4-.6z" fill="#ffd9cf" />
-              <rect x="236" y="88" width="30" height="36" fill="#fff" />
-              <rect x="240" y="92" width="22" height="28" fill="#7c6bb8" />
-              <path d="M251 99 l2 4 4.5.5-3.3 3 .9 4.5-4.1-2.2-4.1 2.2.9-4.5-3.3-3 4.5-.5z" fill="#f2c46d" />
-              <text x="190" y="173" text-anchor="middle" class="hero__name">{{ addressee }}</text>
+              <rect x="100" y="70" width="180" height="120" rx="10" fill="#afa9ec" />
+              <path d="M104 186 L148 152 M276 186 L232 152" fill="none" stroke="#7f77dd" stroke-width="4" stroke-linecap="round" />
+              <path d="M100 82 Q100 70 112 70 L268 70 Q280 70 280 82 L190 134 Z" fill="#7f77dd" />
+              <circle cx="190" cy="132" r="11" fill="#d85a30" />
+              <rect x="240" y="80" width="26" height="32" rx="2" fill="#fff" />
+              <path d="M253 88 l2 4 4.5.5-3.3 3 .9 4.5-4.1-2.2-4.1 2.2.9-4.5-3.3-3 4.5-.5z" fill="#d85a30" />
+              <text x="190" y="170" text-anchor="middle" class="hero__name">{{ addressee }}</text>
             </g>
           </svg>
           <Mascot mood="wave" :size="120" class="hero__mascot" />
@@ -239,7 +239,7 @@ const WIZARD = designPath('new', '/loo')
   font-family: var(--font-print);
   font-size: 15px;
   font-weight: 600;
-  fill: #4a3b33;
+  fill: #26215c;
 }
 .hero__mascot {
   position: absolute;

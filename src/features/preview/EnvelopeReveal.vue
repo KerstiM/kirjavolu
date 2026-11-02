@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { GeneratedContent } from '../../domain/models'
 import { joinList } from '../../domain/text/estonian'
 import Mascot from '../../components/brand/Mascot.vue'
+import { useDesign } from '../../components/brand/design'
 
 /**
  * A freshly made creation arrives as post: the parent opens the envelope, the first
@@ -10,6 +11,8 @@ import Mascot from '../../components/brand/Mascot.vue'
  */
 const props = defineProps<{ content: GeneratedContent }>()
 const emit = defineEmits<{ done: [] }>()
+// The new design draws the envelope like its mascot: flat colours and crisp corners.
+const design = useDesign()
 
 type Stage = 'closed' | 'opening' | 'leaving'
 const stage = ref<Stage>('closed')
@@ -72,7 +75,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="reveal no-print" :class="`is-${stage}`" role="dialog" aria-modal="true" aria-labelledby="reveal-title">
+  <div class="reveal no-print" :class="[`is-${stage}`, { 'reveal--new': design === 'new' }]" role="dialog" aria-modal="true" aria-labelledby="reveal-title">
     <p id="reveal-title" class="reveal__title">
       {{ stage === 'closed' ? 'Sulle on post!' : 'Valmis! Kiri on teel.' }}
     </p>
@@ -503,6 +506,50 @@ $paper-dark: #e9d3b0;
   100% {
     opacity: 0;
     transform: translate(var(--x), calc(var(--y) + 140px)) rotate(var(--spin)) scale(1);
+  }
+}
+
+// --- new design: the mascot's envelope, one lavender in two tones --------
+.reveal--new {
+  .envelope__back {
+    border-radius: 10px;
+    background: #7f77dd;
+  }
+  .envelope__front {
+    border-radius: 10px;
+    background: #afa9ec;
+  }
+  .envelope__flap {
+    border-radius: 10px 10px 0 0;
+    background: #7f77dd;
+  }
+  .seal {
+    background: #d85a30;
+    box-shadow: none;
+    color: #fff;
+    text-shadow: none;
+    animation: seal-pulse-new 1.6s ease-in-out infinite;
+  }
+  .stamp__art {
+    background: #fff;
+    color: #d85a30;
+  }
+  .address {
+    color: #26215c;
+  }
+  .postmark {
+    opacity: 0.45;
+    svg {
+      stroke: #26215c;
+    }
+    text {
+      fill: #26215c;
+    }
+  }
+}
+@keyframes seal-pulse-new {
+  50% {
+    box-shadow: 0 0 0 10px rgba(224, 122, 95, 0.25);
   }
 }
 </style>

@@ -65,6 +65,14 @@ describe('wizard in the new design', () => {
     expect(document.querySelectorAll('.label')).toHaveLength(3)
   })
 
+  it('draws the simpler envelope mascot only in the new design', async () => {
+    await open('/uus-disain/loo')
+    await screen.findByText('Testvaade: loomise sammud uues disainis.')
+    // The folds every envelope has: the flap and the two lower seams.
+    expect(document.querySelector('.mascot__seam')).not.toBeNull()
+    expect(document.querySelector('.mascot__hand')).toBeNull()
+  })
+
   it('shows a type picked on the home page as one line, not the whole list again', async () => {
     await open('/uus-disain/loo?tyyp=story')
     expect(await screen.findByRole('button', { name: 'Muuda, mida luua' })).toBeInTheDocument()
@@ -79,6 +87,7 @@ describe('wizard in the new design', () => {
     expect(await screen.findByRole('radiogroup', { name: 'Mida soovid luua?' })).toBeInTheDocument()
     expect(document.querySelector('.postcard')).toBeNull()
     expect(screen.queryByText(/Testvaade/)).toBeNull()
+    expect(document.querySelector('.mascot__seam')).toBeNull()
   })
 })
 

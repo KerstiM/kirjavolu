@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { MascotMood } from './mascot'
+import { useDesign } from './design'
+import MascotModern from './MascotModern.vue'
 
 /**
  * Kirjavõlu's mascot: the envelope from the logo with eyes, arms and legs.
@@ -7,10 +9,14 @@ import type { MascotMood } from './mascot'
  * the face, the arms and how it moves.
  */
 withDefaults(defineProps<{ mood?: MascotMood; size?: number }>(), { mood: 'wave', size: 72 })
+// The new design draws the same character simpler.
+const design = useDesign()
 </script>
 
 <template>
+  <MascotModern v-if="design === 'new'" :mood="mood" :size="size" />
   <svg
+    v-else
     class="mascot"
     :class="`mascot--${mood}`"
     :width="size"
