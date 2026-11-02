@@ -40,6 +40,13 @@ export const routes: RouteRecordRaw[] = [
     meta: { title: 'Näide' },
   },
   {
+    // Jõulupass: Stripe returns here after payment, and a code can be typed in on another device.
+    path: '/uus-disain/joulupass',
+    name: 'season-pass-new',
+    component: () => import('../features/pass/PassPage.vue'),
+    meta: { title: 'Jõulupass' },
+  },
+  {
     path: '/lapsed',
     name: 'children',
     component: () => import('../features/children/ChildrenPage.vue'),

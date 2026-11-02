@@ -10,13 +10,14 @@ import { track } from '../../app/analytics'
 import Mascot from '../../components/brand/Mascot.vue'
 import TestBar from '../../components/brand/TestBar.vue'
 import AiSampleLetter from './AiSampleLetter.vue'
+import PassPurchase from '../pass/PassPurchase.vue'
 import { DESIGN_KEY, designPath, type Design } from '../../components/brand/design'
 
 /**
  * "Vaata näidet": the first letter of a sample 24-letter Christmas series, written
  * on the spot for a sample child. Nothing is saved and no data has to be entered.
  * "new" at /uus-disain/naide: the letter lies on the cream desk with an airmail edge, and
- * the AI writes a sample letter for the family's own child.
+ * the AI writes a sample letter for the family's own child, and the Jõulupass can be bought.
  */
 const props = withDefaults(defineProps<{ design?: Design }>(), { design: 'current' })
 provide(DESIGN_KEY, props.design)
@@ -49,6 +50,7 @@ onMounted(async () => {
     </div>
 
     <AiSampleLetter v-if="design === 'new'" />
+    <PassPurchase v-if="design === 'new'" />
 
     <div class="demo__next">
       <Mascot v-if="design === 'new'" mood="wave" :size="84" class="demo__mascot" />

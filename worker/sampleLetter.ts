@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
+import { allowedOrigin, fail } from './http'
 
 /**
  * POST /api/proovikiri: one AI-written letter from the elf for 1 December, free and without
@@ -120,20 +121,6 @@ export const writeWithClaude: WriteLetter = async (input, apiKey) => {
   if (!heading || !body) throw new Error('empty letter')
   return { heading, body, signature: clean(letter.signature, 80) || 'Sinu päkapikk Tuduja' }
 }
-
-/** Our own page asks: the same host the request went to (kirjavolu.ee or www, http or https). */
-function allowedOrigin(origin: string | null, requestUrl: string): boolean {
-  if (!origin) return false
-  // Local development (vite or wrangler dev).
-  if (/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return true
-  try {
-    return new URL(origin).host === new URL(requestUrl).host
-  } catch {
-    return false
-  }
-}
-
-const fail = (status: number, error: string) => Response.json({ error }, { status })
 
 /** Adds one to a day's counter and tells whether it was still within the limit. */
 async function countIn(kv: KVNamespace, key: string, limit: number): Promise<boolean> {
