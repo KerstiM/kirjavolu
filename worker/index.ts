@@ -1,11 +1,12 @@
 import { handleSampleLetter, type SampleEnv } from './sampleLetter'
+import { handlePassLookup, handlePurchase, handleStripeWebhook, type PassEnv } from './seasonPass'
 
 /**
  * Kirjavõlu on Cloudflare: the built app (dist/) is served as static assets and
- * everything under /api/ is answered here. Later steps add accounts, sync and the
- * season pass behind the same address, so the browser never talks to another domain.
+ * everything under /api/ is answered here. Later steps add accounts and sync
+ * behind the same address, so the browser never talks to another domain.
  */
-export interface Env extends SampleEnv {
+export interface Env extends SampleEnv, PassEnv {
   ASSETS: Fetcher
 }
 
@@ -18,6 +19,9 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     return Response.json({ ok: true, service: 'kirjavolu', version: API_VERSION })
   }
   if (pathname === '/api/proovikiri') return handleSampleLetter(request, env)
+  if (pathname === '/api/joulupass/ost') return handlePurchase(request, env)
+  if (pathname === '/api/joulupass/kood') return handlePassLookup(request, env)
+  if (pathname === '/api/stripe/webhook') return handleStripeWebhook(request, env)
   return Response.json({ error: 'not_found' }, { status: 404 })
 }
 
