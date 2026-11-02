@@ -333,8 +333,10 @@ $paper-dark: #e9d3b0;
   height: 3.8rem;
   padding: 4px;
   background: #fff;
-  // Perforated edge.
-  mask: radial-gradient(circle 3px at 3px 3px, transparent 98%, #000) -3px -3px / 8px 8px;
+  // Perforated edge: holes only in the padding, the picture itself stays whole.
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    radial-gradient(circle 3px at 3px 3px, transparent 98%, #000) -3px -3px / 8px 8px;
   transform: rotate(4deg);
 }
 .stamp__art {
