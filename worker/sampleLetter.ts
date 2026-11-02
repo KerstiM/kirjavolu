@@ -40,7 +40,6 @@ const MODEL = 'claude-opus-5-5'
 const PER_ADDRESS_PER_DAY = 5
 const DEFAULT_DAILY_LIMIT = 300
 const MAX_BODY_BYTES = 4000
-const ALLOWED_ORIGINS = new Set(['https://kirjavolu.ee', 'https://www.kirjavolu.ee'])
 
 const clean = (value: unknown, max: number): string =>
   typeof value === 'string' ? value.replace(/\s+/g, ' ').trim().slice(0, max) : ''
@@ -122,11 +121,16 @@ export const writeWithClaude: WriteLetter = async (input, apiKey) => {
   return { heading, body, signature: clean(letter.signature, 80) || 'Sinu päkapikk Tuduja' }
 }
 
-function allowedOrigin(origin: string | null): boolean {
+/** Our own page asks: the same host the request went to (kirjavolu.ee or www, http or https). */
+function allowedOrigin(origin: string | null, requestUrl: string): boolean {
   if (!origin) return false
-  if (ALLOWED_ORIGINS.has(origin)) return true
   // Local development (vite or wrangler dev).
-  return /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)
+  if (/^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return true
+  try {
+    return new URL(origin).host === new URL(requestUrl).host
+  } catch {
+    return false
+  }
 }
 
 const fail = (status: number, error: string) => Response.json({ error }, { status })
@@ -145,7 +149,7 @@ export async function handleSampleLetter(
   write: WriteLetter = writeWithClaude,
 ): Promise<Response> {
   if (request.method !== 'POST') return fail(405, 'method_not_allowed')
-  if (!allowedOrigin(request.headers.get('Origin'))) return fail(403, 'forbidden')
+  if (!allowedOrigin(request.headers.get('Origin'), request.url)) return fail(403, 'forbidden')
   if (Number(request.headers.get('Content-Length') ?? 0) > MAX_BODY_BYTES) return fail(413, 'too_large')
 
   const text = await request.text()
