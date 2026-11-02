@@ -39,7 +39,8 @@ function badgeFor(id: OccasionId, suggested: ContentTypeId[]): string {
       :icon="iconFor(picked.icon)"
       :title="picked.name"
       :detail="picked.when"
-      :color="STAMP_COLORS[picked.id]"
+      :ink="STAMP_COLORS[picked.id]"
+      :edge="[STAMP_COLORS[picked.id], STAMP_COLORS[picked.id]]"
       change-label="Muuda tähtpäeva"
       @change="listOpen = true"
     />

@@ -6,7 +6,7 @@ import { getOccasion } from '../../../domain/occasions/occasions'
 import ChoiceCard from '../../../components/ui/ChoiceCard.vue'
 import { iconFor } from '../../../components/ui/icons'
 import PostcardCard from '../../../components/brand/PostcardCard.vue'
-import { useDesign } from '../../../components/brand/design'
+import { postcardLook, useDesign } from '../../../components/brand/design'
 import PickedChoice from './PickedChoice.vue'
 
 const props = defineProps<{ occasionId: OccasionId | null }>()
@@ -22,7 +22,10 @@ function choose(value: ContentTypeId): void {
   model.value = value
   listOpen.value = false
 }
-const picked = computed(() => CONTENT_TYPES.find((type) => type.id === model.value))
+const pickedIndex = computed(() => CONTENT_TYPES.findIndex((type) => type.id === model.value))
+const picked = computed(() => CONTENT_TYPES[pickedIndex.value])
+// The same colours as the postcard it stands for.
+const pickedLook = computed(() => postcardLook(Math.max(pickedIndex.value, 0)))
 const recommended = computed(() => (props.occasionId ? getOccasion(props.occasionId).suggested.slice(0, 3) : []))
 </script>
 
@@ -34,6 +37,8 @@ const recommended = computed(() => (props.occasionId ? getOccasion(props.occasio
       :icon="iconFor(picked.icon)"
       :title="picked.title"
       :detail="picked.tagline"
+      :ink="pickedLook.ink"
+      :edge="pickedLook.edge"
       change-label="Muuda, mida luua"
       @change="listOpen = true"
     />
