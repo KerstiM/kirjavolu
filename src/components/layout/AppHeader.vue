@@ -40,7 +40,7 @@ function startOver(): void {
           :to="`${NEW_DESIGN_ROOT}/joulupass`"
           class="nav__link nav__link--pass"
           active-class="is-active"
-          :aria-label="passLeft !== null ? `Jõulupass, AI-loomisi alles ${passLeft}` : undefined"
+          :aria-label="passLeft !== null ? `Jõulupass, kirjasarju või lugusid alles ${passLeft}` : undefined"
         >
           Jõulupass<span v-if="passLeft !== null" class="nav__count" aria-hidden="true">{{ passLeft }}</span>
         </RouterLink>

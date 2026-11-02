@@ -112,6 +112,7 @@ onBeforeUnmount(() => {
         <button type="button" class="dialog__close" aria-label="Sulge" @click="emit('close')"><X :size="18" /></button>
       </header>
       <form class="dialog__form" @submit.prevent="save">
+        <p v-if="aiFix || aiNote" class="dialog__hint">Muuda teksti ise: see on alati tasuta.</p>
         <label class="dialog__label" for="item-editor-heading">Pöördumine või pealkiri</label>
         <input id="item-editor-heading" v-model="draft.heading" class="input" type="text" />
         <label class="dialog__label" for="item-editor-body">Tekst</label>
@@ -124,28 +125,30 @@ onBeforeUnmount(() => {
           <textarea id="item-editor-signature" v-model="draft.signature" class="textarea" rows="2" />
         </template>
         <section v-if="aiFix || aiNote" class="ai-fix" aria-labelledby="ai-fix-title">
-          <h3 id="ai-fix-title" class="dialog__label">Paranda AI-ga</h3>
+          <h3 id="ai-fix-title" class="ai-fix__title">
+            Palu päkapikul muuta <span class="ai-fix__tag">Jõulupass</span>
+          </h3>
           <template v-if="aiFix">
-            <label class="visually-hidden" for="item-editor-wish">Mida AI peaks muutma?</label>
+            <label class="visually-hidden" for="item-editor-wish">Mida päkapikk peaks muutma?</label>
             <textarea
               id="item-editor-wish"
               v-model="wish"
               class="textarea"
               rows="2"
               maxlength="500"
-              placeholder="Mida AI peaks muutma? Näiteks: tee lühemaks; Liisi on beebi, ta ei räägi veel"
+              placeholder="Mida päkapikk peaks muutma? Näiteks: tee lühemaks; Liisi on beebi, ta ei räägi veel"
               :disabled="fixing"
             />
             <div class="ai-fix__row">
               <button type="button" class="action" :disabled="fixing || !wish.trim()" @click="fixWithAi">
-                <Sparkles :size="15" aria-hidden="true" /> {{ fixing ? 'Päkapikk kirjutab ümber…' : 'Paranda AI-ga' }}
+                <Sparkles :size="15" aria-hidden="true" /> {{ fixing ? 'Päkapikk kirjutab ümber…' : 'Palu päkapikul muuta' }}
               </button>
               <span v-if="aiNote" class="dialog__hint">{{ aiNote }}</span>
             </div>
           </template>
           <p v-else class="dialog__hint">{{ aiNote }}</p>
           <p v-if="fixed" class="ai-fix__done" role="status">
-            AI kirjutas kirja ümber. Salvesta, kui see sobib, või vajuta „Tühista“, et jätta vana.
+            Päkapikk kirjutas teksti ümber. Salvesta, kui see sobib, või vajuta „Tühista“, et jätta vana.
           </p>
           <p v-if="fixError" class="ai-fix__error" role="alert">{{ fixError }}</p>
         </section>
@@ -228,11 +231,27 @@ onBeforeUnmount(() => {
   gap: 0.4rem;
   margin-top: 0.75rem;
   padding: 0.75rem 1rem 1rem;
+  border: 1.5px dashed var(--coral);
   border-radius: var(--radius-sm);
-  background: var(--lavender-soft);
+  background: var(--surface);
   h3 {
     margin: 0;
   }
+}
+.ai-fix__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 0.95rem;
+}
+.ai-fix__tag {
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  background: var(--coral-soft);
+  color: var(--coral-ink);
+  font-size: 0.75rem;
+  font-weight: 700;
 }
 .ai-fix__row {
   display: flex;

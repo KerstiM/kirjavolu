@@ -23,18 +23,18 @@ const whom = computed(() => namesInCase(props.content.request.children, 'genitiv
   <section class="pass-offer" aria-labelledby="pass-offer-title">
     <h2 id="pass-offer-title">
       <component :is="active ? Sparkles : Gift" :size="20" aria-hidden="true" />
-      {{ active ? 'Loo AI-kirjad' : 'Kirjad päriselt sinu lapse kohta' }}
+      {{ active ? 'Isiklikud kirjad' : 'Kirjad päriselt sinu lapse kohta' }}
     </h2>
     <p v-if="active">
-      Sul on Jõulupass. Päkapikk kirjutab tehisaru abil kõik 24 kirja {{ whom }} kohta, pere ja selle detsembri plaanide
-      järgi. AI-loomisi alles: {{ pass?.generationsLeft }}.
+      Sul on Jõulupass. Päkapikk kirjutab kõik 24 kirja {{ whom }} kohta, pere ja selle detsembri plaanide järgi.
+      Kirjasarju või lugusid alles: {{ pass?.generationsLeft }}.
     </p>
     <p v-else>
       Need on mallikirjad. Päkapikk ei tea {{ whom }} perest ega sellest, mis teil detsembris plaanis on. Jõulupassiga
       kirjutab ta kõik 24 kirja päriselt {{ whom }} kohta. Ühekordne makse {{ PASS_PRICE }}.
     </p>
     <BaseButton :to="`${NEW_DESIGN_ROOT}/joulupass`" size="sm" :variant="active ? 'primary' : 'secondary'">
-      {{ active ? 'Loo AI-kirjad' : 'Vaata Jõulupassi' }}
+      {{ active ? 'Kirjuta isiklikud kirjad' : 'Vaata Jõulupassi' }}
     </BaseButton>
   </section>
 </template>

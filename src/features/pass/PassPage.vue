@@ -105,9 +105,9 @@ onBeforeUnmount(() => clearTimeout(retry))
         </h2>
         <p class="pass-card__code" data-testid="pass-code">{{ pass.code }}</p>
         <p>
-          AI-genereerimisi alles: <strong>{{ pass.generationsLeft }}</strong>. Kehtib kuni
+          Kirjasarju või lugusid alles: <strong>{{ pass.generationsLeft }}</strong>. Kehtib kuni
           <strong>{{ formatValidUntil(pass) }}</strong>.
-          <template v-if="pass.fixesLeft !== undefined"> Üksikute kirjade AI-parandusi alles: <strong>{{ pass.fixesLeft }}</strong>.</template>
+          <template v-if="pass.fixesLeft !== undefined"> Päkapiku muudatusi alles: <strong>{{ pass.fixesLeft }}</strong>.</template>
         </p>
         <p v-if="!isActive(pass)" class="pass-page__error">See pass ei kehti enam.</p>
         <p class="pass-card__hint">
