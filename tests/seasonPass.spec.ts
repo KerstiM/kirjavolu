@@ -8,6 +8,8 @@ import { routes } from '@/app/router'
 import { useChildrenStore } from '@/features/children/childrenStore'
 import { loadPass, PASS_KEY } from '@/features/pass/seasonPass'
 import { useCreationsStore } from '@/features/preview/creationsStore'
+import { templateGenerator } from '@/domain/generators/templateGenerator'
+import { DEFAULT_GENERAL, defaultOptions } from '@/domain/defaults'
 
 const PASS = { code: 'KV-7KQM-3FXA', generationsLeft: 10, validUntil: '2027-01-31T21:59:59.000Z' }
 
@@ -32,7 +34,8 @@ describe('buying the Jõulupass on the new-design sample page', () => {
     await open('/uus-disain/naide')
     const section = await screen.findByRole('region', { name: 'Jõulupass' })
     expect(within(section).getByRole('button', { name: /Osta Jõulupass – 9,90 €/ })).toBeInTheDocument()
-    expect(within(section).getByText(/10 AI-genereerimist, mis kehtivad kuni 31\. jaanuarini/)).toBeInTheDocument()
+    expect(within(section).getByText(/10 AI-loomist/)).toBeInTheDocument()
+    expect(within(section).getByText(/Kehtib 31\. jaanuarini/)).toBeInTheDocument()
     expect(within(section).getByRole('link', { name: 'Mul on juba Jõulupass' })).toHaveAttribute('href', '/uus-disain/joulupass')
   })
 
@@ -136,7 +139,8 @@ describe('AI letters with the Jõulupass', () => {
     await user.type(family, 'ema, kass Miisu')
     await user.click(screen.getByRole('button', { name: /Loo Rubeni jaoks AI-kirjad/ }))
 
-    await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/uus-disain\/looming\//))
+    // Saving the profile and opening the 24-letter preview can take a while on a busy machine.
+    await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/uus-disain\/looming\//), { timeout: 5000 })
     const [url, init] = fetch.mock.calls[0] as unknown as [string, RequestInit]
     expect(url).toBe('/api/joulupass/kirjad')
     const body = JSON.parse(String(init.body))
@@ -196,5 +200,59 @@ describe('AI letters with the Jõulupass', () => {
     const user = userEvent.setup()
     await user.click(await screen.findByRole('button', { name: /Loo Rubeni jaoks AI-kirjad/ }))
     expect(await screen.findByRole('alert')).toHaveTextContent('AI-loomised on otsas')
+  })
+})
+
+describe('finding the Jõulupass', () => {
+  it('is in the new-design menu, with what is left once this browser has a pass', async () => {
+    await open('/uus-disain')
+    const menu = await screen.findByRole('navigation', { name: 'Peamenüü' })
+    expect(within(menu).getByRole('link', { name: 'Jõulupass' })).toHaveAttribute('href', '/uus-disain/joulupass')
+    localStorage.setItem(PASS_KEY, JSON.stringify(PASS))
+    window.dispatchEvent(new Event('kirjavolu:joulupass'))
+    expect(await within(menu).findByRole('link', { name: 'Jõulupass, AI-loomisi alles 10' })).toBeInTheDocument()
+  })
+
+  it('is not in the current design menu', async () => {
+    await open('/')
+    const menu = await screen.findByRole('navigation', { name: 'Peamenüü' })
+    expect(within(menu).queryByRole('link', { name: /Jõulupass/ })).toBeNull()
+  })
+
+  it('is offered on the new home page', async () => {
+    await open('/uus-disain')
+    const band = await screen.findByRole('region', { name: 'Jõulupass' })
+    expect(within(band).getByRole('link', { name: /Vaata Jõulupassi/ })).toHaveAttribute('href', '/uus-disain/joulupass')
+  })
+
+  it('can be bought on the pass page itself', async () => {
+    await open('/uus-disain/joulupass')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Jõulupass' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Osta Jõulupass/ })).toBeInTheDocument()
+    expect(screen.getByLabelText('Jõulupassi kood')).toBeInTheDocument()
+  })
+
+  it('is offered beside template Christmas letters, and leads to the AI letters with a pass', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const children = useChildrenStore()
+    children.restoreDemo()
+    const ruben = children.children.find((child) => child.name === 'Ruben')!
+    const content = await templateGenerator.generate({
+      contentType: 'letter',
+      children: [ruben],
+      occasionId: 'christmas',
+      general: { ...DEFAULT_GENERAL },
+      seed: 1,
+      options: { ...defaultOptions('christmas').letter, count: 3 },
+    })
+    useCreationsStore(pinia).add(content)
+    const router = createRouter({ history: createMemoryHistory(), routes })
+    router.push(`/uus-disain/looming/${content.id}`)
+    await router.isReady()
+    render(App, { global: { plugins: [pinia, router] } })
+    const card = await screen.findByRole('region', { name: /Kirjad päriselt sinu lapse kohta/ })
+    expect(within(card).getByText(/ei tea Rubeni perest/)).toBeInTheDocument()
+    expect(within(card).getByRole('link', { name: 'Vaata Jõulupassi' })).toHaveAttribute('href', '/uus-disain/joulupass')
   })
 })

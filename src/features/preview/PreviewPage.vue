@@ -23,6 +23,7 @@ import { useCreationsStore } from './creationsStore'
 import PrintableItem from './PrintableItem.vue'
 import ParentSheet from './ParentSheet.vue'
 import CustomizePanel from './CustomizePanel.vue'
+import PassOfferCard from '../pass/PassOfferCard.vue'
 import { AI_SERIES_GENERATOR, FIX_ERROR_TEXTS, LettersRequestError, requestLetterFix } from '../pass/passLetters'
 import { loadPass } from '../pass/seasonPass'
 import { useChildrenStore } from '../children/childrenStore'
@@ -401,6 +402,10 @@ function exportText(): void {
           Need kirjad kirjutas päkapikk Tuduja tehisaru abil. Iga kirja saad muuta nupuga „Muuda“.
         </p>
         <CustomizePanel v-else :content="content" :busy="updating" :errors="choiceErrors" @change="applyChoices" />
+        <PassOfferCard
+          v-if="!aiWritten && design === 'new' && content.request.contentType === 'letter' && content.request.occasionId === 'christmas'"
+          :content="content"
+        />
 
         <section class="print-panel" aria-labelledby="print-title">
           <h2 id="print-title" class="print-panel__title">Printimine</h2>

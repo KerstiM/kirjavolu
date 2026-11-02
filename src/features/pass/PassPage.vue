@@ -6,6 +6,7 @@ import BaseButton from '../../components/ui/BaseButton.vue'
 import FormField from '../../components/ui/FormField.vue'
 import TestBar from '../../components/brand/TestBar.vue'
 import PassLetters from './PassLetters.vue'
+import PassPurchase from './PassPurchase.vue'
 import { DESIGN_KEY, NEW_DESIGN_ROOT } from '../../components/brand/design'
 import {
   checkPass,
@@ -83,7 +84,7 @@ onBeforeUnmount(() => clearTimeout(retry))
     <div class="container section pass-page">
       <header>
         <span class="eyebrow pass-page__tag">Jõulupass</span>
-        <h1>Mul on Jõulupass</h1>
+        <h1>{{ pass ? 'Mul on Jõulupass' : 'Jõulupass' }}</h1>
       </header>
 
       <p v-if="purchase === 'checking'" role="status">Kontrollin makset…</p>
@@ -91,7 +92,7 @@ onBeforeUnmount(() => clearTimeout(retry))
         Makse on teel. Kood ilmub siia, kui pank on makse kinnitanud. Leht kontrollib seda ise.
       </p>
       <p v-else-if="purchase === 'open' || purchase === 'expired'" class="pass-page__error" role="alert">
-        Makse jäi pooleli ja raha ei võetud. <RouterLink :to="`${NEW_DESIGN_ROOT}/naide`">Proovi uuesti</RouterLink>
+        Makse jäi pooleli ja raha ei võetud. Proovi allpool uuesti.
       </p>
       <p v-else-if="purchase === 'failed'" class="pass-page__error" role="alert">
         Makset ei õnnestunud kontrollida. Kui raha võeti, on kood ka Stripe'i kviitungil. Värskenda lehte hetke pärast.
@@ -117,8 +118,10 @@ onBeforeUnmount(() => clearTimeout(retry))
 
       <PassLetters v-if="pass && isActive(pass)" :pass="pass" @spent="(next) => (pass = next)" />
 
+      <PassPurchase v-if="!pass && ['', 'open', 'expired'].includes(purchase)" on-pass-page />
+
       <form class="pass-form" @submit.prevent="submit">
-        <h2>{{ pass ? 'Teine kood?' : 'Sisesta oma kood' }}</h2>
+        <h2>{{ pass ? 'Teine kood?' : 'Mul on juba Jõulupass' }}</h2>
         <FormField id="pass-code" label="Jõulupassi kood" hint="Näiteks KV-7KQM-3FXA" :error="error">
           <template #default="{ describedBy, invalid }">
             <input
@@ -138,9 +141,6 @@ onBeforeUnmount(() => clearTimeout(retry))
         <BaseButton type="submit" :disabled="busy">{{ busy ? 'Kontrollin…' : 'Kontrolli koodi' }}</BaseButton>
       </form>
 
-      <p v-if="!pass" class="pass-page__buy">
-        Jõulupassi pole veel? <RouterLink :to="`${NEW_DESIGN_ROOT}/naide`">Osta see näite lehel</RouterLink>
-      </p>
     </div>
   </div>
 </template>
@@ -219,9 +219,5 @@ onBeforeUnmount(() => clearTimeout(retry))
   max-width: 18rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-}
-.pass-page__buy {
-  margin: 0;
-  color: var(--ink-soft);
 }
 </style>

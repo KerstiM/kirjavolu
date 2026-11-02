@@ -43,12 +43,16 @@ export function loadPass(): SeasonPass | null {
   }
 }
 
+/** Sent on window whenever this device's pass changes, so the menu can show what is left. */
+export const PASS_CHANGED = 'kirjavolu:joulupass'
+
 export function savePass(pass: SeasonPass): void {
   try {
     localStorage.setItem(PASS_KEY, JSON.stringify(pass))
   } catch {
     // Private windows may refuse; the code is still on screen and in Stripe.
   }
+  window.dispatchEvent(new Event(PASS_CHANGED))
 }
 
 export function isActive(pass: SeasonPass, now = new Date()): boolean {
