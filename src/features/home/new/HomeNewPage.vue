@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import { computed, provide } from 'vue'
 import { RouterLink } from 'vue-router'
-import { ArrowRight, Eye } from 'lucide-vue-next'
+import { ArrowRight, Eye, Gift } from 'lucide-vue-next'
 import Mascot from '../../../components/brand/Mascot.vue'
 import PostcardCard from '../../../components/brand/PostcardCard.vue'
 import StampCard from '../../../components/brand/StampCard.vue'
 import TestBar from '../../../components/brand/TestBar.vue'
-import { DESIGN_KEY, designPath, STAMP_COLORS } from '../../../components/brand/design'
+import { DESIGN_KEY, designPath, NEW_DESIGN_ROOT, STAMP_COLORS } from '../../../components/brand/design'
 import { iconFor } from '../../../components/ui/icons'
 import { CONTENT_TYPES } from '../../../domain/contentTypes'
 import { OCCASIONS } from '../../../domain/occasions/occasions'
 import { isInSeason, sortBySeason } from '../../../domain/occasions/season'
 import { useChildrenStore } from '../../children/childrenStore'
 import RecentCreations from '../RecentCreations.vue'
+import { isActive, loadPass, PASS_PRICE } from '../../pass/seasonPass'
 
 /**
  * Test view of the new home page design (/uus-disain). The current home page at "/"
@@ -23,6 +24,10 @@ const childrenStore = useChildrenStore()
 const occasions = computed(() => sortBySeason(OCCASIONS))
 // The envelope in the picture is addressed to the family's own child when there is one.
 const addressee = computed(() => childrenStore.children[0]?.name ?? 'Mia')
+
+// The Jõulupass is offered right under the hero; a family that has one goes straight to it.
+const pass = loadPass()
+const hasPass = pass !== null && isActive(pass)
 
 // Every link leads into the new-design wizard, so the whole new journey can be tried.
 const WIZARD = designPath('new', '/loo')
@@ -66,6 +71,25 @@ const WIZARD = designPath('new', '/loo')
           <Mascot mood="wave" :size="120" class="hero__mascot" />
           <p class="hero__bubble">Sulle on post!</p>
         </div>
+      </div>
+    </section>
+
+    <section class="section pass-band" aria-labelledby="pass-band-title">
+      <div class="container pass-band__inner">
+        <div class="pass-band__text">
+          <h2 id="pass-band-title"><Gift :size="24" aria-hidden="true" /> Jõulupass</h2>
+          <p v-if="hasPass">
+            Sul on Jõulupass, AI-loomisi alles {{ pass?.generationsLeft }}. Päkapikk kirjutab kõik 24 detsembrikirja sinu
+            lapse, tema pere ja selle detsembri plaanide järgi.
+          </p>
+          <p v-else>
+            Päkapikk kirjutab tehisaru abil kõik 24 detsembrikirja päriselt sinu lapse kohta: tema huvid, pere, lemmikloomad
+            ja selle detsembri plaanid. 10 loomist ja 30 parandust kuni 31. jaanuarini, ühekordne makse {{ PASS_PRICE }}.
+          </p>
+        </div>
+        <RouterLink :to="`${NEW_DESIGN_ROOT}/joulupass`" class="chunky chunky--primary">
+          {{ hasPass ? 'Loo AI-kirjad' : 'Vaata Jõulupassi' }} <ArrowRight :size="18" aria-hidden="true" />
+        </RouterLink>
       </div>
     </section>
 
@@ -261,6 +285,36 @@ const WIZARD = designPath('new', '/loo')
 @keyframes twinkle {
   50% {
     opacity: 0.3;
+  }
+}
+
+// --- Jõulupass -----------------------------------------------------------------
+.pass-band {
+  padding-block: 1.75rem;
+  background: #fbe9e3;
+  border-bottom: 2px dashed #ecd9bf;
+}
+.pass-band__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+.pass-band__text {
+  flex: 1 1 28rem;
+  min-width: 0;
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.4rem;
+    font-size: 1.4rem;
+    color: var(--coral-ink);
+  }
+  p {
+    margin: 0;
+    max-width: 62ch;
   }
 }
 

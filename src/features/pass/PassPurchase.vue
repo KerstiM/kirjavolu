@@ -9,6 +9,10 @@ import { openCheckout, PASS_ERROR_TEXTS, PASS_PRICE, PassRequestError, type Embe
  * "Osta Jõulupass": the button opens Stripe's payment form right here on the page. After
  * paying, Stripe sends the buyer to /uus-disain/joulupass, which shows the code.
  */
+defineProps<{
+  /** On the pass page itself the "Mul on juba Jõulupass" form is right below. */
+  onPassPage?: boolean
+}>()
 const open = ref(false)
 const busy = ref(false)
 const error = ref('')
@@ -38,9 +42,15 @@ onBeforeUnmount(() => checkout?.destroy())
   <section class="pass-buy" aria-labelledby="pass-buy-title">
     <h2 id="pass-buy-title"><Gift :size="22" aria-hidden="true" /> Jõulupass</h2>
     <p class="pass-buy__lead">
-      Jõulupassiga kirjutab päkapikk sinu lapsele kirjad AI abil. Sees on 10 AI-genereerimist, mis kehtivad kuni 31.
-      jaanuarini. Ühekordne makse {{ PASS_PRICE }}, püsimaksu ega kontot pole.
+      Mallikirjad on head, aga päkapikk ei tea sinu lapse perest ega tema detsembrist. Jõulupassiga kirjutab ta tehisaru
+      abil kõik 24 detsembrikirja päriselt sinu lapse kohta.
     </p>
+    <ul class="pass-buy__list">
+      <li>Kirjad tema huvide, pere, lemmikloomade ja <strong>selle detsembri plaanide</strong> järgi: vanaema juurde sõit tuleb jutuks õigel päeval.</li>
+      <li><strong>10 AI-loomist</strong>: üks loomine on ühe lapse terve 24 kirja sari.</li>
+      <li><strong>30 parandust</strong>: kirjuta, mida muuta, ja päkapikk kirjutab selle kirja ümber.</li>
+      <li>Kehtib 31. jaanuarini. Ühekordne makse {{ PASS_PRICE }}, püsimaksu ega kontot pole.</li>
+    </ul>
     <BaseButton v-if="!open" size="lg" :disabled="busy" @click="buy">
       <Gift aria-hidden="true" /> Osta Jõulupass – {{ PASS_PRICE }}
     </BaseButton>
@@ -49,7 +59,7 @@ onBeforeUnmount(() => checkout?.destroy())
     <div v-if="open" ref="target" class="pass-buy__checkout" />
     <p class="pass-buy__note">
       Makse käib Stripe'i kaudu. Pärast makset saad koodi kujul KV-XXXX-XXXX, mis jääb sellesse brauserisse meelde.
-      <RouterLink :to="`${NEW_DESIGN_ROOT}/joulupass`">Mul on juba Jõulupass</RouterLink>
+      <RouterLink v-if="!onPassPage" :to="`${NEW_DESIGN_ROOT}/joulupass`">Mul on juba Jõulupass</RouterLink>
     </p>
   </section>
 </template>
@@ -77,6 +87,13 @@ onBeforeUnmount(() => checkout?.destroy())
 .pass-buy__lead {
   margin: 0;
   color: var(--ink-soft);
+}
+.pass-buy__list {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
 }
 .pass-buy__note {
   margin: 0;

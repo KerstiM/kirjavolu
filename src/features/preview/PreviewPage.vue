@@ -23,6 +23,7 @@ import { useCreationsStore } from './creationsStore'
 import PrintableItem from './PrintableItem.vue'
 import ParentSheet from './ParentSheet.vue'
 import CustomizePanel from './CustomizePanel.vue'
+import PassOfferCard from '../pass/PassOfferCard.vue'
 import { AI_SERIES_GENERATOR, FIX_ERROR_TEXTS, LettersRequestError, requestLetterFix, requestStoryPageFix } from '../pass/passLetters'
 import AiStoryCard from './AiStoryCard.vue'
 import { loadPass, type SeasonPass } from '../pass/seasonPass'
@@ -415,6 +416,10 @@ function exportText(): void {
           <template v-else>Need kirjad kirjutas päkapikk Tuduja tehisaru abil. Iga kirja saad muuta nupuga „Muuda“.</template>
         </p>
         <CustomizePanel v-else :content="content" :busy="updating" :errors="choiceErrors" @change="applyChoices" />
+        <PassOfferCard
+          v-if="!aiWritten && design === 'new' && content.request.contentType === 'letter' && content.request.occasionId === 'christmas'"
+          :content="content"
+        />
         <!-- After the choices: they are what the AI story is written from. -->
         <AiStoryCard
           v-if="!aiWritten && design === 'new' && content.request.contentType === 'story'"

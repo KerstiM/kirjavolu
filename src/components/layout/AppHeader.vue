@@ -1,16 +1,24 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { Plus } from 'lucide-vue-next'
 import BrandMark from './BrandMark.vue'
 import BaseButton from '../ui/BaseButton.vue'
 import { designPath, NEW_DESIGN_ROOT } from '../brand/design'
 import { newCreationRequests } from '../../features/creation/newCreation'
+import { isActive, loadPass, PASS_CHANGED } from '../../features/pass/seasonPass'
 
 const route = useRoute()
 // Inside a new-design test view the menu keeps the visitor there.
 const design = computed(() => (route.path.startsWith(NEW_DESIGN_ROOT) ? 'new' : 'current'))
 const home = computed(() => designPath(design.value, '/'))
+// Jõulupass lives in the new design only; with a valid pass the link shows what is left.
+const pass = ref(loadPass())
+const refreshPass = () => (pass.value = loadPass())
+onMounted(() => window.addEventListener(PASS_CHANGED, refreshPass))
+onBeforeUnmount(() => window.removeEventListener(PASS_CHANGED, refreshPass))
+const passLeft = computed(() => (pass.value && isActive(pass.value) ? pass.value.generationsLeft : null))
+
 // The link does nothing while the wizard is already open, so ask it to start over.
 function startOver(): void {
   if (route.name === 'create' || route.name === 'create-new') newCreationRequests.value++
@@ -18,7 +26,7 @@ function startOver(): void {
 </script>
 
 <template>
-  <header class="app-header">
+  <header class="app-header" :class="{ 'app-header--pass': design === 'new' }">
     <div class="container app-header__inner">
       <RouterLink :to="home" class="brand" aria-label="Kirjavõlu avaleht">
         <BrandMark />
@@ -27,6 +35,15 @@ function startOver(): void {
       <nav aria-label="Peamenüü" class="nav">
         <RouterLink :to="home" class="nav__link nav__link--home" exact-active-class="is-active">Avaleht</RouterLink>
         <RouterLink :to="designPath(design, '/lapsed')" class="nav__link" active-class="is-active">Lapsed</RouterLink>
+        <RouterLink
+          v-if="design === 'new'"
+          :to="`${NEW_DESIGN_ROOT}/joulupass`"
+          class="nav__link nav__link--pass"
+          active-class="is-active"
+          :aria-label="passLeft !== null ? `Jõulupass, AI-loomisi alles ${passLeft}` : undefined"
+        >
+          Jõulupass<span v-if="passLeft !== null" class="nav__count" aria-hidden="true">{{ passLeft }}</span>
+        </RouterLink>
         <BaseButton :to="designPath(design, '/loo')" size="sm" class="nav__cta" @click="startOver">
           <Plus aria-hidden="true" />
           <span class="nav__cta-text">Loo uus</span>
@@ -91,6 +108,22 @@ function startOver(): void {
 .nav__cta {
   margin-left: 0.4rem;
 }
+.nav__link--pass {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--coral-ink);
+}
+.nav__count {
+  min-width: 1.4rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: var(--coral-soft);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
 @media (max-width: 520px) {
   .brand__name {
     font-size: 1.15rem;
@@ -111,6 +144,22 @@ function startOver(): void {
     height: 1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
+  }
+}
+// With the Jõulupass link the bar is one item longer, so "Loo uus" keeps only its plus sooner.
+@media (max-width: 520px) {
+  .app-header--pass .nav__cta-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+}
+// On a narrow phone the logo alone stands for the name (the link keeps its label).
+@media (max-width: 420px) {
+  .app-header--pass .brand__name {
+    display: none;
   }
 }
 </style>
