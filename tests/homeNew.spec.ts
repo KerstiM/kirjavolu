@@ -50,15 +50,28 @@ describe('wizard in the new design', () => {
     const user = userEvent.setup()
     expect(await screen.findByText('Testvaade: loomise sammud uues disainis.')).toBeInTheDocument()
     const types = screen.getByRole('radiogroup', { name: 'Mida soovid luua?' })
-    await user.click(within(types).getByRole('radio', { name: /Maagiline kiri/ }))
-    expect(within(types).getByRole('radio', { name: /Maagiline kiri/ })).toHaveAttribute('aria-checked', 'true')
     expect(document.querySelectorAll('.postcard')).toHaveLength(6)
+    await user.click(within(types).getByRole('radio', { name: /Maagiline kiri/ }))
+    // The choice stays as one line; "Muuda" opens the list again with it marked.
+    expect(document.querySelector('.postcard')).toBeNull()
+    await user.click(screen.getByRole('button', { name: 'Muuda, mida luua' }))
+    expect(screen.getByRole('radio', { name: /Maagiline kiri/ })).toHaveAttribute('aria-checked', 'true')
+    await user.click(screen.getByRole('radio', { name: /Maagiline kiri/ }))
 
     await user.click(screen.getByRole('radio', { name: /Jõulud/ }))
     const kids = await screen.findByRole('group', { name: 'Kellele?' })
     await user.click(within(kids).getByRole('checkbox', { name: /Jasper/ }))
     expect(within(kids).getByRole('checkbox', { name: /Jasper/ })).toHaveAttribute('aria-checked', 'true')
     expect(document.querySelectorAll('.label')).toHaveLength(3)
+  })
+
+  it('shows a type picked on the home page as one line, not the whole list again', async () => {
+    await open('/uus-disain/loo?tyyp=story')
+    expect(await screen.findByRole('button', { name: 'Muuda, mida luua' })).toBeInTheDocument()
+    expect(document.querySelector('.picked')).toHaveTextContent('Personaalne lugu')
+    expect(screen.getByRole('button', { name: 'Muuda, mida luua' })).toBeInTheDocument()
+    expect(document.querySelector('.postcard')).toBeNull()
+    expect(screen.getByRole('radiogroup', { name: 'Mis puhul?' })).toBeInTheDocument()
   })
 
   it('keeps the plain choice cards at /loo', async () => {
