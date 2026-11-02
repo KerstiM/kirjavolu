@@ -57,15 +57,15 @@ const WIZARD = designPath('new', '/loo')
             <circle cx="40" cy="60" r="4" fill="#f2c46d" />
             <path class="twinkle" d="M250 30 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 z" fill="#f2c46d" />
             <path class="twinkle twinkle--late" d="M30 150 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2 z" fill="#b8aee6" />
+            <!-- The same envelope as the mascot: crisp corners, the flap's V and the lower seams. -->
             <g class="hero__envelope">
-              <rect x="100" y="70" width="180" height="120" rx="12" fill="#f6e7cf" stroke="#e3cfb4" stroke-width="2" />
-              <path d="M100 76 L190 135 L280 76" fill="#efdcbf" stroke="#e3cfb4" stroke-width="2" />
-              <circle cx="190" cy="135" r="14" fill="#c43b30" />
-              <path d="M190 127 l2.4 5 5.4.6-4 3.8 1 5.4-4.8-2.6-4.8 2.6 1-5.4-4-3.8 5.4-.6z" fill="#ffd9cf" />
-              <rect x="236" y="88" width="30" height="36" fill="#fff" />
-              <rect x="240" y="92" width="22" height="28" fill="#7c6bb8" />
-              <path d="M251 99 l2 4 4.5.5-3.3 3 .9 4.5-4.1-2.2-4.1 2.2.9-4.5-3.3-3 4.5-.5z" fill="#f2c46d" />
-              <text x="190" y="173" text-anchor="middle" class="hero__name">{{ addressee }}</text>
+              <rect x="100" y="70" width="180" height="120" rx="6" fill="#fff" stroke="#b3a8e6" stroke-width="2" />
+              <path d="M102 74 L190 132 L278 74" fill="none" stroke="#b3a8e6" stroke-width="3" stroke-linejoin="round" />
+              <path d="M103 187 L150 150 M277 187 L230 150" fill="none" stroke="#e4dff7" stroke-width="3" stroke-linecap="round" />
+              <circle cx="190" cy="132" r="11" fill="#e07a5f" />
+              <rect x="238" y="84" width="28" height="34" rx="2" fill="#7d6cbd" />
+              <path d="M252 93 l2 4 4.5.5-3.3 3 .9 4.5-4.1-2.2-4.1 2.2.9-4.5-3.3-3 4.5-.5z" fill="#f2c46d" />
+              <text x="190" y="170" text-anchor="middle" class="hero__name">{{ addressee }}</text>
             </g>
           </svg>
           <Mascot mood="wave" :size="120" class="hero__mascot" />
@@ -243,7 +243,7 @@ const WIZARD = designPath('new', '/loo')
   font-family: var(--font-print);
   font-size: 15px;
   font-weight: 600;
-  fill: #4a3b33;
+  fill: #3c3489;
 }
 .hero__mascot {
   position: absolute;

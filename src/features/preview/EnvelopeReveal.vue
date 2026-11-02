@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { GeneratedContent } from '../../domain/models'
 import { joinList } from '../../domain/text/estonian'
 import Mascot from '../../components/brand/Mascot.vue'
+import { useDesign } from '../../components/brand/design'
 
 /**
  * A freshly made creation arrives as post: the parent opens the envelope, the first
@@ -10,6 +11,8 @@ import Mascot from '../../components/brand/Mascot.vue'
  */
 const props = defineProps<{ content: GeneratedContent }>()
 const emit = defineEmits<{ done: [] }>()
+// The new design draws the envelope like its mascot: flat colours and crisp corners.
+const design = useDesign()
 
 type Stage = 'closed' | 'opening' | 'leaving'
 const stage = ref<Stage>('closed')
@@ -72,7 +75,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="reveal no-print" :class="`is-${stage}`" role="dialog" aria-modal="true" aria-labelledby="reveal-title">
+  <div class="reveal no-print" :class="[`is-${stage}`, { 'reveal--new': design === 'new' }]" role="dialog" aria-modal="true" aria-labelledby="reveal-title">
     <p id="reveal-title" class="reveal__title">
       {{ stage === 'closed' ? 'Sulle on post!' : 'Valmis! Kiri on teel.' }}
     </p>
@@ -503,6 +506,48 @@ $paper-dark: #e9d3b0;
   100% {
     opacity: 0;
     transform: translate(var(--x), calc(var(--y) + 140px)) rotate(var(--spin)) scale(1);
+  }
+}
+
+// --- new design: the mascot's envelope, flat and crisp ----------------------
+.reveal--new {
+  .envelope__back {
+    border-radius: 6px;
+    background: #e4dff7;
+  }
+  .envelope__front {
+    border-radius: 6px;
+    background: #fff;
+  }
+  .envelope__flap {
+    border-radius: 6px 6px 0 0;
+    background: #b3a8e6;
+  }
+  .seal {
+    background: var(--coral);
+    box-shadow: none;
+    color: #fff;
+    text-shadow: none;
+    animation: seal-pulse-new 1.6s ease-in-out infinite;
+  }
+  .stamp__art {
+    background: #7d6cbd;
+  }
+  .address {
+    color: #3c3489;
+  }
+  .postmark {
+    svg {
+      stroke: #7d6cbd;
+    }
+    text {
+      fill: #7d6cbd;
+    }
+  }
+}
+@keyframes seal-pulse-new {
+  50% {
+    box-shadow: 0 0 0 10px rgba(224, 122, 95, 0.25);
   }
 }
 </style>
