@@ -11,6 +11,14 @@ export const routes: RouteRecordRaw[] = [
     meta: { title: 'Uus disain' },
   },
   {
+    // The same wizard in the new design, so the whole new journey can be tried out.
+    path: '/uus-disain/loo',
+    name: 'create-new',
+    component: () => import('../features/creation/CreatePage.vue'),
+    props: { design: 'new' },
+    meta: { title: 'Loo uus' },
+  },
+  {
     path: '/lapsed',
     name: 'children',
     component: () => import('../features/children/ChildrenPage.vue'),
