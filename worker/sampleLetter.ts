@@ -123,7 +123,7 @@ export const writeWithClaude: WriteLetter = async (input, apiKey) => {
 }
 
 /** Adds one to a day's counter and tells whether it was still within the limit. */
-async function countIn(kv: KVNamespace, key: string, limit: number): Promise<boolean> {
+export async function countIn(kv: KVNamespace, key: string, limit: number): Promise<boolean> {
   const used = Number((await kv.get(key)) ?? 0)
   if (used >= limit) return false
   await kv.put(key, String(used + 1), { expirationTtl: 2 * 24 * 60 * 60 })

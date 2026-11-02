@@ -15,7 +15,7 @@ import { NEW_DESIGN_ROOT } from '../../components/brand/design'
 import type { ChildProfile, ChildProfileDraft } from '../../domain/models'
 import type { TopicId } from '../../data/topics'
 import { track } from '../../app/analytics'
-import { LETTERS_ERROR_TEXTS, LettersRequestError, requestPassLetters } from './passLetters'
+import { LETTERS_ERROR_TEXTS, LettersRequestError, readDecember, requestPassLetters, writeDecember } from './passLetters'
 import type { SeasonPass } from './seasonPass'
 
 /**
@@ -51,24 +51,6 @@ interface About {
 }
 const about = reactive<About>({ topics: [], interests: [], family: [], foods: [], personality: '', achievements: [], details: '' })
 const december = ref('')
-const DECEMBER_KEY = 'kirjavolu.joulupass.detsember'
-
-function readDecember(id: string): string {
-  try {
-    return (JSON.parse(localStorage.getItem(DECEMBER_KEY) ?? '{}') as Record<string, string>)[id] ?? ''
-  } catch {
-    return ''
-  }
-}
-function writeDecember(id: string, text: string): void {
-  try {
-    const all = JSON.parse(localStorage.getItem(DECEMBER_KEY) ?? '{}') as Record<string, string>
-    localStorage.setItem(DECEMBER_KEY, JSON.stringify({ ...all, [id]: text }))
-  } catch {
-    // Private windows may refuse; the text is still in the form.
-  }
-}
-
 // Another child picked: the form shows what their profile already says.
 watch(
   child,

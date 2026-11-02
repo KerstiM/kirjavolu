@@ -1,13 +1,26 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
-import { RefreshCw, X } from 'lucide-vue-next'
+import { RefreshCw, Sparkles, X } from 'lucide-vue-next'
 import type { GeneratedItem } from '../../domain/models'
+
+type Text = Pick<GeneratedItem, 'heading' | 'body' | 'signature'>
 
 /**
  * Editor for one item, opened from the card's "Muuda" button in every layout.
- * Changes apply only when saved.
+ * Changes apply only when saved. An AI letter can also be rewritten by the AI as the parent
+ * asks: the new text lands in the fields, and "Salvesta" keeps it, "Tühista" keeps the old one.
  */
-const props = defineProps<{ item: GeneratedItem; title: string; busy?: boolean; fitHint?: boolean; noVariants?: boolean }>()
+const props = defineProps<{
+  item: GeneratedItem
+  title: string
+  busy?: boolean
+  fitHint?: boolean
+  noVariants?: boolean
+  /** Rewrites the letter with the AI; throws an Error whose message is shown to the parent. */
+  aiFix?: (wish: string) => Promise<Text>
+  /** Under the AI field, e.g. how many fixes are left, or why there are none. */
+  aiNote?: string
+}>()
 const emit = defineEmits<{
   save: [patch: Pick<GeneratedItem, 'heading' | 'body' | 'signature'>]
   regenerate: []
@@ -24,6 +37,27 @@ const dialog = ref<HTMLElement | null>(null)
 const rows = computed(() => Math.min(16, Math.max(5, Math.ceil(draft.body.length / 55) + draft.body.split('\n').length)))
 const words = computed(() => draft.body.trim().split(/\s+/).filter(Boolean).length)
 let previousFocus: Element | null = null
+
+const wish = ref('')
+const fixing = ref(false)
+const fixError = ref('')
+const fixed = ref(false)
+
+async function fixWithAi(): Promise<void> {
+  if (!props.aiFix || fixing.value || !wish.value.trim()) return
+  fixing.value = true
+  fixError.value = ''
+  try {
+    const letter = await props.aiFix(wish.value.trim())
+    Object.assign(draft, { heading: letter.heading, body: letter.body, signature: letter.signature ?? draft.signature })
+    fixed.value = true
+    wish.value = ''
+  } catch (error) {
+    fixError.value = error instanceof Error ? error.message : 'Midagi läks valesti. Proovi uuesti.'
+  } finally {
+    fixing.value = false
+  }
+}
 
 function save(): void {
   emit('save', {
@@ -89,6 +123,32 @@ onBeforeUnmount(() => {
           <label class="dialog__label" for="item-editor-signature">Allkiri</label>
           <textarea id="item-editor-signature" v-model="draft.signature" class="textarea" rows="2" />
         </template>
+        <section v-if="aiFix || aiNote" class="ai-fix" aria-labelledby="ai-fix-title">
+          <h3 id="ai-fix-title" class="dialog__label">Paranda AI-ga</h3>
+          <template v-if="aiFix">
+            <label class="visually-hidden" for="item-editor-wish">Mida AI peaks muutma?</label>
+            <textarea
+              id="item-editor-wish"
+              v-model="wish"
+              class="textarea"
+              rows="2"
+              maxlength="500"
+              placeholder="Mida AI peaks muutma? Näiteks: tee lühemaks; Liisi on beebi, ta ei räägi veel"
+              :disabled="fixing"
+            />
+            <div class="ai-fix__row">
+              <button type="button" class="action" :disabled="fixing || !wish.trim()" @click="fixWithAi">
+                <Sparkles :size="15" aria-hidden="true" /> {{ fixing ? 'Päkapikk kirjutab ümber…' : 'Paranda AI-ga' }}
+              </button>
+              <span v-if="aiNote" class="dialog__hint">{{ aiNote }}</span>
+            </div>
+          </template>
+          <p v-else class="dialog__hint">{{ aiNote }}</p>
+          <p v-if="fixed" class="ai-fix__done" role="status">
+            AI kirjutas kirja ümber. Salvesta, kui see sobib, või vajuta „Tühista“, et jätta vana.
+          </p>
+          <p v-if="fixError" class="ai-fix__error" role="alert">{{ fixError }}</p>
+        </section>
         <footer class="dialog__actions">
           <button v-if="!noVariants" type="button" class="action action--ghost" :disabled="busy" @click="emit('regenerate')">
             <RefreshCw :size="15" aria-hidden="true" /> Uus variant
@@ -161,6 +221,32 @@ onBeforeUnmount(() => {
   margin: 0;
   font-size: 0.8rem;
   color: var(--ink-soft);
+}
+.ai-fix {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--lavender-soft);
+  h3 {
+    margin: 0;
+  }
+}
+.ai-fix__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+}
+.ai-fix__done,
+.ai-fix__error {
+  margin: 0;
+  font-size: 0.85rem;
+}
+.ai-fix__error {
+  color: var(--danger);
 }
 .dialog__actions {
   display: flex;

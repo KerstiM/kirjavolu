@@ -158,6 +158,37 @@ describe('AI letters with the Jõulupass', () => {
     expect(screen.getByText(/kirjutas päkapikk Tuduja tehisaru abil/)).toBeInTheDocument()
   })
 
+  it('rewrites one letter with the AI as the parent asks, using a fix', async () => {
+    localStorage.setItem(PASS_KEY, JSON.stringify({ ...PASS, fixesLeft: 30 }))
+    const fetch = vi.fn(async (url: string) =>
+      url === '/api/joulupass/kirjad'
+        ? Response.json({ letters: LETTERS, pass: { ...PASS, generationsLeft: 9, fixesLeft: 30 } })
+        : Response.json({ letter: { heading: 'Kallis Ruben!', body: 'Lühem kiri.', signature: 'Tuduja' }, pass: { ...PASS, generationsLeft: 9, fixesLeft: 29 } }),
+    )
+    vi.stubGlobal('fetch', fetch)
+    const { pinia } = await open('/uus-disain/joulupass')
+    const user = userEvent.setup()
+    await user.click(await screen.findByRole('button', { name: /Loo Rubeni jaoks AI-kirjad/ }))
+    const edits = await screen.findAllByRole('button', { name: /^Muuda: / })
+    await user.click(edits[5]!)
+
+    const dialog = await screen.findByRole('dialog', { name: /^Muuda: 6\. detsember/ })
+    expect(within(dialog).getByText('AI-parandusi alles: 30.')).toBeInTheDocument()
+    await user.type(within(dialog).getByLabelText('Mida AI peaks muutma?'), 'tee lühemaks')
+    await user.click(within(dialog).getByRole('button', { name: 'Paranda AI-ga' }))
+    await vi.waitFor(() => expect(within(dialog).getByLabelText('Tekst')).toHaveValue('Lühem kiri.'))
+
+    const [url, init] = fetch.mock.calls[1] as unknown as [string, RequestInit]
+    expect(url).toBe('/api/joulupass/parandus')
+    expect(JSON.parse(String(init.body))).toMatchObject({ code: PASS.code, day: 6, wish: 'tee lühemaks', before: 'Kiri 5.', after: 'Kiri 7.' })
+    expect(loadPass()?.fixesLeft).toBe(29)
+
+    // Nothing changes until the parent saves it.
+    expect(useCreationsStore(pinia).creations[0]?.items[5]?.body).toBe('Kiri 6.')
+    await user.click(within(dialog).getByRole('button', { name: 'Salvesta' }))
+    expect(useCreationsStore(pinia).creations[0]?.items[5]).toMatchObject({ body: 'Lühem kiri.', edited: true })
+  })
+
   it('says when the pass has run out on the server', async () => {
     localStorage.setItem(PASS_KEY, JSON.stringify(PASS))
     vi.stubGlobal('fetch', vi.fn(async () => Response.json({ error: 'used_up' }, { status: 409 })))

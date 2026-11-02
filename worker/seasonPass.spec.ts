@@ -20,7 +20,7 @@ function memoryStore() {
   const bySession = new Map<string, SeasonPass>()
   const store: PassStore = {
     async activate(sessionId, code, until) {
-      if (!bySession.has(sessionId)) bySession.set(sessionId, { code, generationsLeft: 10, validUntil: until })
+      if (!bySession.has(sessionId)) bySession.set(sessionId, { code, generationsLeft: 10, fixesLeft: 30, validUntil: until })
       return bySession.get(sessionId) ?? null
     },
     async find(code) {
@@ -137,7 +137,7 @@ describe('GET /api/joulupass/ost?session_id=…', () => {
     const response = await get()(env, deps)
     expect(await response.json()).toEqual({
       status: 'paid',
-      pass: { code: CODE, generationsLeft: 10, validUntil: '2027-01-31T21:59:59.000Z' },
+      pass: { code: CODE, generationsLeft: 10, fixesLeft: 30, validUntil: '2027-01-31T21:59:59.000Z' },
     })
     await get()(env, deps)
     expect(bySession.size).toBe(1)
@@ -183,6 +183,7 @@ describe('POST /api/stripe/webhook', () => {
     expect(bySession.get('cs_test_a1b2c3d4e5f6')).toEqual({
       code: CODE,
       generationsLeft: 10,
+      fixesLeft: 30,
       validUntil: '2027-01-31T21:59:59.000Z',
     })
   })
@@ -228,7 +229,7 @@ describe('POST /api/joulupass/kood', () => {
     const { env, deps, store } = setup()
     await store.activate('cs_test_1', CODE, '2027-01-31T21:59:59.000Z')
     const response = await handlePassLookup(lookup('kv 7kqm 3fxa'), env, deps)
-    expect(await response.json()).toEqual({ pass: { code: CODE, generationsLeft: 10, validUntil: '2027-01-31T21:59:59.000Z' } })
+    expect(await response.json()).toEqual({ pass: { code: CODE, generationsLeft: 10, fixesLeft: 30, validUntil: '2027-01-31T21:59:59.000Z' } })
   })
 
   it('says when a code is unknown or not a code', async () => {
