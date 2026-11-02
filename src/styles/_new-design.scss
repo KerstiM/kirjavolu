@@ -1,19 +1,9 @@
-// The new design while it is tried out at /uus-disain/…: cream post-office paper and flat
-// buttons that turn a little lighter on hover. A page opts in with the class .design-new;
+// The new design while it is tried out at /uus-disain/…: cream post-office paper. Primary
+// buttons are the same as in the current design. A page opts in with the class .design-new;
 // .btn.btn--… outweighs the button's own scoped styles.
 .design-new {
   background: #fdf6ec;
 
-  .btn.btn--primary {
-    box-shadow: none;
-    transition: background 0.15s ease;
-    &:hover:not(:disabled) {
-      background: var(--lavender-light);
-    }
-    &:active:not(:disabled) {
-      background: var(--lavender-ink);
-    }
-  }
   .btn.btn--secondary {
     border-width: 2px;
     border-color: var(--lavender-mid);

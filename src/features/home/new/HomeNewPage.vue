@@ -200,13 +200,12 @@ const WIZARD = designPath('new', '/loo')
     outline-offset: 3px;
   }
 }
+// The same as the primary button in the current design.
 .chunky--primary {
   background: var(--lavender);
   color: #fff;
+  box-shadow: 0 6px 16px rgba(107, 90, 168, 0.25);
   &:hover {
-    background: var(--lavender-light);
-  }
-  &:active {
     background: var(--lavender-ink);
   }
 }
