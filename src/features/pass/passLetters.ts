@@ -27,7 +27,7 @@ export const LETTERS_ERROR_TEXTS: Record<LettersError, string> = {
   too_many: 'Liiga palju katseid järjest. Oota üks minut ja proovi uuesti.',
   not_found: 'Seda koodi ei leitud. Sisesta kood allpool uuesti.',
   expired: 'See Jõulupass ei kehti enam.',
-  used_up: 'Selle Jõulupassi AI-loomised on otsas.',
+  used_up: 'Selle Jõulupassi kirjasarjad ja lood on otsas.',
   daily_limit: 'Päkapikud on täna väga palju kirjutanud. Proovi homme uuesti. Loomiskord jäi alles.',
   busy: 'Päkapikk on praegu väga hõivatud. Proovi mõne minuti pärast uuesti. Loomiskord jäi alles.',
   invalid: 'Lapse andmetes on midagi puudu. Kontrolli nime, vanust ja lugemisoskust.',
@@ -37,7 +37,7 @@ export const LETTERS_ERROR_TEXTS: Record<LettersError, string> = {
 /** The same reasons when one letter is rewritten: then it is a fix that stays, not a generation. */
 export const FIX_ERROR_TEXTS: Record<LettersError, string> = {
   ...LETTERS_ERROR_TEXTS,
-  used_up: 'Selle Jõulupassi AI-parandused on otsas. Kirja saad ikka ise muuta.',
+  used_up: 'Selle Jõulupassi päkapiku muudatused on otsas. Teksti saad ikka ise muuta.',
   daily_limit: 'Päkapikud on täna väga palju kirjutanud. Proovi homme uuesti. Parandus jäi alles.',
   busy: 'Päkapikk on praegu väga hõivatud. Proovi mõne minuti pärast uuesti. Parandus jäi alles.',
   failed: 'Kirja ümberkirjutamine ei õnnestunud. Parandus jäi alles, proovi uuesti.',
@@ -91,7 +91,7 @@ export function seriesContent(child: ChildProfile, letters: Letter[], now = new 
   }
   return {
     id: createId(),
-    title: '24 AI-kirja päkapikult',
+    title: `${child.name}: 24 isiklikku kirja`,
     subtitle: `Jõulud · ${child.name} · saatja päkapikk Tuduja`,
     createdAt: now.toISOString(),
     request,

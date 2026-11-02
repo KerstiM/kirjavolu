@@ -40,7 +40,7 @@ function startOver(): void {
           :to="`${NEW_DESIGN_ROOT}/joulupass`"
           class="nav__link nav__link--pass"
           active-class="is-active"
-          :aria-label="passLeft !== null ? `Jõulupass, AI-loomisi alles ${passLeft}` : undefined"
+          :aria-label="passLeft !== null ? `Jõulupass, kirjasarju või lugusid alles ${passLeft}` : undefined"
         >
           Jõulupass<span v-if="passLeft !== null" class="nav__count" aria-hidden="true">{{ passLeft }}</span>
         </RouterLink>
@@ -147,7 +147,7 @@ function startOver(): void {
   }
 }
 // With the Jõulupass link the bar is one item longer, so "Loo uus" keeps only its plus sooner.
-@media (max-width: 520px) {
+@media (max-width: 640px) {
   .app-header--pass .nav__cta-text {
     position: absolute;
     width: 1px;

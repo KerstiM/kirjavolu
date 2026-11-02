@@ -12,7 +12,7 @@ import PosterBoard from './poster/PosterBoard.vue'
 import MiniSheet from './mini/MiniSheet.vue'
 import ItemEditorDialog from './ItemEditorDialog.vue'
 import { ageBand, buildAudience, usesSmallCards } from '../../domain/generators/audience'
-import { formatDayMonth } from '../../domain/text/estonian'
+import { formatDayMonth, namesInCase } from '../../domain/text/estonian'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import EmptyState from '../../components/ui/EmptyState.vue'
 import SegmentedControl from '../../components/ui/SegmentedControl.vue'
@@ -49,8 +49,8 @@ const pass = ref(loadPass())
 const passUsable = computed(() => !!pass.value && new Date(pass.value.validUntil) > new Date())
 const aiNote = computed(() => {
   if (!aiWritten.value) return undefined
-  if (!passUsable.value) return 'AI-ga parandamiseks sisesta oma Jõulupassi kood lehel „Jõulupass“. Teksti saad ise muuta ka ilma selleta.'
-  return `AI-parandusi alles: ${pass.value?.fixesLeft ?? 30}.`
+  if (!passUsable.value) return 'Päkapikult muudatust paludes kulub Jõulupassist üks muudatus. Sisesta selleks oma kood lehel „Jõulupass“.'
+  return `Kulub 1 päkapiku muudatus, alles on ${pass.value?.fixesLeft ?? 30}.`
 })
 async function fixWithAi(wish: string): Promise<Pick<GeneratedItem, 'heading' | 'body' | 'signature'>> {
   const current = content.value
@@ -75,7 +75,7 @@ async function fixWithAi(wish: string): Promise<Pick<GeneratedItem, 'heading' | 
 function storyWritten(next: GeneratedContent, spent: SeasonPass): void {
   store.applyChoices(props.id, next)
   pass.value = spent
-  announce('AI kirjutas loo valmis.')
+  announce('Päkapikk kirjutas loo valmis.')
 }
 // Counted once per opened creation, not again when its choices change.
 watch(
@@ -411,9 +411,9 @@ function exportText(): void {
       <aside class="side no-print" aria-label="Kohanda ja prindi">
         <p v-if="aiWritten" class="ai-note">
           <template v-if="content.request.contentType === 'story'">
-            Selle loo kirjutas tehisaru. Iga lehekülge saad muuta nupuga „Muuda“, seal saab ka AI-ga parandada.
+            Selle loo kirjutas päkapikk just {{ namesInCase(content.request.children, 'allative') }}. Iga lehekülge saad muuta nupuga „Muuda“, seal saab ka päkapikult muudatust paluda.
           </template>
-          <template v-else>Need kirjad kirjutas päkapikk Tuduja tehisaru abil. Iga kirja saad muuta nupuga „Muuda“.</template>
+          <template v-else>Need kirjad kirjutas päkapikk Tuduja just {{ namesInCase(content.request.children, 'allative') }}. Iga kirja saad muuta nupuga „Muuda“, seal saab ka päkapikult muudatust paluda.</template>
         </p>
         <CustomizePanel v-else :content="content" :busy="updating" :errors="choiceErrors" @change="applyChoices" />
         <PassOfferCard
