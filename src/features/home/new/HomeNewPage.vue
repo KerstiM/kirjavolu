@@ -402,7 +402,7 @@ const STAMP_TILTS = [-3, 2, -1, 3, -2, 1.5]
 }
 .stamps {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(6.6rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
   gap: 1.1rem;
   margin: 0;
   padding: 0;
@@ -436,15 +436,17 @@ const STAMP_TILTS = [-3, 2, -1, 3, -2, 1.5]
   justify-content: center;
   gap: 0.2rem;
   aspect-ratio: 9 / 10;
-  padding: 0.5rem;
+  padding: 0.6rem 0.5rem;
   background: var(--stamp);
   text-align: center;
 }
 .stamp__name {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1.05rem;
   line-height: 1.15;
+  // Wide enough for the longest one-word names (Piimahammas, Suvevaheaeg) to stay whole.
+  max-width: 100%;
 }
 .stamp__when {
   font-size: 0.75rem;
