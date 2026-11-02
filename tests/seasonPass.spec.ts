@@ -203,6 +203,65 @@ describe('AI letters with the Jõulupass', () => {
   })
 })
 
+describe('AI story with the Jõulupass', () => {
+  async function storyPreview() {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const children = useChildrenStore()
+    children.restoreDemo()
+    const ruben = children.children.find((child) => child.name === 'Ruben')!
+    const content = await templateGenerator.generate({
+      contentType: 'story',
+      children: [ruben],
+      occasionId: 'christmas',
+      general: { ...DEFAULT_GENERAL, length: 'short' },
+      seed: 1,
+      options: defaultOptions('christmas').story,
+    })
+    useCreationsStore(pinia).add(content)
+    const router = createRouter({ history: createMemoryHistory(), routes })
+    router.push(`/uus-disain/looming/${content.id}`)
+    await router.isReady()
+    render(App, { global: { plugins: [pinia, router] } })
+    return { pinia, id: content.id }
+  }
+
+  it('writes the story again with the AI from the same choices, using a generation', async () => {
+    localStorage.setItem(PASS_KEY, JSON.stringify({ ...PASS, fixesLeft: 30 }))
+    const fetch = vi.fn(async () =>
+      Response.json({ story: { title: 'Ruben ja lumehelbe saladus', pages: ['Üks.', 'Kaks.', 'Kolm.'] }, pass: { ...PASS, generationsLeft: 9, fixesLeft: 30 } }),
+    )
+    vi.stubGlobal('fetch', fetch)
+    const { pinia, id } = await storyPreview()
+    const user = userEvent.setup()
+    const card = await screen.findByRole('region', { name: /Kirjuta lugu AI-ga/ })
+    expect(within(card).getByText(/alles on 10/)).toBeInTheDocument()
+    await user.click(within(card).getByRole('button', { name: 'Kirjuta lugu AI-ga' }))
+
+    await vi.waitFor(() => expect(useCreationsStore(pinia).byId(id)?.generator.id).toBe('ai-joulupass'))
+    const creation = useCreationsStore(pinia).byId(id)!
+    expect(creation.title).toBe('Ruben ja lumehelbe saladus')
+    expect(creation.items.map((item) => item.body)).toEqual(['Üks.', 'Kaks.', 'Kolm.'])
+    expect(creation.request.contentType).toBe('story')
+    const [url, init] = fetch.mock.calls[0] as unknown as [string, RequestInit]
+    expect(url).toBe('/api/joulupass/lugu')
+    const body = JSON.parse(String(init.body))
+    expect(body.story).toMatchObject({ genre: defaultOptions('christmas').story.genre, length: 'short', occasion: 'Jõulud' })
+    expect(body.children[0]).toMatchObject({ name: 'Ruben' })
+    expect(body.children[0]).not.toHaveProperty('parentNotes')
+    expect(loadPass()?.generationsLeft).toBe(9)
+    expect(await screen.findByText(/Selle loo kirjutas tehisaru/)).toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: /Kirjuta lugu AI-ga/ })).toBeNull()
+  })
+
+  it('tells what the pass gives when there is none', async () => {
+    await storyPreview()
+    const card = await screen.findByRole('region', { name: /Kirjuta lugu AI-ga/ })
+    expect(within(card).getByRole('link', { name: 'Jõulupass' })).toHaveAttribute('href', '/uus-disain/joulupass')
+    expect(within(card).queryByRole('button')).toBeNull()
+  })
+})
+
 describe('finding the Jõulupass', () => {
   it('is in the new-design menu, with what is left once this browser has a pass', async () => {
     await open('/uus-disain')
