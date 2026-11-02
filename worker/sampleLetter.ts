@@ -67,7 +67,15 @@ const LENGTH: Record<ReadingLevel, string> = {
   advanced: '120–180 sõna; laps loeb vabalt, võib olla rikkalikum sõnavara',
 }
 
+/** The elf's name in every prompt: the model once wrote "Tujudaks" when explaining it. */
+export const ELF_NAME = `Sinu nimi on Tuduja, sõnast „tuduma“ (magama). Kirjuta nimi alati täpselt nii ja käänates nii: Tuduja, Tudujat, Tudujale, Tudujaks, Tudujaga.`
+
+/** Puts back the elf's name where the model swapped its letters (Tujuda → Tuduja). */
+export const fixElfName = (text: string): string => text.replace(/Tujuda/g, 'Tuduja')
+
 const SYSTEM = `Sa oled päkapikk Tuduja, kes kirjutab Eesti lapsele 24 õhtu jooksul igal hommikul ühe kirja. Nüüd kirjutad esimese kirja, 1. detsembri hommikuks.
+
+${ELF_NAME}
 
 Kirjuta korrektses, loomulikus eesti keeles, nagu kirjutaks hea lastekirjanik. Kiri on soe, mänguline ja maagiline: päkapikk tutvustab ennast, räägib, kust ta tuli, ja vihjab, et järgmistel hommikutel tuleb veel kirju. Too sisse üks-kaks lapse huvi loomulikult, osana loost, mitte loeteluna. Kõneta last tema nimega.
 
@@ -116,10 +124,10 @@ export const writeWithClaude: WriteLetter = async (input, apiKey) => {
   const text = response.content.find((block) => block.type === 'text')
   if (!text || text.type !== 'text') throw new Error('no text in response')
   const letter = JSON.parse(text.text) as Partial<SampleLetter>
-  const heading = clean(letter.heading, 80)
-  const body = typeof letter.body === 'string' ? letter.body.trim().slice(0, 2500) : ''
+  const heading = fixElfName(clean(letter.heading, 80))
+  const body = fixElfName(typeof letter.body === 'string' ? letter.body.trim().slice(0, 2500) : '')
   if (!heading || !body) throw new Error('empty letter')
-  return { heading, body, signature: clean(letter.signature, 80) || 'Sinu päkapikk Tuduja' }
+  return { heading, body, signature: fixElfName(clean(letter.signature, 80)) || 'Sinu päkapikk Tuduja' }
 }
 
 /** Adds one to a day's counter and tells whether it was still within the limit. */

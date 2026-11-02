@@ -83,7 +83,7 @@ function removeImage(): void {
 
 <template>
   <section class="decor no-print" aria-labelledby="decor-title">
-    <h2 id="decor-title" class="decor__title">Kujundus</h2>
+    <h2 id="decor-title" class="decor__title">Taust ja pilt</h2>
 
     <fieldset class="decor__group">
       <legend>Taust</legend>

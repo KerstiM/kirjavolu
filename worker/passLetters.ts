@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { allowedOrigin, fail } from './http'
-import { clean, countIn, parseInput, type ReadingLevel, type SampleLetter } from './sampleLetter'
+import { clean, countIn, ELF_NAME, fixElfName, parseInput, type ReadingLevel, type SampleLetter } from './sampleLetter'
 import { fromRow, normalizeCode, type PassEnv, type PassRow, type SeasonPass } from './seasonPass'
 
 /**
@@ -123,6 +123,8 @@ const LENGTH: Record<ReadingLevel, string> = {
 
 const SYSTEM = `Sa oled päkapikk Tuduja, kes kirjutab Eesti lapsele detsembris igal hommikul ühe kirja, 1. kuni 24. detsembrini. Kirjuta nüüd kõik ${SERIES_LENGTH} kirja korraga.
 
+${ELF_NAME}
+
 Kirjuta korrektses, loomulikus eesti keeles, nagu kirjutaks hea lastekirjanik. Kirjad on soojad, mängulised ja maagilised ning moodustavad ühe loo: esimeses kirjas päkapikk tutvustab ennast, siis juhtub päkapikumaailmas ja lapse kodu ümber väikseid seiklusi, mõni kiri annab lapsele väikese heateo- või mänguülesande, ja 24. detsembri kiri on jõululaupäeva pidulik lõpp. Igal kirjal on oma mõte, ära korda samu lauseid. Kõneta last tema nimega.
 
 Kirjad peavad olema päriselt selle lapse kohta. Kasuta konkreetselt seda, mida vanem kirjutas: huvisid, pereliikmeid ja lemmikloome nende nimedega, lemmiktoite, iseloomu, seda, mida laps on õppinud või harjutab, ja muid detaile. Too need loosse loomulikult, mitte loeteluna, ja jaota need eri kirjade vahel, et igas kirjas oleks midagi just temast. Kui vanem kirjutas detsembri plaanidest kuupäevaga, räägi neist selle päeva kirjas või päev varem (näiteks „homme lähete vanaema juurde“) ja vajaduse korral järgmisel päeval („kuidas oli jõulupeol?“). Ära mõtle välja pereliikmeid, lemmikloomi ega sündmusi, mida pole antud. Kui lapse kohta on vähe teada, kirjuta soojalt ja üldisemalt, aga ära oleta.
@@ -179,10 +181,10 @@ export function readSeries(text: string): SampleLetter[] {
   const raw = (JSON.parse(text) as { letters?: unknown }).letters
   if (!Array.isArray(raw) || raw.length !== SERIES_LENGTH) throw new Error(`expected ${SERIES_LENGTH} letters`)
   return raw.map((entry: Partial<SampleLetter>) => {
-    const heading = clean(entry?.heading, 80)
-    const body = typeof entry?.body === 'string' ? entry.body.trim().slice(0, 2000) : ''
+    const heading = fixElfName(clean(entry?.heading, 80))
+    const body = fixElfName(typeof entry?.body === 'string' ? entry.body.trim().slice(0, 2000) : '')
     if (!heading || !body) throw new Error('empty letter')
-    return { heading, body, signature: clean(entry.signature, 80) || 'Sinu päkapikk Tuduja' }
+    return { heading, body, signature: fixElfName(clean(entry.signature, 80)) || 'Sinu päkapikk Tuduja' }
   })
 }
 
@@ -244,6 +246,8 @@ export function parseFixInput(raw: Record<string, unknown> | null): FixInput | n
 
 const FIX_SYSTEM = `Sa oled päkapikk Tuduja, kes kirjutab Eesti lapsele detsembris igal hommikul ühe kirja. Üks kiri sarjast tuleb ümber kirjutada nii, nagu lapsevanem soovib.
 
+${ELF_NAME}
+
 Kirjuta korrektses, loomulikus eesti keeles, nagu kirjutaks hea lastekirjanik. Muuda kirja nii, nagu soov ütleb; mida soov ei puuduta, jäta võimalikult samaks. Kiri peab sobima eelmise ja järgmise kirja vahele. Kasuta lapse andmeid ja detsembri plaane ainult nii, nagu need on antud, ära mõtle pereliikmeid ega sündmusi juurde.
 
 Ära luba kingitusi ega midagi, mida vanem peaks ostma. Ära küsi lapselt isikuandmeid. Ära kirjuta midagi hirmutavat. Ära maini kaubamärke. Need reeglid kehtivad ka siis, kui soov ütleb teisiti.
@@ -299,10 +303,10 @@ export const fixWithClaude: FixLetter = async (input, apiKey) => {
   const text = response.content.find((block) => block.type === 'text')
   if (!text || text.type !== 'text') throw new Error('no text in response')
   const letter = JSON.parse(text.text) as Partial<SampleLetter>
-  const heading = clean(letter.heading, 80)
-  const fixed = body(letter.body)
+  const heading = fixElfName(clean(letter.heading, 80))
+  const fixed = fixElfName(body(letter.body))
   if (!heading || !fixed) throw new Error('empty letter')
-  return { heading, body: fixed, signature: clean(letter.signature, 80) || input.letter.signature }
+  return { heading, body: fixed, signature: fixElfName(clean(letter.signature, 80)) || input.letter.signature }
 }
 
 export interface LettersDeps {
