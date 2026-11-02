@@ -22,6 +22,12 @@ export const routes: RouteRecordRaw[] = [
     meta: { title: 'Näide' },
   },
   {
+    path: '/kolin',
+    name: 'transfer',
+    component: () => import('../features/moving/TransferPage.vue'),
+    meta: { title: 'Andmete toomine' },
+  },
+  {
     path: '/looming/:id',
     name: 'preview',
     component: () => import('../features/preview/PreviewPage.vue'),
