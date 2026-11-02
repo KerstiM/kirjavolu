@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { GeneratedContent } from '../../domain/models'
 import { joinList } from '../../domain/text/estonian'
+import Mascot from '../../components/brand/Mascot.vue'
 
 /**
  * A freshly made creation arrives as post: the parent opens the envelope, the first
@@ -16,7 +17,7 @@ const openButton = ref<HTMLButtonElement | null>(null)
 
 const first = computed(() => props.content.items[0])
 const addressee = computed(() => joinList(props.content.request.children.map((child) => child.name)))
-const sender = computed(() => first.value?.signature?.split('\n').pop()?.trim() || 'Päkapikumaa')
+const sender = computed(() => first.value?.signature?.split('\n').pop()?.trim() || 'Kirjavõlu')
 const peek = computed(() => first.value?.body.split(/\n{2,}/)[0] ?? '')
 // "2026-12-01" → "1.12"
 const postmarkDate = computed(() => first.value?.date?.slice(5).split('-').reverse().map(Number).join('.') ?? '✦')
@@ -109,12 +110,13 @@ onBeforeUnmount(() => {
             <defs><path id="postmark-ring" d="M50 14 a36 36 0 1 1 -0.1 0" /></defs>
             <circle cx="50" cy="50" r="46" />
             <circle cx="50" cy="50" r="28" />
-            <text><textPath href="#postmark-ring">PÄKAPIKUMAA · POSTKONTOR ·</textPath></text>
+            <text><textPath href="#postmark-ring">KIRJAVÕLU · VÕLUPOST ·</textPath></text>
             <text x="50" y="56" text-anchor="middle" class="postmark__mid">{{ postmarkDate }}</text>
           </svg>
         </span>
         <span class="seal" aria-hidden="true">★</span>
       </button>
+      <Mascot :mood="stage === 'closed' ? 'wave' : 'happy'" :size="84" class="reveal__mascot" />
     </div>
 
     <p class="reveal__hint" aria-hidden="true">{{ stage === 'closed' ? 'Vajuta ümbrikule' : ' ' }}</p>
@@ -331,8 +333,10 @@ $paper-dark: #e9d3b0;
   height: 3.8rem;
   padding: 4px;
   background: #fff;
-  // Perforated edge.
-  mask: radial-gradient(circle 3px at 3px 3px, transparent 98%, #000) -3px -3px / 8px 8px;
+  // Perforated edge: holes only in the padding, the picture itself stays whole.
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    radial-gradient(circle 3px at 3px 3px, transparent 98%, #000) -3px -3px / 8px 8px;
   transform: rotate(4deg);
 }
 .stamp__art {
@@ -446,6 +450,22 @@ $paper-dark: #e9d3b0;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+// The little envelope brought the big one and waves beside it.
+.reveal__mascot {
+  position: absolute;
+  z-index: 8;
+  left: -9%;
+  bottom: -24%;
+  animation: mascot-in 0.5s 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  pointer-events: none;
+}
+@keyframes mascot-in {
+  from {
+    transform: translate(-30px, 30px) rotate(-15deg);
+    opacity: 0;
+  }
 }
 
 // --- confetti ----------------------------------------------------------------

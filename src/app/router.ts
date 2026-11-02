@@ -4,6 +4,13 @@ import HomePage from '../features/home/HomePage.vue'
 export const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: HomePage, meta: { title: 'Kirjavõlu' } },
   {
+    // Test view of the new home page design; "/" keeps the current one until it is chosen.
+    path: '/uus-disain',
+    name: 'home-new',
+    component: () => import('../features/home/new/HomeNewPage.vue'),
+    meta: { title: 'Uus disain' },
+  },
+  {
     path: '/lapsed',
     name: 'children',
     component: () => import('../features/children/ChildrenPage.vue'),
