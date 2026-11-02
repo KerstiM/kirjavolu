@@ -29,7 +29,7 @@ Eestikeelne veebirakendus, mis aitab lapsevanematel luua lapsele personaalseid m
 - Andmed salvestatakse brauseri localStorage'isse versioonitud skeemiga
 
 ## Majutus ja kolimine aadressile kirjavolu.ee
-- **Cloudflare Workers** (`wrangler.jsonc`, `worker/index.ts`) serveerib rakendust kaustast `dist/` ja vastab aadressidele `/api/…` (praegu `/api/health`). Deploy: `.github/workflows/cloudflare.yml`, mis käivitub alles siis, kui repos on muutuja `CLOUDFLARE_ACCOUNT_ID` ja saladus `CLOUDFLARE_API_TOKEN`. Kohalikult `npm run worker:dev`.
+- **Cloudflare Workers** (`wrangler.jsonc`, `worker/index.ts`) serveerib rakendust kaustast `dist/` aadressidel kirjavolu.ee ja www.kirjavolu.ee ning vastab aadressidele `/api/…` (praegu `/api/health`). Domeenid on `wrangler.jsonc` failis `routes` all; DNS on Cloudflare'is, domeeni registreerija on Zone. Deploy: `.github/workflows/cloudflare.yml`, mis käivitub alles siis, kui repos on muutuja `CLOUDFLARE_ACCOUNT_ID` ja saladus `CLOUDFLARE_API_TOKEN`. Kohalikult `npm run worker:dev`.
 - **Andmete ülekanne.** Brauseri mälu kuulub ühele aadressile, seega kolimisel kaovad muidu profiilid ja loomingud. Kui GitHub Pagesi ehitusel on repo muutuja `MOVED_TO` (nt `https://kirjavolu.ee`), näitab vana aadress ribaga „Kirjavõlu kolis…“ ja nupuga „Vii andmed üle“. Nupp avab uue aadressi lehe `/kolin` ning annab lapsed, loomingud ja pildid `postMessage` kaudu üle; kumbki pool võtab sõnumeid vastu ainult teise täpselt aadressilt ja serverit see ei läbi. Andmeteta külastaja suunatakse kohe uuele aadressile. Loogika: `src/app/transfer.ts`.
 
 ## Kasutusstatistika

@@ -12,7 +12,10 @@
     "not_found_handling": "single-page-application",
     "run_worker_first": ["/api/*"]
   },
-  "observability": { "enabled": true }
-  // When kirjavolu.ee is active in Cloudflare, add:
-  // "routes": [{ "pattern": "kirjavolu.ee", "custom_domain": true }, { "pattern": "www.kirjavolu.ee", "custom_domain": true }]
+  "observability": { "enabled": true },
+  // Cloudflare creates the DNS records and certificates for these itself.
+  "routes": [
+    { "pattern": "kirjavolu.ee", "custom_domain": true },
+    { "pattern": "www.kirjavolu.ee", "custom_domain": true }
+  ]
 }
