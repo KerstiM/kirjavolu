@@ -42,7 +42,7 @@ const PER_ADDRESS_PER_DAY = 5
 const DEFAULT_DAILY_LIMIT = 300
 const MAX_BODY_BYTES = 4000
 
-const clean = (value: unknown, max: number): string =>
+export const clean = (value: unknown, max: number): string =>
   typeof value === 'string' ? value.replace(/\s+/g, ' ').trim().slice(0, max) : ''
 
 /** The request as a letter can use it, or null when something essential is missing. */

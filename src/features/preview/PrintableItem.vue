@@ -18,6 +18,8 @@ const props = defineProps<{
   uppercase?: boolean
   /** A sample to look at: no editing tools. */
   readonly?: boolean
+  /** Written by the AI: it can be edited by hand, but has no template variants. */
+  noVariants?: boolean
 }>()
 const emit = defineEmits<{ edit: []; regenerate: [] }>()
 
@@ -48,7 +50,7 @@ const kindClass = computed(() => [
       <button type="button" class="tool" :aria-label="`Muuda: ${item.label}`" @click="emit('edit')">
         <Pencil :size="15" aria-hidden="true" /><span>Muuda</span>
       </button>
-      <button type="button" class="tool" :disabled="busy" :aria-label="`Uus variant: ${item.label}`" @click="emit('regenerate')">
+      <button v-if="!noVariants" type="button" class="tool" :disabled="busy" :aria-label="`Uus variant: ${item.label}`" @click="emit('regenerate')">
         <RefreshCw :size="15" aria-hidden="true" :class="{ spin: busy }" /><span>Uus variant</span>
       </button>
     </div>

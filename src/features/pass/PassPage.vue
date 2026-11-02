@@ -5,6 +5,7 @@ import { Gift, PartyPopper } from 'lucide-vue-next'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import FormField from '../../components/ui/FormField.vue'
 import TestBar from '../../components/brand/TestBar.vue'
+import PassLetters from './PassLetters.vue'
 import { DESIGN_KEY, NEW_DESIGN_ROOT } from '../../components/brand/design'
 import {
   checkPass,
@@ -112,6 +113,8 @@ onBeforeUnmount(() => clearTimeout(retry))
           Stripe'i makse kirjelduses.
         </p>
       </section>
+
+      <PassLetters v-if="pass && isActive(pass)" :pass="pass" @spent="(next) => (pass = next)" />
 
       <form class="pass-form" @submit.prevent="submit">
         <h2>{{ pass ? 'Teine kood?' : 'Sisesta oma kood' }}</h2>

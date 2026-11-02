@@ -68,12 +68,12 @@ export interface PassStore {
   find(code: string): Promise<SeasonPass | null>
 }
 
-interface PassRow {
+export interface PassRow {
   code: string
   generations_left: number
   valid_until: string
 }
-const fromRow = (row: PassRow | null): SeasonPass | null =>
+export const fromRow = (row: PassRow | null): SeasonPass | null =>
   row && { code: row.code, generationsLeft: row.generations_left, validUntil: row.valid_until }
 
 export function d1Store(db: D1Database): PassStore {

@@ -1,0 +1,142 @@
+// @vitest-environment node
+import { describe, expect, it, vi } from 'vitest'
+import {
+  handlePassLetters,
+  readSeries,
+  seriesPrompt,
+  SERIES_LENGTH,
+  type GenerationStore,
+  type LettersEnv,
+  type WriteSeries,
+} from './passLetters'
+import type { SeasonPass } from './seasonPass'
+
+const CODE = 'KV-7KQM-3FXA'
+const NOW = new Date('2026-11-20T10:00:00Z')
+const JASPER = { name: 'Jasper', age: 6, readingLevel: 'independent', interests: ['mõistatused'] }
+const LETTER = { heading: 'Kallis Jasper!', body: 'Tere!\n\nMina olen päkapikk.', signature: 'Sinu päkapikk Tuduja' }
+const SERIES = Array.from({ length: SERIES_LENGTH }, () => LETTER)
+
+/** Behaves like the UPDATE … WHERE generations_left > 0 AND valid_until > now in D1. */
+function memoryStore(pass: SeasonPass | null) {
+  const rows = new Map(pass ? [[pass.code, { ...pass }]] : [])
+  const store: GenerationStore = {
+    async spend(code, now) {
+      const row = rows.get(code)
+      if (!row) return 'not_found'
+      if (new Date(row.validUntil) <= now) return 'expired'
+      if (row.generationsLeft <= 0) return 'used_up'
+      row.generationsLeft--
+      return { ...row }
+    },
+    async refund(code) {
+      const row = rows.get(code)
+      if (!row) return null
+      row.generationsLeft++
+      return { ...row }
+    },
+  }
+  return { store, rows }
+}
+
+function setup(pass: SeasonPass | null = { code: CODE, generationsLeft: 10, validUntil: '2027-01-31T21:59:59.000Z' }, burstOk = true) {
+  const env = {
+    ANTHROPIC_API_KEY: 'test-key',
+    PASS_LIMIT: { limit: async () => ({ success: burstOk }) },
+  } as unknown as LettersEnv
+  const { store, rows } = memoryStore(pass)
+  const write = vi.fn<WriteSeries>(async () => SERIES)
+  return { env, rows, write, deps: { store, write, now: () => NOW } }
+}
+
+const post = (body: unknown, headers: Record<string, string> = {}) =>
+  new Request('https://kirjavolu.ee/api/joulupass/kirjad', {
+    method: 'POST',
+    headers: { Origin: 'https://kirjavolu.ee', 'CF-Connecting-IP': '1.2.3.4', ...headers },
+    body: typeof body === 'string' ? body : JSON.stringify(body),
+  })
+
+describe('POST /api/joulupass/kirjad', () => {
+  it('writes the series and takes exactly one generation', async () => {
+    const { env, rows, write, deps } = setup()
+    const response = await handlePassLetters(post({ code: 'kv-7kqm-3fxa', child: { ...JASPER, family: 'x' } }), env, deps)
+    expect(response.status).toBe(200)
+    const data = (await response.json()) as { letters: unknown[]; pass: SeasonPass }
+    expect(data.letters).toHaveLength(SERIES_LENGTH)
+    expect(data.pass.generationsLeft).toBe(9)
+    expect(rows.get(CODE)?.generationsLeft).toBe(9)
+    // Only the minimal child data goes to the AI.
+    expect(write).toHaveBeenCalledWith({ name: 'Jasper', age: 6, readingLevel: 'independent', interests: ['mõistatused'] }, 'test-key')
+  })
+
+  it('refuses an expired code without asking the AI', async () => {
+    const { env, write, deps } = setup({ code: CODE, generationsLeft: 10, validUntil: '2026-01-31T21:59:59.000Z' })
+    const response = await handlePassLetters(post({ code: CODE, child: JASPER }), env, deps)
+    expect(response.status).toBe(410)
+    expect(await response.json()).toEqual({ error: 'expired' })
+    expect(write).not.toHaveBeenCalled()
+  })
+
+  it('refuses a code with no generations left', async () => {
+    const { env, write, deps } = setup({ code: CODE, generationsLeft: 0, validUntil: '2027-01-31T21:59:59.000Z' })
+    const response = await handlePassLetters(post({ code: CODE, child: JASPER }), env, deps)
+    expect(response.status).toBe(409)
+    expect(await response.json()).toEqual({ error: 'used_up' })
+    expect(write).not.toHaveBeenCalled()
+  })
+
+  it('refuses an unknown code', async () => {
+    const { env, deps } = setup(null)
+    const response = await handlePassLetters(post({ code: CODE, child: JASPER }), env, deps)
+    expect(response.status).toBe(404)
+  })
+
+  it('gives the generation back when the AI fails', async () => {
+    const { env, rows, write, deps } = setup()
+    write.mockRejectedValueOnce(new Error('boom'))
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    const response = await handlePassLetters(post({ code: CODE, child: JASPER }), env, deps)
+    expect(response.status).toBe(502)
+    expect(rows.get(CODE)?.generationsLeft).toBe(10)
+  })
+
+  it('spends the last generation only once when two requests race', async () => {
+    const { env, rows, deps } = setup({ code: CODE, generationsLeft: 1, validUntil: '2027-01-31T21:59:59.000Z' })
+    const results = await Promise.all([
+      handlePassLetters(post({ code: CODE, child: JASPER }), env, deps),
+      handlePassLetters(post({ code: CODE, child: JASPER }), env, deps),
+    ])
+    expect(results.map((r) => r.status).sort()).toEqual([200, 409])
+    expect(rows.get(CODE)?.generationsLeft).toBe(0)
+  })
+
+  it('guards like the sample letter: method, origin, size, input and burst limit', async () => {
+    const { env, write, deps } = setup()
+    const get = new Request('https://kirjavolu.ee/api/joulupass/kirjad', { headers: { Origin: 'https://kirjavolu.ee' } })
+    expect((await handlePassLetters(get, env, deps)).status).toBe(405)
+    expect((await handlePassLetters(post({ code: CODE, child: JASPER }, { Origin: 'https://evil.example' }), env, deps)).status).toBe(403)
+    expect((await handlePassLetters(post('x'.repeat(5000)), env, deps)).status).toBe(413)
+    expect((await handlePassLetters(post('{nope'), env, deps)).status).toBe(400)
+    expect((await handlePassLetters(post({ code: 'nope', child: JASPER }), env, deps)).status).toBe(400)
+    expect((await handlePassLetters(post({ code: CODE, child: { ...JASPER, age: 40 } }), env, deps)).status).toBe(400)
+    const limited = setup(undefined, false)
+    expect((await handlePassLetters(post({ code: CODE, child: JASPER }), limited.env, limited.deps)).status).toBe(429)
+    expect(write).not.toHaveBeenCalled()
+  })
+})
+
+describe('series', () => {
+  it('hands the child to the model as data inside a tag', () => {
+    expect(seriesPrompt({ name: 'Jasper', age: 6, readingLevel: 'beginner', interests: [] })).toContain(
+      '<laps>\nNimi: Jasper\nVanus: 6\nHuvid: pole teada\n</laps>',
+    )
+  })
+
+  it('accepts exactly 24 letters with text', () => {
+    expect(readSeries(JSON.stringify({ letters: SERIES.map((l) => ({ ...l, signature: '' })) }))[0]?.signature).toBe(
+      'Sinu päkapikk Tuduja',
+    )
+    expect(() => readSeries(JSON.stringify({ letters: SERIES.slice(1) }))).toThrow()
+    expect(() => readSeries(JSON.stringify({ letters: [...SERIES.slice(1), { ...LETTER, body: ' ' }] }))).toThrow()
+  })
+})

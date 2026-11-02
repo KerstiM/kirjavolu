@@ -7,6 +7,7 @@ import App from '@/app/App.vue'
 import { routes } from '@/app/router'
 import { useChildrenStore } from '@/features/children/childrenStore'
 import { loadPass, PASS_KEY } from '@/features/pass/seasonPass'
+import { useCreationsStore } from '@/features/preview/creationsStore'
 
 const PASS = { code: 'KV-7KQM-3FXA', generationsLeft: 10, validUntil: '2027-01-31T21:59:59.000Z' }
 
@@ -18,7 +19,7 @@ async function open(path: string) {
   router.push(path)
   await router.isReady()
   render(App, { global: { plugins: [pinia, router] } })
-  return router
+  return { router, pinia }
 }
 
 afterEach(() => {
@@ -57,7 +58,7 @@ describe('the Jõulupass page', () => {
   it('shows the code after Stripe sends the buyer back, and remembers it', async () => {
     const fetch = vi.fn(async () => Response.json({ status: 'paid', pass: PASS }))
     vi.stubGlobal('fetch', fetch)
-    const router = await open('/uus-disain/joulupass?session_id=cs_test_a1b2c3d4e5f6')
+    const { router } = await open('/uus-disain/joulupass?session_id=cs_test_a1b2c3d4e5f6')
     expect(await screen.findByRole('heading', { name: /Aitäh! Sinu Jõulupass on valmis/ })).toBeInTheDocument()
     expect(screen.getByTestId('pass-code')).toHaveTextContent('KV-7KQM-3FXA')
     expect(screen.getByText(/AI-genereerimisi alles/)).toHaveTextContent('AI-genereerimisi alles: 10. Kehtib kuni 31. jaanuar 2027.')
@@ -103,5 +104,59 @@ describe('the Jõulupass page', () => {
     await open('/uus-disain/joulupass')
     expect(await screen.findByTestId('pass-code')).toHaveTextContent('KV-7KQM-3FXA')
     expect(screen.getByRole('heading', { name: /Sinu Jõulupass/ })).toBeInTheDocument()
+  })
+})
+
+describe('AI letters with the Jõulupass', () => {
+  const LETTERS = Array.from({ length: 24 }, (_, i) => ({ heading: 'Kallis Ruben!', body: `Kiri ${i + 1}.`, signature: 'Sinu päkapikk Tuduja' }))
+
+  it('shows the next step once a valid pass is in this browser', async () => {
+    localStorage.setItem(PASS_KEY, JSON.stringify(PASS))
+    await open('/uus-disain/joulupass')
+    const section = await screen.findByRole('region', { name: /Järgmine samm: AI-kirjad/ })
+    expect(within(section).getByRole('button', { name: /Loo Rubeni jaoks AI-kirjad/ })).toBeInTheDocument()
+  })
+
+  it('is not offered for a pass that is used up', async () => {
+    localStorage.setItem(PASS_KEY, JSON.stringify({ ...PASS, generationsLeft: 0 }))
+    await open('/uus-disain/joulupass')
+    await screen.findByTestId('pass-code')
+    expect(screen.queryByRole('region', { name: /AI-kirjad/ })).toBeNull()
+  })
+
+  it('writes the series, counts the generation down and opens the letters', async () => {
+    localStorage.setItem(PASS_KEY, JSON.stringify(PASS))
+    const fetch = vi.fn(async () => Response.json({ letters: LETTERS, pass: { ...PASS, generationsLeft: 9 } }))
+    vi.stubGlobal('fetch', fetch)
+    const { router, pinia } = await open('/uus-disain/joulupass')
+    const user = userEvent.setup()
+    await user.click(await screen.findByRole('button', { name: /Loo Rubeni jaoks AI-kirjad/ }))
+
+    await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/uus-disain\/looming\//))
+    const [url, init] = fetch.mock.calls[0] as unknown as [string, RequestInit]
+    expect(url).toBe('/api/joulupass/kirjad')
+    const body = JSON.parse(String(init.body))
+    expect(body.code).toBe('KV-7KQM-3FXA')
+    expect(Object.keys(body.child).sort()).toEqual(['age', 'interests', 'name', 'readingLevel'])
+    expect(loadPass()?.generationsLeft).toBe(9)
+
+    const creation = useCreationsStore(pinia).creations[0]
+    expect(creation?.generator.id).toBe('ai-joulupass')
+    expect(creation?.items).toHaveLength(24)
+    expect(creation?.items[0]?.label).toMatch(/^1\. detsember \d{4}$/)
+    expect(creation?.items[23]?.date).toMatch(/-12-24$/)
+    // The preview keeps the AI's words: they can be edited, but the template engine does not replace them.
+    expect((await screen.findAllByRole('button', { name: /^Muuda: / })).length).toBe(24)
+    expect(screen.queryAllByRole('button', { name: /^Uus variant/ })).toHaveLength(0)
+    expect(screen.getByText(/kirjutas päkapikk Tuduja tehisaru abil/)).toBeInTheDocument()
+  })
+
+  it('says when the pass has run out on the server', async () => {
+    localStorage.setItem(PASS_KEY, JSON.stringify(PASS))
+    vi.stubGlobal('fetch', vi.fn(async () => Response.json({ error: 'used_up' }, { status: 409 })))
+    await open('/uus-disain/joulupass')
+    const user = userEvent.setup()
+    await user.click(await screen.findByRole('button', { name: /Loo Rubeni jaoks AI-kirjad/ }))
+    expect(await screen.findByRole('alert')).toHaveTextContent('AI-loomised on otsas')
   })
 })

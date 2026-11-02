@@ -1,4 +1,5 @@
 import { handleSampleLetter, type SampleEnv } from './sampleLetter'
+import { handlePassLetters, type LettersEnv } from './passLetters'
 import { handlePassLookup, handlePurchase, handleStripeWebhook, type PassEnv } from './seasonPass'
 
 /**
@@ -6,7 +7,7 @@ import { handlePassLookup, handlePurchase, handleStripeWebhook, type PassEnv } f
  * everything under /api/ is answered here. Later steps add accounts and sync
  * behind the same address, so the browser never talks to another domain.
  */
-export interface Env extends SampleEnv, PassEnv {
+export interface Env extends SampleEnv, PassEnv, LettersEnv {
   ASSETS: Fetcher
 }
 
@@ -21,6 +22,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
   if (pathname === '/api/proovikiri') return handleSampleLetter(request, env)
   if (pathname === '/api/joulupass/ost') return handlePurchase(request, env)
   if (pathname === '/api/joulupass/kood') return handlePassLookup(request, env)
+  if (pathname === '/api/joulupass/kirjad') return handlePassLetters(request, env)
   if (pathname === '/api/stripe/webhook') return handleStripeWebhook(request, env)
   return Response.json({ error: 'not_found' }, { status: 404 })
 }

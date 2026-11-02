@@ -9,7 +9,7 @@ import type { ContentTypeId, OccasionId, PrintableLayout } from '../domain/model
 export interface AnalyticsEvents {
   /** The wizard opened; type and occasion are known when a home page card was used. */
   wizard_start: { type: ContentTypeId | 'none'; occasion: OccasionId | 'none' }
-  child_added: { from: 'wizard' | 'profiles' }
+  child_added: { from: 'wizard' | 'profiles' | 'pass' }
   /** A creation was opened in the preview. */
   preview_shown: { type: ContentTypeId; occasion: OccasionId; items: number; children: number }
   print_clicked: { type: ContentTypeId; layout: PrintableLayout; mode: 'all' | 'child' | 'parent' }
