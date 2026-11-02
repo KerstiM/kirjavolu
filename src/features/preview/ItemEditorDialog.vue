@@ -7,7 +7,7 @@ import type { GeneratedItem } from '../../domain/models'
  * Editor for one item, opened from the card's "Muuda" button in every layout.
  * Changes apply only when saved.
  */
-const props = defineProps<{ item: GeneratedItem; title: string; busy?: boolean; fitHint?: boolean }>()
+const props = defineProps<{ item: GeneratedItem; title: string; busy?: boolean; fitHint?: boolean; noVariants?: boolean }>()
 const emit = defineEmits<{
   save: [patch: Pick<GeneratedItem, 'heading' | 'body' | 'signature'>]
   regenerate: []
@@ -90,7 +90,7 @@ onBeforeUnmount(() => {
           <textarea id="item-editor-signature" v-model="draft.signature" class="textarea" rows="2" />
         </template>
         <footer class="dialog__actions">
-          <button type="button" class="action action--ghost" :disabled="busy" @click="emit('regenerate')">
+          <button v-if="!noVariants" type="button" class="action action--ghost" :disabled="busy" @click="emit('regenerate')">
             <RefreshCw :size="15" aria-hidden="true" /> Uus variant
           </button>
           <span class="dialog__spacer" />

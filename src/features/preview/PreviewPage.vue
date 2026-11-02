@@ -23,6 +23,7 @@ import { useCreationsStore } from './creationsStore'
 import PrintableItem from './PrintableItem.vue'
 import ParentSheet from './ParentSheet.vue'
 import CustomizePanel from './CustomizePanel.vue'
+import { AI_SERIES_GENERATOR } from '../pass/passLetters'
 import EnvelopeReveal from './EnvelopeReveal.vue'
 import { track } from '../../app/analytics'
 import TestBar from '../../components/brand/TestBar.vue'
@@ -35,6 +36,8 @@ const store = useCreationsStore()
 const generator = useGenerator()
 
 const content = computed(() => store.byId(props.id))
+// AI letters from the Jõulupass: the template engine must not write over them.
+const aiWritten = computed(() => content.value?.generator.id === AI_SERIES_GENERATOR)
 // Counted once per opened creation, not again when its choices change.
 watch(
   () => props.id,
@@ -367,7 +370,10 @@ function exportText(): void {
 
     <div class="container preview__body">
       <aside class="side no-print" aria-label="Kohanda ja prindi">
-        <CustomizePanel :content="content" :busy="updating" :errors="choiceErrors" @change="applyChoices" />
+        <p v-if="aiWritten" class="ai-note">
+          Need kirjad kirjutas päkapikk Tuduja tehisaru abil. Iga kirja saad muuta nupuga „Muuda“.
+        </p>
+        <CustomizePanel v-else :content="content" :busy="updating" :errors="choiceErrors" @change="applyChoices" />
 
         <section class="print-panel" aria-labelledby="print-title">
           <h2 id="print-title" class="print-panel__title">Printimine</h2>
@@ -483,6 +489,7 @@ function exportText(): void {
               :background-opacity="decoration.imageOpacity"
               :uppercase="groupUppercase(group)"
               :piece="puzzle ? { ...puzzle, index: entry.index, maxCm: pieceMaxCm } : null"
+              :no-variants="aiWritten"
               @edit="openEditor(entry.item.id)"
               @regenerate="regenerate(entry.index)"
             />
@@ -496,6 +503,7 @@ function exportText(): void {
           :title="editingTitle"
           :busy="busyItem === editingItem.id"
           :fit-hint="layout === 'poster'"
+          :no-variants="aiWritten"
           @save="saveFromDialog"
           @regenerate="regenerate(editingIndex)"
           @close="editingId = null"
@@ -591,6 +599,14 @@ function exportText(): void {
 }
 .sheets {
   min-width: 0;
+}
+.ai-note {
+  margin: 0;
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: 0.92rem;
 }
 .print-panel {
   display: flex;
