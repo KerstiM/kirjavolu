@@ -113,7 +113,7 @@ onBeforeUnmount(() => {
             <text x="50" y="56" text-anchor="middle" class="postmark__mid">{{ postmarkDate }}</text>
           </svg>
         </span>
-        <span class="seal" aria-hidden="true">K</span>
+        <span class="seal" aria-hidden="true">★</span>
       </button>
     </div>
 
@@ -256,10 +256,7 @@ $paper-dark: #e9d3b0;
   border-radius: 10px;
   // The pocket: the whole front except the opening under the flap.
   clip-path: polygon(0 0, 50% 50%, 100% 0, 100% 100%, 0 100%);
-  background:
-    linear-gradient(to top right, transparent calc(50% - 1px), rgba(120, 80, 40, 0.18) 50%, transparent calc(50% + 1px)) left bottom / 50% 100% no-repeat,
-    linear-gradient(to top left, transparent calc(50% - 1px), rgba(120, 80, 40, 0.18) 50%, transparent calc(50% + 1px)) right bottom / 50% 100% no-repeat,
-    $paper;
+  background: $paper;
 }
 .envelope__flap {
   position: absolute;
@@ -296,9 +293,9 @@ $paper-dark: #e9d3b0;
     0 0 0 4px rgba(184, 50, 42, 0.35),
     0 4px 10px rgba(0, 0, 0, 0.3);
   color: rgba(255, 230, 220, 0.9);
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.45rem;
+  line-height: 1;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
   animation: seal-pulse 1.6s ease-in-out infinite;
   transition:
     transform 0.25s ease-in,
