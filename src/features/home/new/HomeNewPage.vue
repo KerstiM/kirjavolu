@@ -57,14 +57,14 @@ const WIZARD = designPath('new', '/loo')
             <circle cx="40" cy="60" r="4" fill="#f2c46d" />
             <path class="twinkle" d="M250 30 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 z" fill="#f2c46d" />
             <path class="twinkle twinkle--late" d="M30 150 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2 z" fill="#b8aee6" />
-            <!-- The same envelope as the mascot: crisp corners, the flap's V and the lower seams. -->
+            <!-- The same envelope as the mascot: one lavender envelope in two tones. -->
             <g class="hero__envelope">
-              <rect x="100" y="70" width="180" height="120" rx="6" fill="#fff" stroke="#b3a8e6" stroke-width="2" />
-              <path d="M102 74 L190 132 L278 74" fill="none" stroke="#b3a8e6" stroke-width="3" stroke-linejoin="round" />
-              <path d="M103 187 L150 150 M277 187 L230 150" fill="none" stroke="#e4dff7" stroke-width="3" stroke-linecap="round" />
-              <circle cx="190" cy="132" r="11" fill="#e07a5f" />
-              <rect x="238" y="84" width="28" height="34" rx="2" fill="#7d6cbd" />
-              <path d="M252 93 l2 4 4.5.5-3.3 3 .9 4.5-4.1-2.2-4.1 2.2.9-4.5-3.3-3 4.5-.5z" fill="#f2c46d" />
+              <rect x="100" y="70" width="180" height="120" rx="10" fill="#afa9ec" />
+              <path d="M104 186 L148 152 M276 186 L232 152" fill="none" stroke="#7f77dd" stroke-width="4" stroke-linecap="round" />
+              <path d="M100 82 Q100 70 112 70 L268 70 Q280 70 280 82 L190 134 Z" fill="#7f77dd" />
+              <circle cx="190" cy="132" r="11" fill="#d85a30" />
+              <rect x="240" y="80" width="26" height="32" rx="2" fill="#fff" />
+              <path d="M253 88 l2 4 4.5.5-3.3 3 .9 4.5-4.1-2.2-4.1 2.2.9-4.5-3.3-3 4.5-.5z" fill="#d85a30" />
               <text x="190" y="170" text-anchor="middle" class="hero__name">{{ addressee }}</text>
             </g>
           </svg>
@@ -239,7 +239,7 @@ const WIZARD = designPath('new', '/loo')
   font-family: var(--font-print);
   font-size: 15px;
   font-weight: 600;
-  fill: #3c3489;
+  fill: #26215c;
 }
 .hero__mascot {
   position: absolute;

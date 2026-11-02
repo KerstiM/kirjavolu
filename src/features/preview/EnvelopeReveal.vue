@@ -509,39 +509,41 @@ $paper-dark: #e9d3b0;
   }
 }
 
-// --- new design: the mascot's envelope, flat and crisp ----------------------
+// --- new design: the mascot's envelope, one lavender in two tones --------
 .reveal--new {
   .envelope__back {
-    border-radius: 6px;
-    background: #e4dff7;
+    border-radius: 10px;
+    background: #7f77dd;
   }
   .envelope__front {
-    border-radius: 6px;
-    background: #fff;
+    border-radius: 10px;
+    background: #afa9ec;
   }
   .envelope__flap {
-    border-radius: 6px 6px 0 0;
-    background: #b3a8e6;
+    border-radius: 10px 10px 0 0;
+    background: #7f77dd;
   }
   .seal {
-    background: var(--coral);
+    background: #d85a30;
     box-shadow: none;
     color: #fff;
     text-shadow: none;
     animation: seal-pulse-new 1.6s ease-in-out infinite;
   }
   .stamp__art {
-    background: #7d6cbd;
+    background: #fff;
+    color: #d85a30;
   }
   .address {
-    color: #3c3489;
+    color: #26215c;
   }
   .postmark {
+    opacity: 0.45;
     svg {
-      stroke: #7d6cbd;
+      stroke: #26215c;
     }
     text {
-      fill: #7d6cbd;
+      fill: #26215c;
     }
   }
 }

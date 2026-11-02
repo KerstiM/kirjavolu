@@ -2,9 +2,9 @@
 import type { MascotMood } from './mascot'
 
 /**
- * The mascot in the new design: the same envelope character, drawn simpler. Flat colours,
- * crisp corners and the folds every envelope has (the flap and the two lower seams), so it
- * reads as an envelope first; short arms and legs without hands or shoes.
+ * The mascot in the new design: the same envelope character, drawn simpler. One lavender
+ * envelope in two tones, with the folds every envelope has (the flap and the two lower
+ * seams) a shade darker, so it reads as an envelope first; short arms and legs.
  */
 withDefaults(defineProps<{ mood?: MascotMood; size?: number }>(), { mood: 'wave', size: 72 })
 </script>
@@ -42,13 +42,10 @@ withDefaults(defineProps<{ mood?: MascotMood; size?: number }>(), { mood: 'wave'
       </g>
 
       <!-- the envelope: body, the two lower seams, the flap and its seal -->
-      <rect class="mascot__paper" x="14" y="28" width="102" height="82" rx="6" />
-      <path class="mascot__seam" d="M17 107 L44 86 M113 107 L86 86" />
-      <path class="mascot__flap" d="M16 31 Q16 29 18 29 L112 29 Q114 29 114 31 L65 66 Z" />
-      <circle class="mascot__seal" cx="65" cy="64" r="6.5" />
-
-      <circle class="mascot__cheek" cx="35" cy="92" r="5" />
-      <circle class="mascot__cheek" cx="95" cy="92" r="5" />
+      <rect class="mascot__paper" x="14" y="28" width="102" height="82" rx="8" />
+      <path class="mascot__seam" d="M17 107 L37 92 M113 107 L93 92" />
+      <path class="mascot__flap" d="M14 36 Q14 28 22 28 L108 28 Q116 28 116 36 L65 68 Z" />
+      <circle class="mascot__seal" cx="65" cy="66" r="7" />
 
       <!-- eyes -->
       <g v-if="mood === 'happy'" class="mascot__line">
@@ -89,19 +86,19 @@ withDefaults(defineProps<{ mood?: MascotMood; size?: number }>(), { mood: 'wave'
   flex-shrink: 0;
 }
 .mascot__paper {
-  fill: var(--lavender-light, #7d6cbd);
+  fill: #afa9ec;
 }
 .mascot__flap {
-  fill: #b3a8e6;
+  fill: #7f77dd;
 }
 .mascot__seam {
   fill: none;
-  stroke: #b3a8e6;
+  stroke: #7f77dd;
   stroke-width: 3;
   stroke-linecap: round;
 }
 .mascot__seal {
-  fill: var(--coral, #e07a5f);
+  fill: #d85a30;
 }
 .mascot__leg {
   fill: #3c3489;
@@ -112,15 +109,12 @@ withDefaults(defineProps<{ mood?: MascotMood; size?: number }>(), { mood: 'wave'
   stroke-width: 7;
   stroke-linecap: round;
 }
-.mascot__cheek {
-  fill: #f0997b;
-}
 .mascot__ink {
-  fill: #221c4a;
+  fill: #26215c;
 }
 .mascot__line {
   fill: none;
-  stroke: #221c4a;
+  stroke: #26215c;
   stroke-width: 3.5;
   stroke-linecap: round;
 }
@@ -129,7 +123,7 @@ withDefaults(defineProps<{ mood?: MascotMood; size?: number }>(), { mood: 'wave'
   animation: twinkle 1.2s ease-in-out infinite;
 }
 .mascot__dots {
-  fill: #b3a8e6;
+  fill: #afa9ec;
 }
 
 // --- moves ---------------------------------------------------------------
