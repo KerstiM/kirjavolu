@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { track } from '../../app/analytics'
-import { nextTick, ref } from 'vue'
+import { nextTick, provide, ref } from 'vue'
 import { Plus, Users } from 'lucide-vue-next'
 import type { ChildProfile, ChildProfileDraft } from '../../domain/models'
 import BaseButton from '../../components/ui/BaseButton.vue'
@@ -9,6 +9,12 @@ import { genitive, nameCase } from '../../domain/text/estonian'
 import ChildCard from './ChildCard.vue'
 import ChildForm from './ChildForm.vue'
 import { emptyChildDraft, useChildrenStore } from './childrenStore'
+import TestBar from '../../components/brand/TestBar.vue'
+import { DESIGN_KEY, type Design } from '../../components/brand/design'
+
+/** "new" at /uus-disain/lapsed: the same profiles in the new design, children as address labels. */
+const props = withDefaults(defineProps<{ design?: Design }>(), { design: 'current' })
+provide(DESIGN_KEY, props.design)
 
 const store = useChildrenStore()
 const editing = ref<{ mode: 'add' } | { mode: 'edit'; child: ChildProfile } | null>(null)
@@ -46,6 +52,8 @@ function remove(child: ChildProfile): void {
 </script>
 
 <template>
+  <div :class="{ 'design-new': design === 'new' }">
+  <TestBar v-if="design === 'new'" text="Testvaade: lapsed uues disainis." link="Vaata praegust" to="/lapsed" />
   <div class="container section">
     <div class="section-head">
       <div>
@@ -92,6 +100,7 @@ function remove(child: ChildProfile): void {
       </p>
     </template>
   </div>
+  </div>
 </template>
 
 <style scoped lang="scss">
@@ -108,7 +117,7 @@ function remove(child: ChildProfile): void {
   padding: 0;
   margin: 0;
   display: grid;
-  gap: 1rem;
+  gap: 1.25rem;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
 }
 .demo-note {

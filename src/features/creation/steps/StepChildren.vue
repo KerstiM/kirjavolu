@@ -8,7 +8,7 @@ import ChoiceCard from '../../../components/ui/ChoiceCard.vue'
 import BaseButton from '../../../components/ui/BaseButton.vue'
 import EmptyState from '../../../components/ui/EmptyState.vue'
 import AddressLabel from '../../../components/brand/AddressLabel.vue'
-import { useDesign } from '../../../components/brand/design'
+import { designPath, useDesign } from '../../../components/brand/design'
 
 const props = defineProps<{ children: ChildProfile[]; selected: string[] }>()
 const emit = defineEmits<{ toggle: [id: string]; selectAll: []; add: [] }>()
@@ -58,7 +58,7 @@ const shared = computed(() => props.selected.length > 1)
       <div class="step-actions-inline">
         <BaseButton variant="ghost" size="sm" @click="emit('add')"><Plus aria-hidden="true" /> Lisa laps</BaseButton>
         <BaseButton v-if="children.length > 1" variant="ghost" size="sm" @click="emit('selectAll')">Vali kõik</BaseButton>
-        <BaseButton variant="ghost" size="sm" to="/lapsed">Halda profiile</BaseButton>
+        <BaseButton variant="ghost" size="sm" :to="designPath(design, '/lapsed')">Halda profiile</BaseButton>
       </div>
       <p v-if="shared" class="info-note" role="status">
         <strong>Ühine elamus.</strong> Tekstid pöörduvad kõigi poole korraga ja ülesanded jagatakse laste vahel

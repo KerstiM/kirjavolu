@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, provide } from 'vue'
 import { RouterLink } from 'vue-router'
-import { ArrowRight, Eye, FlaskConical } from 'lucide-vue-next'
+import { ArrowRight, Eye } from 'lucide-vue-next'
 import Mascot from '../../../components/brand/Mascot.vue'
 import PostcardCard from '../../../components/brand/PostcardCard.vue'
 import StampCard from '../../../components/brand/StampCard.vue'
-import { STAMP_COLORS } from '../../../components/brand/design'
+import TestBar from '../../../components/brand/TestBar.vue'
+import { DESIGN_KEY, designPath, STAMP_COLORS } from '../../../components/brand/design'
 import { iconFor } from '../../../components/ui/icons'
 import { CONTENT_TYPES } from '../../../domain/contentTypes'
 import { OCCASIONS } from '../../../domain/occasions/occasions'
@@ -17,22 +18,19 @@ import RecentCreations from '../RecentCreations.vue'
  * Test view of the new home page design (/uus-disain). The current home page at "/"
  * stays as it is until this one is chosen; the links lead into the same wizard.
  */
+provide(DESIGN_KEY, 'new')
 const childrenStore = useChildrenStore()
 const occasions = computed(() => sortBySeason(OCCASIONS))
 // The envelope in the picture is addressed to the family's own child when there is one.
 const addressee = computed(() => childrenStore.children[0]?.name ?? 'Mia')
 
 // Every link leads into the new-design wizard, so the whole new journey can be tried.
-const WIZARD = '/uus-disain/loo'
+const WIZARD = designPath('new', '/loo')
 </script>
 
 <template>
   <div class="home-new">
-    <p class="test-bar">
-      <FlaskConical :size="16" aria-hidden="true" />
-      <span>Testvaade: uus avalehe disain.</span>
-      <RouterLink to="/">Vaata praegust avalehte</RouterLink>
-    </p>
+    <TestBar text="Testvaade: uus avalehe disain." link="Vaata praegust avalehte" to="/" />
 
     <section class="hero">
       <div class="container hero__inner">
@@ -44,7 +42,7 @@ const WIZARD = '/uus-disain/loo'
           </p>
           <div class="hero__actions">
             <RouterLink :to="WIZARD" class="chunky chunky--primary">Alusta loomist <ArrowRight :size="18" aria-hidden="true" /></RouterLink>
-            <RouterLink to="/naide" class="chunky chunky--secondary"><Eye :size="18" aria-hidden="true" /> Vaata näidet</RouterLink>
+            <RouterLink :to="designPath('new', '/naide')" class="chunky chunky--secondary"><Eye :size="18" aria-hidden="true" /> Vaata näidet</RouterLink>
           </div>
         </div>
 
@@ -115,23 +113,6 @@ const WIZARD = '/uus-disain/loo'
 <style scoped lang="scss">
 .home-new {
   background: #fdf6ec;
-}
-.test-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem 0.6rem;
-  margin: 0;
-  padding: 0.5rem 1rem;
-  background: var(--lavender-soft);
-  color: var(--lavender-ink);
-  font-size: 0.85rem;
-  font-weight: 500;
-  a {
-    color: inherit;
-    font-weight: 600;
-  }
 }
 
 // --- hero ------------------------------------------------------------------

@@ -6,11 +6,21 @@ import { createMemoryHistory, createRouter } from 'vue-router'
 import App from '@/app/App.vue'
 import { routes } from '@/app/router'
 import { useChildrenStore } from '@/features/children/childrenStore'
+import { useCreationsStore } from '@/features/preview/creationsStore'
+import { templateGenerator } from '@/domain/generators/templateGenerator'
+import { makeRequest, RUBEN } from './helpers'
 
-async function open(path: string) {
+async function open(path: string | ((id: string) => string)) {
   const pinia = createPinia()
   setActivePinia(pinia)
   useChildrenStore().restoreDemo()
+  if (typeof path === 'function') {
+    const content = await templateGenerator.generate(
+      makeRequest('letter', { occasionId: 'christmas', children: [RUBEN], options: { startDate: '2026-12-01' } }),
+    )
+    useCreationsStore().add(content)
+    path = path(content.id)
+  }
   const router = createRouter({ history: createMemoryHistory(), routes })
   router.push(path)
   await router.isReady()
@@ -56,5 +66,43 @@ describe('wizard in the new design', () => {
     expect(await screen.findByRole('radiogroup', { name: 'Mida soovid luua?' })).toBeInTheDocument()
     expect(document.querySelector('.postcard')).toBeNull()
     expect(screen.queryByText(/Testvaade/)).toBeNull()
+  })
+})
+
+describe('the rest of the journey in the new design', () => {
+  it('shows the preview at /uus-disain/looming/… with links that stay in the new design', async () => {
+    await open((id) => `/uus-disain/looming/${id}`)
+    expect(await screen.findByText('Testvaade: eelvaade uues disainis.')).toBeInTheDocument()
+    expect(document.querySelector('.preview--new')).not.toBeNull()
+    expect(screen.getByRole('link', { name: 'Tagasi avalehele' })).toHaveAttribute('href', '/uus-disain')
+    expect(screen.getByRole('link', { name: /Lapsed ja tüüp/ }).getAttribute('href')).toMatch(/^\/uus-disain\/loo\?muuda=/)
+    expect(screen.getByRole('link', { name: 'Vaata praegust' }).getAttribute('href')).toMatch(/^\/looming\//)
+  })
+
+  it('shows children as address labels at /uus-disain/lapsed', async () => {
+    await open('/uus-disain/lapsed')
+    expect(await screen.findByText('Testvaade: lapsed uues disainis.')).toBeInTheDocument()
+    expect(document.querySelectorAll('.child-card--label')).toHaveLength(3)
+    const menu = screen.getByRole('navigation', { name: 'Peamenüü' })
+    expect(within(menu).getByRole('link', { name: 'Lapsed' })).toHaveAttribute('href', '/uus-disain/lapsed')
+    expect(within(menu).getByRole('link', { name: /Loo uus/ })).toHaveAttribute('href', '/uus-disain/loo')
+  })
+
+  it('leads from the sample at /uus-disain/naide into the new-design wizard', async () => {
+    await open('/uus-disain/naide')
+    expect(await screen.findByText('Testvaade: näide uues disainis.')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Loo oma lapsele 24 kirja/ })).toHaveAttribute(
+      'href',
+      '/uus-disain/loo?puhk=christmas&tyyp=letter',
+    )
+  })
+
+  it('keeps the current pages and menu as they are', async () => {
+    await open('/lapsed')
+    await screen.findByRole('heading', { level: 1, name: 'Lapsed' })
+    expect(document.querySelector('.child-card--label')).toBeNull()
+    expect(screen.queryByText(/Testvaade/)).toBeNull()
+    const menu = screen.getByRole('navigation', { name: 'Peamenüü' })
+    expect(within(menu).getByRole('link', { name: /Loo uus/ })).toHaveAttribute('href', '/loo')
   })
 })

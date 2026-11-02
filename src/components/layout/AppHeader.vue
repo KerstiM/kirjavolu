@@ -1,28 +1,33 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { Plus } from 'lucide-vue-next'
 import BrandMark from './BrandMark.vue'
 import BaseButton from '../ui/BaseButton.vue'
+import { designPath, NEW_DESIGN_ROOT } from '../brand/design'
 import { newCreationRequests } from '../../features/creation/newCreation'
 
 const route = useRoute()
+// Inside a new-design test view the menu keeps the visitor there.
+const design = computed(() => (route.path.startsWith(NEW_DESIGN_ROOT) ? 'new' : 'current'))
+const home = computed(() => designPath(design.value, '/'))
 // The link does nothing while the wizard is already open, so ask it to start over.
 function startOver(): void {
-  if (route.name === 'create') newCreationRequests.value++
+  if (route.name === 'create' || route.name === 'create-new') newCreationRequests.value++
 }
 </script>
 
 <template>
   <header class="app-header">
     <div class="container app-header__inner">
-      <RouterLink to="/" class="brand" aria-label="Kirjavõlu avaleht">
+      <RouterLink :to="home" class="brand" aria-label="Kirjavõlu avaleht">
         <BrandMark />
         <span class="brand__name">Kirjavõlu</span>
       </RouterLink>
       <nav aria-label="Peamenüü" class="nav">
-        <RouterLink to="/" class="nav__link nav__link--home" exact-active-class="is-active">Avaleht</RouterLink>
-        <RouterLink to="/lapsed" class="nav__link" active-class="is-active">Lapsed</RouterLink>
-        <BaseButton to="/loo" size="sm" class="nav__cta" @click="startOver">
+        <RouterLink :to="home" class="nav__link nav__link--home" exact-active-class="is-active">Avaleht</RouterLink>
+        <RouterLink :to="designPath(design, '/lapsed')" class="nav__link" active-class="is-active">Lapsed</RouterLink>
+        <BaseButton :to="designPath(design, '/loo')" size="sm" class="nav__cta" @click="startOver">
           <Plus aria-hidden="true" />
           <span class="nav__cta-text">Loo uus</span>
         </BaseButton>

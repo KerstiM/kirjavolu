@@ -6,8 +6,10 @@ import BaseButton from '../../components/ui/BaseButton.vue'
 import { iconFor } from '../../components/ui/icons'
 import { getContentType } from '../../domain/contentTypes'
 import { useCreationsStore } from '../preview/creationsStore'
+import { designPath, useDesign } from '../../components/brand/design'
 
 const store = useCreationsStore()
+const design = useDesign()
 
 function formatCreated(iso: string): string {
   return new Date(iso).toLocaleDateString('et-EE', { day: 'numeric', month: 'long' })
@@ -33,7 +35,7 @@ function remove(id: string, title: string): void {
         title="Siin on veel vaikne"
         text="Kui lood esimese kirja, aardejahi või loo, ilmub see siia."
       >
-        <BaseButton to="/loo">Loo esimene</BaseButton>
+        <BaseButton :to="designPath(design, '/loo')">Loo esimene</BaseButton>
       </EmptyState>
       <ul v-else class="recent" role="list">
         <li v-for="creation in store.creations" :key="creation.id" class="recent__item">
@@ -41,7 +43,7 @@ function remove(id: string, title: string): void {
             <component :is="iconFor(getContentType(creation.request.contentType).icon)" :size="20" />
           </span>
           <div class="recent__text">
-            <RouterLink :to="`/looming/${creation.id}`" class="recent__title">{{ creation.title }}</RouterLink>
+            <RouterLink :to="designPath(design, `/looming/${creation.id}`)" class="recent__title">{{ creation.title }}</RouterLink>
             <span class="recent__meta">
               {{ creation.subtitle }} · {{ creation.items.length }} osa · {{ formatCreated(creation.createdAt) }}
             </span>

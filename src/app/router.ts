@@ -19,6 +19,27 @@ export const routes: RouteRecordRaw[] = [
     meta: { title: 'Loo uus' },
   },
   {
+    path: '/uus-disain/looming/:id',
+    name: 'preview-new',
+    component: () => import('../features/preview/PreviewPage.vue'),
+    props: (route) => ({ id: route.params.id, design: 'new' }),
+    meta: { title: 'Eelvaade' },
+  },
+  {
+    path: '/uus-disain/lapsed',
+    name: 'children-new',
+    component: () => import('../features/children/ChildrenPage.vue'),
+    props: { design: 'new' },
+    meta: { title: 'Lapsed' },
+  },
+  {
+    path: '/uus-disain/naide',
+    name: 'sample-new',
+    component: () => import('../features/home/DemoPage.vue'),
+    props: { design: 'new' },
+    meta: { title: 'Näide' },
+  },
+  {
     path: '/lapsed',
     name: 'children',
     component: () => import('../features/children/ChildrenPage.vue'),

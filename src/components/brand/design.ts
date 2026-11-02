@@ -11,6 +11,14 @@ export function useDesign(): Design {
   return inject(DESIGN_KEY, 'current')
 }
 
+/** The new-design test views live under this path, next to the current pages. */
+export const NEW_DESIGN_ROOT = '/uus-disain'
+/** The same page in the given design, so links keep a visitor in the look they are trying out. */
+export function designPath(design: Design, path: string): string {
+  if (design === 'current') return path
+  return path === '/' ? NEW_DESIGN_ROOT : `${NEW_DESIGN_ROOT}${path}`
+}
+
 /** Each occasion has its own stamp colour. */
 export const STAMP_COLORS: Record<OccasionId, string> = {
   christmas: '#c43b30',
