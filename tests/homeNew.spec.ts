@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { render, screen, within } from '@testing-library/vue'
 import userEvent from '@testing-library/user-event'
 import { createPinia, setActivePinia } from 'pinia'
@@ -104,5 +104,43 @@ describe('the rest of the journey in the new design', () => {
     expect(screen.queryByText(/Testvaade/)).toBeNull()
     const menu = screen.getByRole('navigation', { name: 'Peamenüü' })
     expect(within(menu).getByRole('link', { name: /Loo uus/ })).toHaveAttribute('href', '/loo')
+  })
+})
+
+describe('AI sample letter on the new-design sample page', () => {
+  afterEach(() => vi.unstubAllGlobals())
+
+  it('asks the server for a letter for the chosen child and shows it', async () => {
+    const fetch = vi.fn(async () =>
+      Response.json({ heading: 'Kallis Brita!', body: 'Tere!\n\nMina olen päkapikk.', signature: 'Sinu päkapikk Tuduja' }),
+    )
+    vi.stubGlobal('fetch', fetch)
+    await open('/uus-disain/naide')
+    const user = userEvent.setup()
+    const section = await screen.findByRole('region', { name: 'Proovi AI-kirja' })
+    await user.click(within(section).getByRole('radio', { name: 'Brita' }))
+    await user.click(within(section).getByRole('button', { name: /Kirjuta Brita jaoks kiri/ }))
+
+    expect(await within(section).findByRole('heading', { name: 'Kallis Brita!' })).toBeInTheDocument()
+    const [url, init] = fetch.mock.calls[0] as unknown as [string, RequestInit]
+    expect(url).toBe('/api/proovikiri')
+    const sent = JSON.parse(String(init.body))
+    expect(Object.keys(sent).sort()).toEqual(['age', 'interests', 'name', 'readingLevel'])
+    expect(sent.name).toBe('Brita')
+  })
+
+  it('explains when the daily letters have run out', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => Response.json({ error: 'daily_limit' }, { status: 503 })))
+    await open('/uus-disain/naide')
+    const user = userEvent.setup()
+    const section = await screen.findByRole('region', { name: 'Proovi AI-kirja' })
+    await user.click(within(section).getByRole('button', { name: /Kirjuta .* jaoks kiri/ }))
+    expect(await within(section).findByRole('alert')).toHaveTextContent('Tänased proovikirjad said otsa.')
+  })
+
+  it('is not on the current sample page', async () => {
+    await open('/naide')
+    await screen.findByRole('heading', { level: 1 })
+    expect(screen.queryByRole('region', { name: 'Proovi AI-kirja' })).toBeNull()
   })
 })
