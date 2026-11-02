@@ -59,8 +59,19 @@ describe('POST /api/proovikiri', () => {
     const { env } = makeEnv()
     expect((await handleSampleLetter(new Request('https://kirjavolu.ee/api/proovikiri'), env, write)).status).toBe(405)
     expect((await handleSampleLetter(post(JASPER, { Origin: 'https://evil.example' }), env, write)).status).toBe(403)
+    expect((await handleSampleLetter(post(JASPER, { Origin: 'https://kirjavolu.ee.evil.example' }), env, write)).status).toBe(403)
     expect((await handleSampleLetter(post(JASPER, { Origin: 'http://localhost:5173' }), env, write)).status).toBe(200)
     expect(write).toHaveBeenCalledTimes(1)
+  })
+
+  it('accepts its own page over http and on www', async () => {
+    const write = vi.fn<WriteLetter>(async () => LETTER)
+    const { env } = makeEnv()
+    const from = (url: string, origin: string) =>
+      new Request(url, { method: 'POST', headers: { Origin: origin, 'CF-Connecting-IP': '1.2.3.4' }, body: JSON.stringify(JASPER) })
+    expect((await handleSampleLetter(from('http://www.kirjavolu.ee/api/proovikiri', 'http://www.kirjavolu.ee'), env, write)).status).toBe(200)
+    expect((await handleSampleLetter(from('https://www.kirjavolu.ee/api/proovikiri', 'https://www.kirjavolu.ee'), env, write)).status).toBe(200)
+    expect((await handleSampleLetter(from('https://www.kirjavolu.ee/api/proovikiri', 'https://kerstim.github.io'), env, write)).status).toBe(403)
   })
 
   it('refuses broken or oversized requests before calling the model', async () => {
