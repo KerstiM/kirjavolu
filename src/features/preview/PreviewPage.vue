@@ -607,6 +607,10 @@ function exportText(): void {
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
+// The panel scrolls on its own on wide screens; its cards keep their height instead of being squeezed.
+.side > * {
+  flex-shrink: 0;
+}
 @media (min-width: 1024px) {
   .preview__body,
   .toolbar__inner {
