@@ -3,6 +3,7 @@ import { DEFAULT_GENERAL, defaultOptions } from '../../domain/defaults'
 import { addDays, formatDate } from '../../domain/text/estonian'
 import { foodTexts, interestTexts } from '../../data/topics'
 import { createId } from '../../utils/id'
+import { getOccasion } from '../../domain/occasions/occasions'
 import { clone } from '../../utils/clone'
 import { savePass, type SeasonPass } from './seasonPass'
 
@@ -40,6 +41,14 @@ export const FIX_ERROR_TEXTS: Record<LettersError, string> = {
   daily_limit: 'Päkapikud on täna väga palju kirjutanud. Proovi homme uuesti. Parandus jäi alles.',
   busy: 'Päkapikk on praegu väga hõivatud. Proovi mõne minuti pärast uuesti. Parandus jäi alles.',
   failed: 'Kirja ümberkirjutamine ei õnnestunud. Parandus jäi alles, proovi uuesti.',
+}
+
+/** The same reasons when a whole story is written. */
+export const STORY_ERROR_TEXTS: Record<LettersError, string> = {
+  ...LETTERS_ERROR_TEXTS,
+  not_found: 'Seda Jõulupassi koodi ei leitud. Sisesta kood lehel „Jõulupass“ uuesti.',
+  invalid: 'Loo valikutes on midagi puudu. Kontrolli lapsi ja loo valikuid.',
+  failed: 'Loo kirjutamine ei õnnestunud. Loomiskord jäi alles, proovi uuesti.',
 }
 
 /** This December's plans per child, typed on the Jõulupass page; kept in this browser only. */
@@ -193,4 +202,86 @@ export async function requestLetterFix(
   const letter = data.letter as Partial<Letter> | null
   if (!isLetter(letter)) throw new LettersRequestError('failed')
   return { letter, pass: data.pass as SeasonPass }
+}
+
+const STORY_LABEL = 'Loo kirjutas tehisaru (Anthropic Claude) sinu Jõulupassi koodiga'
+
+/** The choices beside the preview, as the story request sends them. */
+function storyChoices(content: GeneratedContent) {
+  const { request } = content
+  if (request.contentType !== 'story') throw new LettersRequestError('invalid')
+  return {
+    genre: request.options.genre,
+    theme: request.options.theme,
+    extraCharacters: request.options.extraCharacters,
+    tone: request.general.tone,
+    length: request.general.length,
+    occasion: getOccasion(request.occasionId).name,
+    notes: request.general.notes,
+  }
+}
+
+/**
+ * "Kirjuta lugu AI-ga": the story of a creation written again by the AI with the same choices.
+ * Uses one generation. The result keeps the creation's request, so it stays a story creation.
+ */
+export async function requestStory(
+  code: string,
+  content: GeneratedContent,
+  children: ChildProfile[],
+): Promise<{ next: GeneratedContent; pass: SeasonPass }> {
+  const data = await post('/api/joulupass/lugu', {
+    code,
+    children: children.map((child) => seriesChild(child, '')),
+    story: storyChoices(content),
+  })
+  const story = data.story as { title?: unknown; pages?: unknown } | null
+  const pages = story?.pages
+  if (typeof story?.title !== 'string' || !Array.isArray(pages) || !pages.length || !pages.every((page) => typeof page === 'string')) {
+    throw new LettersRequestError('failed')
+  }
+  const title = story.title
+  return {
+    next: {
+      ...content,
+      title,
+      items: (pages as string[]).map((body, i) => ({
+        id: createId(),
+        kind: 'story-page',
+        label: `Lk ${i + 1}`,
+        heading: i === 0 ? title : '',
+        body,
+        variant: 0,
+        edited: false,
+      })),
+      generator: { id: AI_SERIES_GENERATOR, label: STORY_LABEL },
+    },
+    pass: data.pass as SeasonPass,
+  }
+}
+
+/** One page of an AI story rewritten as the parent asked; uses one fix. */
+export async function requestStoryPageFix(
+  code: string,
+  content: GeneratedContent,
+  children: ChildProfile[],
+  index: number,
+  wish: string,
+): Promise<{ body: string; pass: SeasonPass }> {
+  const { items } = content
+  const item = items[index]
+  if (!item) throw new LettersRequestError('invalid')
+  const data = await post('/api/joulupass/lugu/parandus', {
+    code,
+    children: children.map((child) => seriesChild(child, '')),
+    story: storyChoices(content),
+    title: content.title,
+    page: index + 1,
+    text: item.body,
+    before: items[index - 1]?.body ?? '',
+    after: items[index + 1]?.body ?? '',
+    wish,
+  })
+  if (typeof data.body !== 'string' || !data.body) throw new LettersRequestError('failed')
+  return { body: data.body, pass: data.pass as SeasonPass }
 }

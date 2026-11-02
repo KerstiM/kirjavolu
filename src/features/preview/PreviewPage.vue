@@ -23,8 +23,9 @@ import { useCreationsStore } from './creationsStore'
 import PrintableItem from './PrintableItem.vue'
 import ParentSheet from './ParentSheet.vue'
 import CustomizePanel from './CustomizePanel.vue'
-import { AI_SERIES_GENERATOR, FIX_ERROR_TEXTS, LettersRequestError, requestLetterFix } from '../pass/passLetters'
-import { loadPass } from '../pass/seasonPass'
+import { AI_SERIES_GENERATOR, FIX_ERROR_TEXTS, LettersRequestError, requestLetterFix, requestStoryPageFix } from '../pass/passLetters'
+import AiStoryCard from './AiStoryCard.vue'
+import { loadPass, type SeasonPass } from '../pass/seasonPass'
 import { useChildrenStore } from '../children/childrenStore'
 import EnvelopeReveal from './EnvelopeReveal.vue'
 import { track } from '../../app/analytics'
@@ -38,7 +39,7 @@ const store = useCreationsStore()
 const generator = useGenerator()
 
 const content = computed(() => store.byId(props.id))
-// AI letters from the Jõulupass: the template engine must not write over them.
+// AI letters or stories from the Jõulupass: the template engine must not write over them.
 const aiWritten = computed(() => content.value?.generator.id === AI_SERIES_GENERATOR)
 
 // "Paranda AI-ga" in the editor: with this browser's Jõulupass, one fix per rewritten letter.
@@ -47,23 +48,33 @@ const pass = ref(loadPass())
 const passUsable = computed(() => !!pass.value && new Date(pass.value.validUntil) > new Date())
 const aiNote = computed(() => {
   if (!aiWritten.value) return undefined
-  if (!passUsable.value) return 'AI-ga parandamiseks sisesta oma Jõulupassi kood lehel „Jõulupass“. Kirja saad ise muuta ka ilma selleta.'
+  if (!passUsable.value) return 'AI-ga parandamiseks sisesta oma Jõulupassi kood lehel „Jõulupass“. Teksti saad ise muuta ka ilma selleta.'
   return `AI-parandusi alles: ${pass.value?.fixesLeft ?? 30}.`
 })
 async function fixWithAi(wish: string): Promise<Pick<GeneratedItem, 'heading' | 'body' | 'signature'>> {
   const current = content.value
   const code = pass.value?.code
-  const snapshot = current?.request.children[0]
-  if (!current || !code || !snapshot) throw new Error(FIX_ERROR_TEXTS.failed)
-  // The profile as it is now, so what the parent added after the letters were written counts too.
-  const child = children.byId(snapshot.id) ?? snapshot
+  if (!current || !code || !current.request.children.length) throw new Error(FIX_ERROR_TEXTS.failed)
+  // The profiles as they are now, so what the parent added after the texts were written counts too.
+  const profiles = current.request.children.map((snapshot) => children.byId(snapshot.id) ?? snapshot)
   try {
-    const result = await requestLetterFix(code, child, current.items, editingIndex.value, wish)
+    if (current.request.contentType === 'story') {
+      const item = current.items[editingIndex.value]
+      const result = await requestStoryPageFix(code, current, profiles, editingIndex.value, wish)
+      pass.value = result.pass
+      return { heading: item?.heading ?? '', body: result.body, signature: item?.signature }
+    }
+    const result = await requestLetterFix(code, profiles[0]!, current.items, editingIndex.value, wish)
     pass.value = result.pass
     return result.letter
   } catch (error) {
     throw new Error(FIX_ERROR_TEXTS[error instanceof LettersRequestError ? error.reason : 'failed'])
   }
+}
+function storyWritten(next: GeneratedContent, spent: SeasonPass): void {
+  store.applyChoices(props.id, next)
+  pass.value = spent
+  announce('AI kirjutas loo valmis.')
 }
 // Counted once per opened creation, not again when its choices change.
 watch(
@@ -398,9 +409,20 @@ function exportText(): void {
     <div class="container preview__body">
       <aside class="side no-print" aria-label="Kohanda ja prindi">
         <p v-if="aiWritten" class="ai-note">
-          Need kirjad kirjutas päkapikk Tuduja tehisaru abil. Iga kirja saad muuta nupuga „Muuda“.
+          <template v-if="content.request.contentType === 'story'">
+            Selle loo kirjutas tehisaru. Iga lehekülge saad muuta nupuga „Muuda“, seal saab ka AI-ga parandada.
+          </template>
+          <template v-else>Need kirjad kirjutas päkapikk Tuduja tehisaru abil. Iga kirja saad muuta nupuga „Muuda“.</template>
         </p>
         <CustomizePanel v-else :content="content" :busy="updating" :errors="choiceErrors" @change="applyChoices" />
+        <!-- After the choices: they are what the AI story is written from. -->
+        <AiStoryCard
+          v-if="!aiWritten && design === 'new' && content.request.contentType === 'story'"
+          :content="content"
+          :pass="pass"
+          :busy-elsewhere="updating"
+          @written="storyWritten"
+        />
 
         <section class="print-panel" aria-labelledby="print-title">
           <h2 id="print-title" class="print-panel__title">Printimine</h2>

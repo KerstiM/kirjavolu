@@ -25,7 +25,7 @@ const DEFAULT_SERIES_DAILY_LIMIT = 100
 const DEFAULT_FIX_DAILY_LIMIT = 600
 
 export const SERIES_LENGTH = 24
-const MODEL = 'claude-opus-5-5'
+export const MODEL = 'claude-opus-5-5'
 const MAX_BODY_BYTES = 16000
 
 /** What the letters may use: the sample letter's minimum plus the rest of the profile and December's plans. */
@@ -138,7 +138,7 @@ Vasta JSON-ina: letters on täpselt ${SERIES_LENGTH} kirja kuupäevade järjekor
 /** In January the season is still last year's December. */
 const seasonYear = (now = new Date()) => (now.getUTCMonth() === 0 ? now.getUTCFullYear() - 1 : now.getUTCFullYear())
 
-const known = (value: string | string[]) => (Array.isArray(value) ? value.join('; ') : value) || 'pole teada'
+export const known = (value: string | string[]) => (Array.isArray(value) ? value.join('; ') : value) || 'pole teada'
 
 export function seriesPrompt(input: SeriesInput): string {
   return `<laps>
@@ -280,7 +280,7 @@ ${input.wish}
 </soov>`
 }
 
-const LETTER_SCHEMA = {
+export const LETTER_SCHEMA = {
   type: 'object',
   properties: { heading: { type: 'string' }, body: { type: 'string' }, signature: { type: 'string' } },
   required: ['heading', 'body', 'signature'],
@@ -329,10 +329,10 @@ const REFUSAL_STATUS: Record<SpendRefusal, number> = { not_found: 404, expired: 
  * back if the AI fails. Besides each pass's own allowance, a daily cap for everyone together
  * keeps the AI bill bounded (wrangler.jsonc); the Anthropic Console's spend limit is the last guard.
  */
-async function withAllowance<T>(
+export async function withAllowance<T>(
   request: Request,
   env: LettersEnv,
-  deps: LettersDeps,
+  deps: Pick<LettersDeps, 'store' | 'now'>,
   allowance: Allowance,
   parse: (raw: Record<string, unknown> | null) => T | null,
   ask: (input: T) => Promise<Record<string, unknown>>,
