@@ -10,6 +10,8 @@ import { useGenerator } from '../../composables/useGenerator'
 import { useChildrenStore } from '../children/childrenStore'
 import { useCreationsStore } from '../preview/creationsStore'
 import WizardProgress from './WizardProgress.vue'
+import MascotGuide from '../../components/brand/MascotGuide.vue'
+import { mascotLine } from './mascotLines'
 import StepWhat from './steps/StepWhat.vue'
 import StepChildren from './steps/StepChildren.vue'
 import QuickChildDialog from '../children/QuickChildDialog.vue'
@@ -59,6 +61,9 @@ watch([() => route.query, newCreationRequests], () => wizard.reset(start(initFro
 
 const errors = ref<string[]>([])
 const busy = ref(false)
+const mascot = computed(() =>
+  mascotLine(WIZARD_STEPS[state.step]?.id ?? 'what', state, childrenStore.children, busy.value),
+)
 const stepHeading = ref<HTMLElement | null>(null)
 
 const summary = computed(() => {
@@ -119,6 +124,7 @@ async function create(): Promise<void> {
     <header class="wizard__head">
       <span class="eyebrow">Loo uus</span>
       <WizardProgress :current="state.step" :can-go-to="wizard.canGoTo" @go="wizard.goTo" />
+      <MascotGuide class="wizard__mascot" :mood="mascot.mood" :text="mascot.text" :emphasis="mascot.emphasis" />
       <p v-if="summary.length" class="wizard__summary">
         <span v-for="part in summary" :key="part" class="summary-chip">{{ part }}</span>
       </p>
@@ -170,6 +176,9 @@ async function create(): Promise<void> {
 }
 .wizard__head {
   margin-bottom: 2rem;
+}
+.wizard__mascot {
+  margin-top: 1.5rem;
 }
 .wizard__summary {
   display: flex;
