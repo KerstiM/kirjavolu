@@ -79,16 +79,16 @@ const WIZARD = designPath('new', '/loo')
         <div class="pass-band__text">
           <h2 id="pass-band-title"><Gift :size="24" aria-hidden="true" /> Jõulupass</h2>
           <p v-if="hasPass">
-            Sul on Jõulupass, AI-loomisi alles {{ pass?.generationsLeft }}. Päkapikk kirjutab kõik 24 detsembrikirja sinu
+            Sul on Jõulupass, kirjasarju või lugusid alles {{ pass?.generationsLeft }}. Päkapikk kirjutab kõik 24 detsembrikirja sinu
             lapse, tema pere ja selle detsembri plaanide järgi.
           </p>
           <p v-else>
-            Päkapikk kirjutab tehisaru abil kõik 24 detsembrikirja päriselt sinu lapse kohta: tema huvid, pere, lemmikloomad
+            Päkapikk kirjutab kõik 24 detsembrikirja päriselt sinu lapse kohta: tema huvid, pere, lemmikloomad
             ja selle detsembri plaanid. 10 loomist ja 30 parandust kuni 31. jaanuarini, ühekordne makse {{ PASS_PRICE }}.
           </p>
         </div>
         <RouterLink :to="`${NEW_DESIGN_ROOT}/joulupass`" class="chunky chunky--primary">
-          {{ hasPass ? 'Loo AI-kirjad' : 'Vaata Jõulupassi' }} <ArrowRight :size="18" aria-hidden="true" />
+          {{ hasPass ? 'Kirjuta isiklikud kirjad' : 'Vaata Jõulupassi' }} <ArrowRight :size="18" aria-hidden="true" />
         </RouterLink>
       </div>
     </section>
@@ -194,23 +194,19 @@ const WIZARD = designPath('new', '/loo')
   border-radius: 999px;
   font-weight: 600;
   text-decoration: none;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  transition: background 0.15s ease, border-color 0.15s ease;
   &:focus-visible {
     outline: 3px solid var(--focus);
     outline-offset: 3px;
   }
 }
+// The same as the primary button in the current design.
 .chunky--primary {
   background: var(--lavender);
   color: #fff;
-  box-shadow: 0 5px 0 var(--lavender-ink);
+  box-shadow: 0 6px 16px rgba(107, 90, 168, 0.25);
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 7px 0 var(--lavender-ink);
-  }
-  &:active {
-    transform: translateY(4px);
-    box-shadow: 0 1px 0 var(--lavender-ink);
+    background: var(--lavender-ink);
   }
 }
 .chunky--secondary {

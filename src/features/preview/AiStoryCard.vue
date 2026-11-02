@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import { Sparkles } from 'lucide-vue-next'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import type { GeneratedContent } from '../../domain/models'
-import { joinList } from '../../domain/text/estonian'
+import { joinList, namesInCase } from '../../domain/text/estonian'
 import { NEW_DESIGN_ROOT } from '../../components/brand/design'
 import { useChildrenStore } from '../children/childrenStore'
 import { LettersRequestError, requestStory, STORY_ERROR_TEXTS } from '../pass/passLetters'
@@ -19,6 +19,7 @@ const children = useChildrenStore()
 
 const usable = computed(() => !!props.pass && isActive(props.pass))
 const names = computed(() => joinList(props.content.request.children.map((child) => child.name)))
+const storyButton = computed(() => `Kirjuta ${namesInCase(props.content.request.children, 'genitive')} oma muinasjutt`)
 const busy = ref(false)
 const error = ref('')
 
@@ -41,24 +42,24 @@ async function write(): Promise<void> {
 
 <template>
   <section class="ai-story" aria-labelledby="ai-story-title">
-    <h2 id="ai-story-title"><Sparkles :size="20" aria-hidden="true" /> Kirjuta lugu AI-ga</h2>
+    <h2 id="ai-story-title"><Sparkles :size="20" aria-hidden="true" /> {{ names }}: oma muinasjutt</h2>
     <template v-if="usable && pass">
       <p>
-        Siin on lühike mallilugu. AI kirjutab sinu valikute järgi (žanr, teema, tegelased, pikkus) päris muinasjutu, kus
-        {{ names }} {{ content.request.children.length > 1 ? 'on peategelased' : 'on peategelane' }}. Kasutab ühe loomiskorra, alles on {{ pass.generationsLeft }}.
+        Siin on lühike mallilugu. Jõulupassiga kirjutab päkapikk sinu valikute järgi (žanr, teema, tegelased, pikkus) päris muinasjutu, kus
+        {{ names }} {{ content.request.children.length > 1 ? 'on peategelased' : 'on peategelane' }}. Kasutab ühe kirjasarja või loo, alles on {{ pass.generationsLeft }}.
       </p>
       <BaseButton :disabled="busy || busyElsewhere" @click="write">
-        <Sparkles aria-hidden="true" /> {{ busy ? 'AI kirjutab lugu… umbes minut' : 'Kirjuta lugu AI-ga' }}
+        <Sparkles aria-hidden="true" /> {{ busy ? 'Päkapikk kirjutab lugu… umbes minut' : storyButton }}
       </BaseButton>
       <p class="ai-story__privacy">
         Tehisarule (Anthropic Claude) saadetakse laste eesnimed, vanus, lugemisoskus ja profiilis kirjutatu, kuid mitte
         märkmed lapsevanemale. Neid ei salvestata.
       </p>
       <p v-if="error" class="ai-story__error" role="alert">{{ error }}</p>
-      <p class="visually-hidden" role="status" aria-live="polite">{{ busy ? 'AI kirjutab lugu…' : '' }}</p>
+      <p class="visually-hidden" role="status" aria-live="polite">{{ busy ? 'Päkapikk kirjutab lugu…' : '' }}</p>
     </template>
     <p v-else>
-      Mallid panevad loo kokku valmis lõikudest. Jõulupassiga kirjutab AI sellest pika ja päris muinasjutu.
+      Mallid panevad loo kokku valmis lõikudest. Jõulupassiga kirjutab päkapikk sellest pika ja päris muinasjutu.
       <RouterLink :to="`${NEW_DESIGN_ROOT}/joulupass`">Jõulupass</RouterLink>
     </p>
   </section>

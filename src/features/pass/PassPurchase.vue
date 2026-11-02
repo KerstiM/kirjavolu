@@ -42,13 +42,13 @@ onBeforeUnmount(() => checkout?.destroy())
   <section class="pass-buy" aria-labelledby="pass-buy-title">
     <h2 id="pass-buy-title"><Gift :size="22" aria-hidden="true" /> Jõulupass</h2>
     <p class="pass-buy__lead">
-      Mallikirjad on head, aga päkapikk ei tea sinu lapse perest ega tema detsembrist. Jõulupassiga kirjutab ta tehisaru
-      abil kõik 24 detsembrikirja päriselt sinu lapse kohta.
+      Mallikirjad on head, aga päkapikk ei tea sinu lapse perest ega tema detsembrist. Jõulupassiga kirjutab ta kõik 24
+      detsembrikirja päriselt sinu lapse kohta.
     </p>
     <ul class="pass-buy__list">
       <li>Kirjad tema huvide, pere, lemmikloomade ja <strong>selle detsembri plaanide</strong> järgi: vanaema juurde sõit tuleb jutuks õigel päeval.</li>
-      <li><strong>10 AI-loomist</strong>: üks loomine on ühe lapse terve 24 kirja sari.</li>
-      <li><strong>30 parandust</strong>: kirjuta, mida muuta, ja päkapikk kirjutab selle kirja ümber.</li>
+      <li><strong>10 kirjasarja või lugu</strong>: üks sari on ühe lapse kõik 24 kirja.</li>
+      <li><strong>30 päkapiku muudatust</strong>: kirjuta, mida muuta, ja päkapikk kirjutab selle kirja ümber. Ise saad muuta alati ja tasuta.</li>
       <li>Kehtib 31. jaanuarini. Ühekordne makse {{ PASS_PRICE }}, püsimaksu ega kontot pole.</li>
     </ul>
     <BaseButton v-if="!open" size="lg" :disabled="busy" @click="buy">

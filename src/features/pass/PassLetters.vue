@@ -112,7 +112,7 @@ async function write(): Promise<void> {
 
 <template>
   <section class="pass-letters" aria-labelledby="pass-letters-title">
-    <h2 id="pass-letters-title"><Sparkles :size="22" aria-hidden="true" /> Järgmine samm: AI-kirjad</h2>
+    <h2 id="pass-letters-title"><Sparkles :size="22" aria-hidden="true" /> Järgmine samm: isiklikud kirjad</h2>
     <p class="pass-letters__lead">
       Päkapikk Tuduja kirjutab sinu lapsele kõik 24 detsembrikirja, 1. kuni 24. detsembrini. Üks lapse kirjasari
       kasutab ühe loomiskorra.
@@ -180,7 +180,7 @@ async function write(): Promise<void> {
         <BaseButton type="submit" size="lg" :disabled="busy">
           <Sparkles aria-hidden="true" />
           <template v-if="busy">Päkapikk kirjutab 24 kirja…</template>
-          <template v-else>Loo {{ nameCase(child, 'genitive') }} jaoks AI-kirjad</template>
+          <template v-else>Kirjuta {{ nameCase(child, 'allative') }} isiklikud kirjad</template>
         </BaseButton>
         <p v-if="busy" class="pass-letters__wait">See võtab paar minutit. Hoia leht lahti.</p>
       </form>
@@ -192,7 +192,7 @@ async function write(): Promise<void> {
     <BaseButton v-else size="lg" @click="adding = true"><UserPlus aria-hidden="true" /> Lisa laps, kellele kirjad tulevad</BaseButton>
 
     <p class="pass-letters__privacy">
-      Kirjade kirjutamiseks saadetakse tehisarule (Anthropic Claude) lapse eesnimi, vanus, lugemisoskus ja see, mida
+      Kirjad kirjutab päkapikk tehisaru (Anthropic Claude) abil. Selleks saadetakse sinna lapse eesnimi, vanus, lugemisoskus ja see, mida
       siin kirjutasid. Märkmeid lapsevanemale ei saadeta. Andmeid ei salvestata, kirjad jäävad sinu brauserisse.
     </p>
     <p v-if="error" class="pass-letters__error" role="alert">{{ error }}</p>
