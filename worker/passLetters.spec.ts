@@ -242,6 +242,12 @@ describe('series', () => {
     expect(prompt).toContain('<detsember>\n19.12 jõulupidu\n</detsember>')
   })
 
+  it('puts back the elf name where the model swapped its letters', () => {
+    const letters = SERIES.map((l) => ({ ...l, body: 'Tujudaks kutsutakse mind, sest ma armastan tududa.' }))
+    expect(readSeries(JSON.stringify({ letters }))[0]?.body).toBe('Tudujaks kutsutakse mind, sest ma armastan tududa.')
+    expect(seriesPrompt(parseSeriesInput(JASPER)!)).not.toContain('Tujuda')
+  })
+
   it('accepts exactly 24 letters with text', () => {
     expect(readSeries(JSON.stringify({ letters: SERIES.map((l) => ({ ...l, signature: '' })) }))[0]?.signature).toBe(
       'Sinu päkapikk Tuduja',

@@ -419,7 +419,7 @@ function exportText(): void {
           <p class="controls__note">Teksti muutmiseks vajuta kaardil „Muuda“. PDF-i saamiseks vali printimisaknas „Salvesta PDF-ina“.</p>
 
           <details class="more">
-            <summary class="more__summary">Rohkem valikuid <span class="more__what">paigutus, taust, pilt, trükitähed</span></summary>
+            <summary class="more__summary">Rohkem valikuid <span class="more__what">paigutus, mida printida, trükitähed</span></summary>
             <div class="more__body">
               <div class="controls">
                 <SegmentedControl v-model="layout" name="layout" label="Prindi paigutus" :options="layoutOptions" />
@@ -434,26 +434,28 @@ function exportText(): void {
                   {{ content.generator.label }}.
                 </p>
               </div>
-              <DecorationPanel
-                :decoration="decoration"
-                :occasion-id="content.request.occasionId"
-                :item-count="content.items.length"
-                :image-url="imageUrl"
-                :poster="isPoster"
-                :mini="isMini"
-                :child-image="anyChildImage"
-                @update="setDecoration"
-              />
-              <ChildBackgrounds
-                v-if="childRows.length > 1"
-                :children="childRows"
-                :decoration="decoration"
-                :image-urls="childImageUrls"
-                @update="setDecoration"
-              />
             </div>
           </details>
         </section>
+
+        <!-- Background and own picture are what parents look for, so they are not folded away. -->
+        <DecorationPanel
+          :decoration="decoration"
+          :occasion-id="content.request.occasionId"
+          :item-count="content.items.length"
+          :image-url="imageUrl"
+          :poster="isPoster"
+          :mini="isMini"
+          :child-image="anyChildImage"
+          @update="setDecoration"
+        />
+        <ChildBackgrounds
+          v-if="childRows.length > 1"
+          :children="childRows"
+          :decoration="decoration"
+          :image-urls="childImageUrls"
+          @update="setDecoration"
+        />
       </aside>
 
       <div class="sheets">
