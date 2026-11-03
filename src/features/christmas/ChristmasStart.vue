@@ -17,36 +17,54 @@ import { track } from '../../app/analytics'
 import JourneySteps from './JourneySteps.vue'
 
 /**
- * /joulukirjad: the Christmas letters. One question (who is it for) and the 24 free letters
- * are ready at once; making them more personal is offered on the next page, beside them.
- * A child already in this browser needs no typing at all; its topics are only shown to check.
+ * /joulukirjad: the Christmas letters. One question (who is it for: one child or several) and
+ * the 24 free letters are ready at once, as a linked family series for siblings; making them
+ * more personal is offered on the next page. A child already in this browser needs no typing.
  */
 provide(DESIGN_KEY, 'new')
 const router = useRouter()
 const children = useChildrenStore()
 const creations = useCreationsStore()
 
-const pickedId = ref(children.children[0]?.id ?? '')
+// Several children make one linked family series, as in the wizard.
+const pickedIds = ref<string[]>(children.children[0] ? [children.children[0].id] : [])
 const name = ref('')
 const age = ref<number | ''>('')
 const adding = ref(children.children.length === 0)
 const error = ref('')
 const busy = ref(false)
 
-const picked = computed(() => (adding.value ? undefined : children.children.find((child) => child.id === pickedId.value)))
+const picked = computed(() => children.children.filter((child) => pickedIds.value.includes(child.id)))
+function toggle(id: string): void {
+  pickedIds.value = pickedIds.value.includes(id) ? pickedIds.value.filter((other) => other !== id) : [...pickedIds.value, id]
+}
+const count = computed(() => picked.value.length + (adding.value ? 1 : 0))
 
 // Optional, but each picked topic brings its own hand-written stories into the free letters.
+// Asked here only for one child; with several, each brings the topics of its own profile.
+const single = computed(() => (count.value === 1 ? (adding.value ? null : picked.value[0]) : undefined))
 const topics = ref<TopicId[]>([])
-watch(picked, (child) => (topics.value = [...(child?.topics ?? [])]), { immediate: true })
+watch(single, (child) => (topics.value = [...(child?.topics ?? [])]), { immediate: true })
 
 onMounted(() => track('christmas_start', {}))
 
-function childForLetters(): ChildProfile | null {
-  if (picked.value) {
-    const { id, createdAt: _created, updatedAt: _updated, ...profile } = picked.value
-    children.update(id, { ...profile, topics: topics.value })
-    return children.byId(id) ?? picked.value
+function childrenForLetters(): ChildProfile[] | null {
+  if (!count.value) {
+    error.value = 'Vali, kellele kirjad on.'
+    return null
   }
+  const chosen = picked.value.map((child) => {
+    if (!single.value) return child
+    const { id, createdAt: _created, updatedAt: _updated, ...profile } = child
+    children.update(id, { ...profile, topics: topics.value })
+    return children.byId(id) ?? child
+  })
+  if (!adding.value) return chosen
+  const added = newChild()
+  return added ? [...chosen, added] : null
+}
+
+function newChild(): ChildProfile | null {
   const trimmed = name.value.trim()
   const years = Number(age.value)
   if (!trimmed) {
@@ -63,20 +81,20 @@ function childForLetters(): ChildProfile | null {
     name: trimmed,
     age: years,
     readingLevel: readingLevelForAge(years),
-    topics: topics.value,
+    topics: single.value === null ? topics.value : [],
   })
 }
 
 async function start(): Promise<void> {
   if (busy.value) return
   error.value = ''
-  const child = childForLetters()
-  if (!child) return
+  const chosen = childrenForLetters()
+  if (!chosen) return
   busy.value = true
   try {
     const content = await templateGenerator.generate({
       contentType: 'letter',
-      children: [{ ...child }],
+      children: chosen.map((child) => ({ ...child })),
       occasionId: 'christmas',
       general: { ...DEFAULT_GENERAL },
       seed: Date.now() % 2147483647,
@@ -103,16 +121,19 @@ async function start(): Promise<void> {
 
       <form class="christmas-start__form" novalidate @submit.prevent="start">
         <fieldset v-if="children.children.length" class="christmas-start__kids">
-          <legend>Kellele?</legend>
-          <label v-for="child in children.children" :key="child.id" class="kid" :class="{ 'is-active': !adding && pickedId === child.id }">
-            <input v-model="pickedId" type="radio" name="christmas-child" :value="child.id" class="visually-hidden" @change="adding = false" />
+          <legend>Kellele? <span class="christmas-start__optional">võid valida mitu</span></legend>
+          <label v-for="child in children.children" :key="child.id" class="kid" :class="{ 'is-active': pickedIds.includes(child.id) }">
+            <input type="checkbox" class="visually-hidden" :checked="pickedIds.includes(child.id)" @change="toggle(child.id)" />
             {{ child.name }}
           </label>
           <label class="kid" :class="{ 'is-active': adding }">
-            <input type="radio" name="christmas-child" class="visually-hidden" :checked="adding" @change="adding = true" />
+            <input v-model="adding" type="checkbox" class="visually-hidden" />
             + Uus laps
           </label>
         </fieldset>
+        <p v-if="count > 1" class="christmas-start__family">
+          Õed-vennad saavad seotud kirjad: sama päkapikumaailm, igaühele oma abiline ja vahel ühine ülesanne.
+        </p>
         <p v-else class="christmas-start__who">Kellele?</p>
 
         <div v-if="adding" class="christmas-start__new">
@@ -127,7 +148,7 @@ async function start(): Promise<void> {
         </div>
 
         <!-- Folded, so the button stays in sight; the summary says what picking a topic brings. -->
-        <details class="christmas-start__topics">
+        <details v-if="count <= 1" class="christmas-start__topics">
           <summary>
             Mis lapsele meeldib?
             <span class="christmas-start__optional">
@@ -140,7 +161,7 @@ async function start(): Promise<void> {
 
         <p v-if="error" class="christmas-start__error" role="alert">{{ error }}</p>
         <BaseButton type="submit" size="lg" :disabled="busy">
-          {{ busy ? 'Päkapikk kirjutab…' : 'Loo tasuta kirjad' }} <ArrowRight aria-hidden="true" />
+          {{ busy ? 'Päkapikk kirjutab…' : count > 1 ? `Loo ${count} lapsele tasuta kirjad` : 'Loo tasuta kirjad' }} <ArrowRight aria-hidden="true" />
         </BaseButton>
       </form>
       <p class="christmas-start__note">Kontot pole vaja. Lapse andmed ja kirjad jäävad sinu brauserisse.</p>
@@ -232,6 +253,11 @@ async function start(): Promise<void> {
   flex-direction: column;
   gap: 0.3rem;
   font-weight: 600;
+  font-size: 0.9rem;
+}
+.christmas-start__family {
+  margin: 0;
+  color: var(--ink-soft);
   font-size: 0.9rem;
 }
 .christmas-start__topics {

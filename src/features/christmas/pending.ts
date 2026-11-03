@@ -7,23 +7,31 @@
 const PENDING_KEY = 'kirjavolu.ud2.pending'
 const WRITING_KEY = 'kirjavolu.joulukirjad.kirjutab'
 
-/** Set before the checkout opens; read and cleared on the page Stripe sends the buyer back to. */
-export function markPending(creationId: string): void {
+/**
+ * Set before the checkout opens; read and cleared on the page Stripe sends the buyer back to.
+ * For a family's letters it also says whose personal letters were asked for.
+ */
+export function markPending(creationId: string, childId?: string): void {
   try {
-    localStorage.setItem(PENDING_KEY, creationId)
+    localStorage.setItem(PENDING_KEY, childId ? JSON.stringify({ id: creationId, child: childId }) : creationId)
   } catch {
     // Without storage the letters are written with one more click after paying.
   }
 }
 
-/** True once, for the creation that was waiting. */
-export function takePending(creationId: string): boolean {
+/** Once, for the creation that was waiting: the child asked for, if one was named; else null. */
+export function takePending(creationId: string): { child?: string } | null {
   try {
-    if (localStorage.getItem(PENDING_KEY) !== creationId) return false
+    const stored = localStorage.getItem(PENDING_KEY)
+    if (stored === null) return null
+    // A plain id (one child, or a purchase started before families could be chosen) or { id, child }.
+    let note: { id?: unknown; child?: unknown } = { id: stored }
+    if (stored.startsWith('{')) note = JSON.parse(stored) as typeof note
+    if (note.id !== creationId) return null
     localStorage.removeItem(PENDING_KEY)
-    return true
+    return typeof note.child === 'string' ? { child: note.child } : {}
   } catch {
-    return false
+    return null
   }
 }
 

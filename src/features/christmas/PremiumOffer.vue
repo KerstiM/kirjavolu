@@ -3,10 +3,11 @@ import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'v
 import { Gift, Sparkles } from 'lucide-vue-next'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import ListInput from '../../components/ui/ListInput.vue'
+import SegmentedControl from '../../components/ui/SegmentedControl.vue'
 import { useChildrenStore } from '../children/childrenStore'
 import { nameCase } from '../../domain/text/estonian'
 import type { ChildProfile } from '../../domain/models'
-import { readDecember, writeDecember } from '../pass/passLetters'
+import { LETTER_LENGTH_OPTIONS, readDecember, writeDecember, type LetterLength } from '../pass/passLetters'
 import { markPending } from './pending'
 import { track } from '../../app/analytics'
 import {
@@ -28,8 +29,20 @@ import {
  * the Jõulupass is bought right here. After paying, Stripe sends the buyer back to this page,
  * which then writes them. Never in the way: the free letters print without any of this.
  */
-const props = defineProps<{ child: ChildProfile; creationId: string; items: number; pass: SeasonPass | null; busy: boolean; returnTo: string }>()
+const props = defineProps<{
+  child: ChildProfile
+  creationId: string
+  items: number
+  pass: SeasonPass | null
+  busy: boolean
+  returnTo: string
+  /** Siblings' linked letters: each child's personal series is written on its own, next to them. */
+  family?: boolean
+}>()
 const emit = defineEmits<{ write: []; pass: [pass: SeasonPass] }>()
+/** How long each letter will be; the page keeps it, so writing again uses the same choice. */
+const length = defineModel<LetterLength>('length', { required: true })
+const lengthHint = computed(() => LETTER_LENGTH_OPTIONS.find((option) => option.value === length.value)?.hint)
 const children = useChildrenStore()
 
 const about = reactive({
@@ -50,6 +63,7 @@ const ROWS: { label: string; free: string; personal: string }[] = [
   { label: 'Pereliikmed ja lemmikloomad nimepidi', free: '–', personal: 'Jah' },
   { label: 'Detsembri plaanid õigel päeval', free: 'Valikust (nt külaskäik, pidu)', personal: 'Sinu enda sõnadega' },
   { label: 'Terve sari kirjutatud just selle lapse jaoks', free: '–', personal: 'Jah' },
+  { label: 'Kirja pikkus', free: 'Vanuse järgi', personal: 'Vali ise, kuni pool A4 lehte' },
   { label: 'Ise muutmine, printimine ja PDF', free: 'Jah', personal: 'Jah' },
   { label: 'Päkapikult muudatuse palumine („tee lühemaks“)', free: '–', personal: '30 korda' },
 ]
@@ -87,7 +101,7 @@ async function buy(): Promise<void> {
   buyError.value = ''
   buying.value = true
   track('premium_selected', { product: 'season-pass' })
-  markPending(props.creationId)
+  markPending(props.creationId, props.family ? props.child.id : undefined)
   await nextTick()
   try {
     checkout = await openCheckout(checkoutTarget.value!, props.returnTo)
@@ -123,6 +137,11 @@ async function useCode(): Promise<void> {
         {{ whom }} maailmast.
       </p>
     </header>
+
+    <p v-if="family" class="premium__family">
+      Isiklikud kirjad kirjutatakse igale lapsele eraldi ja igaüks kasutab Jõulupassist ühe kirjasarja. Õdesid-vendi
+      nimetatakse pere andmete järgi, aga ühised paarisülesanded on ainult tasuta seotud kirjades.
+    </p>
 
     <div class="premium__compare">
       <table>
@@ -170,6 +189,14 @@ async function useCode(): Promise<void> {
           placeholder="6.12 vanaema juurde, 13.12 lasteaia jõulupidu, 20.12 piparkoogid"
         />
       </label>
+      <SegmentedControl
+        v-model="length"
+        class="field--wide"
+        name="premium-length"
+        label="Kirjade pikkus"
+        :options="LETTER_LENGTH_OPTIONS"
+        :hint="lengthHint"
+      />
       <p v-if="thin" class="premium__thin field--wide">Mida rohkem siia kirjutad, seda isiklikumad kirjad tulevad. Tühjade väljadega jäävad kirjad üldisemaks.</p>
     </div>
 
@@ -179,7 +206,8 @@ async function useCode(): Promise<void> {
       </BaseButton>
       <p class="premium__note">
         Sul on Jõulupass {{ pass.code }}. See kasutab ühe kirjasarja, alles on {{ pass.generationsLeft }}, kehtib kuni
-        {{ formatValidUntil(pass) }}. Isiklikud kirjad tulevad nende mallikirjade asemele.
+        {{ formatValidUntil(pass) }}.
+        {{ family ? 'Tasuta pere kirjad jäävad alles.' : 'Isiklikud kirjad tulevad nende mallikirjade asemele.' }}
       </p>
     </template>
     <template v-else>
@@ -245,6 +273,13 @@ async function useCode(): Promise<void> {
   p {
     color: var(--ink-soft);
   }
+}
+.premium__family {
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--radius-sm);
+  background: var(--lavender-soft);
+  color: var(--lavender-ink);
+  font-size: 0.9rem;
 }
 .premium__compare {
   align-self: stretch;

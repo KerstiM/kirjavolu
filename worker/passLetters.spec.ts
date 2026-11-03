@@ -131,7 +131,7 @@ describe('POST /api/joulupass/kirjad', () => {
     const get = new Request('https://kirjavolu.ee/api/joulupass/kirjad', { headers: { Origin: 'https://kirjavolu.ee' } })
     expect((await handlePassLetters(get, env, deps)).status).toBe(405)
     expect((await handlePassLetters(post({ code: CODE, child: JASPER }, { Origin: 'https://evil.example' }), env, deps)).status).toBe(403)
-    expect((await handlePassLetters(post('x'.repeat(17000)), env, deps)).status).toBe(413)
+    expect((await handlePassLetters(post('x'.repeat(25000)), env, deps)).status).toBe(413)
     expect((await handlePassLetters(post('{nope'), env, deps)).status).toBe(400)
     expect((await handlePassLetters(post({ code: 'nope', child: JASPER }), env, deps)).status).toBe(400)
     expect((await handlePassLetters(post({ code: CODE, child: { ...JASPER, age: 40 } }), env, deps)).status).toBe(400)
@@ -233,7 +233,25 @@ describe('series', () => {
       achievements: ['õppis rattaga sõitma'],
       details: 'd'.repeat(600),
       december: '12.12 läheme vanaema juurde Valka',
+      length: 'medium',
     })
+  })
+
+  it('makes each letter as long as the parent picked, whatever the child’s reading level', () => {
+    const young = { ...JASPER, age: 5, readingLevel: 'beginner' }
+    expect(seriesPrompt(parseSeriesInput(young)!)).toContain('Iga kirja pikkus: 120–170 sõna.')
+    expect(seriesPrompt(parseSeriesInput({ ...young, length: 'long' })!)).toContain('200–260 sõna (umbes pool A4 lehekülge)')
+    expect(seriesPrompt(parseSeriesInput({ ...young, length: 'short' })!)).toContain('Iga kirja pikkus: 60–90 sõna.')
+    // Anything else is the default, never an instruction.
+    expect(parseSeriesInput({ ...young, length: 'tee 2000 sõna' })?.length).toBe('medium')
+    // The reading level only shapes the sentences.
+    expect(seriesPrompt(parseSeriesInput(young)!)).toContain('Keel: laps alles õpib lugema ja vanem loeb sageli ette')
+  })
+
+  it('keeps letters up to half an A4 page whole', () => {
+    const long = 'sõna '.repeat(520).trim()
+    const letters = SERIES.map((letter) => ({ ...letter, body: long }))
+    expect(readSeries(JSON.stringify({ letters }))[0]?.body).toBe(long)
   })
 
   it('hands the child and the plans to the model as data inside tags', () => {

@@ -95,12 +95,63 @@ describe('Christmas letters: who for and the free letters', () => {
       useChildrenStore().restoreDemo()
     })
     const user = userEvent.setup()
-    const kids = await screen.findByRole('group', { name: 'Kellele?' })
-    expect(within(kids).getByRole('radio', { name: 'Ruben' })).toBeChecked()
+    const kids = await screen.findByRole('group', { name: /Kellele\?/ })
+    expect(within(kids).getByRole('checkbox', { name: 'Ruben' })).toBeChecked()
     expect(screen.queryByLabelText('Lapse nimi')).toBeNull()
     await user.click(screen.getByRole('button', { name: /Loo tasuta kirjad/ }))
     await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/joulukirjad\//), { timeout: 5000 })
     expect(await screen.findByRole('heading', { level: 1, name: 'Rubeni 24 jõulukirja on valmis' })).toBeInTheDocument()
+  })
+
+  it('makes linked letters for siblings, as the wizard does', async () => {
+    const { router, pinia } = await open('/joulukirjad', () => {
+      useChildrenStore().restoreDemo()
+    })
+    const user = userEvent.setup()
+    const kids = await screen.findByRole('group', { name: /Kellele\? võid valida mitu/ })
+    await user.click(within(kids).getByRole('checkbox', { name: 'Jasper' }))
+    expect(screen.getByText(/Õed-vennad saavad seotud kirjad/)).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /Loo 2 lapsele tasuta kirjad/ }))
+    await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/joulukirjad\//), { timeout: 5000 })
+    expect(await screen.findByRole('heading', { level: 1, name: 'Rubeni ja Jasperi jõulukirjad on valmis' })).toBeInTheDocument()
+    const creation = useCreationsStore(pinia).creations[0]!
+    expect(creation.request.children.map((child) => child.name)).toEqual(['Ruben', 'Jasper'])
+    expect(creation.items).toHaveLength(48)
+
+    // One child at a time: their own letters, and their own personal offer.
+    const tabs = screen.getByRole('tablist', { name: 'Kelle kirjad' })
+    await user.click(within(tabs).getByRole('tab', { name: 'Jasper' }))
+    expect(document.querySelectorAll('.letters__list .paper')).toHaveLength(3)
+    expect(screen.queryByRole('heading', { level: 3, name: /Ruben/ })).toBeNull()
+    expect(screen.getAllByRole('heading', { level: 3, name: /Jasper/ }).length).toBeGreaterThan(0)
+    const offer = screen.getByRole('region', { name: /Muuda kirjad veel isiklikumaks/ })
+    expect(within(offer).getByText(/igale lapsele eraldi ja igaüks kasutab Jõulupassist ühe kirjasarja/)).toBeInTheDocument()
+  })
+
+  it('writes one sibling’s personal letters beside the family letters, which stay', async () => {
+    localStorage.setItem(PASS_KEY, JSON.stringify(PASS))
+    vi.stubGlobal('fetch', vi.fn(async () => Response.json({ letters: LETTERS, pass: { ...PASS, generationsLeft: 9 } })))
+    const { router, pinia } = await open('/joulukirjad', () => {
+      useChildrenStore().restoreDemo()
+    })
+    const user = userEvent.setup()
+    await user.click(within(await screen.findByRole('group', { name: /Kellele\?/ })).getByRole('checkbox', { name: 'Jasper' }))
+    await user.click(screen.getByRole('button', { name: /Loo 2 lapsele tasuta kirjad/ }))
+    await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/joulukirjad\//), { timeout: 5000 })
+    const familyId = router.currentRoute.value.path.split('/').pop()!
+    await user.click(within(await screen.findByRole('tablist', { name: 'Kelle kirjad' })).getByRole('tab', { name: 'Jasper' }))
+    await user.click(screen.getByRole('button', { name: /Kirjuta Jasperile isiklikud kirjad/ }))
+
+    const done = await screen.findByRole('region', { name: 'Jasperi isiklikud kirjad on valmis' }, { timeout: 5000 })
+    const store = useCreationsStore(pinia)
+    expect(store.creations).toHaveLength(2)
+    expect(store.byId(familyId)?.items).toHaveLength(48)
+    const personal = store.creations.find((creation) => creation.id !== familyId)!
+    expect(personal.request.children[0]?.name).toBe('Jasper')
+    expect(within(done).getByRole('link', { name: /Ava Jasperi isiklikud kirjad/ })).toHaveAttribute('href', `/joulukirjad/${personal.id}`)
+    // Ruben can still get his own.
+    await user.click(screen.getByRole('tab', { name: 'Ruben' }))
+    expect(screen.getByRole('button', { name: /Kirjuta Rubenile isiklikud kirjad/ })).toBeInTheDocument()
   })
 
   it('lets a letter be edited right there, and keeps the change', async () => {
@@ -154,7 +205,7 @@ describe('Christmas letters: the optional personal letters', () => {
     vi.stubGlobal('fetch', fetch)
     const { user, router } = await freeLetters()
     await user.click(screen.getByRole('link', { name: /Prindi või salvesta PDF/ }))
-    await vi.waitFor(() => expect(router.currentRoute.value.name).toBe('preview'))
+    await vi.waitFor(() => expect(router.currentRoute.value.name).toBe('preview'), { timeout: 5000 })
     expect(await screen.findByRole('button', { name: /Prindi \/ PDF/ })).toBeInTheDocument()
     expect(fetch).not.toHaveBeenCalled()
   })
@@ -190,12 +241,50 @@ describe('Christmas letters: the optional personal letters', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Mia isiklikud kirjad on valmis' }, { timeout: 5000 })).toBeInTheDocument()
     const [url, init] = fetch.mock.calls[0] as unknown as [string, RequestInit]
     expect(url).toBe('/api/joulupass/kirjad')
-    expect(JSON.parse(String(init.body)).child).toMatchObject({ name: 'Mia', december: '12.12 vanaema juurde' })
+    expect(JSON.parse(String(init.body)).child).toMatchObject({ name: 'Mia', december: '12.12 vanaema juurde', length: 'medium' })
     expect(useCreationsStore(pinia).creations).toHaveLength(1)
     expect(useCreationsStore(pinia).creations[0]?.items[0]?.body).toBe('Isiklik kiri 1.')
     expect(loadPass()?.generationsLeft).toBe(9)
     expect(screen.queryByRole('region', { name: /Muuda kirjad veel isiklikumaks/ })).toBeNull()
     expect(localStorage.getItem(WRITING)).toBeNull()
+  })
+
+  it('lets the length be picked, and offers to write them all again or have one letter rewritten', async () => {
+    localStorage.setItem(PASS_KEY, JSON.stringify(PASS))
+    const fetch = vi.fn(async (url: string) =>
+      url === '/api/joulupass/parandus'
+        ? Response.json({ letter: { heading: 'Kallis Mia!', body: 'Pikem kiri.', signature: 'Tuduja' }, pass: { ...PASS, generationsLeft: 9, fixesLeft: 29 } })
+        : Response.json({ letters: LETTERS, pass: { ...PASS, generationsLeft: 9 } }),
+    )
+    vi.stubGlobal('fetch', fetch)
+    const { user } = await freeLetters()
+    const offer = screen.getByRole('region', { name: /Muuda kirjad veel isiklikumaks/ })
+    const lengths = within(offer).getByRole('group', { name: 'Kirjade pikkus' })
+    expect(within(lengths).getByRole('radio', { name: 'Keskmine' })).toBeChecked()
+    await user.click(within(lengths).getByRole('radio', { name: 'Pikk' }))
+    await user.click(within(offer).getByRole('button', { name: /Kirjuta Miale isiklikud kirjad/ }))
+    await screen.findByRole('heading', { level: 1, name: 'Mia isiklikud kirjad on valmis' }, { timeout: 5000 })
+    expect(JSON.parse(String((fetch.mock.calls[0] as unknown as [string, RequestInit])[1].body)).child.length).toBe('long')
+
+    // One letter rewritten by the elf, with the same length remembered.
+    await user.click(screen.getAllByRole('button', { name: /^Muuda:/ })[0]!)
+    const dialog = screen.getByRole('dialog')
+    expect(within(dialog).getByText(/Kulub 1 päkapiku muudatus/)).toBeInTheDocument()
+    await user.type(within(dialog).getByRole('textbox', { name: /Mida päkapikk/ }), 'tee pikemaks')
+    await user.click(within(dialog).getByRole('button', { name: /Palu päkapikul muuta/ }))
+    await vi.waitFor(() => expect(within(dialog).getByLabelText('Tekst')).toHaveValue('Pikem kiri.'))
+    const fix = fetch.mock.calls.find((call) => call[0] === '/api/joulupass/parandus') as unknown as [string, RequestInit]
+    expect(JSON.parse(String(fix[1].body))).toMatchObject({ day: 1, wish: 'tee pikemaks', child: { length: 'long' } })
+    await user.click(within(dialog).getByRole('button', { name: /Salvesta/ }))
+
+    // The whole series again, with a warning that hand-made changes go.
+    const again = screen.getByRole('region', { name: 'Pole päris see, mida ootasid?' })
+    expect(again).toHaveTextContent('Kasutab ühe kirjasarja, alles on 9')
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false)
+    await user.click(within(again).getByRole('button', { name: /Kirjuta kõik uuesti/ }))
+    expect(confirm).toHaveBeenCalled()
+    expect(fetch.mock.calls.filter((call) => call[0] === '/api/joulupass/kirjad')).toHaveLength(1)
+    confirm.mockRestore()
   })
 
   it('shows an honest waiting state while writing: no stages or percentages', async () => {
@@ -206,7 +295,7 @@ describe('Christmas letters: the optional personal letters', () => {
     await user.click(screen.getByRole('button', { name: /Kirjuta Miale isiklikud kirjad/ }))
     const status = await screen.findByText(/Päkapikk kirjutab Miale 24 isiklikku kirja/)
     const box = status.closest('section')!
-    expect(box).toHaveTextContent('Tavaliselt võtab see paar minutit')
+    expect(box).toHaveTextContent('Tavaliselt võtab see poolteist kuni kolm minutit')
     expect(box.textContent).not.toMatch(/%/)
     expect(JSON.parse(localStorage.getItem(WRITING)!)).toMatchObject({ left: 10 })
     // A second press cannot start a second series while one is being written.

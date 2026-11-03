@@ -351,11 +351,12 @@ describe('terms and privacy', () => {
     const { router } = await open('/uus-disain')
     const user = userEvent.setup()
     await user.click(await screen.findByRole('link', { name: 'Müügitingimused' }))
-    expect(await screen.findByRole('heading', { level: 1, name: 'Müügitingimused' })).toBeInTheDocument()
+    // Lazy pages load slowly while the whole suite runs in parallel.
+    expect(await screen.findByRole('heading', { level: 1, name: 'Müügitingimused' }, { timeout: 5000 })).toBeInTheDocument()
     expect(router.currentRoute.value.path).toBe('/tingimused')
     expect(screen.getByText(/kaob 14-päevane taganemisõigus/)).toBeInTheDocument()
     await user.click(screen.getByRole('link', { name: 'Privaatsus' }))
-    expect(await screen.findByRole('heading', { level: 1, name: 'Privaatsuspõhimõtted' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Privaatsuspõhimõtted' }, { timeout: 5000 })).toBeInTheDocument()
     expect(router.currentRoute.value.path).toBe('/privaatsus')
   })
 

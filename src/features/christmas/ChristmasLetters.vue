@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, provide, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ArrowDown, PartyPopper, Printer, RotateCcw } from 'lucide-vue-next'
+import { ArrowDown, PartyPopper, Printer, RotateCcw, Sparkles } from 'lucide-vue-next'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import Mascot from '../../components/brand/Mascot.vue'
 import { CHRISTMAS_ROOT, DESIGN_KEY } from '../../components/brand/design'
@@ -9,10 +9,24 @@ import { useChildrenStore } from '../children/childrenStore'
 import { useCreationsStore } from '../preview/creationsStore'
 import PrintableItem from '../preview/PrintableItem.vue'
 import ItemEditorDialog from '../preview/ItemEditorDialog.vue'
-import { nameCase } from '../../domain/text/estonian'
+import SegmentedControl from '../../components/ui/SegmentedControl.vue'
+import { nameCase, namesInCase } from '../../domain/text/estonian'
 import type { GeneratedItem } from '../../domain/models'
-import { AI_SERIES_GENERATOR, LETTERS_ERROR_TEXTS, LettersRequestError, readDecember, requestPassLetters, type LettersError } from '../pass/passLetters'
-import { checkPass, formatValidUntil, loadPass, purchaseStatus, type SeasonPass } from '../pass/seasonPass'
+import {
+  AI_SERIES_GENERATOR,
+  FIX_ERROR_TEXTS,
+  LETTER_LENGTH_OPTIONS,
+  LETTERS_ERROR_TEXTS,
+  LettersRequestError,
+  readDecember,
+  readLength,
+  requestLetterFix,
+  requestPassLetters,
+  writeLength,
+  type LetterLength,
+  type LettersError,
+} from '../pass/passLetters'
+import { checkPass, formatValidUntil, isActive, loadPass, purchaseStatus, type SeasonPass } from '../pass/seasonPass'
 import { SELLER } from '../legal/seller'
 import { track } from '../../app/analytics'
 import PremiumOffer from './PremiumOffer.vue'
@@ -21,8 +35,9 @@ import { finishWriting, startWriting, takePending, takeWriting } from './pending
 
 /**
  * /joulukirjad/<id>: the free letters are ready to read, edit and print, and below them the
- * way to make them more personal. The personal letters replace the free ones in the same
- * creation, so there is only ever one set to print. Stripe returns here after paying
+ * way to make them more personal. For one child the personal letters replace the free ones in
+ * the same creation, so there is only ever one set to print; siblings' linked letters stay, and
+ * each child's personal series becomes a creation of its own beside them. Stripe returns here after paying
  * (?session_id=…); the payment counts only once the server has asked Stripe about it.
  */
 provide(DESIGN_KEY, 'new')
@@ -34,21 +49,61 @@ const children = useChildrenStore()
 
 const content = computed(() => creations.byId(props.id))
 const personal = computed(() => content.value?.generator.id === AI_SERIES_GENERATOR)
-const child = computed(() => {
-  const snapshot = content.value?.request.children[0]
-  return snapshot ? (children.byId(snapshot.id) ?? snapshot) : undefined
-})
+// The children as they are now in this browser, so what the parent added since counts too.
+const family = computed(() => (content.value?.request.children ?? []).map((snapshot) => children.byId(snapshot.id) ?? snapshot))
+const isFamily = computed(() => family.value.length > 1)
+// For siblings one child at a time: whose letters are shown and whose are made personal.
+const childId = ref(family.value[0]?.id ?? '')
+const child = computed(() => family.value.find((member) => member.id === childId.value) ?? family.value[0])
 const showAll = ref(false)
-const shown = computed(() => (showAll.value ? content.value?.items : content.value?.items.slice(0, 3)) ?? [])
+const ownItems = computed(() =>
+  (content.value?.items ?? []).filter((item) => !isFamily.value || !item.childId || item.childId === child.value?.id),
+)
+const shown = computed(() => (showAll.value ? ownItems.value : ownItems.value.slice(0, 3)))
+function pick(id: string): void {
+  childId.value = id
+  showAll.value = false
+}
+/** A sibling's personal series, written from these linked letters (the newest, if more). */
+function personalFor(id: string) {
+  const since = content.value?.createdAt ?? ''
+  return creations.creations.find(
+    (creation) => creation.generator.id === AI_SERIES_GENERATOR && creation.request.children[0]?.id === id && creation.createdAt >= since,
+  )
+}
 const printLink = computed(() => `/looming/${props.id}`)
 // Stripe comes back to the page the purchase started on (this one, or the earlier /ud2 path).
 const returnTo = computed(() => route.path)
 
 const pass = ref<SeasonPass | null>(loadPass())
 const justBought = ref(false)
+const passActive = computed(() => !!pass.value && isActive(pass.value))
+// The length picked last time for this child; medium the first time.
+const length = ref<LetterLength>(child.value ? readLength(child.value.id) : 'medium')
+const lengthHint = computed(() => LETTER_LENGTH_OPTIONS.find((option) => option.value === length.value)?.hint)
 
 // --- editing one letter right here --------------------------------------------
 const editing = ref<GeneratedItem | null>(null)
+// A personal letter can also be rewritten by the elf as the parent asks: one of the pass's fixes.
+const aiNote = computed(() =>
+  pass.value && new Date(pass.value.validUntil) > new Date()
+    ? `Kulub 1 päkapiku muudatus, alles on ${pass.value.fixesLeft ?? 30}.`
+    : 'Päkapikult muudatust paludes kulub Jõulupassist üks muudatus. Sisesta selleks oma kood lehel „Jõulupass“.',
+)
+async function fixWithAi(wish: string): Promise<Pick<GeneratedItem, 'heading' | 'body' | 'signature'>> {
+  const current = content.value
+  const writer = child.value
+  const code = pass.value?.code
+  const index = current?.items.findIndex((item) => item.id === editing.value?.id) ?? -1
+  if (!current || !writer || !code || index < 0) throw new Error(FIX_ERROR_TEXTS.failed)
+  try {
+    const result = await requestLetterFix(code, writer, current.items, index, wish)
+    pass.value = result.pass
+    return result.letter
+  } catch (failure) {
+    throw new Error(FIX_ERROR_TEXTS[failure instanceof LettersRequestError ? failure.reason : 'failed'])
+  }
+}
 function saveEdit(patch: Pick<GeneratedItem, 'heading' | 'body' | 'signature'>): void {
   if (editing.value) creations.editItem(props.id, editing.value.id, patch)
   editing.value = null
@@ -89,6 +144,7 @@ async function write(): Promise<void> {
   const code = pass.value?.code
   if (!current || !writer || !pass.value || !code || writing.value) return
   const before = pass.value.generationsLeft
+  writeLength(writer.id, length.value)
   writing.value = true
   error.value = ''
   failedReason.value = null
@@ -97,8 +153,9 @@ async function write(): Promise<void> {
   startWriting(props.id, before)
   window.addEventListener('beforeunload', holdPage)
   try {
-    const result = await requestPassLetters(code, writer, readDecember(writer.id))
-    creations.applyChoices(props.id, result.content)
+    const result = await requestPassLetters(code, writer, readDecember(writer.id), length.value)
+    if (isFamily.value) creations.add(result.content)
+    else creations.applyChoices(props.id, result.content)
     pass.value = result.pass
     showAll.value = false
     track('premium_generated', { type: 'letter', items: result.content.items.length })
@@ -113,6 +170,12 @@ async function write(): Promise<void> {
     finishWriting()
     writing.value = false
   }
+}
+/** "Kirjuta kõik uuesti": a whole new personal series, e.g. longer; it uses one more series. */
+function writeAgain(): void {
+  const edited = content.value?.items.some((item) => item.edited)
+  if (edited && !window.confirm('Uued kirjad tulevad praeguste asemele ja sinu muudatused kaovad. Kas jätkata?')) return
+  void write()
 }
 const canRetry = computed(() => !!failedReason.value && ['failed', 'busy', 'too_many'].includes(failedReason.value))
 
@@ -133,7 +196,9 @@ async function checkPurchase(sessionId: string, attempt = 0): Promise<void> {
       // The code is saved; a reload should not ask Stripe again.
       await router.replace({ query: {} })
       // Writing starts before the offer could show again, so the buyer never sees a second "Osta".
-      if (takePending(props.id) && !personal.value) void write()
+      const pending = takePending(props.id)
+      if (pending?.child && family.value.some((member) => member.id === pending.child)) childId.value = pending.child
+      if (pending && !personal.value) void write()
       checking.value = false
       return
     }
@@ -190,12 +255,15 @@ onBeforeUnmount(() => {
       <JourneySteps :current="personal ? 3 : 2" />
       <header class="letters__head">
         <div>
-          <h1 v-if="child">{{ personal ? `${nameCase(child, 'genitive')} isiklikud kirjad on valmis` : `${nameCase(child, 'genitive')} 24 jõulukirja on valmis` }}</h1>
+          <h1 v-if="isFamily">{{ namesInCase(family, 'genitive') }} jõulukirjad on valmis</h1>
+          <h1 v-else-if="child">{{ personal ? `${nameCase(child, 'genitive')} isiklikud kirjad on valmis` : `${nameCase(child, 'genitive')} 24 jõulukirja on valmis` }}</h1>
           <p class="letters__lead">
             {{
               personal
                 ? 'Päkapikk kirjutas need just tema jaoks. Iga kirja saad enne printimist muuta.'
-                : 'Need on sinu omad ja tasuta: loe läbi, muuda ja prindi. Kirjad jäävad sinu brauserisse.'
+                : isFamily
+                  ? 'Seotud kirjad: sama päkapikumaailm, igal lapsel oma 24 kirja ja vahel ühine ülesanne. Tasuta.'
+                  : 'Need on sinu omad ja tasuta: loe läbi, muuda ja prindi. Kirjad jäävad sinu brauserisse.'
             }}
           </p>
         </div>
@@ -227,7 +295,8 @@ onBeforeUnmount(() => {
         <div>
           <p class="writing__line">Päkapikk kirjutab {{ child ? nameCase(child, 'allative') : '' }} 24 isiklikku kirja</p>
           <p class="writing__time">
-            Tavaliselt võtab see paar minutit. Hoia see leht lahti, kirjad ilmuvad siia kõik korraga. Möödunud {{ elapsed }}
+            Tavaliselt võtab see poolteist kuni kolm minutit, pikemate kirjadega kauem. Hoia see leht lahti, kirjad
+            ilmuvad siia kõik korraga. Möödunud {{ elapsed }}
           </p>
         </div>
       </section>
@@ -236,18 +305,56 @@ onBeforeUnmount(() => {
         <BaseButton v-if="canRetry && pass" variant="secondary" size="sm" @click="write"><RotateCcw aria-hidden="true" /> Proovi uuesti</BaseButton>
       </div>
 
+      <div v-if="isFamily" class="kids" role="tablist" aria-label="Kelle kirjad">
+        <button
+          v-for="member in family"
+          :key="member.id"
+          type="button"
+          role="tab"
+          class="kid"
+          :class="{ 'is-active': member.id === child?.id }"
+          :aria-selected="member.id === child?.id"
+          :disabled="writing"
+          @click="pick(member.id)"
+        >
+          {{ member.name }}<span v-if="personalFor(member.id)" class="kid__mark"> · isiklikud valmis</span>
+        </button>
+      </div>
+
       <div class="letters__list">
         <PrintableItem v-for="item in shown" :key="item.id" :item="item" no-variants @edit="editing = item" />
       </div>
-      <BaseButton v-if="!showAll && content.items.length > 3" variant="secondary" @click="showAll = true">
-        Näita kõiki {{ content.items.length }} kirja
+      <BaseButton v-if="!showAll && ownItems.length > 3" variant="secondary" @click="showAll = true">
+        Näita kõiki {{ ownItems.length }} kirja<template v-if="isFamily && child"> ({{ child.name }})</template>
       </BaseButton>
 
+      <section v-if="isFamily && child && personalFor(child.id) && !writing" class="again" aria-labelledby="done-title">
+        <h2 id="done-title">{{ nameCase(child, 'genitive') }} isiklikud kirjad on valmis</h2>
+        <p>Need on eraldi loomingus; tasuta pere kirjad jäävad alles. Seal saad neid muuta, uuesti kirjutada ja printida.</p>
+        <BaseButton :to="`${CHRISTMAS_ROOT}/${personalFor(child.id)!.id}`">Ava {{ nameCase(child, 'genitive') }} isiklikud kirjad</BaseButton>
+      </section>
+
+      <section v-if="personal && !writing && child" class="again" aria-labelledby="again-title">
+        <h2 id="again-title">Pole päris see, mida ootasid?</h2>
+        <p>
+          Iga kirja saad muuta nupuga „Muuda“. Seal saab ka päkapikult paluda, et ta kirjutaks just selle kirja ümber
+          (näiteks „tee pikemaks“ või „lisa vanaema Liisi“).
+        </p>
+        <template v-if="passActive && pass">
+          <SegmentedControl v-model="length" name="again-length" label="Kirjade pikkus" :options="LETTER_LENGTH_OPTIONS" :hint="lengthHint" />
+          <BaseButton variant="secondary" @click="writeAgain"><Sparkles aria-hidden="true" /> Kirjuta kõik uuesti</BaseButton>
+          <p class="again__note">Kasutab ühe kirjasarja, alles on {{ pass.generationsLeft }}. Uued kirjad tulevad nende asemele.</p>
+        </template>
+      </section>
+
       <PremiumOffer
-        v-if="!personal && !writing && !checking && child"
+        v-if="!personal && !writing && !checking && child && !(isFamily && personalFor(child.id))"
+        :key="child.id"
+        v-model:length="length"
         :child="child"
         :creation-id="content.id"
-        :items="content.items.length"
+        :items="ownItems.length"
+        :family="isFamily"
         :pass="pass"
         :busy="writing || checking"
         :return-to="returnTo"
@@ -261,6 +368,8 @@ onBeforeUnmount(() => {
       :item="editing"
       :title="editing.label"
       no-variants
+      :ai-fix="personal ? fixWithAi : undefined"
+      :ai-note="personal ? aiNote : undefined"
       @save="saveEdit"
       @close="editing = null"
     />
@@ -369,6 +478,55 @@ onBeforeUnmount(() => {
   color: var(--ink-soft);
   font-size: 0.9rem;
   font-variant-numeric: tabular-nums;
+}
+.kids {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.kid {
+  min-height: 2.75rem;
+  padding: 0.45rem 1rem;
+  border: 2px solid var(--lavender-mid);
+  border-radius: 999px;
+  background: #fff;
+  font: inherit;
+  cursor: pointer;
+  &.is-active {
+    border-color: var(--lavender);
+    background: var(--lavender-soft);
+    color: var(--lavender-ink);
+    font-weight: 600;
+  }
+  &:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+}
+.kid__mark {
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+.again {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border: 2px solid #f0e2cf;
+  border-radius: 16px;
+  background: #fff;
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+  p {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+}
+.again__note {
+  font-size: 0.9rem;
 }
 .letters__list {
   display: grid;
