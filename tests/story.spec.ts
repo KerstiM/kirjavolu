@@ -5,6 +5,7 @@ import { planCollection, type CollectionPlan } from '@/domain/story/planner'
 import { renderPlan } from '@/domain/story/render'
 import { usesScenarioEngine } from '@/domain/story/scenarioLetters'
 import { profileHooks } from '@/domain/story/hooks'
+import { sampleContext } from '@/domain/story/sample'
 import { CARD_HARD_LIMITS, validateCollection, validateLibrary } from '@/domain/story/validate'
 import { STAR_ARC } from '@/data/scenarios/christmas/starArc'
 import { TOPICS } from '@/data/topics'
@@ -252,6 +253,21 @@ describe('age and reading level', () => {
       if (d.childId === BRITA.id) expect(long.items[k]!.body.split('\n\n')).toHaveLength(1)
     })
     expect(validateCollection(long.plan, long.items, library).filter((i) => i.severity === 'error')).toEqual([])
+  })
+
+  it('tells a story further in long letters only, so medium ones still fit the poster', () => {
+    const request = christmas([JASPER], {}, 5)
+    const long = build({ ...request, general: { ...request.general, length: 'long' } })
+    const medium = build({ ...request, general: { ...request.general, length: 'medium' } })
+    const sample = sampleContext([], 'Tuduja')
+    const extras = CHRISTMAS_LIBRARY.scenarios
+      .flatMap((scenario) => (scenario.more?.young ? scenario.more.young(sample) : []))
+      .filter((part): part is string => typeof part === 'string')
+      .map((part) => part.slice(0, 40))
+    expect(extras.length).toBeGreaterThan(5)
+    const uses = (items: { body: string }[]) => items.filter((item) => extras.some((start) => item.body.includes(start))).length
+    expect(uses(long.items)).toBeGreaterThan(0)
+    expect(uses(medium.items)).toBe(0)
   })
 
   it('a three-year-old hears longer stories read aloud, not the one-year-old’s cards', () => {

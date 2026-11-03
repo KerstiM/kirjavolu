@@ -16,6 +16,7 @@ export const YOUNG_SCENARIOS: Scenario[] = [
     hooks: ['comics'],
     tags: ['comics', 'reindeer', 'drawing'],
     tones: ['humorous'],
+    more: { young: () => ['Näitasin pilte ka Jõuluvanale. Tema arvas, et kolmandal pildil istub Välk lumehanges ja teeb nägu, nagu oleks ta kogu aeg tahtnud just seal istuda. Kass Nurr arvas, et Välk lendab minema. Mina ei tea veel. Praegu tulevad põhjapõdrad mul natuke nagu toolid.'] },
     variants: {
       young: (c) => [
         'Ma joonistasin eile koomiksi! Selles on kolm pilti.',
@@ -65,6 +66,7 @@ export const YOUNG_SCENARIOS: Scenario[] = [
     hooks: ['animals'],
     tags: ['birds', 'laundry'],
     tones: ['humorous', 'heartwarming'],
+    more: { young: () => ['Täna hommikul käisin neid vaatamas. Üks tihane piilus sokist välja ja vaatas mind nii, nagu oleksin mina tema majja külla tulnud. Ütlesin talle tere ja panin ukse ette veel peotäie seemneid. Nüüd oleme sõbrad. Vähemalt mina arvan nii.'] },
     variants: {
       young: (c) => [
         'Eile panin aknale lindudele seemneid. Tihased tulid, sõid kõhud täis – ja lendasid minema minu sokiga, mis aknal kuivas!',
@@ -113,6 +115,7 @@ export const YOUNG_SCENARIOS: Scenario[] = [
     role: 'standalone',
     tags: ['kitchen'],
     tones: ['humorous'],
+    more: { young: () => ['Kass Nurr istub iga õhtu laua peal ja vaatab üles. Ta ootab, et kuu alla kukuks. Põhjapõder Välk ootab ka, aga tema tahaks selle ära süüa. Täna küpsetasin veel pannkooke, aga keerasin neid ainult natukene. Kõik jäid pannile. Sõime need moosiga ära ja kuu jäi lakke.'] },
     variants: {
       young: () => [
         'Ma õppisin eile pannkooke keerama nagu päris kokad – pannilt õhku ja tagasi!',
@@ -128,6 +131,7 @@ export const YOUNG_SCENARIOS: Scenario[] = [
     role: 'standalone',
     tags: ['laundry', 'reindeer'],
     tones: ['humorous'],
+    more: { young: () => ['Nüüd kannan ühte punast ja ühte rohelist sokki. Jõuluvana ütles, et see on väga moodne. Täna hommikul nägin, et ka kass Nurr on endale soki leidnud. Ta magab selle sees nagu väikeses magamiskotis. Pesupäevast jäi järele ainult üks küsimus: kes järgmisena soki võtab?'] },
     variants: {
       young: () => [
         'Töökojas oli pesupäev. Ma panin sokid paaridesse ja üks sokk jäi üle: punane, valgete triipudega. Paariline oli kadunud.',
@@ -143,6 +147,7 @@ export const YOUNG_SCENARIOS: Scenario[] = [
     role: 'standalone',
     tags: ['toys', 'santa', 'kitchen'],
     tones: ['humorous'],
+    more: { young: () => ['Pärast seda proovisin vurrkanni, trummi ja pehmet karu. Vurrkann vurises, trumm põrises ja karu lihtsalt kallistas. Karu sai ka viie. Õhtuks olid kõik mänguasjad ilusas reas kelgu kõrval ootamas. Konn istub ikka veel eraldi. Igaks juhuks. Ja supikaussidel on nüüd kaaned.'] },
     variants: {
       young: () => [
         'Minu eilne töö oli mänguasjade proovimine. Iga mänguasi peab enne kelku saamist läbi proovi: kas ta töötab ja kas ta teeb rõõmu.',
@@ -158,6 +163,7 @@ export const YOUNG_SCENARIOS: Scenario[] = [
     role: 'standalone',
     tags: ['sparkle', 'santa'],
     tones: ['humorous', 'magical'],
+    more: { young: () => ['Täna pühkisime terve päeva. Aga sädelus on selline asi, mis kunagi päris ära ei lähe. Leidsin seda oma taskust, oma mütsist ja isegi pudrukausist. Põhjapõder Välk sädeleb ka. Kui ta pead raputab, sajab tallis väikest kuldset lund. Ma arvan, et ta on sellega väga rahul.'] },
     variants: {
       young: () => [
         'Töökojas on üks tuba, kus hoitakse sädelust. Sinna tohib minna ainult hiilides ja hinge kinni hoides.',
@@ -173,6 +179,7 @@ export const YOUNG_SCENARIOS: Scenario[] = [
     role: 'standalone',
     tags: ['mechanism', 'snow'],
     tones: ['humorous'],
+    more: { young: () => ['Täna ehitasime lumepallidest kindluse. Sellel on torn, aken ja väike uks, kust mahub läbi ainult päkapikk. Põhjapõder Välk proovis ka sisse tulla, jäi ukse vahele kinni ja kindlus kukkus talle selga. Ta ei pahandanud, tema arvates oli see mäng. Homme ehitame uue, natuke suurema uksega.'] },
     variants: {
       young: (c) => [
         `${c.cast.older} ehitas lumepallimasina. See pidi tegema lumesõja jaoks palle – ükshaaval, ilusti ja rahulikult.`,
@@ -214,6 +221,7 @@ export const YOUNG_SCENARIOS: Scenario[] = [
     role: 'standalone',
     tags: ['reindeer', 'kitchen'],
     tones: ['humorous'],
+    more: { young: () => ['Õhtul tegin kuuri uksele sildi: „Moosipada ei ole mänguasi.“ Välk lugeda ei oska, aga ta nuusutas silti ja lakkus seda. Silt oli kleepuv. Võib-olla sai ta aru. Või armastab ta lihtsalt moosi. Igaks juhuks peidan moosipaja nüüd kõige kõrgemale riiulile.'] },
     variants: {
       young: () => [
         'Põhjapõder Välk leidis eile kuuri tagant moosipaja ja lükkas selle ümber. Ta oli kleepuv, magus ja täiesti õnnelik.',
@@ -229,6 +237,7 @@ export const YOUNG_SCENARIOS: Scenario[] = [
     role: 'standalone',
     tags: ['bells', 'reindeer'],
     tones: ['humorous', 'magical'],
+    more: { young: () => ['Õhtul rääkis Jõuluvana, et kui tema oli väike, luksus ta kord terve päeva. Siis helisesid kõik potid ja pannid köögis. Tema vanaema andis talle lusikatäie mett ja luksumine läks üle. Mina proovin järgmine kord ka mett. Kui see ei aita, kutsun Välgu.'] },
     variants: {
       young: () => [
         'Mul oli eile luksumine! Aga mitte tavaline – iga kord, kui ma luksusin, helisesid töökojas kõik kellukesed: kõlin!',
@@ -246,6 +255,7 @@ export const YOUNG_SCENARIOS: Scenario[] = [
     tags: ['porridge', 'kitchen', 'tradition'],
     tones: ['heartwarming', 'humorous'],
     earliest: 5,
+    more: { young: () => ['Täna õpetasin pudrukeetmist ka põhjapõder Välgule. Tema ülesanne oli segada. Ta segas sabaga ja puder lendas laeni. Lõpuks sõime kolmekesi: mina, Välk ja kass Nurr. Nurrile meeldis ainult võisilm. Selle ta lakkus ära ja ülejäänu jättis meile.'] },
     variants: {
       young: (c) => [
         'Kas sa tead, miks päkapikud putru armastavad? Vanasti jäeti jõuluõhtul päkapikule kauss putru ja ta hoidis selle eest aasta otsa talu loomi.',
@@ -264,6 +274,7 @@ export const YOUNG_SCENARIOS: Scenario[] = [
     hooks: ['music'],
     tags: ['music', 'kitchen', 'cat'],
     tones: ['humorous'],
+    more: { young: () => ['Täna harjutasime uuesti. Seekord mängisin vaiksemalt, Välk raputas ainult ühte kellukest ja Nurr nurrus nii ilusti, et kõik jäid kuulama. Jõuluvana plaksutas ja ütles, et nüüd on see juba peaaegu ilus. Kontserdil mängime kolm lugu. Viimase ajal laulab Jõuluvana ka. Palusime tal mitte väga valjult laulda.'] },
     variants: {
       young: (c) => [
         'Töökoja jõulukontserdiks tegime bändi! Mina mängin trummi. Trummiks on kolm potti ja kaks puulusikat: bumm, kõll, plõnn!',

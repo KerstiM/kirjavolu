@@ -376,6 +376,8 @@ Esimesel pildil kõnnib põhjapõder Välk jää peal. Teisel pildil libiseb ta 
 
 Sina loed ju Miki Hiire koomikseid, nii et sa tead: viimane pilt on kõige tähtsam!
 
+Näitasin pilte ka Jõuluvanale. Tema arvas, et kolmandal pildil istub Välk lumehanges ja teeb nägu, nagu oleks ta kogu aeg tahtnud just seal istuda. Kass Nurr arvas, et Välk lendab minema. Mina ei tea veel. Praegu tulevad põhjapõdrad mul natuke nagu toolid.
+
 Kui tahad, joonista sina kolmas pilt: mis Välgust sai?
 
 _Sinu sõber · Tipp-Topp_
@@ -572,6 +574,8 @@ Proovisin vett juua, hinge kinni hoida ja pea peal seista. Ei aidanud. Kõlin! K
 
 Lõpuks hiilis põhjapõder Välk mulle selja taha ja ütles kõrva: „Pöö!“ Ehmusin nii, et luksumine läks ära. Kellukesed on nüüd vaiksed. Peaaegu kahju.
 
+Õhtul rääkis Jõuluvana, et kui tema oli väike, luksus ta kord terve päeva. Siis helisesid kõik potid ja pannid köögis. Tema vanaema andis talle lusikatäie mett ja luksumine läks üle. Mina proovin järgmine kord ka mett. Kui see ei aita, kutsun Välgu.
+
 Minu tänane ülesanne sulle: joonista jõulukaart ja kirjuta sinna üks soe soov. Kaardi võib postiga saata või ise üle anda.
 
 P.S. Eilse mõistatuse vastus: pall.
@@ -629,6 +633,8 @@ Töökojas oli pesupäev. Ma panin sokid paaridesse ja üks sokk jäi üle: puna
 Otsisin terve päeva. Kapist, voodi alt, pesukorvist. Ei kusagil!
 
 Õhtul tuli põhjapõder Välk tallist välja ja see sokk oli tal ühe kõrva peal. Ta ei öelnud midagi – ta on ju põder –, aga ta nägi välja väga uhke. Las kannab.
+
+Nüüd kannan ühte punast ja ühte rohelist sokki. Jõuluvana ütles, et see on väga moodne. Täna hommikul nägin, et ka kass Nurr on endale soki leidnud. Ta magab selle sees nagu väikeses magamiskotis. Pesupäevast jäi järele ainult üks küsimus: kes järgmisena soki võtab?
 
 Minu tänane ülesanne sulle: voldi paberlennukid ja vaata, kelle oma lendab kõige kaugemale. Proovi erinevaid voltimisviise!
 
@@ -701,6 +707,8 @@ Töökojas on üks tuba, kus hoitakse sädelust. Sinna tohib minna ainult hiilid
 Mina läksin eile sinna paelu tooma – ja mul hakkas nina sügelema. Aaa… aaa… AATŠIHH!
 
 Nüüd sädeleb kõik: seinad, laud, kass ja Jõuluvana habe. Jõuluvana vaatas peeglisse ja ütles, et nii pidulik pole ta kunagi olnud.
+
+Täna pühkisime terve päeva. Aga sädelus on selline asi, mis kunagi päris ära ei lähe. Leidsin seda oma taskust, oma mütsist ja isegi pudrukausist. Põhjapõder Välk sädeleb ka. Kui ta pead raputab, sajab tallis väikest kuldset lund. Ma arvan, et ta on sellega väga rahul.
 
 Minu tänane ülesanne sulle: aita valmistada pere hommikusöök: kata laud ja pane igale taldrikule väike üllatus.
 

@@ -24,6 +24,8 @@ Esimesel pildil kõnnib põhjapõder Välk jää peal. Teisel pildil libiseb ta 
 
 Sina loed ju Miki Hiire koomikseid, nii et sa tead: viimane pilt on kõige tähtsam!
 
+Näitasin pilte ka Jõuluvanale. Tema arvas, et kolmandal pildil istub Välk lumehanges ja teeb nägu, nagu oleks ta kogu aeg tahtnud just seal istuda. Kass Nurr arvas, et Välk lendab minema. Mina ei tea veel. Praegu tulevad põhjapõdrad mul natuke nagu toolid.
+
 Kui tahad, joonista sina kolmas pilt: mis Välgust sai?
 
 _Sinu sõber · Päkapikk Tuduja_
@@ -55,6 +57,8 @@ Mul oli eile luksumine! Aga mitte tavaline – iga kord, kui ma luksusin, helise
 Proovisin vett juua, hinge kinni hoida ja pea peal seista. Ei aidanud. Kõlin! Kõlin!
 
 Lõpuks hiilis põhjapõder Välk mulle selja taha ja ütles kõrva: „Pöö!“ Ehmusin nii, et luksumine läks ära. Kellukesed on nüüd vaiksed. Peaaegu kahju.
+
+Õhtul rääkis Jõuluvana, et kui tema oli väike, luksus ta kord terve päeva. Siis helisesid kõik potid ja pannid köögis. Tema vanaema andis talle lusikatäie mett ja luksumine läks üle. Mina proovin järgmine kord ka mett. Kui see ei aita, kutsun Välgu.
 
 Minu tänane ülesanne sulle: voldi paberlennukid ja vaata, kelle oma lendab kõige kaugemale. Proovi erinevaid voltimisviise!
 
@@ -90,6 +94,8 @@ Sina sööd ju ka kõige meelsamini riisiputru – sa tead, et see on õige pude
 
 Mina olen töökoja pudrukeetja. Eile küsis Jõuluvana kolm korda juurde. Neljandal korral ütlesin, et pada on tühi. Polnud – aga mul oli endal ka kõht tühi.
 
+Täna õpetasin pudrukeetmist ka põhjapõder Välgule. Tema ülesanne oli segada. Ta segas sabaga ja puder lendas laeni. Lõpuks sõime kolmekesi: mina, Välk ja kass Nurr. Nurrile meeldis ainult võisilm. Selle ta lakkus ära ja ülejäänu jättis meile.
+
 Minu tänane ülesanne sulle: korralda perele kontsert: laulud, pillid potikaantest ja kummardus lõpus!
 
 P.S. Eilse mõistatuse vastus: kuusk.
@@ -122,6 +128,8 @@ Mina läksin eile sinna paelu tooma – ja mul hakkas nina sügelema. Aaa… aaa
 
 Nüüd sädeleb kõik: seinad, laud, kass ja Jõuluvana habe. Jõuluvana vaatas peeglisse ja ütles, et nii pidulik pole ta kunagi olnud.
 
+Täna pühkisime terve päeva. Aga sädelus on selline asi, mis kunagi päris ära ei lähe. Leidsin seda oma taskust, oma mütsist ja isegi pudrukausist. Põhjapõder Välk sädeleb ka. Kui ta pead raputab, sajab tallis väikest kuldset lund. Ma arvan, et ta on sellega väga rahul.
+
 Minu tänane ülesanne sulle: loe kokku, mitu punast ehet on kuusel. Aga mitu kuldset? Kumba on rohkem?
 
 P.S. Eilse mõistatuse vastus: päkapikk.
@@ -153,6 +161,8 @@ Töökojas oli pesupäev. Ma panin sokid paaridesse ja üks sokk jäi üle: puna
 Otsisin terve päeva. Kapist, voodi alt, pesukorvist. Ei kusagil!
 
 Õhtul tuli põhjapõder Välk tallist välja ja see sokk oli tal ühe kõrva peal. Ta ei öelnud midagi – ta on ju põder –, aga ta nägi välja väga uhke. Las kannab.
+
+Nüüd kannan ühte punast ja ühte rohelist sokki. Jõuluvana ütles, et see on väga moodne. Täna hommikul nägin, et ka kass Nurr on endale soki leidnud. Ta magab selle sees nagu väikeses magamiskotis. Pesupäevast jäi järele ainult üks küsimus: kes järgmisena soki võtab?
 
 Minu tänane ülesanne sulle: vali raamat ja loe koos. Pärast joonista oma lemmikkoht loost.
 
@@ -252,6 +262,8 @@ Täna nägin oma sokki kuuse otsas. Tihased on teinud sellest talvemaja. Välja 
 
 Las nad peavad selle. Mina saan uue soki.
 
+Täna hommikul käisin neid vaatamas. Üks tihane piilus sokist välja ja vaatas mind nii, nagu oleksin mina tema majja külla tulnud. Ütlesin talle tere ja panin ukse ette veel peotäie seemneid. Nüüd oleme sõbrad. Vähemalt mina arvan nii.
+
 Ja nüüd üks päkapiku mõistatus: Mul on neli jalga ja selg, aga ma ei kõnni kunagi. Vastuse kirjutan homme.
 
 P.S. Eilse mõistatuse vastus oli: lumi. Välk arvas, et jäätis.
@@ -269,6 +281,8 @@ Kribu-Krabu ehitas lumepallimasina. See pidi tegema lumesõja jaoks palle – ü
 Mina vajutasin kogemata suurt punast nuppu. Masin hakkas palle tegema sada tükki minutis! Neid lendas igale poole: aknasse, katusele ja Jõuluvana kapuutsi.
 
 Kribu-Krabu ütles, et see nupp oli „ainult katsetamiseks“. Nüüd on meil lumepalle terveks talveks.
+
+Täna ehitasime lumepallidest kindluse. Sellel on torn, aken ja väike uks, kust mahub läbi ainult päkapikk. Põhjapõder Välk proovis ka sisse tulla, jäi ukse vahele kinni ja kindlus kukkus talle selga. Ta ei pahandanud, tema arvates oli see mäng. Homme ehitame uue, natuke suurema uksega.
 
 Minu tänane ülesanne sulle: aita valmistada pere hommikusöök: kata laud ja pane igale taldrikule väike üllatus.
 
@@ -303,6 +317,8 @@ Ma õppisin eile pannkooke keerama nagu päris kokad – pannilt õhku ja tagasi
 Esimene pannkook kukkus põrandale. Teine kukkus kass Nurri peale. Kolmas lendas nii kõrgele, et jäi lakke kinni.
 
 Ta on seal siiani. Jõuluvana ütles, et las jääb, see on nüüd töökoja kuu. Õhtul, kui tuled kustuvad, on ta tõesti natuke kuu moodi.
+
+Kass Nurr istub iga õhtu laua peal ja vaatab üles. Ta ootab, et kuu alla kukuks. Põhjapõder Välk ootab ka, aga tema tahaks selle ära süüa. Täna küpsetasin veel pannkooke, aga keerasin neid ainult natukene. Kõik jäid pannile. Sõime need moosiga ära ja kuu jäi lakke.
 
 Ja nüüd üks päkapiku mõistatus: Ütlen „mõmm“ ja magan terve talve. Vastuse kirjutan homme.
 
@@ -355,6 +371,8 @@ Töökoja jõulukontserdiks tegime bändi! Mina mängin trummi. Trummiks on kolm
 Põhjapõder Välk raputab kellukesi ja kass Nurr nurrub mikrofoni – teda on kuulda ainult siis, kui teised vait on.
 
 Eile proovisime esimest korda. Jõuluvana kuulas ja ütles, et see oli väga… vali.
+
+Täna harjutasime uuesti. Seekord mängisin vaiksemalt, Välk raputas ainult ühte kellukest ja Nurr nurrus nii ilusti, et kõik jäid kuulama. Jõuluvana plaksutas ja ütles, et nüüd on see juba peaaegu ilus. Kontserdil mängime kolm lugu. Viimase ajal laulab Jõuluvana ka. Palusime tal mitte väga valjult laulda.
 
 Ja nüüd üks päkapiku mõistatus: Olen ümmargune ja põrkan. Mind visatakse ja lüüakse jalaga. Vastuse kirjutan homme.
 

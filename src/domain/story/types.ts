@@ -109,6 +109,12 @@ export interface Scenario {
    */
   readAloud?: Variant
   activities?: Partial<Record<Band, Activity>>
+  /**
+   * What happened next, for "Pikk" letters only: the story goes on for a paragraph or two
+   * after the variant (and before its activity). Short and medium letters never use it, so
+   * they still fit the puzzle poster cards.
+   */
+  more?: Partial<Record<Band, Variant>>
   /** Hooks that can make this scenario personal. */
   hooks?: HookId[]
   /** Only for children who have one of the hooks (the story is about that interest). */
