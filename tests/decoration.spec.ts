@@ -72,13 +72,22 @@ describe('decorated printable items', () => {
 
   it('draws a pattern background and a soft panel for the text', () => {
     const { container } = render(PrintableItem, { props: { item, pattern: 'snow', inkSaver: false } })
-    expect(container.querySelector('svg.pattern')).not.toBeNull()
+    // Real repeated shapes, not an SVG <pattern> fill, so print stays sharp.
+    expect(container.querySelectorAll('.pattern svg')).toHaveLength(1)
+    expect(container.querySelector('.pattern use')).not.toBeNull()
+    expect(container.querySelector('.pattern pattern')).toBeNull()
     expect(container.querySelector('.paper')!.classList.contains('has-backdrop')).toBe(true)
   })
 
   it('ink-saver mode draws only a frame', () => {
     const { container } = render(PrintableItem, { props: { item, pattern: 'snow', inkSaver: true } })
-    expect(container.querySelector('svg.pattern rect[fill="none"]')).not.toBeNull()
+    expect(container.querySelector('.pattern--frame')).not.toBeNull()
+    expect([...container.querySelectorAll('.pattern svg')].map((svg) => svg.getAttribute('class'))).toEqual([
+      'pattern__top',
+      'pattern__bottom',
+      'pattern__left',
+      'pattern__right',
+    ])
     expect(container.querySelector('.paper')!.classList.contains('has-frame')).toBe(true)
   })
 
