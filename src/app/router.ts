@@ -51,6 +51,13 @@ export const routes: RouteRecordRaw[] = [
     // letters at once, and making them personal right beside them.
     path: '/ud2',
     name: 'ud2',
+    component: () => import('../features/home/new/HomeNewPage.vue'),
+    props: { short: true },
+    meta: { title: 'Uus disain' },
+  },
+  {
+    path: '/ud2/alusta',
+    name: 'ud2-start',
     component: () => import('../features/ud2/Ud2Start.vue'),
     meta: { title: 'Jõulukirjad' },
   },

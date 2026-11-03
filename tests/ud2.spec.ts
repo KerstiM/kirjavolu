@@ -29,8 +29,19 @@ afterEach(() => {
 })
 
 describe('the short Christmas journey at /ud2', () => {
+  it('starts from the new home page: the Christmas letters lead to the short way', async () => {
+    const { router } = await open('/ud2')
+    const user = userEvent.setup()
+    expect(await screen.findByText('Testvaade: lühike jõuluteekond.')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Maagiline kiri/ })).toHaveAttribute('href', '/ud2/alusta')
+    expect(screen.getByRole('navigation', { name: 'Peamenüü' }).querySelector('a.nav__cta')).toHaveAttribute('href', '/ud2/alusta')
+    await user.click(screen.getByRole('link', { name: /Loo jõulukirjad/ }))
+    expect(await screen.findByLabelText('Lapse nimi')).toBeInTheDocument()
+    expect(router.currentRoute.value.path).toBe('/ud2/alusta')
+  })
+
   it('asks only who it is for and shows the 24 free letters at once', async () => {
-    const { router, pinia } = await open('/ud2')
+    const { router, pinia } = await open('/ud2/alusta')
     const user = userEvent.setup()
     await user.type(await screen.findByLabelText('Lapse nimi'), 'Mia')
     await user.type(screen.getByLabelText('Vanus'), '5')
@@ -48,7 +59,7 @@ describe('the short Christmas journey at /ud2', () => {
   })
 
   it('needs a name before making the letters', async () => {
-    await open('/ud2')
+    await open('/ud2/alusta')
     const user = userEvent.setup()
     await user.click(await screen.findByRole('button', { name: /Vaata kirju/ }))
     expect(await screen.findByRole('alert')).toHaveTextContent('Kirjuta lapse nimi.')
@@ -57,7 +68,7 @@ describe('the short Christmas journey at /ud2', () => {
   it('opens the checkout with this page as the way back', async () => {
     const fetch = vi.fn(async () => Response.json({ error: 'too_many' }, { status: 429 }))
     vi.stubGlobal('fetch', fetch)
-    const { router } = await open('/ud2')
+    const { router } = await open('/ud2/alusta')
     const user = userEvent.setup()
     await user.type(await screen.findByLabelText('Lapse nimi'), 'Mia')
     await user.type(screen.getByLabelText('Vanus'), '5')
@@ -78,7 +89,7 @@ describe('the short Christmas journey at /ud2', () => {
         ? Response.json({ status: 'paid', pass: PASS })
         : Response.json({ letters: LETTERS, pass: { ...PASS, generationsLeft: 9 } }),
     )
-    const first = await open('/ud2')
+    const first = await open('/ud2/alusta')
     const user = userEvent.setup()
     await user.type(await screen.findByLabelText('Lapse nimi'), 'Mia')
     await user.type(screen.getByLabelText('Vanus'), '5')

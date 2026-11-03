@@ -14,7 +14,8 @@ import type { ChildProfile } from '../../domain/models'
 import { track } from '../../app/analytics'
 
 /**
- * /ud2: the short Christmas journey. One question (who is it for), and the 24 free letters
+ * /ud2/alusta: the short Christmas journey, started from the home page at /ud2. One question
+ * (who is it for), and the 24 free letters
  * are ready at once; making them personal with the Jõulupass happens on the next page,
  * beside the letters.
  */

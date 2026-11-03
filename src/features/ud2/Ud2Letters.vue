@@ -117,7 +117,7 @@ onBeforeUnmount(() => {
   <div class="design-new ud2">
     <div v-if="!content" class="container section">
       <p>Neid kirju selles brauseris ei ole.</p>
-      <BaseButton to="/ud2">Tee uued kirjad</BaseButton>
+      <BaseButton to="/ud2/alusta">Tee uued kirjad</BaseButton>
     </div>
 
     <div v-else class="container section letters">
