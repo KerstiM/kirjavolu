@@ -101,6 +101,18 @@ describe('what is ready in the new design', () => {
     expect(within(types).getByText('Aardejaht').closest('.postcard')).toHaveClass('is-soon')
     expect(within(types).getByText('Jõuluvana tervitus').closest('.postcard')).toHaveTextContent('Varsti')
   })
+
+  it('marks only what the Jõulupass adds; free is unmarked', async () => {
+    await open('/uus-disain')
+    const types = await screen.findByRole('region', { name: 'Mida meisterdame?' })
+    expect(within(types).getByRole('link', { name: /Personaalne lugu/ })).toHaveTextContent('Jõulupass')
+    expect(within(types).getByRole('link', { name: /Maagiline kiri/ })).toHaveTextContent('Jõulupassiga: isiklik versioon lapse ja pere järgi')
+    expect(within(types).getByText('Aardejaht').closest('.postcard')).not.toHaveTextContent('Jõulupass')
+    expect(within(types).getByText('Aardejaht').closest('.postcard')).not.toHaveTextContent('Tasuta')
+    const band = screen.getByRole('region', { name: 'Jõulupass' })
+    const table = within(band).getByRole('table', { name: 'Mis on tasuta ja mis Jõulupassiga' })
+    expect(within(table).getByRole('row', { name: /Päkapiku muudatused/ })).toHaveTextContent('30')
+  })
 })
 
 describe('the rest of the journey in the new design', () => {
