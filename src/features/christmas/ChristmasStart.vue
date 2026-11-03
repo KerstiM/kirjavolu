@@ -29,7 +29,26 @@ const children = useChildrenStore()
 const creations = useCreationsStore()
 
 // Several children make one linked family series, as in the wizard.
-const pickedIds = ref<string[]>(children.children[0] ? [children.children[0].id] : [])
+// The ones picked last time come back selected, so a child edited on the Lapsed page is still there.
+const PICKED_KEY = 'kirjavolu.joulukirjad.valitud'
+function rememberedPick(): string[] {
+  try {
+    const saved = JSON.parse(localStorage.getItem(PICKED_KEY) ?? '[]') as unknown
+    const ids = Array.isArray(saved) ? saved.filter((id): id is string => typeof id === 'string' && !!children.byId(id)) : []
+    if (ids.length) return ids
+  } catch {
+    // Without storage the first child is picked, as for a new visitor.
+  }
+  return children.children[0] ? [children.children[0].id] : []
+}
+const pickedIds = ref<string[]>(rememberedPick())
+watch(pickedIds, (ids) => {
+  try {
+    localStorage.setItem(PICKED_KEY, JSON.stringify(ids))
+  } catch {
+    // Remembering is a convenience only.
+  }
+})
 /** New children typed in here, any number of them: all are saved when the letters are made. */
 interface NewKid {
   key: number
@@ -62,25 +81,42 @@ const typed = (kid: NewKid) => kid.name.trim() !== '' || kid.age !== ''
 const filledKids = computed(() => newKids.value.filter(typed))
 const count = computed(() => picked.value.length + filledKids.value.length)
 
-// Optional, but each picked topic brings its own hand-written stories into the free letters.
-// Asked here only for one child; with several, each brings the topics of its own profile.
-const single = computed(() => (count.value === 1 ? (picked.value[0] ?? null) : undefined))
-const topics = ref<TopicId[]>([])
-watch(single, (child) => (topics.value = [...(child?.topics ?? [])]), { immediate: true })
-
-// Optional, for one child: kept in the profile, so the personal letters start from it.
-// The free letters do not use these; the personal ones do.
-const about = reactive({ family: [] as string[], interests: [] as string[], december: '' })
+// Optional, for each child on its own. A picked topic brings its hand-written stories into the
+// free letters; the rest is kept in the profile for the personal letters, which are the ones that use it.
+interface Extra {
+  topics: TopicId[]
+  family: string[]
+  interests: string[]
+  december: string
+}
+const extras = reactive<Record<string, Extra>>({})
+/** One block of optional questions per child: those already saved, and the rows typed in here. */
+const rows = computed(() => [
+  ...picked.value.map((child) => ({ key: `id:${child.id}`, name: child.name, child })),
+  ...newKids.value.map((kid, index) => ({
+    key: `new:${kid.key}`,
+    name: kid.name.trim() || (newKids.value.length > 1 ? `${index + 1}. laps` : 'Laps'),
+    child: undefined as ChildProfile | undefined,
+  })),
+])
 watch(
-  single,
-  (child) => {
-    about.family = [...(child?.family ?? [])]
-    about.interests = [...(child?.interests ?? [])]
-    about.december = child ? readDecember(child.id) : ''
+  rows,
+  (list) => {
+    // A child taken away takes what was typed for them along; picking them again starts from their profile.
+    for (const key of Object.keys(extras)) if (!list.some((row) => row.key === key)) delete extras[key]
+    for (const { key, child } of list) {
+      extras[key] ??= {
+        topics: [...(child?.topics ?? [])],
+        family: [...(child?.family ?? [])],
+        interests: [...(child?.interests ?? [])],
+        december: child ? readDecember(child.id) : '',
+      }
+    }
   },
-  { immediate: true },
+  { immediate: true, flush: 'sync' },
 )
-const aboutCount = computed(() => [about.family.length > 0, about.interests.length > 0, about.december.trim() !== ''].filter(Boolean).length)
+const aboutCount = (extra: Extra) =>
+  [extra.family.length > 0, extra.interests.length > 0, extra.december.trim() !== ''].filter(Boolean).length
 
 onMounted(() => track('christmas_start', {}))
 
@@ -90,10 +126,11 @@ function childrenForLetters(): ChildProfile[] | null {
     return null
   }
   const chosen = picked.value.map((child) => {
-    if (!single.value) return child
+    const extra = extras[`id:${child.id}`]
+    if (!extra) return child
     const { id, createdAt: _created, updatedAt: _updated, ...profile } = child
-    children.update(id, { ...profile, topics: topics.value, family: about.family, interests: about.interests })
-    writeDecember(id, about.december)
+    children.update(id, { ...profile, topics: extra.topics, family: extra.family, interests: extra.interests })
+    writeDecember(id, extra.december)
     return children.byId(id) ?? child
   })
   if (!filledKids.value.length) {
@@ -102,6 +139,7 @@ function childrenForLetters(): ChildProfile[] | null {
     return null
   }
   const added = addNewKids()
+  if (added) pickedIds.value = [...chosen, ...added].map((child) => child.id)
   return added ? [...chosen, ...added] : null
 }
 
@@ -121,19 +159,19 @@ function addNewKids(): ChildProfile[] | null {
       return null
     }
   }
-  const alone = single.value === null
   return filledKids.value.map((kid) => {
     track('child_added', { from: 'wizard' })
+    const extra = extras[`new:${kid.key}`]
     const added = children.add({
       ...emptyChildDraft(),
       name: kid.name.trim(),
       age: Number(kid.age),
       readingLevel: readingLevelForAge(Number(kid.age)),
-      topics: alone ? topics.value : [],
-      family: alone ? about.family : [],
-      interests: alone ? about.interests : [],
+      topics: extra?.topics ?? [],
+      family: extra?.family ?? [],
+      interests: extra?.interests ?? [],
     })
-    if (alone) writeDecember(added.id, about.december)
+    if (extra) writeDecember(added.id, extra.december)
     return added
   })
 }
@@ -212,39 +250,45 @@ async function start(): Promise<void> {
           <Plus :size="16" aria-hidden="true" /> Lisa veel üks laps
         </button>
 
-        <!-- Folded, so the button stays in sight; the summary says what picking a topic brings. -->
-        <details v-if="count <= 1" class="christmas-start__topics">
-          <summary>
-            Mis lapsele meeldib?
-            <span class="christmas-start__optional">
-              {{ topics.length ? `${topics.length} valitud` : 'valikuline, siis tulevad kirjadesse tema lood' }}
-            </span>
-          </summary>
-          <p class="christmas-start__hint">Iga teema kohta on kirjades valmis lood, näiteks päkapikk proovib ise jalgpalli.</p>
-          <TopicPicker v-model="topics" />
-        </details>
-
-        <details v-if="count <= 1" class="christmas-start__topics">
-          <summary>
-            Räägi lapsest veel
-            <span class="christmas-start__optional">{{ aboutCount ? `${aboutCount} lisatud` : 'valikuline, jääb isiklike kirjade jaoks' }}</span>
-          </summary>
-          <p class="christmas-start__hint">
-            Tasuta kirjad valmivad ka ilma. Need andmed jäävad lapse juurde ja on valmis, kui teed kirjad isiklikumaks.
-          </p>
-          <label class="field">
-            <span>Pereliikmed ja lemmikloomad</span>
-            <ListInput id="start-family" v-model="about.family" placeholder="Näiteks mamma, issi, kass Miisu" />
-          </label>
-          <label class="field">
-            <span>Huvid ja lemmikud</span>
-            <ListInput id="start-interests" v-model="about.interests" placeholder="Näiteks autod, jalgpall" />
-          </label>
-          <label class="field">
-            <span>Detsembri plaanid</span>
-            <textarea v-model="about.december" class="input" rows="2" placeholder="Näiteks jõulupidu lasteaias 20. detsembril" />
-          </label>
-        </details>
+        <!-- Folded, so the button stays in sight; each child has their own, as the letters are theirs. -->
+        <div v-for="row in rows" :key="row.key" class="christmas-start__child">
+          <p v-if="rows.length > 1" class="christmas-start__whose">{{ row.name }}</p>
+          <template v-if="extras[row.key]">
+            <details class="christmas-start__topics">
+              <summary>
+                Mis lapsele meeldib?
+                <span class="christmas-start__optional">
+                  {{ extras[row.key]!.topics.length ? `${extras[row.key]!.topics.length} valitud` : 'valikuline, siis tulevad kirjadesse tema lood' }}
+                </span>
+              </summary>
+              <p class="christmas-start__hint">Iga teema kohta on kirjades valmis lood, näiteks päkapikk proovib ise jalgpalli.</p>
+              <TopicPicker v-model="extras[row.key]!.topics" />
+            </details>
+            <details class="christmas-start__topics">
+              <summary>
+                Räägi lapsest veel
+                <span class="christmas-start__optional">
+                  {{ aboutCount(extras[row.key]!) ? `${aboutCount(extras[row.key]!)} lisatud` : 'valikuline, jääb isiklike kirjade jaoks' }}
+                </span>
+              </summary>
+              <p class="christmas-start__hint">
+                Tasuta kirjad valmivad ka ilma. Need andmed jäävad lapse juurde ja on valmis, kui teed kirjad isiklikumaks.
+              </p>
+              <label class="field">
+                <span>Pereliikmed ja lemmikloomad</span>
+                <ListInput :id="`start-family-${row.key}`" v-model="extras[row.key]!.family" placeholder="Näiteks mamma, issi, kass Miisu" />
+              </label>
+              <label class="field">
+                <span>Huvid ja lemmikud</span>
+                <ListInput :id="`start-interests-${row.key}`" v-model="extras[row.key]!.interests" placeholder="Näiteks autod, jalgpall" />
+              </label>
+              <label class="field">
+                <span>Detsembri plaanid</span>
+                <textarea v-model="extras[row.key]!.december" class="input" rows="2" placeholder="Näiteks jõulupidu lasteaias 20. detsembril" />
+              </label>
+            </details>
+          </template>
+        </div>
 
         <p v-if="error" class="christmas-start__error" role="alert">{{ error }}</p>
         <BaseButton type="submit" size="lg" :disabled="busy">
@@ -257,6 +301,17 @@ async function start(): Promise<void> {
 </template>
 
 <style scoped lang="scss">
+.christmas-start__child {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-self: stretch;
+}
+.christmas-start__whose {
+  margin: 0;
+  font-weight: 600;
+  text-align: left;
+}
 .christmas-start {
   display: flex;
   flex-direction: column;
