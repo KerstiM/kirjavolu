@@ -104,7 +104,7 @@ async function fixWithAi(wish: string): Promise<Pick<GeneratedItem, 'heading' | 
     throw new Error(FIX_ERROR_TEXTS[failure instanceof LettersRequestError ? failure.reason : 'failed'])
   }
 }
-function saveEdit(patch: Pick<GeneratedItem, 'heading' | 'body' | 'signature'>): void {
+function saveEdit(patch: Pick<GeneratedItem, 'label' | 'heading' | 'body' | 'signature'>): void {
   if (editing.value) creations.editItem(props.id, editing.value.id, patch)
   editing.value = null
 }

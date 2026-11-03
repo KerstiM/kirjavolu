@@ -280,9 +280,11 @@ const posterLabels = computed(() => {
   return (group?.entries ?? []).map(({ item }) => (item.date ? formatDayMonth(item.date) : item.label))
 })
 // The small pieces under each item are not needed on the poster: the cards are the pieces.
+// One item (a certificate, say) is never cut: one piece would just be the picture again.
 const puzzle = computed(() => {
   const image = decoration.value.image
   if (isPoster.value || !decoration.value.puzzle || !image || !imageUrl.value || !content.value) return null
+  if (content.value.items.length < 2) return null
   return { imageUrl: imageUrl.value, grid: computeGrid(content.value.items.length, image.width / image.height) }
 })
 // Smaller pieces on cards so four still fit on one A4 page.
@@ -334,13 +336,13 @@ const editingTitle = computed(() => {
 function openEditor(itemId: string): void {
   editingId.value = itemId
 }
-function saveFromDialog(patch: Pick<GeneratedItem, 'heading' | 'body' | 'signature'>): void {
+function saveFromDialog(patch: Pick<GeneratedItem, 'label' | 'heading' | 'body' | 'signature'>): void {
   const item = editingItem.value
   if (item) save(item, patch)
   editingId.value = null
 }
 
-function save(item: GeneratedItem, patch: Pick<GeneratedItem, 'heading' | 'body' | 'signature'>): void {
+function save(item: GeneratedItem, patch: Pick<GeneratedItem, 'label' | 'heading' | 'body' | 'signature'>): void {
   store.editItem(props.id, item.id, patch)
   announce('Muudatus salvestatud.')
 }
@@ -817,16 +819,21 @@ function exportText(): void {
     font-weight: 600;
   }
 }
+// On screen the sheets keep the shape they print in (A4 inside the 14mm margins, see the
+// print heights below), so a whole page looks like a whole page; a long text still grows it.
 .sheet--page {
   max-width: 720px;
   margin-inline: auto;
   :deep(.paper) {
-    min-height: 34rem;
+    aspect-ratio: 182 / 255;
   }
 }
 .sheet--half {
   max-width: 720px;
   margin-inline: auto;
+  :deep(.paper) {
+    aspect-ratio: 182 / 120;
+  }
 }
 .sheet--cards {
   grid-template-columns: repeat(2, minmax(0, 1fr));

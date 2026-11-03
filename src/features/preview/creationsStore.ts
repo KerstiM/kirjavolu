@@ -37,7 +37,7 @@ export const useCreationsStore = defineStore('creations', () => {
     if (index >= 0) creation.items[index] = item
   }
 
-  function editItem(id: string, itemId: string, patch: Partial<Pick<GeneratedItem, 'heading' | 'body' | 'signature'>>): void {
+  function editItem(id: string, itemId: string, patch: Partial<Pick<GeneratedItem, 'label' | 'heading' | 'body' | 'signature'>>): void {
     const item = byId(id)?.items.find((existing) => existing.id === itemId)
     if (!item) return
     Object.assign(item, patch, { edited: true })
