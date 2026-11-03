@@ -67,7 +67,7 @@ Statistika lülitub sisse ainult siis, kui ehitamisel on olemas `VITE_UMAMI_WEBS
 https://kerstim.github.io/kirjavolu/ – uuendatakse automaatselt iga `main`-i muudatusega (`.github/workflows/pages.yml`). Andmed (laste profiilid, loodud kirjad) jäävad iga külastaja enda brauserisse.
 
 ## Tehnoloogia
-Vue 3, TypeScript (strict), Vite, Vue Router, Pinia, SCSS, Lucide ikoonid, Google Fonts (Playpen Sans prinditavatele materjalidele), Vitest, ESLint, Prettier.
+Vue 3, TypeScript (strict), Vite, Vue Router, Pinia, SCSS, Lucide ikoonid, Google Fonts (Lora prinditavatele materjalidele), Vitest, ESLint, Prettier.
 
 ## Paigaldamine ja arendus
 ```bash
