@@ -4,13 +4,13 @@ import { RouterLink, useRoute } from 'vue-router'
 import { Plus } from 'lucide-vue-next'
 import BrandMark from './BrandMark.vue'
 import BaseButton from '../ui/BaseButton.vue'
-import { designPath, NEW_DESIGN_ROOT } from '../brand/design'
+import { designForPath, designPath, NEW_DESIGN_ROOT } from '../brand/design'
 import { newCreationRequests } from '../../features/creation/newCreation'
 import { isActive, loadPass, PASS_CHANGED } from '../../features/pass/seasonPass'
 
 const route = useRoute()
 // Inside a new-design test view the menu keeps the visitor there.
-const design = computed(() => (route.path.startsWith(NEW_DESIGN_ROOT) ? 'new' : 'current'))
+const design = computed(() => designForPath(route.path))
 const home = computed(() => designPath(design.value, '/'))
 // Jõulupass lives in the new design only; with a valid pass the link shows what is left.
 const pass = ref(loadPass())
