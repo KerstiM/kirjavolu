@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { computed, provide, ref } from 'vue'
+import { computed, provide, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowRight } from 'lucide-vue-next'
 import BaseButton from '../../components/ui/BaseButton.vue'
+import TopicPicker from '../children/TopicPicker.vue'
+import type { TopicId } from '../../data/topics'
 import Mascot from '../../components/brand/Mascot.vue'
 import { DESIGN_KEY } from '../../components/brand/design'
 import { emptyChildDraft, useChildrenStore } from '../children/childrenStore'
@@ -33,8 +35,16 @@ const busy = ref(false)
 
 const picked = computed(() => (adding.value ? undefined : children.children.find((child) => child.id === pickedId.value)))
 
+// Optional, but each picked topic brings its own hand-written stories into the free letters.
+const topics = ref<TopicId[]>([])
+watch(picked, (child) => (topics.value = [...(child?.topics ?? [])]), { immediate: true })
+
 function childForLetters(): ChildProfile | null {
-  if (picked.value) return picked.value
+  if (picked.value) {
+    const { id, createdAt: _created, updatedAt: _updated, ...profile } = picked.value
+    children.update(id, { ...profile, topics: topics.value })
+    return children.byId(id) ?? picked.value
+  }
   const trimmed = name.value.trim()
   const years = Number(age.value)
   if (!trimmed) {
@@ -46,7 +56,13 @@ function childForLetters(): ChildProfile | null {
     return null
   }
   track('child_added', { from: 'wizard' })
-  return children.add({ ...emptyChildDraft(), name: trimmed, age: years, readingLevel: readingLevelForAge(years) })
+  return children.add({
+    ...emptyChildDraft(),
+    name: trimmed,
+    age: years,
+    readingLevel: readingLevelForAge(years),
+    topics: topics.value,
+  })
 }
 
 async function start(): Promise<void> {
@@ -104,6 +120,18 @@ async function start(): Promise<void> {
             <input v-model.number="age" class="input" type="number" min="0" max="14" inputmode="numeric" />
           </label>
         </div>
+
+        <!-- Folded, so the button stays in sight; the summary says what picking a topic brings. -->
+        <details class="ud2-start__topics">
+          <summary>
+            Mis lapsele meeldib?
+            <span class="ud2-start__optional">
+              {{ topics.length ? `${topics.length} valitud` : 'valikuline, siis tulevad kirjadesse tema lood' }}
+            </span>
+          </summary>
+          <p class="ud2-start__hint">Iga teema kohta on kirjades valmis lood, näiteks päkapikk proovib ise jalgpalli.</p>
+          <TopicPicker v-model="topics" />
+        </details>
 
         <p v-if="error" class="ud2-start__error" role="alert">{{ error }}</p>
         <BaseButton type="submit" size="lg" :disabled="busy">
@@ -186,6 +214,23 @@ async function start(): Promise<void> {
   flex-direction: column;
   gap: 0.3rem;
   font-weight: 600;
+  font-size: 0.9rem;
+}
+.ud2-start__topics {
+  align-self: stretch;
+  text-align: left;
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+}
+.ud2-start__optional {
+  font-weight: 400;
+  color: var(--ink-faint);
+}
+.ud2-start__hint {
+  margin: 0.4rem 0 0.75rem;
+  color: var(--ink-soft);
   font-size: 0.9rem;
 }
 .ud2-start__error {

@@ -45,10 +45,15 @@ describe('the short Christmas journey at /ud2', () => {
     const user = userEvent.setup()
     await user.type(await screen.findByLabelText('Lapse nimi'), 'Mia')
     await user.type(screen.getByLabelText('Vanus'), '5')
+    // Topics are optional; one picked goes into the profile and the free letters.
+    await user.click(screen.getByText('Mis lapsele meeldib?'))
+    await user.click(screen.getByRole('checkbox', { name: 'Dinosaurused' }))
     await user.click(screen.getByRole('button', { name: /Vaata kirju/ }))
 
     await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/ud2\/kirjad\//), { timeout: 5000 })
     expect(await screen.findByRole('heading', { level: 1, name: 'Mia 24 jõulukirja on valmis' })).toBeInTheDocument()
+    expect(useChildrenStore(pinia).children[0]?.topics).toEqual(['dinosaurs'])
+    expect(useCreationsStore(pinia).creations[0]?.request.children[0]?.topics).toEqual(['dinosaurs'])
     expect(useCreationsStore(pinia).creations[0]?.items).toHaveLength(24)
     expect(useChildrenStore(pinia).children[0]).toMatchObject({ name: 'Mia', age: 5 })
     // Personal is offered right here; without a pass, with the price and the consent.
