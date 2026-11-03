@@ -66,6 +66,11 @@ export interface LetterOptions {
   /** 1–24 letters; 7 or more are written by the scenario engine as one series. */
   count: number
   connected: boolean
+  /**
+   * false: the letters show no date, only their number ("3. kiri"). The start date still counts
+   * for Sundays, family events and Christmas Eve. Missing means dated, as before.
+   */
+  dated?: boolean
   /** Only used with several children. Missing in creations made before this feature. */
   mode?: LetterMode
   /** Helper per child id in linked mode; missing entries are suggested automatically. */

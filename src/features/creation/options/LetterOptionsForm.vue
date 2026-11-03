@@ -7,6 +7,7 @@ import ChallengesEditor from './ChallengesEditor.vue'
 import FormField from '../../../components/ui/FormField.vue'
 import SegmentedControl from '../../../components/ui/SegmentedControl.vue'
 import { MAX_LETTERS } from '../../../domain/validation'
+import DateInput from '../../../components/ui/DateInput.vue'
 
 const props = defineProps<{ children: ChildProfile[]; occasionId: OccasionId }>()
 const model = defineModel<LetterOptions>({ required: true })
@@ -90,7 +91,11 @@ const extrasInUse = computed(
     </div>
     <FormField id="letter-date" label="Esimese kirja kuupäev" hint="Sarja puhul saab iga järgmine kiri järgmise päeva kuupäeva.">
       <template #default="{ describedBy }">
-        <input id="letter-date" v-model="model.startDate" class="input" type="date" :aria-describedby="describedBy" />
+        <DateInput id="letter-date" v-model="model.startDate" :described-by="describedBy" label="Esimese kirja kuupäev" />
+        <label class="dated">
+          <input type="checkbox" :checked="model.dated === false" @change="model.dated = ($event.target as HTMLInputElement).checked ? false : undefined" />
+          <span>Ilma kuupäevata – kirjad on lihtsalt nummerdatud</span>
+        </label>
       </template>
     </FormField>
     <div v-if="showShape" class="options-grid__wide">
@@ -124,6 +129,21 @@ const extrasInUse = computed(
 </template>
 
 <style scoped lang="scss">
+.dated {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  input {
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    margin-top: 0.2rem;
+    accent-color: var(--lavender);
+  }
+}
 .count {
   display: flex;
   flex-direction: column;

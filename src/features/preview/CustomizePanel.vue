@@ -5,6 +5,8 @@ import type { ContentOptionsMap, GeneralOptions, GeneratedContent } from '../../
 import { getContentType } from '../../domain/contentTypes'
 import { defaultOptions } from '../../domain/defaults'
 import { clone } from '../../utils/clone'
+import { usesScenarioEngine } from '../../domain/story/scenarioLetters'
+import type { RequestFor } from '../../domain/models'
 import SegmentedControl from '../../components/ui/SegmentedControl.vue'
 import { DIFFICULTY_OPTIONS, LENGTH_OPTIONS, TONE_OPTIONS } from '../creation/labels'
 import LetterOptionsForm from '../creation/options/LetterOptionsForm.vue'
@@ -79,13 +81,24 @@ function send(): void {
 // Open beside the preview on a wide screen; on a phone the letters come first.
 const open = ref(typeof window === 'undefined' || !window.matchMedia || window.matchMedia('(min-width: 1024px)').matches)
 
+/**
+ * A Christmas series of 7+ letters uses nearly every story for the child's age anyway, so the
+ * tone only reorders them: it is not offered there. Elsewhere it picks openings, endings, wishes.
+ */
+const toneMatters = computed(
+  () =>
+    type.value !== 'letter' ||
+    !usesScenarioEngine({ ...props.content.request, options: draft.value.options.letter } as RequestFor<'letter'>),
+)
+
 const labelOf = <T,>(list: { value: T; label: string }[], value: T) => list.find((o) => o.value === value)?.label ?? ''
 const generalSummary = computed(() =>
   [
-    labelOf(TONE_OPTIONS, draft.value.general.tone),
+    toneMatters.value ? labelOf(TONE_OPTIONS, draft.value.general.tone) : '',
     labelOf(LENGTH_OPTIONS, draft.value.general.length),
     labelOf(DIFFICULTY_OPTIONS, draft.value.general.difficulty),
   ]
+    .filter(Boolean)
     .join(' · ')
     .toLowerCase(),
 )
@@ -140,10 +153,10 @@ const lengthHint = computed(() =>
 
       <details class="customize__general">
         <summary>
-          Toon, pikkus ja raskusaste <span class="customize__now">{{ generalSummary }}</span>
+          {{ toneMatters ? 'Toon, pikkus ja raskusaste' : 'Pikkus ja raskusaste' }} <span class="customize__now">{{ generalSummary }}</span>
         </summary>
         <div class="customize__general-body">
-          <SegmentedControl v-model="draft.general.tone" name="tone" label="Toon" :options="TONE_OPTIONS" />
+          <SegmentedControl v-if="toneMatters" v-model="draft.general.tone" name="tone" label="Toon" :options="TONE_OPTIONS" />
           <SegmentedControl
             v-model="draft.general.length"
             name="length"

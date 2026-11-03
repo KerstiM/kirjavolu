@@ -370,3 +370,22 @@ describe('any number of letters from 1 to 24', () => {
     }
   })
 })
+
+describe('letters without a date', () => {
+  it('numbers a series instead of dating it, per child, and keeps the start date for the plan', async () => {
+    const dated = await templateGenerator.generate(makeRequest('letter', { occasionId: 'christmas', children: [RUBEN, JASPER], options: { count: 7, startDate: '2026-12-01' } }))
+    const undated = await templateGenerator.generate(
+      makeRequest('letter', { occasionId: 'christmas', children: [RUBEN, JASPER], options: { count: 7, startDate: '2026-12-01', dated: false } }),
+    )
+    expect(dated.items[0]?.label).toMatch(/detsember/)
+    expect(undated.items.every((item) => item.date === undefined && !/detsember/.test(item.label))).toBe(true)
+    const ruben = undated.items.filter((item) => item.childId === RUBEN.id).map((item) => item.label)
+    expect(ruben).toEqual(['1. kiri', '2. kiri', '3. kiri', '4. kiri', '5. kiri', '6. kiri', '7. kiri'])
+    expect(undated.instructions.flatMap((block) => block.steps).join(' ')).toContain('Kirjad on nummerdatud')
+  })
+
+  it('labels a single undated letter with its occasion, not a date', async () => {
+    const content = await templateGenerator.generate(makeRequest('letter', { occasionId: 'christmas', options: { count: 1, startDate: '2026-12-01', dated: false } }))
+    expect(content.items[0]).toMatchObject({ label: 'Jõulud', date: undefined })
+  })
+})

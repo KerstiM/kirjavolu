@@ -401,9 +401,11 @@ export function letterInstructions(
   const { options, occasionId, children } = request
   const steps = [
     'Prindi kirjad ja voldi iga kiri kaks korda kokku – nii on see nagu päris post.',
-    options.startDate
-      ? `Kirjad on dateeritud alates kuupäevast ${formatDate(options.startDate)}. Pane igal õhtul välja järgmine kiri.`
-      : 'Pane kiri kohta, kust laps selle ise leiab.',
+    options.dated === false && options.count > 1
+      ? 'Kirjad on nummerdatud. Pane igal õhtul välja järgmine kiri.'
+      : options.startDate
+        ? `Kirjad on dateeritud alates kuupäevast ${formatDate(options.startDate)}. Pane igal õhtul välja järgmine kiri.`
+        : 'Pane kiri kohta, kust laps selle ise leiab.',
   ]
   const tip = USAGE_TIPS[occasionId]
   if (tip) steps.push(tip)

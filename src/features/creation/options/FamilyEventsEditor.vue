@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Plus, Trash2 } from 'lucide-vue-next'
+import DateInput from '../../../components/ui/DateInput.vue'
 import type { ChildProfile, EventKind, FamilyEvent } from '../../../domain/models'
 import { EVENT_TEMPLATES } from '../../../data/templates/events'
 import { eventIndex } from '../../../domain/generators/familyEvents'
@@ -57,13 +58,12 @@ function outOfRange(event: FamilyEvent): boolean {
     <div v-for="event in list" :key="event.id" class="event">
       <label class="event__field">
         <span class="event__label">Kuupäev</span>
-        <input
-          class="input"
-          type="date"
-          :value="event.date"
+        <DateInput
+          :model-value="event.date"
           :min="startDate"
           :max="lastDate"
-          @input="patch(event.id, { date: ($event.target as HTMLInputElement).value })"
+          label="Sündmuse kuupäev"
+          @update:model-value="(date) => patch(event.id, { date })"
         />
       </label>
       <label class="event__field">

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Plus, Trash2 } from 'lucide-vue-next'
+import DateInput from '../../../components/ui/DateInput.vue'
 import type { ChallengeKind, ChildChallenge, ChildProfile } from '../../../domain/models'
 import { CHALLENGES } from '../../../data/templates/challenges'
 import { ageBand } from '../../../domain/generators/audience'
@@ -57,11 +58,11 @@ function remove(id: string): void {
       </label>
       <label class="challenge__field">
         <span class="challenge__label">Algus</span>
-        <input class="input" type="date" :value="challenge.start" :min="startDate" :max="lastDate" @input="patch(challenge.id, { start: ($event.target as HTMLInputElement).value })" />
+        <DateInput :model-value="challenge.start" :min="startDate" :max="lastDate" label="Väljakutse algus" @update:model-value="(start) => patch(challenge.id, { start })" />
       </label>
       <label class="challenge__field">
         <span class="challenge__label">Lõpp</span>
-        <input class="input" type="date" :value="challenge.end" :min="challenge.start || startDate" :max="lastDate" @input="patch(challenge.id, { end: ($event.target as HTMLInputElement).value })" />
+        <DateInput :model-value="challenge.end" :min="challenge.start || startDate" :max="lastDate" label="Väljakutse lõpp" @update:model-value="(end) => patch(challenge.id, { end })" />
       </label>
       <button type="button" class="challenge__remove" :aria-label="`Eemalda väljakutse ${CHALLENGES[challenge.kind].label}`" @click="remove(challenge.id)">
         <Trash2 :size="16" aria-hidden="true" />
