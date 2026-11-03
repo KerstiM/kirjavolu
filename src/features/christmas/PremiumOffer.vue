@@ -63,7 +63,7 @@ const ROWS: { label: string; free: string; personal: string }[] = [
   { label: 'Pereliikmed ja lemmikloomad nimepidi', free: '–', personal: 'Jah' },
   { label: 'Detsembri plaanid õigel päeval', free: 'Valikust (nt külaskäik, pidu)', personal: 'Sinu enda sõnadega' },
   { label: 'Terve sari kirjutatud just selle lapse jaoks', free: '–', personal: 'Jah' },
-  { label: 'Kirja pikkus', free: 'Umbes 70–90 sõna, vanusele sobiv', personal: '60–260 sõna, vali ise' },
+  { label: 'Kirja pikkus', free: 'Umbes 100–120 sõna, vanusele sobiv', personal: '60–260 sõna, vali ise' },
   { label: 'Ise muutmine, printimine ja PDF', free: 'Jah', personal: 'Jah' },
   { label: 'Päkapikult muudatuse palumine („tee lühemaks“)', free: '–', personal: '30 korda' },
 ]
