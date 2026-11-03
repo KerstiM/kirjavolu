@@ -15,10 +15,12 @@ export function useDesign(): Design {
 export const NEW_DESIGN_ROOT = '/uus-disain'
 /** The short Christmas journey: its own test path, in the new design too. */
 export const SHORT_JOURNEY_ROOT = '/ud2'
+/** The home page test version that joins the new design with the current layout. */
+export const HOME_TEST_ROOT = '/ud3'
 
 /** Which look the menu and the footer show on a page, from its path. */
 export function designForPath(path: string): Design {
-  return path.startsWith(NEW_DESIGN_ROOT) || path.startsWith(SHORT_JOURNEY_ROOT) ? 'new' : 'current'
+  return [NEW_DESIGN_ROOT, SHORT_JOURNEY_ROOT, HOME_TEST_ROOT].some((root) => path.startsWith(root)) ? 'new' : 'current'
 }
 /** The same page in the given design, so links keep a visitor in the look they are trying out. */
 export function designPath(design: Design, path: string): string {

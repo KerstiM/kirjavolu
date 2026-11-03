@@ -56,6 +56,13 @@ export const routes: RouteRecordRaw[] = [
     meta: { title: 'Uus disain' },
   },
   {
+    // Home page test version: the playful new design with the compact layout of the current one.
+    path: '/ud3',
+    name: 'ud3',
+    component: () => import('../features/ud3/Ud3Home.vue'),
+    meta: { title: 'Kirjavõlu' },
+  },
+  {
     path: '/ud2/alusta',
     name: 'ud2-start',
     component: () => import('../features/ud2/Ud2Start.vue'),
