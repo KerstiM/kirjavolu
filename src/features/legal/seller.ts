@@ -1,12 +1,11 @@
 /**
- * Who sells the Jõulupass, shown in the terms and the privacy notice. The bracketed value is
- * a placeholder until it is filled in; the e-mail address works once e-mail routing for
- * kirjavolu.ee is set up.
+ * Who sells the Jõulupass, shown in the terms and the privacy notice. Mail to the address
+ * is forwarded by Cloudflare Email Routing.
  */
 export const SELLER = {
   name: 'KH Creative OÜ',
   registryCode: '14069573',
-  address: 'Räitsaka 11, [linn ja postiindeks]',
+  address: 'Räitsaka 11, Tallinn',
   email: 'info@kirjavolu.ee',
 } as const
 
