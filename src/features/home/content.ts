@@ -53,7 +53,7 @@ export const EXAMPLES: { caption: string; item: GeneratedItem }[] = [
       kind: 'letter',
       label: '1. detsember',
       heading: 'Kallis Jasper!',
-      body: 'Tere! Mina olen päkapikk Tuduja ja kolisin eile õhtul teie raamaturiiuli taha. Kuulsin, et sulle meeldivad mõistatused. Mulle ka!\n\nHomme hommikul peidan su sussi juurde väikese saladuse. Kas leiad selle enne hommikusööki?',
+      body: 'Tere! Mina olen päkapikk Tuduja ja kolisin eile õhtul teie raamaturiiuli taha. Teekond Jõuluvana töökojast oli pikk: sõitsin põhjapõder Välgu seljas üle kolme metsa ja ühe külmunud järve. Teie korstnas jäi mu müts natuke kinni, nii et kui näed riiuli juures punast villatuti, siis see on minu oma.\n\nKuulsin, et sulle meeldivad mõistatused. Mulle ka! Töökojas on mul hüüdnimi Nuputaja, sest leidsin kord üles Jõuluvana kadunud prillid. Need olid tema enda peas.\n\nNüüd on mul sulle esimene ülesanne. Täna õhtul peidan su sussi juurde väikese paberitüki, millel on salakiri. Kui selle lahendad, tead, kust homme minu järgmist kirja otsida. Kas oled valmis?',
       signature: 'Sinu päkapikk Tuduja',
     }),
   },
@@ -64,7 +64,7 @@ export const EXAMPLES: { caption: string; item: GeneratedItem }[] = [
       kind: 'clue',
       label: 'Vihje 2',
       heading: 'Kuum jälg!',
-      body: 'Ma olen külm, aga mitte jäine.\nMu uksel on magnetid ja sees ootab piim.\n\nVaata alumisele riiulile, Jasper!',
+      body: 'Ma olen külm, aga mitte jäine.\nMu uksel on magnetid ja pildid,\nsees ootab piim ja võileivavorst.\nKui mind avad, süttib tuli.\n\nMis ma olen? Kui tead, vaata minu alumisele riiulile, Jasper. Seal ootab järgmine vihje, aga ole tasa: aardevalvur magab kõrval.',
     }),
   },
   {
@@ -74,7 +74,7 @@ export const EXAMPLES: { caption: string; item: GeneratedItem }[] = [
       kind: 'story-page',
       label: 'Lk 1',
       heading: 'Jasper ja kadunud täht',
-      body: 'Õhtu oli vaikne ja lumi sadas aeglaselt, kui Jasper märkas aknalaual kuldset täpikest. See oli täht: väike, soe ja natuke kurb.\n\n„Ma kukkusin taevast,“ sosistas täht. „Ilma minuta ei leia põhjapõder Välk koduteed.“ Jasper tõmbas saapad jalga. Täna öösel oli tal tähtis töö.',
+      body: 'Õhtu oli vaikne ja lumi sadas aeglaselt, kui Jasper märkas aknalaual kuldset täpikest. Algul arvas ta, et see on kommipaber, aga siis hakkas täpike vilkuma. See oli täht: väike, soe ja natuke kurb.\n\n„Ma kukkusin taevast,“ sosistas täht. „Põhjapõder Välk lendab täna öösel mööda minu valgust. Kui mind seal pole, ei leia ta koduteed.“\n\nJasper mõtles hetke. Tal oli taskulamp, kaks võileiba ja vanaisa kompass, mis näitas alati põhja. Ta tõmbas saapad jalga, pani tähe ettevaatlikult mütsi sisse ja avas tagaukse. Täna öösel oli tal tähtis töö.',
     }),
   },
 ]
