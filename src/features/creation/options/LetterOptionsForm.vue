@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { ChildProfile, LetterOptions, OccasionId } from '../../../domain/models'
 import PersonaEditor from './PersonaEditor.vue'
 import FamilyEventsEditor from './FamilyEventsEditor.vue'
 import ChallengesEditor from './ChallengesEditor.vue'
 import FormField from '../../../components/ui/FormField.vue'
 import SegmentedControl from '../../../components/ui/SegmentedControl.vue'
+import { MAX_LETTERS } from '../../../domain/validation'
 
 const props = defineProps<{ children: ChildProfile[]; occasionId: OccasionId }>()
 const model = defineModel<LetterOptions>({ required: true })
@@ -14,12 +15,24 @@ const family = computed(() => props.children.length > 1)
 const linked = computed(() => family.value && (model.value.mode ?? 'linked') === 'linked')
 const series = computed(() => model.value.count > 1)
 
-const countOptions = [
-  { value: 1 as const, label: '1 kiri' },
-  { value: 3 as const, label: '3 kirja' },
-  { value: 7 as const, label: '7 kirja' },
-  { value: 24 as const, label: '24 kirja' },
-]
+/**
+ * The usual counts as short buttons (the legend says what they count), and "Muu" for any
+ * other number up to 24 – so the choice fits one row even in the narrow preview panel.
+ */
+const QUICK_COUNTS = [1, 4, 7, 24] as const
+const countOptions = [...QUICK_COUNTS.map((value) => ({ value, label: String(value) })), { value: 'other' as const, label: 'Muu' }]
+const otherOpen = ref(!(QUICK_COUNTS as readonly number[]).includes(model.value.count))
+const countChoice = computed<number | 'other'>({
+  get: () => (otherOpen.value ? 'other' : model.value.count),
+  set: (value) => {
+    otherOpen.value = value === 'other'
+    if (value !== 'other') model.value.count = value
+  },
+})
+function setOtherCount(event: Event): void {
+  const value = Math.round(Number((event.target as HTMLInputElement).value))
+  if (Number.isFinite(value)) model.value.count = Math.min(MAX_LETTERS, Math.max(1, value))
+}
 
 /**
  * One choice for how the letters belong together. A linked family series always
@@ -67,7 +80,14 @@ const extrasInUse = computed(
 
 <template>
   <div class="options-grid">
-    <SegmentedControl v-model="model.count" name="letter-count" label="Kirjade arv" :options="countOptions" />
+    <div class="count">
+      <SegmentedControl v-model="countChoice" name="letter-count" label="Kirjade arv" :options="countOptions" />
+      <label v-if="otherOpen" class="count__other">
+        <span>Mitu kirja?</span>
+        <input class="input" type="number" min="1" :max="MAX_LETTERS" inputmode="numeric" :value="model.count" @change="setOtherCount" />
+        <span class="count__range">1–{{ MAX_LETTERS }}</span>
+      </label>
+    </div>
     <FormField id="letter-date" label="Esimese kirja kuupäev" hint="Sarja puhul saab iga järgmine kiri järgmise päeva kuupäeva.">
       <template #default="{ describedBy }">
         <input id="letter-date" v-model="model.startDate" class="input" type="date" :aria-describedby="describedBy" />
@@ -104,6 +124,25 @@ const extrasInUse = computed(
 </template>
 
 <style scoped lang="scss">
+.count {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.count__other {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  .input {
+    width: 5rem;
+  }
+}
+.count__range {
+  font-weight: 400;
+  color: var(--ink-soft);
+}
 .extras {
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);

@@ -63,7 +63,8 @@ export type LetterMode = 'shared' | 'linked'
 export interface LetterOptions {
   sender: string
   startDate: string
-  count: 1 | 3 | 7 | 24
+  /** 1–24 letters; 7 or more are written by the scenario engine as one series. */
+  count: number
   connected: boolean
   /** Only used with several children. Missing in creations made before this feature. */
   mode?: LetterMode

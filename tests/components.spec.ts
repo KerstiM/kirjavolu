@@ -199,11 +199,13 @@ describe('preview with choices beside it', () => {
     const { id } = store.creations[0]!
     store.setDecoration(id, { ...EMPTY_DECORATION, pattern: 'stars', inkSaver: true })
     const panel = screen.getByRole('region', { name: /Kohanda/ })
-    await user.click(within(panel).getByRole('radio', { name: '3 kirja' }))
-    await vi.waitFor(() => expect(store.creations[0]?.items).toHaveLength(3))
+    const counts = within(panel).getByRole('group', { name: 'Kirjade arv' })
+    expect(within(counts).getAllByRole('radio').map((radio) => radio.closest('label')?.textContent?.trim())).toEqual(['1', '4', '7', '24', 'Muu'])
+    await user.click(within(counts).getByRole('radio', { name: '4' }))
+    await vi.waitFor(() => expect(store.creations[0]?.items).toHaveLength(4))
     // Still the same creation; the default layout follows the shorter series.
     expect(store.creations).toHaveLength(1)
-    expect(store.creations[0]?.request.options).toMatchObject({ count: 3 })
+    expect(store.creations[0]?.request.options).toMatchObject({ count: 4 })
     expect(store.creations[0]?.layout).toBe(defaultLayoutFor(store.creations[0]!.request))
     expect(store.creations[0]?.id).toBe(id)
     expect(store.creations[0]?.decoration).toMatchObject({ pattern: 'stars', inkSaver: true })
@@ -212,7 +214,7 @@ describe('preview with choices beside it', () => {
   it('keeps a layout the parent picked when the choices change', async () => {
     const { user, store } = await letterPreview()
     store.setLayout(store.creations[0]!.id, 'page')
-    await user.click(within(screen.getByRole('region', { name: /Kohanda/ })).getByRole('radio', { name: '7 kirja' }))
+    await user.click(within(screen.getByRole('group', { name: 'Kirjade arv' })).getByRole('radio', { name: '7' }))
     await vi.waitFor(() => expect(store.creations[0]?.items).toHaveLength(7))
     expect(store.creations[0]?.layout).toBe('page')
   })
@@ -222,11 +224,27 @@ describe('preview with choices beside it', () => {
     store.editItem(store.creations[0]!.id, store.creations[0]!.items[0]!.id, { body: 'Minu oma tekst' })
     const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false)
     const panel = screen.getByRole('region', { name: /Kohanda/ })
-    await user.click(within(panel).getByRole('radio', { name: '7 kirja' }))
+    await user.click(within(within(panel).getByRole('group', { name: 'Kirjade arv' })).getByRole('radio', { name: '7' }))
     await vi.waitFor(() => expect(confirm).toHaveBeenCalled())
     expect(store.creations[0]?.items[0]?.body).toBe('Minu oma tekst')
-    expect(within(panel).getByRole('radio', { name: '24 kirja' })).toBeChecked()
+    expect(within(within(panel).getByRole('group', { name: 'Kirjade arv' })).getByRole('radio', { name: '24' })).toBeChecked()
     confirm.mockRestore()
+  })
+
+  it('lets any number of letters up to 24 be picked under "Muu"', async () => {
+    const { user, store } = await letterPreview()
+    const counts = within(screen.getByRole('region', { name: /Kohanda/ })).getByRole('group', { name: 'Kirjade arv' })
+    await user.click(within(counts).getByRole('radio', { name: 'Muu' }))
+    const other = screen.getByRole('spinbutton', { name: /Mitu kirja/ })
+    await user.clear(other)
+    await user.type(other, '12')
+    await user.tab()
+    await vi.waitFor(() => expect(store.creations[0]?.items).toHaveLength(12))
+    // Over the limit is held at 24.
+    await user.clear(other)
+    await user.type(other, '40')
+    await user.tab()
+    await vi.waitFor(() => expect(store.creations[0]?.request.options).toMatchObject({ count: 24 }))
   })
 
   it('has one choice for how to print, with large poster cards for long letters', async () => {

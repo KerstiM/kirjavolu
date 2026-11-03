@@ -200,9 +200,17 @@ function outOfRange(event: FamilyEvent): boolean {
     cursor: not-allowed;
   }
 }
+// A sentence, not a chip: a pill shape looks clumsy once it wraps onto several lines.
 .events__rule {
   align-self: flex-start;
+  align-items: flex-start;
   margin-top: 0.4rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: var(--radius-sm);
+  input {
+    flex: none;
+    margin-top: 0.2rem;
+  }
 }
 @container events (max-width: 720px) {
   .event {

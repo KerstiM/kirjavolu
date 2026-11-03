@@ -27,7 +27,7 @@ export function isValidChildProfile(draft: ChildProfileDraft): boolean {
   return Object.keys(validateChildProfile(draft)).length === 0
 }
 
-const LETTER_COUNTS = [1, 3, 7, 24]
+export const MAX_LETTERS = 24
 
 export function validateGenerationRequest(request: GenerationRequest): string[] {
   const errors: string[] = []
@@ -40,7 +40,8 @@ export function validateGenerationRequest(request: GenerationRequest): string[] 
 
   switch (request.contentType) {
     case 'letter':
-      if (!LETTER_COUNTS.includes(request.options.count)) errors.push('Kirjade arv peab olema 1, 3, 7 või 24.')
+      const count = request.options.count
+      if (!Number.isInteger(count) || count < 1 || count > MAX_LETTERS) errors.push(`Kirjade arv peab olema 1–${MAX_LETTERS}.`)
       if (request.options.startDate && !/^\d{4}-\d{2}-\d{2}$/.test(request.options.startDate)) {
         errors.push('Kuupäev on vigane.')
       }

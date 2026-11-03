@@ -259,6 +259,17 @@ describe('age and reading level', () => {
     expect(validateCollection(long.plan, long.items, library).filter((i) => i.severity === 'error')).toEqual([])
   })
 
+  it('writes a valid series for every count from 7 to 24, for one child and for a family', () => {
+    for (let count = 7; count <= 24; count++) {
+      for (const family of [[JASPER], [RUBEN, JASPER, BRITA]]) {
+        const { plan, items } = build(christmas(family, { count }, count))
+        expect(items.length, `${count} kirja`).toBe(count * family.length)
+        const errors = validateCollection(plan, items, library).filter((issue) => issue.severity === 'error')
+        expect(errors, `${count} kirja, ${family.length} last`).toEqual([])
+      }
+    }
+  })
+
   it('tells a story further in long letters only, so medium ones still fit the poster', () => {
     const request = christmas([JASPER], {}, 5)
     const long = build({ ...request, general: { ...request.general, length: 'long' } })
