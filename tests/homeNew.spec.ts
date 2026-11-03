@@ -91,6 +91,18 @@ describe('wizard in the new design', () => {
   })
 })
 
+describe('what is ready in the new design', () => {
+  it('shows unfinished kinds gray and the Santa greeting as coming soon', async () => {
+    await open('/uus-disain')
+    const types = await screen.findByRole('region', { name: 'Mida meisterdame?' })
+    expect(within(types).getByRole('link', { name: /Maagiline kiri/ })).toBeInTheDocument()
+    expect(within(types).getByRole('link', { name: /Personaalne lugu/ })).toBeInTheDocument()
+    expect(within(types).queryByRole('link', { name: /Aardejaht/ })).toBeNull()
+    expect(within(types).getByText('Aardejaht').closest('.postcard')).toHaveClass('is-soon')
+    expect(within(types).getByText('Jõuluvana tervitus').closest('.postcard')).toHaveTextContent('Varsti')
+  })
+})
+
 describe('the rest of the journey in the new design', () => {
   it('shows the preview at /uus-disain/looming/… with links that stay in the new design', async () => {
     await open((id) => `/uus-disain/looming/${id}`)

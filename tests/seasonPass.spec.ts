@@ -45,6 +45,11 @@ describe('buying the Jõulupass on the new-design sample page', () => {
     await open('/uus-disain/naide')
     const user = userEvent.setup()
     const section = await screen.findByRole('region', { name: 'Jõulupass' })
+    // Without the consent to start at once, nothing is sent.
+    await user.click(within(section).getByRole('button', { name: /Osta Jõulupass/ }))
+    expect(await within(section).findByRole('alert')).toHaveTextContent('nõustud tingimustega')
+    expect(fetch).not.toHaveBeenCalled()
+    await user.click(within(section).getByRole('checkbox', { name: /soovin, et Jõulupass hakkaks kohe kehtima/ }))
     await user.click(within(section).getByRole('button', { name: /Osta Jõulupass/ }))
     expect(await within(section).findByRole('alert')).toHaveTextContent('Liiga palju katseid')
     expect(fetch).toHaveBeenCalledWith('/api/joulupass/ost', { method: 'POST' })
@@ -313,5 +318,25 @@ describe('finding the Jõulupass', () => {
     const card = await screen.findByRole('region', { name: /Kirjad päriselt sinu lapse kohta/ })
     expect(within(card).getByText(/ei tea Rubeni perest/)).toBeInTheDocument()
     expect(within(card).getByRole('link', { name: 'Vaata Jõulupassi' })).toHaveAttribute('href', '/uus-disain/joulupass')
+  })
+})
+
+describe('terms and privacy', () => {
+  it('are linked from the footer and open in the design the visitor is in', async () => {
+    const { router } = await open('/uus-disain')
+    const user = userEvent.setup()
+    await user.click(await screen.findByRole('link', { name: 'Müügitingimused' }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'Müügitingimused' })).toBeInTheDocument()
+    expect(router.currentRoute.value.path).toBe('/uus-disain/tingimused')
+    expect(screen.getByText(/kaob 14-päevane taganemisõigus/)).toBeInTheDocument()
+    await user.click(screen.getByRole('link', { name: 'Privaatsus' }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'Privaatsuspõhimõtted' })).toBeInTheDocument()
+    expect(router.currentRoute.value.path).toBe('/uus-disain/privaatsus')
+  })
+
+  it('are in the current design too', async () => {
+    await open('/')
+    expect(await screen.findByRole('link', { name: 'Privaatsus' })).toHaveAttribute('href', '/privaatsus')
+    expect(screen.getByRole('link', { name: 'Müügitingimused' })).toHaveAttribute('href', '/tingimused')
   })
 })

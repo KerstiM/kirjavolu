@@ -13,6 +13,7 @@ import { OCCASIONS } from '../../../domain/occasions/occasions'
 import { isInSeason, sortBySeason } from '../../../domain/occasions/season'
 import { useChildrenStore } from '../../children/childrenStore'
 import RecentCreations from '../RecentCreations.vue'
+import { COMING_SOON, isReady, NOT_READY_LABEL } from './readiness'
 import { isActive, loadPass, PASS_PRICE } from '../../pass/seasonPass'
 
 /**
@@ -99,12 +100,23 @@ const WIZARD = designPath('new', '/loo')
         <ul class="postcards" role="list">
           <li v-for="(type, index) in CONTENT_TYPES" :key="type.id">
             <PostcardCard
-              :to="{ path: WIZARD, query: { tyyp: type.id } }"
+              :to="isReady(type.id) ? { path: WIZARD, query: { tyyp: type.id } } : undefined"
               :title="type.title"
               :tagline="type.tagline"
               :description="type.description"
               :icon="iconFor(type.icon)"
               :index="index"
+              :soon="isReady(type.id) ? '' : NOT_READY_LABEL"
+            />
+          </li>
+          <li v-for="(item, index) in COMING_SOON" :key="item.id">
+            <PostcardCard
+              :title="item.title"
+              :tagline="item.tagline"
+              :description="item.description"
+              :icon="iconFor(item.icon)"
+              :index="CONTENT_TYPES.length + index"
+              :soon="item.label"
             />
           </li>
         </ul>

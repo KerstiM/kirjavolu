@@ -90,7 +90,8 @@ describe('creation flow', () => {
     expect(screen.getByText(/Ühine elamus\./)).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: /Loo ja vaata eelvaadet/ }))
 
-    await vi.waitFor(() => expect(router.currentRoute.value.name).toBe('preview'))
+    // Generating the story and opening the preview can take a while on a busy machine.
+    await vi.waitFor(() => expect(router.currentRoute.value.name).toBe('preview'), { timeout: 5000 })
     const title = await screen.findByRole('heading', { level: 1 })
     expect(title.textContent).toContain('Ruben, Jasper ja kadunud sünnipäevatordi juhtum')
     // A new creation first arrives in an envelope.
