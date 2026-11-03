@@ -321,7 +321,7 @@ export function validateCollection(
           message: `${p.child.name}: väikelapse kaardil on mitu lõiku.`,
         })
       const card = cardBand(p)
-      // "Pikk" letters are not offered on the puzzle poster, so the card budget does not apply.
+      // "Pikk" letters go on the poster's large cards, so the normal card budget does not apply.
       if (!plan.long && text.length > CARD_LIMITS[card])
         add({
           code: 'too-long-for-card',

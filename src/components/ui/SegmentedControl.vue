@@ -1,7 +1,8 @@
 <script setup lang="ts" generic="T extends string | number | boolean">
 defineProps<{
   label: string
-  options: { value: T; label: string }[]
+  /** A disabled option stays visible, so it is plain that it exists; the hint says why it is off. */
+  options: { value: T; label: string; disabled?: boolean }[]
   name: string
   hint?: string
 }>()
@@ -17,7 +18,7 @@ const model = defineModel<T>({ required: true })
         v-for="option in options"
         :key="String(option.value)"
         class="segmented__option"
-        :class="{ 'is-active': model === option.value }"
+        :class="{ 'is-active': model === option.value, 'is-disabled': option.disabled }"
       >
         <input
           v-model="model"
@@ -25,6 +26,7 @@ const model = defineModel<T>({ required: true })
           class="visually-hidden"
           :name="name"
           :value="option.value"
+          :disabled="option.disabled"
         />
         <span>{{ option.label }}</span>
       </label>
@@ -70,6 +72,14 @@ const model = defineModel<T>({ required: true })
     border-color: var(--lavender);
     color: var(--lavender-ink);
     font-weight: 600;
+  }
+  &.is-disabled {
+    border-style: dashed;
+    color: var(--ink-faint);
+    cursor: not-allowed;
+    &:hover {
+      border-color: var(--line-strong);
+    }
   }
   &:has(input:focus-visible) {
     outline: 3px solid var(--focus);

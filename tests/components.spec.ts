@@ -194,8 +194,8 @@ describe('preview with choices beside it', () => {
   it('updates the letters right away when a choice changes', async () => {
     const { user, store } = await letterPreview()
     expect(store.creations[0]?.items).toHaveLength(24)
-    // Long letters by default: slipper cards, as they do not fit the poster.
-    expect(store.creations[0]?.layout).toBe('cards')
+    // A series goes on the puzzle poster; long letters get its large cards.
+    expect(store.creations[0]?.layout).toBe('poster')
     const { id } = store.creations[0]!
     store.setDecoration(id, { ...EMPTY_DECORATION, pattern: 'stars', inkSaver: true })
     const panel = screen.getByRole('region', { name: /Kohanda/ })
@@ -229,17 +229,30 @@ describe('preview with choices beside it', () => {
     confirm.mockRestore()
   })
 
-  it('offers the puzzle poster only for letters that fit it, and keeps the rest under "Rohkem valikuid"', async () => {
+  it('has one choice for how to print, with large poster cards for long letters', async () => {
     const { user, store } = await letterPreview()
     const presets = screen.getByRole('group', { name: 'Kuidas prindid?' })
-    const labels = () => within(presets).getAllByRole('radio').map((radio) => radio.closest('label')?.textContent?.trim())
-    // Long letters (the default) do not fit the poster cards, so it is not offered.
-    expect(labels()).toEqual(['Kaardid sussi sisse', 'Terve leht'])
-    await user.click(within(screen.getByRole('region', { name: /Kohanda/ })).getByRole('radio', { name: 'Keskmine' }))
-    await vi.waitFor(() => expect(labels()).toEqual(['Kaardid sussi sisse', 'Pusleplakat', 'Terve leht']))
-    await user.click(within(presets).getByRole('radio', { name: 'Kaardid sussi sisse' }))
-    expect(store.creations[0]?.layout).toBe('cards')
+    const labels = within(presets).getAllByRole('radio').map((radio) => radio.closest('label')?.textContent?.trim())
+    expect(labels).toEqual(['Kaardid sussi sisse', 'Pool lehte', 'Terve leht', 'Pusleplakat'])
+    expect(within(presets).getByRole('radio', { name: 'Pusleplakat' })).toBeEnabled()
+    // Long letters (the default): the poster takes 6 sheets with large cards.
+    expect(presets).toHaveTextContent('Plakat tuleb 6 A4 lehele, kaardid on suuremad.')
+    // The layout is no longer chosen twice: "Rohkem valikuid" keeps only what to print and capitals.
+    expect(screen.queryByRole('group', { name: 'Prindi paigutus' })).toBeNull()
+    await user.click(within(presets).getByRole('radio', { name: 'Pool lehte' }))
+    expect(store.creations[0]?.layout).toBe('half')
     expect(screen.getByText('Rohkem valikuid').closest('details')).not.toHaveAttribute('open')
+  })
+
+  it('keeps the poster in sight but off, with the reason, when a letter is too long even for a large card', async () => {
+    const { store } = await letterPreview()
+    const { id, items } = store.creations[0]!
+    store.editItem(id, items[0]!.id, { body: 'Väga pikk kiri. '.repeat(90) })
+    const presets = screen.getByRole('group', { name: 'Kuidas prindid?' })
+    await vi.waitFor(() => expect(within(presets).getByRole('radio', { name: 'Pusleplakat' })).toBeDisabled())
+    expect(screen.getByText(/Pusleplakat pole praegu valitav: mõni kiri on plakatikaardi jaoks liiga pikk/)).toBeInTheDocument()
+    // It was the layout, so the letters move to the slipper cards.
+    await vi.waitFor(() => expect(store.creations[0]?.layout).toBe('cards'))
   })
 })
 

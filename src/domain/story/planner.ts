@@ -94,7 +94,7 @@ export interface CollectionPlan {
   facts: Map<string, number>
   pairs: PairedDay[]
   secret?: SecretHelperPlan
-  /** "Pikk": a riddle or a task on the days without one, too long for the puzzle poster cards. */
+  /** "Pikk": the stories go on and a riddle or a task is added; printed on large poster cards. */
   long: boolean
 }
 

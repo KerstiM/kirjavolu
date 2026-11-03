@@ -89,12 +89,12 @@ const generalSummary = computed(() =>
     .join(' · ')
     .toLowerCase(),
 )
-// Only short and medium series fit the puzzle poster cards; long letters add a riddle or a task.
+// Long letters add a riddle or a task, and go on the poster's large cards.
 const lengthHint = computed(() =>
   type.value === 'letter' && draft.value.options.letter.count >= 7
     ? draft.value.general.length === 'long'
-      ? 'Pikkades kirjades on lisaks loole mõistatus või päkapiku ülesanne. Pusleplakatile need ei mahu.'
-      : 'Lühikesed ja keskmised kirjad mahuvad pusleplakati kaartidele.'
+      ? 'Pikkades kirjades jätkub lugu ja lisaks on mõistatus või päkapiku ülesanne. Pusleplakatil on siis suuremad kaardid.'
+      : 'Lühikesed ja keskmised kirjad mahuvad pusleplakati tavalistele kaartidele.'
     : '',
 )
 </script>
