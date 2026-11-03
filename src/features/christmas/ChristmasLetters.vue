@@ -296,7 +296,7 @@ onBeforeUnmount(() => {
         <div>
           <p class="writing__line">Päkapikk kirjutab {{ child ? nameCase(child, 'allative') : '' }} 24 isiklikku kirja</p>
           <p class="writing__time">
-            Tavaliselt võtab see poolteist kuni kolm minutit, pikemate kirjadega kauem. Hoia see leht lahti, kirjad
+            Tavaliselt võtab see paar minutit, pikemate kirjadega kauem. Hoia see leht lahti, kirjad
             ilmuvad siia kõik korraga. Möödunud {{ elapsed }}
           </p>
         </div>

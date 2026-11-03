@@ -96,7 +96,7 @@ describe('Christmas letters: who for and the free letters', () => {
     })
     const user = userEvent.setup()
     const kids = await screen.findByRole('group', { name: /Kellele\?/ })
-    expect(within(kids).getByRole('checkbox', { name: 'Ruben' })).toBeChecked()
+    expect(within(kids).getByRole('checkbox', { name: /^Ruben/ })).toBeChecked()
     expect(screen.queryByLabelText('Lapse nimi')).toBeNull()
     await user.click(screen.getByRole('button', { name: /Loo tasuta kirjad/ }))
     await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/joulukirjad\//), { timeout: 5000 })
@@ -155,7 +155,7 @@ describe('Christmas letters: who for and the free letters', () => {
     })
     const user = userEvent.setup()
     const kids = await screen.findByRole('group', { name: /Kellele\? võid valida mitu/ })
-    await user.click(within(kids).getByRole('checkbox', { name: 'Jasper' }))
+    await user.click(within(kids).getByRole('checkbox', { name: /^Jasper/ }))
     expect(screen.getByText(/Õed-vennad saavad seotud kirjad/)).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: /Loo 2 lapsele tasuta kirjad/ }))
     await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/joulukirjad\//), { timeout: 5000 })
@@ -166,7 +166,7 @@ describe('Christmas letters: who for and the free letters', () => {
 
     // One child at a time: their own letters, and their own personal offer.
     const tabs = screen.getByRole('tablist', { name: 'Kelle kirjad' })
-    await user.click(within(tabs).getByRole('tab', { name: 'Jasper' }))
+    await user.click(within(tabs).getByRole('tab', { name: /^Jasper/ }))
     expect(document.querySelectorAll('.letters__list .paper')).toHaveLength(3)
     expect(screen.queryByRole('heading', { level: 3, name: /Ruben/ })).toBeNull()
     expect(screen.getAllByRole('heading', { level: 3, name: /Jasper/ }).length).toBeGreaterThan(0)
@@ -181,11 +181,11 @@ describe('Christmas letters: who for and the free letters', () => {
       useChildrenStore().restoreDemo()
     })
     const user = userEvent.setup()
-    await user.click(within(await screen.findByRole('group', { name: /Kellele\?/ })).getByRole('checkbox', { name: 'Jasper' }))
+    await user.click(within(await screen.findByRole('group', { name: /Kellele\?/ })).getByRole('checkbox', { name: /^Jasper/ }))
     await user.click(screen.getByRole('button', { name: /Loo 2 lapsele tasuta kirjad/ }))
     await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/joulukirjad\//), { timeout: 5000 })
     const familyId = router.currentRoute.value.path.split('/').pop()!
-    await user.click(within(await screen.findByRole('tablist', { name: 'Kelle kirjad' })).getByRole('tab', { name: 'Jasper' }))
+    await user.click(within(await screen.findByRole('tablist', { name: 'Kelle kirjad' })).getByRole('tab', { name: /^Jasper/ }))
     await user.click(screen.getByRole('button', { name: /Kirjuta Jasperile isiklikud kirjad/ }))
 
     const done = await screen.findByRole('region', { name: 'Jasperi isiklikud kirjad on valmis' }, { timeout: 5000 })
@@ -196,7 +196,7 @@ describe('Christmas letters: who for and the free letters', () => {
     expect(personal.request.children[0]?.name).toBe('Jasper')
     expect(within(done).getByRole('link', { name: /Ava Jasperi isiklikud kirjad/ })).toHaveAttribute('href', `/joulukirjad/${personal.id}`)
     // Ruben can still get his own.
-    await user.click(screen.getByRole('tab', { name: 'Ruben' }))
+    await user.click(screen.getByRole('tab', { name: /^Ruben/ }))
     expect(screen.getByRole('button', { name: /Kirjuta Rubenile isiklikud kirjad/ })).toBeInTheDocument()
   })
 
@@ -341,7 +341,7 @@ describe('Christmas letters: the optional personal letters', () => {
     await user.click(screen.getByRole('button', { name: /Kirjuta Miale isiklikud kirjad/ }))
     const status = await screen.findByText(/Päkapikk kirjutab Miale 24 isiklikku kirja/)
     const box = status.closest('section')!
-    expect(box).toHaveTextContent('Tavaliselt võtab see poolteist kuni kolm minutit')
+    expect(box).toHaveTextContent('Tavaliselt võtab see paar minutit')
     expect(box.textContent).not.toMatch(/%/)
     expect(JSON.parse(localStorage.getItem(WRITING)!)).toMatchObject({ left: 10 })
     // A second press cannot start a second series while one is being written.

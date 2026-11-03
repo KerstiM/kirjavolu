@@ -6,6 +6,8 @@ import {
   handlePassLetters,
   parseFixInput,
   parseSeriesInput,
+  partPrompt,
+  readPlan,
   readSeries,
   seriesPrompt,
   SERIES_LENGTH,
@@ -252,6 +254,23 @@ describe('series', () => {
     const long = 'sõna '.repeat(520).trim()
     const letters = SERIES.map((letter) => ({ ...letter, body: long }))
     expect(readSeries(JSON.stringify({ letters }))[0]?.body).toBe(long)
+  })
+
+  it('writes the series in four parts from one plan', () => {
+    const plan = readPlan(JSON.stringify({ world: 'Kass Nurr ja töökoda.', days: Array.from({ length: 24 }, (_, i) => `Sündmus ${i + 1}`) }))
+    expect(() => readPlan(JSON.stringify({ world: 'x', days: ['üks'] }))).toThrow()
+    const input = parseSeriesInput(JASPER)!
+    const first = partPrompt(input, plan, 0)
+    expect(first).toContain('1. kuni 6. detsembri kiri')
+    expect(first).toContain('Esimeses kirjas tutvusta ennast.')
+    expect(first).toContain('24. detsember: Sündmus 24')
+    const last = partPrompt(input, plan, 3)
+    expect(last).toContain('19. kuni 24. detsembri kiri')
+    expect(last).toContain('Ära tutvusta ennast uuesti')
+    expect(last).toContain('jõululaupäeva pidulik lõpp')
+    // A part is checked on its own length, not the whole series.
+    expect(readSeries(JSON.stringify({ letters: SERIES.slice(0, 6) }), 6)).toHaveLength(6)
+    expect(() => readSeries(JSON.stringify({ letters: SERIES.slice(0, 6) }))).toThrow()
   })
 
   it('hands the child and the plans to the model as data inside tags', () => {
