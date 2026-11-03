@@ -75,18 +75,27 @@ describe('the wizard in the new design at /loo', () => {
   })
 
   it('shows a type picked on the home page as one line, not the whole list again', async () => {
-    await open('/loo?tyyp=story')
+    await open('/loo?tyyp=certificate')
     expect(await screen.findByRole('button', { name: 'Muuda, mida luua' })).toBeInTheDocument()
-    expect(document.querySelector('.picked')).toHaveTextContent('Personaalne lugu')
+    expect(document.querySelector('.picked')).toHaveTextContent('Diplom või õnnitluskaart')
     expect(document.querySelector('.postcard')).toBeNull()
     expect(screen.getByRole('radiogroup', { name: 'Mis puhul?' })).toBeInTheDocument()
   })
 
-  it('offers all six kinds, as the old design did', async () => {
+  it('offers the letter and the certificate; the other kinds are gray while they are polished', async () => {
     await open('/loo')
     const types = await screen.findByRole('radiogroup', { name: 'Mida soovid luua?' })
-    expect(within(types).getAllByRole('radio')).toHaveLength(6)
-    expect(document.querySelector('.postcard.is-soon')).toBeNull()
+    expect(within(types).getAllByRole('radio').map((radio) => radio.textContent)).toEqual([
+      expect.stringContaining('Maagiline kiri'),
+      expect.stringContaining('Diplom või õnnitluskaart'),
+    ])
+    expect(document.querySelectorAll('.postcard.is-soon')).toHaveLength(4)
+  })
+
+  it('starts without a kind when a link names one that is switched off', async () => {
+    await open('/loo?tyyp=story')
+    expect(await screen.findByRole('radiogroup', { name: 'Mida soovid luua?' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Muuda, mida luua' })).toBeNull()
   })
 
   it('still answers at the earlier /uus-disain/loo', async () => {
@@ -100,14 +109,15 @@ describe('what the earlier /uus-disain home page marks', () => {
     await open('/uus-disain')
     const types = await screen.findByRole('region', { name: 'Mida meisterdame?' })
     expect(within(types).getByRole('link', { name: /Maagiline kiri/ })).toBeInTheDocument()
-    expect(within(types).getByRole('link', { name: /Aardejaht/ })).toBeInTheDocument()
+    expect(within(types).queryByRole('link', { name: /Aardejaht/ })).toBeNull()
+    expect(within(types).getByText('Aardejaht').closest('.postcard')).toHaveTextContent('Töös')
     expect(within(types).getByText('Jõuluvana tervitus').closest('.postcard')).toHaveTextContent('Varsti')
   })
 
   it('marks only what the Jõulupass adds; free is unmarked', async () => {
     await open('/uus-disain')
     const types = await screen.findByRole('region', { name: 'Mida meisterdame?' })
-    expect(within(types).getByRole('link', { name: /Personaalne lugu/ })).toHaveTextContent('Jõulupass')
+    expect(within(types).getByText('Personaalne lugu').closest('.postcard')).toHaveTextContent('Jõulupass')
     expect(within(types).getByRole('link', { name: /Maagiline kiri/ })).toHaveTextContent('Jõulupassiga: isiklik versioon lapse ja pere järgi')
     expect(within(types).getByText('Aardejaht').closest('.postcard')).not.toHaveTextContent('Jõulupass')
     expect(within(types).getByText('Aardejaht').closest('.postcard')).not.toHaveTextContent('Tasuta')

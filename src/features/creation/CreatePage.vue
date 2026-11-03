@@ -14,6 +14,7 @@ import MascotGuide from '../../components/brand/MascotGuide.vue'
 import { DESIGN_KEY, designPath, type Design } from '../../components/brand/design'
 import { mascotLine } from './mascotLines'
 import StepWhat from './steps/StepWhat.vue'
+import { isReady } from '../home/new/readiness'
 import StepChildren from './steps/StepChildren.vue'
 import BaseDialog from '../../components/ui/BaseDialog.vue'
 import ChildrenPage from '../children/ChildrenPage.vue'
@@ -50,7 +51,8 @@ function initFromRoute(): WizardInit {
   const queryType = route.query.tyyp
   const queryOccasion = route.query.puhk
   return {
-    contentType: isContentTypeId(queryType) ? queryType : undefined,
+    // A link to a kind still being polished starts the wizard without a type.
+    contentType: isContentTypeId(queryType) && isReady(queryType) ? queryType : undefined,
     occasionId: isOccasionId(queryOccasion) ? queryOccasion : undefined,
     childIds: childrenStore.children.length === 1 ? [childrenStore.children[0]?.id ?? ''] : [],
   }
