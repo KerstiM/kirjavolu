@@ -29,8 +29,11 @@ export const PASS_GENERATIONS = 10
 export const PASS_FIXES = 30
 /** Where Stripe sends the buyer back after paying; the page asks /api/joulupass/ost for the code. */
 export const RETURN_PATH = '/uus-disain/joulupass'
-/** Pages a checkout may return to instead: the short journey's letters page (/ud2/kirjad/<id>). */
-const RETURN_TO = /^\/ud2\/kirjad\/[A-Za-z0-9-]{1,64}$/
+/**
+ * Pages a checkout may return to instead: the Christmas letters page (/joulukirjad/<id>, and
+ * /ud2/kirjad/<id> where it was first tried out) and the pass page at its main path.
+ */
+const RETURN_TO = /^(\/joulukirjad\/[A-Za-z0-9-]{1,64}|\/ud2\/kirjad\/[A-Za-z0-9-]{1,64}|\/joulupass)$/
 
 /** Where Stripe sends the buyer back: the page that asked, if it is one we know, else the pass page. */
 export async function returnPath(request: Request): Promise<string> {
