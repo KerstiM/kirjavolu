@@ -134,15 +134,14 @@ describe('creation flow', () => {
     // "Tagasi" still reaches the card's choices.
     await user.click(screen.getByRole('button', { name: /Tagasi/ }))
     expect(await screen.findByRole('heading', { name: 'Mida soovid luua?' })).toBeInTheDocument()
-    expect(screen.getByRole('radio', { name: /Tegevuskalender/ })).toHaveAttribute('aria-checked', 'true')
+    // The picked kind stays one line; "Muuda" opens the cards again.
+    expect(screen.getByRole('button', { name: /Muuda, mida luua/ }).closest('section')).toHaveTextContent('Tegevuskalender')
   })
 
-  it('takes a new family from the home page card to 24 letters in three screens', async () => {
-    const { user, router } = await renderApp('/', { demo: false })
-    // Screen 1: the home page.
-    await user.click(await screen.findByRole('link', { name: '24 päkapikukirja' }))
+  it('takes a new family from a type and occasion link to 24 letters in two screens', async () => {
+    const { user, router } = await renderApp('/loo?tyyp=letter&puhk=christmas', { demo: false })
 
-    // Screen 2: "Kellele?" – the child is added in a dialog, without leaving the wizard.
+    // "Kellele?" – the child is added in a dialog, without leaving the wizard.
     expect(await screen.findByRole('heading', { name: 'Kellele?' })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: /Lisa laps/ }))
     const dialog = await screen.findByRole('dialog', { name: 'Lisa laps' })
@@ -158,7 +157,7 @@ describe('creation flow', () => {
     expect(router.currentRoute.value.path).toBe('/loo')
     expect(screen.getByRole('checkbox', { name: /Mia/ })).toHaveAttribute('aria-checked', 'true')
 
-    // Screen 3: the preview with all 24 letters.
+    // The preview with all 24 letters.
     await user.click(screen.getByRole('button', { name: /Loo ja vaata eelvaadet/ }))
     await vi.waitFor(() => expect(router.currentRoute.value.name).toBe('preview'))
     const [creation] = useCreationsStore().creations
@@ -195,6 +194,7 @@ describe('preview with choices beside it', () => {
   it('updates the letters right away when a choice changes', async () => {
     const { user, store } = await letterPreview()
     expect(store.creations[0]?.items).toHaveLength(24)
+    // A series goes on the puzzle poster; long letters get its large cards.
     expect(store.creations[0]?.layout).toBe('poster')
     const { id } = store.creations[0]!
     store.setDecoration(id, { ...EMPTY_DECORATION, pattern: 'stars', inkSaver: true })
@@ -229,24 +229,37 @@ describe('preview with choices beside it', () => {
     confirm.mockRestore()
   })
 
-  it('offers three print presets and keeps the rest under "Rohkem valikuid"', async () => {
+  it('has one choice for how to print, with large poster cards for long letters', async () => {
     const { user, store } = await letterPreview()
     const presets = screen.getByRole('group', { name: 'Kuidas prindid?' })
-    expect(within(presets).getAllByRole('radio').map((radio) => radio.closest('label')?.textContent?.trim())).toEqual([
-      'Kaardid sussi sisse',
-      'Pusleplakat',
-      'Terve leht',
-    ])
-    await user.click(within(presets).getByRole('radio', { name: 'Kaardid sussi sisse' }))
-    expect(store.creations[0]?.layout).toBe('cards')
+    const labels = within(presets).getAllByRole('radio').map((radio) => radio.closest('label')?.textContent?.trim())
+    expect(labels).toEqual(['Kaardid sussi sisse', 'Pool lehte', 'Terve leht', 'Pusleplakat'])
+    expect(within(presets).getByRole('radio', { name: 'Pusleplakat' })).toBeEnabled()
+    // Long letters (the default): the poster takes 6 sheets with large cards.
+    expect(presets).toHaveTextContent('Plakat tuleb 6 A4 lehele, kaardid on suuremad.')
+    // The layout is no longer chosen twice: "Rohkem valikuid" keeps only what to print and capitals.
+    expect(screen.queryByRole('group', { name: 'Prindi paigutus' })).toBeNull()
+    await user.click(within(presets).getByRole('radio', { name: 'Pool lehte' }))
+    expect(store.creations[0]?.layout).toBe('half')
     expect(screen.getByText('Rohkem valikuid').closest('details')).not.toHaveAttribute('open')
+  })
+
+  it('keeps the poster in sight but off, with the reason, when a letter is too long even for a large card', async () => {
+    const { store } = await letterPreview()
+    const { id, items } = store.creations[0]!
+    store.editItem(id, items[0]!.id, { body: 'Väga pikk kiri. '.repeat(90) })
+    const presets = screen.getByRole('group', { name: 'Kuidas prindid?' })
+    await vi.waitFor(() => expect(within(presets).getByRole('radio', { name: 'Pusleplakat' })).toBeDisabled())
+    expect(screen.getByText(/Pusleplakat pole praegu valitav: mõni kiri on plakatikaardi jaoks liiga pikk/)).toBeInTheDocument()
+    // It was the layout, so the letters move to the slipper cards.
+    await vi.waitFor(() => expect(store.creations[0]?.layout).toBe('cards'))
   })
 })
 
 describe('sample letter', () => {
   it('shows the 1 December letter of a sample child without any data entry', async () => {
     const { user, router } = await renderApp('/', { demo: false })
-    await user.click(await screen.findByRole('link', { name: /Vaata näidet/ }))
+    await user.click(await screen.findByRole('link', { name: /Ava terve näidis/ }))
     expect(await screen.findByRole('heading', { level: 1, name: /Jasper saab 1\. detsembril/ })).toBeInTheDocument()
     expect(await screen.findByRole('heading', { name: 'Kallis Jasper!' })).toBeInTheDocument()
     expect(screen.getByText(/^1\. detsember/)).toBeInTheDocument()
@@ -255,6 +268,6 @@ describe('sample letter', () => {
     expect(useCreationsStore().creations).toHaveLength(0)
     expect(useChildrenStore().children).toHaveLength(0)
     await user.click(screen.getByRole('link', { name: /Loo oma lapsele 24 kirja/ }))
-    await vi.waitFor(() => expect(router.currentRoute.value.query).toMatchObject({ puhk: 'christmas', tyyp: 'letter' }))
+    await vi.waitFor(() => expect(router.currentRoute.value.path).toBe('/joulukirjad'))
   })
 })

@@ -8,11 +8,11 @@ import type { Scenario } from '../../../domain/story/types'
 
 const NOTE_WORD = 'KAKAO'
 const NOTE_LINES = [
-  'Kui tähed kustuvad,',
-  'Astu trepist üles.',
-  'Katusel on',
-  'Aega ja',
-  'Ootab üks tass.',
+  'Kui tähed süttivad,',
+  'Astu vaikselt trepist üles.',
+  'Katusel ootan sind.',
+  'Ainult ära salli unusta.',
+  'Ootab ka soe tass.',
 ]
 const EXAM_ANSWER = 2 * 4 + 3 * 2
 
@@ -25,9 +25,14 @@ export const OLDER_SCENARIOS: Scenario[] = [
     hooks: ['rubik'],
     tags: ['puzzle', 'mechanism', 'santa'],
     tones: ['adventurous', 'magical'],
+    more: {
+      older: () => [
+        'Prillid on nüüd Jõuluvana laual karbis, mille peale kirjutasin: „Ettevaatust, vanad.“ Kasti ennast tahavad kõik proovida. Noored päkapikud keeravad seda kordamööda ja igal õhtul on keegi kindel, et peaaegu sai. Mina nippi ette ei ütle. Kõige rohkem õpib see, kes kolmandal õhtul ise taipab.',
+      ],
+    },
     variants: {
       older: (c) => [
-        'Jõuluvana pööningult leiti eile vana puust kast, mille üks mänguasjameister talle sada aastat tagasi kinkis. Kuus külge, igaühel üheksa keeratavat ruutu. Võtit pole.',
+        'Jõuluvana pööningult leiti hiljuti vana puust kast, mille üks mänguasjameister talle sada aastat tagasi kinkis. Kuus külge, igaühel üheksa keeratavat ruutu. Võtit pole.',
         c.uses('rubik')
           ? 'Keerasin seda kaks õhtut ja mõtlesin sulle. Sina kuubikusõbrana oleksid ilmselt kohe näinud, mida mina alles kolmandal õhtul taipasin: nurgad enne servi.'
           : 'Keerasin seda kaks õhtut. Kolmandal õhtul taipasin: nurgad tuleb paika saada enne servi. Edasi läks kiiresti.',
@@ -50,6 +55,11 @@ export const OLDER_SCENARIOS: Scenario[] = [
     role: 'standalone',
     tags: ['mechanism', 'mail', 'reindeer'],
     tones: ['humorous'],
+    more: {
+      older: () => [
+        'Õhtuks tuli Välk tagasi. Kiri oli tal ettevaatlikult hammaste vahel, natuke niiske, aga terve. Üks tüdruk küsis selles, kas põhjapõdrad söövad ka piparkooke. Panin kirja eraldi kasti, mille peale kirjutasin „Erijuhtumid“. Välk sai preemiaks porgandi ja magab nüüd masina kõrval, nagu valvaks seda.',
+      ],
+    },
     variants: {
       older: () => [
         'Minu kõige vanem leiutis on kirjasorteerimise masin. Nelikümmend aastat on ta jaganud laste kirjad õigetesse kastidesse, riikide kaupa.',
@@ -65,6 +75,11 @@ export const OLDER_SCENARIOS: Scenario[] = [
     role: 'standalone',
     tags: ['snow', 'home'],
     tones: ['humorous', 'heartwarming'],
+    more: {
+      older: () => [
+        'Täna hommikul tuli esimene külaline: kass Nurr. Ta kõndis tunneli lõpuni, istus akna alla ja vaatas taevast nii kaua, et jõudsin teed keeta. Pärast teda on tunnelis käinud kolm päkapikku, üks rebasejälg ja Jõuluvana, kes pidi küll natuke kummardama. Nüüd on see meie õue kõige rahvarohkem koht.',
+      ],
+    },
     variants: {
       older: () => [
         'Meil on õues pikk triibuline lumemõõdupuu. Eile öösel sadas lund ja hommikul näitas puu täpselt kolm sentimeetrit.',
@@ -80,6 +95,11 @@ export const OLDER_SCENARIOS: Scenario[] = [
     role: 'standalone',
     tags: ['mechanism', 'animals'],
     tones: ['humorous', 'adventurous'],
+    more: {
+      older: () => [
+        'Hiir võttis ameti tõsiselt. Täna hommikul jooksis ta oma rattal täpselt kuus ringi ja Tiksu lõi kuus korda. Ma ei tea, kas see oli juhus. Igaks juhuks panin rattale väikese sildi: „Kellameistri abiline, ära sega.“ Juustutükk oli õhtuks kadunud, nii et palk on kätte saadud.',
+      ],
+    },
     variants: {
       older: () => [
         'Töökoja suur kell, keda kõik kutsuvad Tiksuks, hakkas eile käima tagurpidi. Hommikul kell kaheksa näitas ta kuus, lõunal neli ja õhtuks olime kõik täiesti segaduses.',
@@ -101,8 +121,8 @@ export const OLDER_SCENARIOS: Scenario[] = [
         'Täna hommikul leidsin oma tööpingilt kokkumurtud sedeli. Allkirja polnud, ainult viis rida:',
         NOTE_LINES.join(' / '),
         c.uses('codes')
-          ? 'Esmapilgul tundub see lihtsalt kehva luuletusena. Salakoodimeister aga teab, et nii kehv luuletus ei saa olla juhuslik. Mina taipasin alles kolmanda tassi tee juures, kust otsida.'
-          : 'Esmapilgul tundub see lihtsalt kehva luuletusena. Aga nii kehv luuletus ei saa olla juhuslik. Mina taipasin alles kolmanda tassi tee juures, kust otsida.',
+          ? 'Esmapilgul tundub see lihtsalt kehv luuletus. Salakoodimeister aga teab, et nii kehv luuletus ei saa olla juhuslik. Mina taipasin alles kolmanda tassi tee juures, kust otsida.'
+          : 'Esmapilgul tundub see lihtsalt kehv luuletus. Aga nii kehv luuletus ei saa olla juhuslik. Mina taipasin alles kolmanda tassi tee juures, kust otsida.',
       ],
     },
     activities: {
@@ -123,6 +143,11 @@ export const OLDER_SCENARIOS: Scenario[] = [
     role: 'standalone',
     tags: ['gifts', 'santa'],
     tones: ['humorous'],
+    more: {
+      older: () => [
+        'Täna proovis põhjapõder Välk ka pakkimist. Ta hoidis sarvedega paela ja keeras ennast nii mitu korda ringi, et oli lõpuks ise ilusasti pakitud. Lahti pakkisime ta kahekesi. Pärast seda otsustas pakkimisosakond, et kõik ümmargused asjad lähevad edaspidi sokkidesse – ja Välk pakkimisruumi enam ei tule.',
+      ],
+    },
     variants: {
       older: (c) => [
         'Pakkimisosakonnas oli eile suur vaidlus: kuidas pakkida palli? Ümmargune asi ja nurgeline paber ei ole sõbrad – paber kortsub ja pael libiseb.',
@@ -138,6 +163,11 @@ export const OLDER_SCENARIOS: Scenario[] = [
     role: 'standalone',
     tags: ['workshop', 'memory'],
     tones: ['heartwarming'],
+    more: {
+      older: () => [
+        'Täna lakkisin hobuse üle ja panin ta kuivama akna alla, kust paistab talvine päike. Iga kord, kui mööda läksin, tundus mulle, et ta seisab natuke sirgemalt. Pakkisin ta pehmesse paberisse ja kirjutasin sildile kaks nime: vana poisi oma ja tema lapselapse oma. Sellised pakid on mulle kõige kallimad.',
+      ],
+    },
     variants: {
       older: () => [
         'Töökojas on üks riiul mänguasjadega, mis on kunagi kingitud ja nüüd parandamiseks tagasi saadetud. Mina hoolitsen selle riiuli eest.',
@@ -154,6 +184,11 @@ export const OLDER_SCENARIOS: Scenario[] = [
     hooks: ['comics'],
     tags: ['comics', 'reindeer', 'birds'],
     tones: ['humorous'],
+    more: {
+      older: () => [
+        'Täna hommikul käis pool töökoda seinalehe juures naermas. Välk käis ka. Ta vaatas pilte väga kaua, siis vaatas peeglisse ja siis jälle pilte. Lind tema sarvede vahel säutsus. Järgmises numbris tahan joonistada, kuidas lind kevadel ära lendab. Aga enne peab ta seda tegema.',
+      ],
+    },
     variants: {
       older: (c) => [
         'Töökojal on oma seinaleht „Põhjanaela Postimees“ ja sel nädalal oli koomiksi joonistamise kord minul.',
@@ -171,6 +206,11 @@ export const OLDER_SCENARIOS: Scenario[] = [
     role: 'standalone',
     tags: ['mechanism', 'sleigh', 'kitchen'],
     tones: ['humorous'],
+    more: {
+      older: () => [
+        'Täna proovisime kelku õuel. Kaksteist kella kõlasid nagu üks laul ja kui Välk kelgu ees hüppas, kõlasid nad isegi takti. Rosina panin karpi, mille peale kirjutasin „Leitud kellast“. Selliseid karpe on mul juba kümme. Ühes on nööp, teises võti ja ühes, mis kõige imelikum, üks väga vana komm.',
+      ],
+    },
     variants: {
       older: (c) => [
         'Jõuluvana kelgul on kaksteist kuldset kella. Igal aastal enne jõule häälestan need ära, et kelk kõlaks nagu üks laul, mitte nagu kaksteist erinevat.',
@@ -198,9 +238,9 @@ export const OLDER_SCENARIOS: Scenario[] = [
       older: {
         essential: true,
         text: () => 'Laua all on kaks põhjapõtra ja kolm päkapikku. Mitu jalga on laua all kokku?',
-        answer: `${EXAM_ANSWER} jalga (põhjapõtradel 8, päkapikkudel 6)`,
+        answer: `${EXAM_ANSWER} jalga (põhjapõtradel 8, päkapikkudel 6); kui lugeda ka laua 4 jalga, siis ${EXAM_ANSWER + 4} – mõlemad on õiged`,
         reveal: () =>
-          `Eilse eksamiküsimuse vastus: ${EXAM_ANSWER} jalga. Üks noor päkapikk vastas 18, sest ta luges ka laua jalad kokku.`,
+          `Eilse eksamiküsimuse vastus: ${EXAM_ANSWER} jalga, kui lugeda põhjapõdrad ja päkapikud. Aga kui lugesid kokku ka laua neli jalga, said ${EXAM_ANSWER + 4} – ja see on samuti õige. Komisjon andis mõlemale vastusele viie.`,
         check: () => EXAM_ANSWER === 14,
       },
     },
@@ -212,6 +252,11 @@ export const OLDER_SCENARIOS: Scenario[] = [
     role: 'standalone',
     tags: ['santa', 'mechanism', 'memory'],
     tones: ['humorous', 'heartwarming'],
+    more: {
+      older: () => [
+        'Täna tuli Jõuluvana töökotta ja habemes oli tal üks väike punane lehv. Ta ütles, et jättis selle meelega, mälestuseks. Noored päkapikud arvasid, et see on uus mood, ja nüüd käib pool töökoda lehviga. Paelamasinale panin kaitsevõre. Igaks juhuks hoian ka ise oma habet sellest eemal.',
+      ],
+    },
     variants: {
       older: () => [
         'Eile õhtul jäi Jõuluvana habe paelamasina vahele. Mitte palju, ainult natuke, aga masin jõudis selle siiski kolme ilusa lehviga kinni siduda.',
@@ -227,6 +272,11 @@ export const OLDER_SCENARIOS: Scenario[] = [
     role: 'standalone',
     tags: ['weather', 'magic'],
     tones: ['magical', 'humorous'],
+    more: {
+      older: () => [
+        'Täna hommikul nägin, et talli ees on lumes juba terve rida jääpurikaid: Välgu „ahh“, kassi „mjäu“ ja üks väga pikk ja kõver, mis on kindlasti Jõuluvana „hommikust“. Noored päkapikud korjavad neid kokku ja peidavad keldrisse. Nad tahavad kevadel kuulata, kes talvel mida ütles.',
+      ],
+    },
     variants: {
       older: () => [
         'Meil on praegu nii külm, et sõnad külmuvad õhus kinni. Kui ma eile hommikul talli ees „tere“ ütlesin, kukkus see väikese jääpurikana lumme. Ta on veel seal.',
@@ -243,6 +293,11 @@ export const OLDER_SCENARIOS: Scenario[] = [
     hooks: ['rubik'],
     tags: ['snow', 'building', 'reindeer'],
     tones: ['magical', 'humorous'],
+    more: {
+      older: () => [
+        'Täna hommikul olid kõik jääkujud alles, peale ühe asja: pudrupoti lusikas oli kadunud. Jälgedest oli näha, et keegi oli öösel seda lakkumas käinud. Neli jalga, üks saba ja kerge pudrulõhn. Välk ei tunnista midagi. Aga terve hommiku hoidis ta suud natuke lahti, nagu oleks keel külmunud.',
+      ],
+    },
     variants: {
       older: (c) => [
         `Eile oli töökoja jääkujude võistlus. ${c.cast.young} tegi jääst pudrupoti koos lusikaga ja põhjapõder Välk sõi oma lumekuju enne hindamist ise ära.`,
@@ -261,6 +316,11 @@ export const OLDER_SCENARIOS: Scenario[] = [
     tags: ['memory', 'sleigh', 'santa'],
     tones: ['heartwarming', 'magical'],
     earliest: 4,
+    more: {
+      older: () => [
+        'Täna hoian laternat jälle. Mitte kelgul, vaid töökoja trepi ees, et noored päkapikud õhtul pimedas ei komistaks. Olen siiamaani natuke uhke, et see esimene latern ei kukkunud. Ja kui jõuluöö tuleb, istun jälle kelgule. Seekord vaatan ka ümberringi, mitte ainult laternat.',
+      ],
+    },
     variants: {
       older: () => [
         'Kas ma olen sulle rääkinud oma esimesest jõuluööst? Olin siis nii pisike, et mahtusin Jõuluvana kindasse. Mind võeti kelgule kaasa ja anti üks ülesanne: hoida kõvasti kinni laternast, et see ei kukuks.',

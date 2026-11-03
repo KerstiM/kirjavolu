@@ -5,6 +5,7 @@ import { ArrowLeft, Download, FileQuestion, Printer, Plus, UsersRound } from 'lu
 import type { CardFit, CertificateStyle, ChildProfile, Decoration, GeneralOptions, GeneratedContent, GeneratedItem, GenerationRequest, PrintableLayout } from '../../domain/models'
 import { EMPTY_DECORATION, sheetBackground } from '../../domain/models'
 import { computeGrid } from '../../domain/puzzleGrid'
+import { computePoster, LARGE_CARD_CHARS } from '../../domain/posterLayout'
 import { useStoredImage, useStoredImages } from '../../composables/useStoredImage'
 import DecorationPanel from './decoration/DecorationPanel.vue'
 import ChildBackgrounds from './decoration/ChildBackgrounds.vue'
@@ -30,11 +31,10 @@ import { loadPass, type SeasonPass } from '../pass/seasonPass'
 import { useChildrenStore } from '../children/childrenStore'
 import EnvelopeReveal from './EnvelopeReveal.vue'
 import { track } from '../../app/analytics'
-import TestBar from '../../components/brand/TestBar.vue'
 import { DESIGN_KEY, designPath, type Design } from '../../components/brand/design'
 
 /** "new" at /uus-disain/looming/…: the same preview in the new design, tried out next to the current one. */
-const props = withDefaults(defineProps<{ id: string; design?: Design }>(), { design: 'current' })
+const props = withDefaults(defineProps<{ id: string; design?: Design }>(), { design: 'new' })
 provide(DESIGN_KEY, props.design)
 const store = useCreationsStore()
 const generator = useGenerator()
@@ -120,40 +120,56 @@ const cardLabel = computed(() => {
   if (allToddlers.value) return 'Väikelapse kaardid'
   return toddlers.value > 0 ? 'Plakat ja väikelapse kaardid' : 'Pusleplakat'
 })
-const layoutOptions = computed<{ value: PrintableLayout; label: string }[]>(() => [
-  { value: 'page', label: 'Terve leht' },
-  { value: 'half', label: 'Pool lehte' },
-  { value: 'cards', label: 'Kaardid (4 lehel)' },
-  { value: 'poster', label: cardLabel.value },
-])
-/**
- * The three ways most families print; the other layouts and settings wait under "Rohkem valikuid".
- * Cards for the slipper (4 per page), the puzzle poster for a series, or a whole page per letter.
- */
-const presetOptions = computed<{ value: PrintableLayout; label: string }[]>(() => {
+/** Long letters go on large poster cards: the poster takes more sheets, the text is never cut. */
+const longLetters = computed(() => {
+  const request = content.value?.request
+  return request?.contentType === 'letter' && request.general.length === 'long' && !allToddlers.value
+})
+const posterLarge = computed(() => cardFit.value === 'larger' || longLetters.value)
+/** Cards of one child's poster (each child of a family has their own). */
+const posterCount = computed(() => groups.value.find((group) => groupLayout(group) === 'poster')?.entries.length ?? content.value?.items.length ?? 0)
+/** The poster stays in the list; it is only off when a letter would not fit even a large card. */
+const posterFits = computed(() => {
+  const current = content.value
+  if (!current) return true
+  const childOf = (item: GeneratedItem) =>
+    current.request.children.find((child) => child.id === item.childId) ?? current.request.children[0]
+  return current.items.every((item) => {
+    const child = childOf(item)
+    if (!child || usesSmallCards(child)) return true
+    return item.body.length <= LARGE_CARD_CHARS[ageBand(child) === 'older' ? 'older' : 'young']
+  })
+})
+/** One choice for how the letters go on paper; the poster only for a series. */
+const printOptions_ = computed<{ value: PrintableLayout; label: string; disabled?: boolean }[]>(() => {
   const current = content.value
   const letters = current?.request.contentType === 'letter'
   const series = (current?.items.length ?? 0) >= 3
   return [
     { value: 'cards', label: letters ? 'Kaardid sussi sisse' : 'Kaardid' },
-    ...(series || layout.value === 'poster' ? [{ value: 'poster' as const, label: cardLabel.value }] : []),
+    { value: 'half', label: 'Pool lehte' },
     { value: 'page', label: 'Terve leht' },
+    ...(series || layout.value === 'poster' ? [{ value: 'poster' as const, label: cardLabel.value, disabled: !posterFits.value }] : []),
   ]
 })
 const presetHint = computed(() => {
   if (layout.value === 'cards') return 'Neli kaarti A4 lehel. Lõika lahti ja pane igal õhtul üks kaart sussi sisse.'
+  if (layout.value === 'half') return 'Kaks kirja A4 lehel. Lõika pooleks.'
   if (layout.value === 'poster') {
-    return allToddlers.value
-      ? 'Väikelapse kaardid: 12 kaarti lehel, suur tekst ja loomanägu.'
-      : 'Kaardid on pusletükid: lõika lahti, anna üks päevas ja lõpuks pane kokku terveks pildiks.'
+    if (allToddlers.value) return 'Väikelapse kaardid: 12 kaarti lehel, suur tekst ja loomanägu.'
+    const pages = computePoster(posterCount.value, { large: posterLarge.value }).pages
+    return `Kaardid on pusletükid: lõika lahti, anna üks päevas ja lõpuks pane kokku terveks pildiks. Plakat tuleb ${pages} A4 lehele${posterLarge.value ? ', kaardid on suuremad' : ''}.`
   }
-  if (layout.value === 'page') return 'Iga kiri omal lehel – sobib ümbrikusse või voldituna sussi sisse.'
-  return 'Paigutus on valitud „Rohkem valikuid“ all.'
+  return 'Iga kiri omal lehel – sobib ümbrikusse või voldituna sussi sisse.'
 })
 const rawLayout = computed(() => content.value?.layout ?? 'page')
 const layout = computed({
   get: () => (rawLayout.value === 'mini' ? 'poster' : rawLayout.value),
   set: (value: PrintableLayout) => store.setLayout(props.id, value),
+})
+// Letters made long while on the poster move to the slipper cards.
+watch(posterFits, (fits) => {
+  if (!fits && layout.value === 'poster') layout.value = 'cards'
 })
 const certificateStyle = computed<CertificateStyle | undefined>(() =>
   content.value?.request.contentType === 'certificate' ? content.value.request.options.style : undefined,
@@ -243,7 +259,8 @@ const cardFit = computed({
 })
 const cardFitOptions = computed<{ value: CardFit; label: string }[]>(() => [
   { value: 'normal', label: 'Tavaline' },
-  ...(isPoster.value ? [{ value: 'larger' as const, label: 'Suuremad kaardid' }] : []),
+  // Long letters already get the large cards.
+  ...(isPoster.value && !longLetters.value ? [{ value: 'larger' as const, label: 'Suuremad kaardid' }] : []),
   { value: 'smaller', label: 'Väiksem tekst' },
 ])
 const showCardFit = computed(() => (isPoster.value || isMini.value) && (overflowCount.value > 0 || cardFit.value !== 'normal'))
@@ -383,12 +400,6 @@ function exportText(): void {
   </div>
 
   <div v-else class="preview" :class="{ 'preview--new design-new': design === 'new' }">
-    <TestBar
-      v-if="design === 'new'"
-      text="Testvaade: eelvaade uues disainis."
-      link="Vaata praegust"
-      :to="`/looming/${content.id}`"
-    />
     <EnvelopeReveal v-if="revealing && content" :content="content" @done="endReveal" />
     <div class="toolbar no-print">
       <div class="container toolbar__inner">
@@ -431,7 +442,11 @@ function exportText(): void {
 
         <section class="print-panel" aria-labelledby="print-title">
           <h2 id="print-title" class="print-panel__title">Printimine</h2>
-          <SegmentedControl v-model="layout" name="print-preset" label="Kuidas prindid?" :options="presetOptions" :hint="presetHint" />
+          <SegmentedControl v-model="layout" name="print-preset" label="Kuidas prindid?" :options="printOptions_" :hint="presetHint" />
+          <p v-if="!posterFits && !allToddlers" class="controls__note">
+            Pusleplakat pole praegu valitav: mõni kiri on plakatikaardi jaoks liiga pikk. Lühenda seda nupuga „Muuda“ või vali
+            kohandamise all lühem kirjade pikkus.
+          </p>
           <p v-if="(isPoster || isMini) && overflowCount > 0" class="controls__warn" role="status">
             {{ overflowCount }} kaardil on tekst liiga pikk.
           </p>
@@ -446,10 +461,9 @@ function exportText(): void {
           <p class="controls__note">Teksti muutmiseks vajuta kaardil „Muuda“. PDF-i saamiseks vali printimisaknas „Salvesta PDF-ina“.</p>
 
           <details class="more">
-            <summary class="more__summary">Rohkem valikuid <span class="more__what">paigutus, mida printida, trükitähed</span></summary>
+            <summary class="more__summary">Rohkem valikuid <span class="more__what">mida printida, trükitähed</span></summary>
             <div class="more__body">
               <div class="controls">
-                <SegmentedControl v-model="layout" name="layout" label="Prindi paigutus" :options="layoutOptions" />
                 <SegmentedControl v-model="printMode" name="print-mode" label="Mida printida" :options="printOptions" />
                 <label class="check controls__upper">
                   <input type="checkbox" :checked="uppercase" @change="setDecoration({ ...decoration, uppercase: !uppercase })" />
@@ -514,7 +528,7 @@ function exportText(): void {
             :image-opacity="decoration.cardImageOpacity ?? 1"
             :pattern="groupBackground(group).pattern"
             :art="groupBackground(group).posterArt"
-            :large="cardFit === 'larger'"
+            :large="posterLarge"
             :small-text="cardFit === 'smaller'"
             :uppercase="groupUppercase(group)"
             @overflow-count="(count) => setOverflow(group.key, count)"
@@ -572,6 +586,7 @@ function exportText(): void {
           :content="content"
           :puzzle="puzzle"
           :poster-labels="posterLabels.length > 0 ? posterLabels : null"
+          :poster-large="posterLarge"
         />
       </div>
     </div>

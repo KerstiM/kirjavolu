@@ -20,6 +20,14 @@ export const STAR_ARC_SCENARIOS: Scenario[] = [
     role: 'introduction',
     tags: ['star', 'mystery'],
     establishes: ['star-lost'],
+    more: {
+      older: () => [
+        'Kõigepealt tegin seda, mida iga uurija teeb: vaatasin hoolikalt ringi ja kirjutasin kõik üles. Kuuse all ei olnud ühtegi jalajälge. Ehteid polnud keegi puutunud. Ainult kõige ülemine oks oli natuke kõver, nagu oleks keegi kerge sellele maandunud ja siis jälle õhku tõusnud. Kes, seda ma veel ei tea. Aga oksa panin märkmikku kirja.',
+      ],
+      young: () => [
+        'Siis pidasime töökojas koosoleku. Jõuluvana ütles, et keegi ei tohi kurvaks jääda, sest jõuludeni on veel aega. Kõik said ülesande. Mina otsin köögist ja kuuri tagant. Kass Nurr otsib laua alt, sest seal on tema lemmikkoht. Põhjapõder Välk ülesannet ei saanud, sest ta sõi kogemata ära kuusele riputatud piparkoogi.',
+      ],
+    },
     variants: {
       older: () => [
         'Kirjutan täna lühidalt, sest töökojas on ärevus. Kuuse tipust on kadunud täht.',
@@ -50,6 +58,11 @@ export const STAR_ARC_SCENARIOS: Scenario[] = [
     requires: ['star-lost'],
     until: 'star-found',
     establishes: ['feather-found'],
+    more: {
+      older: () => [
+        'Tegelikult ei jõudnud ma ööni oodata. Kohe, kui seda kirja kirjutama hakkasin, kustutasin lambi. Algul ei juhtunud midagi. Siis hakkas sulg vaikselt helendama, nagu hingaks: valgus tuli ja läks, tuli ja läks. Kirjutasin märkmikku: sulg helendab pimedas, rahulikult nagu magaja. Homme küsin kelleltki, kes linde paremini tunneb.',
+      ],
+    },
     variants: {
       older: () => [
         'Mul on esimene vihje. Kuuse alt, täpselt sealt, kuhu täht oleks kukkunud, kui ta oleks kukkunud, leidsin sule.',
@@ -67,6 +80,11 @@ export const STAR_ARC_SCENARIOS: Scenario[] = [
     requires: ['star-lost'],
     until: 'star-found',
     establishes: ['silver-dust'],
+    more: {
+      young: (c) => [
+        `Pärast seda vaatasin igalt aknalaualt. Tolmu oli ainult köögiaknal, mitte kusagil mujal. ${c.cast.older} ütles, et keegi on just selle akna juures käinud. Aga uks oli öösel lukus. Kes saab sisse, kui uks on lukus? Ainult keegi, kes oskab lennata. Või väga väike päkapikk. Või mõlemad.`,
+      ],
+    },
     variants: {
       young: (c) => [
         'Ma leidsin vihje! Päris vihje!',
@@ -84,6 +102,11 @@ export const STAR_ARC_SCENARIOS: Scenario[] = [
     requires: ['feather-found'],
     until: 'star-found',
     establishes: ['owl-saw'],
+    more: {
+      older: () => [
+        'Koju jõudes võtsin välja vana kaardi ja tõmbasin pliiatsiga joone sealt, kus Huugo valgust nägi, mäe poole. Joon läks otse üle meie töökoja. Kas see on juhus? Uurijana ma juhustesse ei usu. Aga ma usun, et öökullid näevad öösel rohkem, kui räägivad. Huugo lubas silmad lahti hoida. Tal on selles kogemust.',
+      ],
+    },
     variants: {
       older: (c) => [
         'Käisin eile õhtul vana öökulli Huugo juures. Ta elab töökoja taga kuuse otsas ja näeb öösel rohkem kui meie kõik kokku.',
@@ -103,6 +126,14 @@ export const STAR_ARC_SCENARIOS: Scenario[] = [
     requires: ['star-lost'],
     until: 'star-found',
     establishes: ['magpie-innocent'],
+    more: {
+      older: () => [
+        'Sellest juhtumist sain õppetunni: uurija ei tohi otsustada enne, kui on kõiki vihjeid näinud. Kirjutasin selle suurte tähtedega märkmiku esimesele lehele. Ja veel üks asi. Helmi pesas oli ka üks hõbedane sulg. Ta ütles, et leidis selle mäe pealt. Harakas selliste asjade kohta ei valeta. Mina vaatan nüüd mäe poole.',
+      ],
+      young: (c) => [
+        `Kogu koduteel oli ${c.cast.older} vait. Siis ütles ta: „Me arvasime liiga kiiresti.“ Küsisin, mida see tähendab. Ta seletas, et enne, kui kedagi süüdistad, pead kõik vihjed üle vaatama. Hästi, ma vaatan. Aga minu vispel on tagasi. Vähemalt üks asi on leitud!`,
+      ],
+    },
     variants: {
       older: (c) => [
         'Pean tunnistama ühte viga. Töökojas otsustati eile, et tähe võttis harakas Helmi – harakad armastavad ju läikivaid asju. Ka mina noogutasin.',
@@ -174,6 +205,11 @@ export const STAR_ARC_SCENARIOS: Scenario[] = [
     requires: ['star-lost'],
     until: 'star-found',
     establishes: ['bird-seen'],
+    more: {
+      young: (c) => [
+        `Õhtul tegin veel ühe plaaditäie küpsiseid, et linnul oleks teel midagi süüa. ${c.cast.older} pakkis seljakotti laterna, köie ja termose. Mina pakkisin oma sussid. Mitte jalga, vaid kaasa, igaks juhuks. Kui täht on tõesti mäe taga, tahan seda näha esimesena. Või vähemalt teisena.`,
+      ],
+    },
     variants: {
       young: (c) => [
         'Mul oli eile suurepärane plaan. Kes korjab öösel läikivaid asju, see armastab ehk ka küpsiseid?',
@@ -190,6 +226,14 @@ export const STAR_ARC_SCENARIOS: Scenario[] = [
     tags: ['star', 'mystery', 'birds'],
     requires: ['star-lost'],
     establishes: ['star-found'],
+    more: {
+      older: () => [
+        'Tagasiteel ei rääkinud keegi. Lumi krudises jalge all ja mäe tagant paistis veel kaua pisike valgus. Kodus küsis Jõuluvana, mida me nüüd teeme. Täht peab jõuluööks kuusele tagasi tulema. Aga linnupojad ei tohi jälle pimedas olla. Täna istun terve õhtu oma töölaua taga. Mul on üks mõte.',
+      ],
+      young: (c) => [
+        `Tagasiteel küsisin: „Mis nüüd saab? Kas me võtame tähe ära?“ ${c.cast.older} ei vastanud kohe. Siis ütles ta, et tal on üks mõte. Kui ta nii ütleb, tuleb sellest alati midagi head. Lähen nüüd kuuri moosipurke otsima. Ta küsis neid. Milleks, seda ma veel ei tea.`,
+      ],
+    },
     variants: {
       older: (c) => [
         c.knows('starbird-known')
@@ -221,6 +265,14 @@ export const STAR_ARC_SCENARIOS: Scenario[] = [
     tags: ['star', 'mechanism', 'birds'],
     requires: ['star-found'],
     establishes: ['star-back'],
+    more: {
+      older: () => [
+        'Õhtul käisime veel korra pesa juures. Latern põles pehme kollase valgusega ja linnupojad magasid. Ema-lind istus oksal ja vaatas meid. Siis lendas ta alla, astus kolm sammu minu poole ja noogutas. Vähemalt mulle tundus nii. Noogutasin vastu. See oli selle loo kõige ilusam hetk.',
+      ],
+      young: () => [
+        'Õhtul käisime pesa juures. Latern põles ja linnupojad magasid nagu kolm väikest palli. Ema-lind vaatas meid ja ütles: piiu. Ma arvan, et see tähendas aitäh. Ütlesin vastu: piiu. Nüüd oskan natuke linnukeelt.',
+      ],
+    },
     variants: {
       older: (c) => [
         'Tähe lugu on lahendatud – ja minu meelest päris hästi. Täht tuleb jõuluööks tagasi kuuse tippu, sest ilma temata Jõuluvana teed ei leia.',

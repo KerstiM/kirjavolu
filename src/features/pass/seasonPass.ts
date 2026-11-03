@@ -13,6 +13,8 @@ export interface SeasonPass {
 }
 
 export const PASS_PRICE = '9,90 €'
+/** The pass page: the code, what is left, and typing a code in on another device. */
+export const PASS_PAGE = '/joulupass'
 export const PASS_KEY = 'kirjavolu.joulupass'
 
 export type PassError = 'too_many' | 'not_found' | 'invalid' | 'failed'

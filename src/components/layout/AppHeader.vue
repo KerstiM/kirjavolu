@@ -4,20 +4,14 @@ import { RouterLink, useRoute } from 'vue-router'
 import { Plus } from 'lucide-vue-next'
 import BrandMark from './BrandMark.vue'
 import BaseButton from '../ui/BaseButton.vue'
-import { designForPath, designPath, HOME_TEST_ROOT, NEW_DESIGN_ROOT, SHORT_JOURNEY_ROOT } from '../brand/design'
 import { newCreationRequests } from '../../features/creation/newCreation'
-import { isActive, loadPass, PASS_CHANGED } from '../../features/pass/seasonPass'
+import { currentPromo } from '../../features/home/seasonal'
+import { isActive, loadPass, PASS_CHANGED, PASS_PAGE } from '../../features/pass/seasonPass'
 
 const route = useRoute()
-// Inside a new-design test view the menu keeps the visitor there.
-const design = computed(() => designForPath(route.path))
-// Inside the short journey the menu keeps the visitor there too.
-const short = computed(() => route.path.startsWith(SHORT_JOURNEY_ROOT))
-const home = computed(() =>
-  short.value ? SHORT_JOURNEY_ROOT : route.path.startsWith(HOME_TEST_ROOT) ? HOME_TEST_ROOT : designPath(design.value, '/'),
-)
-const create = computed(() => (short.value ? `${SHORT_JOURNEY_ROOT}/alusta` : designPath(design.value, '/loo')))
-// Jõulupass lives in the new design only; with a valid pass the link shows what is left.
+// In season the menu has a short way to the seasonal journey (now the Christmas letters).
+const promo = currentPromo()
+// A family with a Jõulupass sees what is left; without one the link would only be an ad.
 const pass = ref(loadPass())
 const refreshPass = () => (pass.value = loadPass())
 onMounted(() => window.addEventListener(PASS_CHANGED, refreshPass))
@@ -31,25 +25,26 @@ function startOver(): void {
 </script>
 
 <template>
-  <header class="app-header" :class="{ 'app-header--pass': design === 'new' }">
+  <header class="app-header" :class="{ 'app-header--long': promo && pass }">
     <div class="container app-header__inner">
-      <RouterLink :to="home" class="brand" aria-label="Kirjavõlu avaleht">
+      <RouterLink to="/" class="brand" aria-label="Kirjavõlu avaleht">
         <BrandMark />
         <span class="brand__name">Kirjavõlu</span>
       </RouterLink>
       <nav aria-label="Peamenüü" class="nav">
-        <RouterLink :to="home" class="nav__link nav__link--home" exact-active-class="is-active">Avaleht</RouterLink>
-        <RouterLink :to="designPath(design, '/lapsed')" class="nav__link" active-class="is-active">Lapsed</RouterLink>
+        <RouterLink to="/" class="nav__link nav__link--home" exact-active-class="is-active">Avaleht</RouterLink>
+        <RouterLink v-if="promo" :to="promo.to" class="nav__link nav__link--season" active-class="is-active">{{ promo.menu }}</RouterLink>
+        <RouterLink to="/lapsed" class="nav__link" active-class="is-active">Lapsed</RouterLink>
         <RouterLink
-          v-if="design === 'new'"
-          :to="`${NEW_DESIGN_ROOT}/joulupass`"
+          v-if="pass"
+          :to="PASS_PAGE"
           class="nav__link nav__link--pass"
           active-class="is-active"
           :aria-label="passLeft !== null ? `Jõulupass, kirjasarju või lugusid alles ${passLeft}` : undefined"
         >
           Jõulupass<span v-if="passLeft !== null" class="nav__count" aria-hidden="true">{{ passLeft }}</span>
         </RouterLink>
-        <BaseButton :to="create" size="sm" class="nav__cta" @click="startOver">
+        <BaseButton to="/loo" size="sm" class="nav__cta" @click="startOver">
           <Plus aria-hidden="true" />
           <span class="nav__cta-text">Loo uus</span>
         </BaseButton>
@@ -113,6 +108,9 @@ function startOver(): void {
 .nav__cta {
   margin-left: 0.4rem;
 }
+.nav__link--season {
+  color: var(--coral-ink);
+}
 .nav__link--pass {
   display: inline-flex;
   align-items: center;
@@ -142,7 +140,8 @@ function startOver(): void {
     display: none;
   }
 }
-@media (max-width: 380px) {
+// "Loo uus" keeps only its plus on a phone, so the menu stays one line.
+@media (max-width: 640px) {
   .nav__cta-text {
     position: absolute;
     width: 1px;
@@ -151,20 +150,23 @@ function startOver(): void {
     clip: rect(0, 0, 0, 0);
   }
 }
-// With the Jõulupass link the bar is one item longer, so "Loo uus" keeps only its plus sooner.
-@media (max-width: 640px) {
-  .app-header--pass .nav__cta-text {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-  }
-}
-// On a narrow phone the logo alone stands for the name (the link keeps its label).
-@media (max-width: 420px) {
-  .app-header--pass .brand__name {
-    display: none;
+// With both the season and the pass in the menu, the logo alone stands for the name and the
+// links sit closer, so a 360 px phone still has one line.
+@media (max-width: 460px) {
+  .app-header--long {
+    .brand__name {
+      display: none;
+    }
+    .nav {
+      gap: 0;
+    }
+    .nav__link {
+      padding-inline: 0.4rem;
+      font-size: 0.88rem;
+    }
+    .nav__cta {
+      margin-left: 0.2rem;
+    }
   }
 }
 </style>

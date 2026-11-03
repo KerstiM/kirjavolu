@@ -5,6 +5,7 @@ import { planCollection, type CollectionPlan } from '@/domain/story/planner'
 import { renderPlan } from '@/domain/story/render'
 import { usesScenarioEngine } from '@/domain/story/scenarioLetters'
 import { profileHooks } from '@/domain/story/hooks'
+import { sampleContext } from '@/domain/story/sample'
 import { CARD_HARD_LIMITS, validateCollection, validateLibrary } from '@/domain/story/validate'
 import { STAR_ARC } from '@/data/scenarios/christmas/starArc'
 import { TOPICS } from '@/data/topics'
@@ -226,9 +227,10 @@ describe('age and reading level', () => {
     expect(plan.children[0]!.band).toBe('older')
   })
 
-  it('toddler cards are one short paragraph meant for reading aloud; reader cards fit the poster', () => {
+  it('toddler cards are one short paragraph meant for reading aloud; medium reader letters fit the poster', () => {
     for (let seed = 1; seed <= 10; seed++) {
-      const { plan, items } = build(christmas([RUBEN, JASPER, BRITA], { sundaySweets: true }, seed))
+      const request = christmas([RUBEN, JASPER, BRITA], { sundaySweets: true }, seed)
+      const { plan, items } = build({ ...request, general: { ...request.general, length: 'medium' } })
       plan.days.forEach((d, k) => {
         const band = plan.children.find((p) => p.child.id === d.childId)!.band
         const body = items[k]!.body
@@ -236,6 +238,40 @@ describe('age and reading level', () => {
         if (band === 'toddler') expect(body.split('\n\n')).toHaveLength(1)
       })
     }
+  })
+
+  it('long letters add a riddle or a task on most days, but toddler cards stay one paragraph', () => {
+    const request = christmas([RUBEN, JASPER, BRITA], { sundaySweets: true }, 3)
+    const long = build({ ...request, general: { ...request.general, length: 'long' } })
+    const medium = build({ ...request, general: { ...request.general, length: 'medium' } })
+    const words = (items: { body: string }[]) => items.reduce((sum, item) => sum + item.body.split(/\s+/).length, 0)
+    const readers = (built: typeof long) => built.items.filter((_, k) => built.plan.days[k]!.childId !== BRITA.id)
+    expect(words(readers(long))).toBeGreaterThan(words(readers(medium)) * 1.15)
+    expect(long.plan.long).toBe(true)
+    const extra = /Vastuse kirjutan homme|Vastus tuleb homses kirjas|Homme ütlen vastuse|kui tahad, |Kui sul täna aega on|Mul on sulle üks mõte/
+    expect(long.items.filter((item) => extra.test(item.body)).length).toBeGreaterThan(20)
+    // The openings vary: no single one carries the series.
+    const openings = long.items.map((item) => item.body.match(/(Kas oskad ära arvata\?|Nuputa natuke:|Mul on sulle üks mõistatus:|Üks mõistatus ka:)/)?.[1]).filter(Boolean)
+    expect(new Set(openings).size).toBeGreaterThan(1)
+    long.plan.days.forEach((d, k) => {
+      if (d.childId === BRITA.id) expect(long.items[k]!.body.split('\n\n')).toHaveLength(1)
+    })
+    expect(validateCollection(long.plan, long.items, library).filter((i) => i.severity === 'error')).toEqual([])
+  })
+
+  it('tells a story further in long letters only, so medium ones still fit the poster', () => {
+    const request = christmas([JASPER], {}, 5)
+    const long = build({ ...request, general: { ...request.general, length: 'long' } })
+    const medium = build({ ...request, general: { ...request.general, length: 'medium' } })
+    const sample = sampleContext([], 'Tuduja')
+    const extras = CHRISTMAS_LIBRARY.scenarios
+      .flatMap((scenario) => (scenario.more?.young ? scenario.more.young(sample) : []))
+      .filter((part): part is string => typeof part === 'string')
+      .map((part) => part.slice(0, 40))
+    expect(extras.length).toBeGreaterThan(5)
+    const uses = (items: { body: string }[]) => items.filter((item) => extras.some((start) => item.body.includes(start))).length
+    expect(uses(long.items)).toBeGreaterThan(0)
+    expect(uses(medium.items)).toBe(0)
   })
 
   it('a three-year-old hears longer stories read aloud, not the one-year-old’s cards', () => {

@@ -43,6 +43,12 @@ describe('parseInput', () => {
     const prompt = userPrompt(parseInput(JASPER)!)
     expect(prompt).toContain('<laps>\nNimi: Jasper\nVanus: 6\nHuvid: mõistatused; koomiksid\n</laps>')
   })
+
+  it('asks for a letter worth reading aloud even for a small child', () => {
+    const prompt = userPrompt(parseInput({ ...JASPER, age: 5, readingLevel: 'beginner' })!)
+    expect(prompt).toContain('Kirja pikkus: 120–170 sõna.')
+    expect(prompt).toContain('Keel: laps alles õpib lugema ja vanem loeb sageli ette')
+  })
 })
 
 describe('POST /api/proovikiri', () => {

@@ -48,6 +48,9 @@ function renderDay(
     const variant = (p.readAloud && scenario.readAloud) || scenario.variants[p.band]
     if (!variant) throw new Error(`Scenario ${scenario.id} has no ${p.band} variant`)
     body.push(...variant(ctx))
+    // "Pikk": the story goes on; a toddler's read-aloud text stays as it is.
+    const more = scenario.more?.[p.band]
+    if (plan.long && more && !(p.readAloud && scenario.readAloud)) body.push(...more(ctx))
     const activity = scenario.activities?.[p.band]
     if (d.content.activity && activity) body.push(activity.text(ctx))
   } else {

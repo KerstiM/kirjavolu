@@ -2,12 +2,11 @@
 import { nextTick, onBeforeUnmount, ref } from 'vue'
 import { Gift } from 'lucide-vue-next'
 import BaseButton from '../../components/ui/BaseButton.vue'
-import { NEW_DESIGN_ROOT } from '../../components/brand/design'
-import { openCheckout, PASS_ERROR_TEXTS, PASS_PRICE, PassRequestError, type EmbeddedCheckout } from './seasonPass'
+import { openCheckout, PASS_ERROR_TEXTS, PASS_PAGE, PASS_PRICE, PassRequestError, type EmbeddedCheckout } from './seasonPass'
 
 /**
  * "Osta Jõulupass": the button opens Stripe's payment form right here on the page. After
- * paying, Stripe sends the buyer to /uus-disain/joulupass, which shows the code.
+ * paying, Stripe sends the buyer to /joulupass, which shows the code.
  */
 defineProps<{
   /** On the pass page itself the "Mul on juba Jõulupass" form is right below. */
@@ -33,7 +32,7 @@ async function buy(): Promise<void> {
   open.value = true
   await nextTick()
   try {
-    checkout = await openCheckout(target.value!)
+    checkout = await openCheckout(target.value!, PASS_PAGE)
   } catch (failure) {
     open.value = false
     error.value = PASS_ERROR_TEXTS[failure instanceof PassRequestError ? failure.reason : 'failed']
@@ -61,7 +60,7 @@ onBeforeUnmount(() => checkout?.destroy())
     <label v-if="!open" class="pass-buy__consent">
       <input v-model="consent" type="checkbox" @change="error = ''" />
       <span>
-        Nõustun <RouterLink :to="`${NEW_DESIGN_ROOT}/tingimused`">müügitingimustega</RouterLink> ja soovin, et Jõulupass
+        Nõustun <RouterLink to="/tingimused">müügitingimustega</RouterLink> ja soovin, et Jõulupass
         hakkaks kohe kehtima. Tean, et sellega kaob 14-päevane taganemisõigus.
       </span>
     </label>
@@ -73,7 +72,7 @@ onBeforeUnmount(() => checkout?.destroy())
     <div v-if="open" ref="target" class="pass-buy__checkout" />
     <p class="pass-buy__note">
       Makse käib Stripe'i kaudu. Pärast makset saad koodi kujul KV-XXXX-XXXX, mis jääb sellesse brauserisse meelde.
-      <RouterLink v-if="!onPassPage" :to="`${NEW_DESIGN_ROOT}/joulupass`">Mul on juba Jõulupass</RouterLink>
+      <RouterLink v-if="!onPassPage" :to="PASS_PAGE">Mul on juba Jõulupass</RouterLink>
     </p>
   </section>
 </template>

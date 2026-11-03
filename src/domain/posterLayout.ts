@@ -16,6 +16,13 @@ const MAX_ROWS_PER_PAGE = 4
 /** Taller cards for long texts: at most two rows per sheet, so the poster takes more sheets. */
 const MAX_ROWS_PER_PAGE_LARGE = 2
 
+/**
+ * About how much text a large poster card holds (twice the height of a normal one), by the
+ * reader's age band: younger readers get bigger letters. A rough guide for whether to offer
+ * the poster at all; the preview still measures each card and warns when one overflows.
+ */
+export const LARGE_CARD_CHARS = { older: 1500, young: 1100 } as const
+
 export interface PosterLayout {
   count: number
   /** Columns of the whole poster. */

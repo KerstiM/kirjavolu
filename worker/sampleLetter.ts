@@ -60,11 +60,16 @@ export function parseInput(body: unknown): SampleInput | null {
   return { name, age, readingLevel, interests }
 }
 
-const LENGTH: Record<ReadingLevel, string> = {
-  'read-aloud': '60–100 sõna; täiskasvanu loeb ette, laused lihtsad ja rütmikad',
-  beginner: '40–70 sõna; väga lühikesed laused ja tuttavad sõnad, sest laps alles õpib lugema',
-  independent: '90–140 sõna; laps loeb ise',
-  advanced: '120–180 sõna; laps loeb vabalt, võib olla rikkalikum sõnavara',
+/**
+ * The sample is as long as a medium personal letter whatever the child's age: a small child is
+ * read to. The reading level only decides how simple the sentences are.
+ */
+const LENGTH = '120–170 sõna'
+const STYLE: Record<ReadingLevel, string> = {
+  'read-aloud': 'täiskasvanu loeb ette: laused lihtsad, rütmikad ja kujundlikud',
+  beginner: 'laps alles õpib lugema ja vanem loeb sageli ette: laused lühikesed ja selged, sõnad tuttavad',
+  independent: 'laps loeb ise: selge ja elav keel',
+  advanced: 'laps loeb vabalt: võib olla rikkalikum sõnavara',
 }
 
 /** The elf's name in every prompt: the model once wrote "Tujudaks" when explaining it. */
@@ -78,6 +83,8 @@ const SYSTEM = `Sa oled päkapikk Tuduja, kes kirjutab Eesti lapsele 24 õhtu jo
 ${ELF_NAME}
 
 Kirjuta korrektses, loomulikus eesti keeles, nagu kirjutaks hea lastekirjanik. Kiri on soe, mänguline ja maagiline: päkapikk tutvustab ennast, räägib, kust ta tuli, ja vihjab, et järgmistel hommikutel tuleb veel kirju. Too sisse üks-kaks lapse huvi loomulikult, osana loost, mitte loeteluna. Kõneta last tema nimega.
+
+Kiri on sisukas ja kasutab oma pikkuse ära: selles juhtub midagi konkreetset (näiteks päkapiku teekond põhjast või väike äpardus saabumisel, nimede, kohtade ja detailidega, mida saab ette kujutada) ja see lõpeb väikese ülesande, mõistatuse või küsimusega lapsele. Ära täida kirja üldiste lausetega.
 
 Ära luba kingitusi ega midagi, mida vanem peaks ostma. Ära küsi lapselt isikuandmeid. Ära kirjuta midagi hirmutavat. Ära maini kaubamärke.
 
@@ -93,7 +100,7 @@ Vanus: ${input.age}
 Huvid: ${interests}
 </laps>
 
-Kirja pikkus: ${LENGTH[input.readingLevel]}.`
+Kirja pikkus: ${LENGTH}. Keel: ${STYLE[input.readingLevel]}.`
 }
 
 const LETTER_SCHEMA = {

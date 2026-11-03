@@ -1,15 +1,15 @@
 import type { ContentTypeId, GeneratedItem } from '../../domain/models'
 
 /**
- * The words of the /ud3 home page in one place, so they can be changed without touching the
- * layout, and the seasonal block can later become Easter or anything else.
+ * The words of the home page in one place, so they can be changed without touching the
+ * layout. The seasonal block has its own list in seasonal.ts.
  */
 export const HERO = {
   eyebrow: 'KIRJAD · LOOD · SEIKLUSED',
-  titleStart: 'Väikesed kirjad. Suured ',
+  titleStart: 'Väikesed üllatused. Suured ',
   titleAccent: 'imelised hetked',
   titleEnd: '.',
-  lead: 'Loo oma lapsele isiklikke päkapikukirju, aardejahte ja vahvaid lugusid. Just tema huvide ja lemmikute järgi. Valmis printimiseks mõne minutiga.',
+  lead: 'Loo oma lapsele isiklikke kirju, aardejahte ja vahvaid lugusid. Just tema huvide ja lemmikute järgi. Kohanda ja prindi kodus.',
   primary: 'Loo esimene üllatus',
   secondary: 'Vaata näidist',
   // Each claim holds: no account, every text can be edited, everything is printed at home.
@@ -36,14 +36,6 @@ export const TYPE_CARDS: { id: ContentTypeId; title: string; subtitle: string; d
   },
 ]
 
-/** The seasonal block: now Christmas; swap the words and the link for Easter or another season. */
-export const SEASON = {
-  title: '24 hommikut täis üllatusi',
-  lead: 'Loo oma lapsele terve detsembrikuu päkapikukirjad korraga. Iga päev uus lugu, väike saladus või lõbus seiklus.',
-  note: 'Vali laps, kohanda kirjad ja prindi välja.',
-  cta: 'Loo 24 päkapikukirja',
-} as const
-
 export const EXAMPLES_SECTION = {
   title: 'Vaata, milline võlu välja näeb',
   lead: 'Väike pilguheit kirjadele, lugudele ja seiklustele, mida saad oma lapsele luua.',
@@ -57,32 +49,32 @@ export const EXAMPLES: { caption: string; item: GeneratedItem }[] = [
   {
     caption: 'Päkapikukiri',
     item: sample({
-      id: 'ud3-letter',
+      id: 'home-letter',
       kind: 'letter',
       label: '1. detsember',
       heading: 'Kallis Jasper!',
-      body: 'Tere! Mina olen päkapikk Tuduja ja kolisin eile õhtul teie raamaturiiuli taha. Kuulsin, et sulle meeldivad mõistatused. Mulle ka!\n\nHomme hommikul peidan su sussi juurde väikese saladuse. Kas leiad selle enne hommikusööki?',
+      body: 'Tere! Mina olen päkapikk Tuduja ja kolisin eile õhtul teie raamaturiiuli taha. Teekond Jõuluvana töökojast oli pikk: sõitsin põhjapõder Välgu seljas üle kolme metsa ja ühe külmunud järve. Teie korstnas jäi mu müts natuke kinni, nii et kui näed riiuli juures punast villatuti, siis see on minu oma.\n\nKuulsin, et sulle meeldivad mõistatused. Mulle ka! Töökojas on mul hüüdnimi Nuputaja, sest leidsin kord üles Jõuluvana kadunud prillid. Need olid tema enda peas.\n\nNüüd on mul sulle esimene ülesanne. Täna õhtul peidan su sussi juurde väikese paberitüki, millel on salakiri. Kui selle lahendad, tead, kust homme minu järgmist kirja otsida. Kas oled valmis?',
       signature: 'Sinu päkapikk Tuduja',
     }),
   },
   {
     caption: 'Aardejahi vihje',
     item: sample({
-      id: 'ud3-clue',
+      id: 'home-clue',
       kind: 'clue',
       label: 'Vihje 2',
       heading: 'Kuum jälg!',
-      body: 'Ma olen külm, aga mitte jäine.\nMu uksel on magnetid ja sees ootab piim.\n\nVaata alumisele riiulile, Jasper!',
+      body: 'Ma olen külm, aga mitte jäine.\nMu uksel on magnetid ja pildid,\nsees ootab piim ja võileivavorst.\nKui mind avad, süttib tuli.\n\nMis ma olen? Kui tead, vaata minu alumisele riiulile, Jasper. Seal ootab järgmine vihje, aga ole tasa: aardevalvur magab kõrval.',
     }),
   },
   {
     caption: 'Isiklik lugu',
     item: sample({
-      id: 'ud3-story',
+      id: 'home-story',
       kind: 'story-page',
       label: 'Lk 1',
       heading: 'Jasper ja kadunud täht',
-      body: 'Õhtu oli vaikne ja lumi sadas aeglaselt, kui Jasper märkas aknalaual kuldset täpikest. See oli täht: väike, soe ja natuke kurb.\n\n„Ma kukkusin taevast,“ sosistas täht. „Ilma minuta ei leia põhjapõder Välk koduteed.“ Jasper tõmbas saapad jalga. Täna öösel oli tal tähtis töö.',
+      body: 'Õhtu oli vaikne ja lumi sadas aeglaselt, kui Jasper märkas aknalaual kuldset täpikest. Algul arvas ta, et see on kommipaber, aga siis hakkas täpike vilkuma. See oli täht: väike, soe ja natuke kurb.\n\n„Ma kukkusin taevast,“ sosistas täht. „Põhjapõder Välk lendab täna öösel mööda minu valgust. Kui mind seal pole, ei leia ta koduteed.“\n\nJasper mõtles hetke. Tal oli taskulamp, kaks võileiba ja vanaisa kompass, mis näitas alati põhja. Ta tõmbas saapad jalga, pani tähe ettevaatlikult mütsi sisse ja avas tagaukse. Täna öösel oli tal tähtis töö.',
     }),
   },
 ]

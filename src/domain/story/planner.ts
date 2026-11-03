@@ -5,8 +5,10 @@ import { adjustBand, ageBand, listensToLongerStories } from '../generators/audie
 import { familyExtras } from '../generators/familyEvents'
 import { familyPlan, pairContext, personasFor, type PairedDay } from '../generators/linkedLetters'
 import { HELPER_INVITE, HELPER_MISSIONS, type HelperContext } from '../../data/templates/helper'
+import { RIDDLES } from '../../data/templates/riddles'
+import { ACTIVITIES, MATERIAL_LABELS } from '../../data/templates/activities'
 import { STAND_IN_CAST } from './characters'
-import { profileHooks } from './hooks'
+import { PERSONAL_HOOKS, profileHooks } from './hooks'
 import { effectiveHooks } from './sample'
 import { scenarioIn, type ScenarioLibrary } from './library'
 import type { Band, Cast, HookId, Scenario } from './types'
@@ -92,6 +94,8 @@ export interface CollectionPlan {
   facts: Map<string, number>
   pairs: PairedDay[]
   secret?: SecretHelperPlan
+  /** "Pikk": the stories go on and a riddle or a task is added; printed on large poster cards. */
+  long: boolean
 }
 
 type Slots = Map<string, (PlannedDay | undefined)[]>
@@ -370,6 +374,9 @@ export function planCollection(
         if ((s.requires ?? []).some((fact) => !((facts.get(fact) ?? Infinity) < i))) return false
         if (s.until !== undefined && (facts.get(s.until) ?? Infinity) < i) return false
         if (s.onlyWithHook && canPersonalize(child, s, i).length === 0) return false
+        // A story that asks today and answers tomorrow needs a tomorrow before the farewell.
+        const activity = s.activities?.[child.band]
+        if (activity?.essential && activity.reveal && i >= last - 1) return false
         return true
       }
 
@@ -424,6 +431,15 @@ export function planCollection(
     })
   }
 
+  // 8. "Pikk": the days without an activity get a riddle (answered in tomorrow's P.S.) or a task.
+  const long = request.general.length === 'long'
+  // Siblings compare letters, so no riddle or task is given twice in one family.
+  // The stories' own puzzles count too: their answers are not asked again.
+  const usedExtras = new Set<string>(
+    planned.flatMap((p) => slotOf(p).flatMap((d) => (d?.answer ? [`answer:${d.answer}`] : []))),
+  )
+  if (long) for (const p of planned) addLongExtras(p, slotOf(p), last, request, usedExtras)
+
   return {
     occasionId: request.occasionId,
     count,
@@ -436,6 +452,77 @@ export function planCollection(
     facts,
     pairs,
     secret,
+    long,
+  }
+}
+
+const RIDDLE_OPENINGS = {
+  young: ['Kas oskad ära arvata?', 'Põhjapõder Välk tõi mulle täna ühe mõistatuse:', 'Nuputa natuke:', 'Mul on sulle üks mõistatus:'],
+  older: ['Üks mõistatus ka:', 'Selle mõistatuse leidsin töökoja vanast raamatust:', 'Nuputa natuke:', 'Täna on mul sulle üks mõistatus:'],
+} as const
+const RIDDLE_CLOSINGS = ['Vastuse kirjutan homme.', 'Vastus tuleb homses kirjas.', 'Homme ütlen vastuse.'] as const
+const TASK_OPENINGS = ['Mul on sulle üks mõte: kui tahad, ', 'Kui sul täna aega on, ', 'Üks päkapiku ettepanek: kui tahad, '] as const
+
+/** Christmas riddles and tasks from the hand-written banks, in a seeded order without repeats. */
+function addLongExtras(
+  p: PlannedChild,
+  days: (PlannedDay | undefined)[],
+  last: number,
+  request: RequestFor<'letter'>,
+  used: Set<string>,
+): void {
+  if (p.band === 'toddler') return
+  const rng = createRng(hashSeed(request.seed, 'long', p.child.id))
+  const fitsSeason = (occasions?: readonly string[]) => !occasions || occasions.includes(request.occasionId)
+  // A task about singing or football would claim an interest the child may not have.
+  const noTopic = (text: string) => !PERSONAL_HOOKS.some((hook) => hook.mentions.test(text))
+  const riddles = rng.shuffle(
+    RIDDLES.filter((r) => (r.level === 'any' || r.level === p.band) && fitsSeason(r.occasions) && noTopic(r.question)),
+  )
+  // Several riddles share an answer ("kuusk"), so the answer is checked when one is taken.
+  const nextRiddle = () => {
+    const at = riddles.findIndex((r) => !used.has(`answer:${r.answer}`))
+    return at < 0 ? undefined : riddles.splice(at, 1)[0]
+  }
+  // 24 letters with the same opening would read like a form; the helper says it differently.
+  const say = <T,>(options: readonly T[]) => options[turn % options.length] as T
+  const riddleOpenings = rng.shuffle(RIDDLE_OPENINGS[p.band === 'older' ? 'older' : 'young'])
+  const riddleClosings = rng.shuffle(RIDDLE_CLOSINGS)
+  const taskOpenings = rng.shuffle(TASK_OPENINGS)
+  const tasks = rng.shuffle(
+    ACTIVITIES.filter(
+      (a) =>
+        a.minAge <= p.child.age &&
+        a.setting !== 'outdoor' &&
+        fitsSeason(a.occasions) &&
+        noTopic(a.text((singular) => singular)) &&
+        !used.has(a.id),
+    ),
+  )
+  let turn = 0
+  // The first and the last letter belong to greeting and farewell.
+  for (let index = 1; index < last; index++) {
+    const entry = days[index]
+    if (!entry || entry.content.kind !== 'scenario' || entry.content.activity) continue
+    const next = days[index + 1]
+    // A riddle needs tomorrow's letter for its answer, and not the farewell.
+    const riddle = turn % 2 === 0 && next && index + 1 < last ? nextRiddle() : undefined
+    if (riddle && next) {
+      entry.addenda.push(`${say(riddleOpenings)} ${riddle.question} ${say(riddleClosings)}`)
+      entry.answer = riddle.answer
+      next.postscripts.unshift(`Eilse mõistatuse vastus: ${riddle.answer}.`)
+      used.add(`answer:${riddle.answer}`)
+    } else {
+      const task = tasks.shift()
+      if (!task) continue
+      used.add(task.id)
+      const text = task.text((singular) => singular)
+      // A suggestion, never a duty: "kui tahad, voldi …". Texts that already set the scene stay whole.
+      const whole = /^(Täiskasvanu|Kui )/.test(text)
+      entry.addenda.push(whole ? `Mul on sulle üks mõte! ${text}` : `${say(taskOpenings)}${text.charAt(0).toLowerCase()}${text.slice(1)}`)
+      if (task.materials.length) entry.prep.push(`ülesandeks ${task.materials.map((m) => MATERIAL_LABELS[m]).join(', ')}`)
+    }
+    turn++
   }
 }
 

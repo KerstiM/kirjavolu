@@ -26,7 +26,8 @@ const DEFAULT_FIX_DAILY_LIMIT = 600
 
 export const SERIES_LENGTH = 24
 export const MODEL = 'claude-opus-5-5'
-const MAX_BODY_BYTES = 16000
+// A rewrite carries the letter and both neighbours, each up to half an A4 page.
+const MAX_BODY_BYTES = 24000
 
 /** What the letters may use: the sample letter's minimum plus the rest of the profile and December's plans. */
 export interface SeriesInput {
@@ -41,7 +42,13 @@ export interface SeriesInput {
   details: string
   /** Free text from the parent, e.g. "12.12 läheme vanaema juurde, 19.12 lasteaia jõulupidu". */
   december: string
+  /** How long each letter is; the reading level only decides how simple the sentences are. */
+  length: LetterLength
 }
+
+/** The parent's choice; a small child is read to, so even then a letter is worth reading. */
+export type LetterLength = 'short' | 'medium' | 'long'
+export const LETTER_LENGTHS: readonly LetterLength[] = ['short', 'medium', 'long']
 
 export type WriteSeries = (input: SeriesInput, apiKey: string) => Promise<SampleLetter[]>
 
@@ -65,6 +72,7 @@ export function parseSeriesInput(body: unknown): SeriesInput | null {
     achievements: list(raw.achievements, 8, 80),
     details: clean(raw.details, 600),
     december: typeof raw.december === 'string' ? raw.december.trim().slice(0, 1000) : '',
+    length: LETTER_LENGTHS.find((length) => length === raw.length) ?? 'medium',
   }
 }
 
@@ -114,18 +122,28 @@ export function d1Generations(db: D1Database): GenerationStore {
   }
 }
 
-const LENGTH: Record<ReadingLevel, string> = {
-  'read-aloud': '50–80 sõna; täiskasvanu loeb ette, laused lihtsad ja rütmikad',
-  beginner: '25–45 sõna; väga lühikesed laused ja tuttavad sõnad, sest laps alles õpib lugema',
-  independent: '60–100 sõna; laps loeb ise',
-  advanced: '80–120 sõna; laps loeb vabalt, võib olla rikkalikum sõnavara',
+/** Words per letter: "long" fills about half an A4 page, so it still fits an A5 card. */
+const WORDS: Record<LetterLength, string> = {
+  short: '60–90 sõna',
+  medium: '120–170 sõna',
+  long: '200–260 sõna (umbes pool A4 lehekülge)',
+}
+
+/** How the sentences sound; the length does not shrink for a small child, a grown-up reads it aloud. */
+const STYLE: Record<ReadingLevel, string> = {
+  'read-aloud': 'täiskasvanu loeb ette: laused lihtsad, rütmikad ja kujundlikud',
+  beginner: 'laps alles õpib lugema ja vanem loeb sageli ette: laused lühikesed ja selged, sõnad tuttavad',
+  independent: 'laps loeb ise: selge ja elav keel',
+  advanced: 'laps loeb vabalt: võib olla rikkalikum sõnavara',
 }
 
 const SYSTEM = `Sa oled päkapikk Tuduja, kes kirjutab Eesti lapsele detsembris igal hommikul ühe kirja, 1. kuni 24. detsembrini. Kirjuta nüüd kõik ${SERIES_LENGTH} kirja korraga.
 
 ${ELF_NAME}
 
-Kirjuta korrektses, loomulikus eesti keeles, nagu kirjutaks hea lastekirjanik. Kirjad on soojad, mängulised ja maagilised ning moodustavad ühe loo: esimeses kirjas päkapikk tutvustab ennast, siis juhtub päkapikumaailmas ja lapse kodu ümber väikseid seiklusi, mõni kiri annab lapsele väikese heateo- või mänguülesande, ja 24. detsembri kiri on jõululaupäeva pidulik lõpp. Igal kirjal on oma mõte, ära korda samu lauseid. Kõneta last tema nimega.
+Kirjuta korrektses, loomulikus eesti keeles, nagu kirjutaks hea lastekirjanik. Kirjad on soojad, mängulised ja maagilised ning moodustavad ühe loo: esimeses kirjas päkapikk tutvustab ennast, siis juhtub päkapikumaailmas ja lapse kodu ümber väikseid seiklusi, mõni kiri annab lapsele väikese heateo- või mänguülesande, ja 24. detsembri kiri on jõululaupäeva pidulik lõpp. Kõneta last tema nimega.
+
+Iga kiri on sisukas ja kasutab oma pikkuse ära: selles juhtub midagi konkreetset (päkapikumaailma väike sündmus nimede, kohtade ja detailidega, mida saab ette kujutada), see seob end lapse enda elu või huvidega ja enamasti lõpeb see väikese ülesande, mõistatuse või küsimusega. Ära täida kirja üldiste lausetega ega korda eelmiste kirjade mõtteid; iga kiri viib lugu edasi.
 
 Kirjad peavad olema päriselt selle lapse kohta. Kasuta konkreetselt seda, mida vanem kirjutas: huvisid, pereliikmeid ja lemmikloome nende nimedega, lemmiktoite, iseloomu, seda, mida laps on õppinud või harjutab, ja muid detaile. Too need loosse loomulikult, mitte loeteluna, ja jaota need eri kirjade vahel, et igas kirjas oleks midagi just temast. Kui vanem kirjutas detsembri plaanidest kuupäevaga, räägi neist selle päeva kirjas või päev varem (näiteks „homme lähete vanaema juurde“) ja vajaduse korral järgmisel päeval („kuidas oli jõulupeol?“). Ära mõtle välja pereliikmeid, lemmikloomi ega sündmusi, mida pole antud. Kui lapse kohta on vähe teada, kirjuta soojalt ja üldisemalt, aga ära oleta.
 
@@ -156,7 +174,7 @@ Muud detailid: ${known(input.details)}
 ${input.december || 'pole teada'}
 </detsember>
 
-Kirjad on ${seasonYear()}. aasta detsembriks. Iga kirja pikkus: ${LENGTH[input.readingLevel]}.`
+Kirjad on ${seasonYear()}. aasta detsembriks. Iga kirja pikkus: ${WORDS[input.length]}. Keel: ${STYLE[input.readingLevel]}.`
 }
 
 const SERIES_SCHEMA = {
@@ -182,7 +200,7 @@ export function readSeries(text: string): SampleLetter[] {
   if (!Array.isArray(raw) || raw.length !== SERIES_LENGTH) throw new Error(`expected ${SERIES_LENGTH} letters`)
   return raw.map((entry: Partial<SampleLetter>) => {
     const heading = fixElfName(clean(entry?.heading, 80))
-    const body = fixElfName(typeof entry?.body === 'string' ? entry.body.trim().slice(0, 2000) : '')
+    const body = fixElfName(typeof entry?.body === 'string' ? entry.body.trim().slice(0, 3000) : '')
     if (!heading || !body) throw new Error('empty letter')
     return { heading, body, signature: fixElfName(clean(entry.signature, 80)) || 'Sinu päkapikk Tuduja' }
   })
@@ -223,7 +241,7 @@ export interface FixInput {
 
 export type FixLetter = (input: FixInput, apiKey: string) => Promise<SampleLetter>
 
-const body = (value: unknown) => (typeof value === 'string' ? value.trim().slice(0, 2000) : '')
+const body = (value: unknown) => (typeof value === 'string' ? value.trim().slice(0, 3000) : '')
 
 export function parseFixInput(raw: Record<string, unknown> | null): FixInput | null {
   const child = parseSeriesInput(raw?.child)

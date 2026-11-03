@@ -6,7 +6,7 @@ import Mascot from '../../../components/brand/Mascot.vue'
 import PostcardCard from '../../../components/brand/PostcardCard.vue'
 import StampCard from '../../../components/brand/StampCard.vue'
 import TestBar from '../../../components/brand/TestBar.vue'
-import { DESIGN_KEY, designPath, NEW_DESIGN_ROOT, SHORT_JOURNEY_ROOT, STAMP_COLORS } from '../../../components/brand/design'
+import { CHRISTMAS_ROOT, DESIGN_KEY, designPath, STAMP_COLORS } from '../../../components/brand/design'
 import { iconFor } from '../../../components/ui/icons'
 import { CONTENT_TYPES } from '../../../domain/contentTypes'
 import { OCCASIONS } from '../../../domain/occasions/occasions'
@@ -15,12 +15,12 @@ import { useChildrenStore } from '../../children/childrenStore'
 import RecentCreations from '../RecentCreations.vue'
 import { COMING_SOON, isReady, NOT_READY_LABEL, PASS_MARK } from './readiness'
 import PassComparison from '../../pass/PassComparison.vue'
-import { isActive, loadPass, PASS_PRICE } from '../../pass/seasonPass'
+import { isActive, loadPass, PASS_PAGE, PASS_PRICE } from '../../pass/seasonPass'
 
 /**
- * Test view of the new home page design (/uus-disain). The current home page at "/"
- * stays as it is until this one is chosen; the links lead into the same wizard.
- * At /ud2 (`short`) the Christmas letters start the short journey instead.
+ * The earlier test view of the new home page design (/uus-disain), kept for comparison until
+ * the redirects are approved; its links lead into the main pages. At /ud2 (`short`) the
+ * Christmas letters start the Christmas journey at /joulukirjad instead.
  */
 const props = withDefaults(defineProps<{ short?: boolean }>(), { short: false })
 provide(DESIGN_KEY, 'new')
@@ -36,14 +36,14 @@ const hasPass = pass !== null && isActive(pass)
 // Every link leads into the new-design wizard, so the whole new journey can be tried.
 const WIZARD = designPath('new', '/loo')
 // The short journey: who for, and the free Christmas letters at once.
-const START = `${SHORT_JOURNEY_ROOT}/alusta`
+const START = CHRISTMAS_ROOT
 const lettersLink = (query: Record<string, string>) => (props.short ? START : { path: WIZARD, query })
 </script>
 
 <template>
   <div class="home-new">
-    <TestBar v-if="short" text="Testvaade: lühike jõuluteekond." link="Vaata uut disaini" :to="NEW_DESIGN_ROOT" />
-    <TestBar v-else text="Testvaade: uus avalehe disain." link="Vaata praegust avalehte" to="/" />
+    <TestBar v-if="short" text="Varasem testvaade: lühike jõuluteekond." link="Ava jõulukirjad" :to="CHRISTMAS_ROOT" />
+    <TestBar v-else text="Varasem testvaade: uus avalehe disain." link="Ava avaleht" to="/" />
 
     <section class="hero">
       <div class="container hero__inner">
@@ -97,7 +97,7 @@ const lettersLink = (query: Record<string, string>) => (props.short ? START : { 
             ja selle detsembri plaanid. Kehtib 31. jaanuarini, ühekordne makse {{ PASS_PRICE }}.
           </p>
         </div>
-        <RouterLink :to="short ? START : `${NEW_DESIGN_ROOT}/joulupass`" class="chunky chunky--primary">
+        <RouterLink :to="short ? START : PASS_PAGE" class="chunky chunky--primary">
           {{ hasPass ? 'Kirjuta isiklikud kirjad' : 'Vaata Jõulupassi' }} <ArrowRight :size="18" aria-hidden="true" />
         </RouterLink>
       </div>

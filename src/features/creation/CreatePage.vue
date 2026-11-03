@@ -11,7 +11,6 @@ import { useChildrenStore } from '../children/childrenStore'
 import { useCreationsStore } from '../preview/creationsStore'
 import WizardProgress from './WizardProgress.vue'
 import MascotGuide from '../../components/brand/MascotGuide.vue'
-import TestBar from '../../components/brand/TestBar.vue'
 import { DESIGN_KEY, designPath, type Design } from '../../components/brand/design'
 import { mascotLine } from './mascotLines'
 import StepWhat from './steps/StepWhat.vue'
@@ -23,7 +22,7 @@ import { newCreationRequests } from './newCreation'
 import { track } from '../../app/analytics'
 
 /** "new" at /uus-disain/loo: the same wizard in the new design, tried out next to the current one. */
-const props = withDefaults(defineProps<{ design?: Design }>(), { design: 'current' })
+const props = withDefaults(defineProps<{ design?: Design }>(), { design: 'new' })
 provide(DESIGN_KEY, props.design)
 
 const route = useRoute()
@@ -113,6 +112,7 @@ async function create(): Promise<void> {
   try {
     const content = await generator.generate(request)
     creations.add(content)
+    track('free_generated', { type: content.request.contentType, occasion: content.request.occasionId, items: content.items.length })
     // "Back" from the preview returns to these choices instead of an empty wizard.
     await router.replace({ path: route.path, query: { muuda: content.id } })
     // The preview greets a new creation by opening it as post.
@@ -127,7 +127,6 @@ async function create(): Promise<void> {
 
 <template>
   <div class="wizard-page" :class="{ 'wizard-page--new design-new': design === 'new' }">
-  <TestBar v-if="design === 'new'" text="Testvaade: loomise sammud uues disainis." link="Vaata praegust" to="/loo" />
   <div class="container wizard section">
     <header class="wizard__head">
       <span class="eyebrow">Loo uus</span>

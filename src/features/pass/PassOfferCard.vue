@@ -2,21 +2,29 @@
 import { computed } from 'vue'
 import { Gift, Sparkles } from 'lucide-vue-next'
 import BaseButton from '../../components/ui/BaseButton.vue'
-import { NEW_DESIGN_ROOT } from '../../components/brand/design'
 import type { GeneratedContent } from '../../domain/models'
 import { namesInCase } from '../../domain/text/estonian'
-import { isActive, loadPass, PASS_PRICE } from './seasonPass'
+import { CHRISTMAS_ROOT } from '../../components/brand/design'
+import { isActive, loadPass, PASS_PAGE, PASS_PRICE } from './seasonPass'
 
 /**
  * Beside template Christmas letters: the moment a parent has just seen what the templates
  * write is when the Jõulupass makes sense, so it is offered here. With a pass in this
- * browser it leads straight to writing the AI letters instead.
+ * browser it leads straight to writing the AI letters instead. One child's 24 letters go to the
+ * Christmas page, where the personal ones replace these in the same creation; anything else
+ * goes to the pass page, which writes a new series child by child.
  */
 const props = defineProps<{ content: GeneratedContent }>()
 
 const pass = loadPass()
 const active = pass !== null && isActive(pass)
 const whom = computed(() => namesInCase(props.content.request.children, 'genitive'))
+// The personal series is always 24 letters, so only a 24-letter series is replaced in place.
+const target = computed(() =>
+  props.content.request.children.length === 1 && props.content.items.length === 24
+    ? { path: `${CHRISTMAS_ROOT}/${props.content.id}`, hash: '#isiklikumaks' }
+    : PASS_PAGE,
+)
 </script>
 
 <template>
@@ -33,7 +41,7 @@ const whom = computed(() => namesInCase(props.content.request.children, 'genitiv
       Need on mallikirjad. Päkapikk ei tea {{ whom }} perest ega sellest, mis teil detsembris plaanis on. Jõulupassiga
       kirjutab ta kõik 24 kirja päriselt {{ whom }} kohta. Ühekordne makse {{ PASS_PRICE }}.
     </p>
-    <BaseButton :to="`${NEW_DESIGN_ROOT}/joulupass`" size="sm" :variant="active ? 'primary' : 'secondary'">
+    <BaseButton :to="target" size="sm" :variant="active ? 'primary' : 'secondary'">
       {{ active ? 'Kirjuta isiklikud kirjad' : 'Vaata Jõulupassi' }}
     </BaseButton>
   </section>

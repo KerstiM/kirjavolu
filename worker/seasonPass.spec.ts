@@ -95,6 +95,24 @@ describe('POST /api/joulupass/ost', () => {
     expect(create.mock.calls[1]![0]!.return_url).toBe('https://kirjavolu.ee/uus-disain/joulupass?session_id={CHECKOUT_SESSION_ID}')
   })
 
+  it('returns to the Christmas letters page and the pass page at their main paths, and to nothing else', async () => {
+    const { env, stripe, deps } = setup()
+    const create = vi
+      .spyOn(stripe.checkout.sessions, 'create')
+      .mockResolvedValue({ client_secret: 'cs_secret' } as Stripe.Response<Stripe.Checkout.Session>)
+    const ask = (returnTo: string) =>
+      new Request('https://kirjavolu.ee/api/joulupass/ost', { method: 'POST', headers: ownPage, body: JSON.stringify({ returnTo }) })
+    const backTo = async (returnTo: string) => {
+      await handlePurchase(ask(returnTo), env, deps)
+      return create.mock.calls.at(-1)![0]!.return_url
+    }
+    expect(await backTo('/joulukirjad/abc-123')).toBe('https://kirjavolu.ee/joulukirjad/abc-123?session_id={CHECKOUT_SESSION_ID}')
+    expect(await backTo('/joulupass')).toBe('https://kirjavolu.ee/joulupass?session_id={CHECKOUT_SESSION_ID}')
+    for (const other of ['/joulukirjad', '/joulukirjad/a/b', '/joulupass/x', '//evil.example/joulupass', '/looming/abc']) {
+      expect(await backTo(other)).toBe('https://kirjavolu.ee/uus-disain/joulupass?session_id={CHECKOUT_SESSION_ID}')
+    }
+  })
+
   it('starts an embedded checkout for the pass without tax, with the code in the metadata', async () => {
     const { env, stripe, deps } = setup()
     const create = vi

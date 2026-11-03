@@ -2,30 +2,26 @@ import { inject, type InjectionKey } from 'vue'
 import type { OccasionId } from '../../domain/models'
 
 /**
- * Which look the wizard shows: the current one at /loo, or the new design at
- * /uus-disain/loo while it is being tried out next to the current one.
+ * Which look a page shows. The new design (cream post-office paper, the envelope mascot) is
+ * the main one at the root paths since the two journeys were joined; "current" is the old
+ * look, kept only until the new version is accepted (see docs/route-migration.md).
  */
 export type Design = 'current' | 'new'
 export const DESIGN_KEY: InjectionKey<Design> = Symbol('design')
 export function useDesign(): Design {
-  return inject(DESIGN_KEY, 'current')
+  return inject(DESIGN_KEY, 'new')
 }
 
-/** The new-design test views live under this path, next to the current pages. */
+/** The earlier test views. Their pages still answer, but every link now leads to the main paths. */
 export const NEW_DESIGN_ROOT = '/uus-disain'
-/** The short Christmas journey: its own test path, in the new design too. */
+/** The short Christmas journey's test path; /joulukirjad is its main version. */
 export const SHORT_JOURNEY_ROOT = '/ud2'
-/** The home page test version that joins the new design with the current layout. */
-export const HOME_TEST_ROOT = '/ud3'
+/** The Christmas letters: who for, the 24 free letters at once, and the personal ones beside them. */
+export const CHRISTMAS_ROOT = '/joulukirjad'
 
-/** Which look the menu and the footer show on a page, from its path. */
-export function designForPath(path: string): Design {
-  return [NEW_DESIGN_ROOT, SHORT_JOURNEY_ROOT, HOME_TEST_ROOT].some((root) => path.startsWith(root)) ? 'new' : 'current'
-}
-/** The same page in the given design, so links keep a visitor in the look they are trying out. */
-export function designPath(design: Design, path: string): string {
-  if (design === 'current') return path
-  return path === '/' ? NEW_DESIGN_ROOT : `${NEW_DESIGN_ROOT}${path}`
+/** The same page in the given design. Both live at the main paths now, so the path is kept. */
+export function designPath(_design: Design, path: string): string {
+  return path
 }
 
 /** Each occasion has its own stamp colour. */

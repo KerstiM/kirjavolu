@@ -4,11 +4,10 @@ import { useRoute, useRouter } from 'vue-router'
 import { Gift, PartyPopper } from 'lucide-vue-next'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import FormField from '../../components/ui/FormField.vue'
-import TestBar from '../../components/brand/TestBar.vue'
 import PassLetters from './PassLetters.vue'
 import PassPurchase from './PassPurchase.vue'
 import PassComparison from './PassComparison.vue'
-import { DESIGN_KEY, NEW_DESIGN_ROOT } from '../../components/brand/design'
+import { DESIGN_KEY } from '../../components/brand/design'
 import {
   checkPass,
   formatValidUntil,
@@ -21,7 +20,7 @@ import {
 } from './seasonPass'
 
 /**
- * /uus-disain/joulupass: Stripe sends the buyer here after paying (?session_id=…) and the
+ * /joulupass (and the earlier /uus-disain/joulupass): Stripe sends the buyer here after paying (?session_id=…) and the
  * page shows the code. Without a purchase it is "Mul on Jõulupass": type the code in on any
  * device and the server says how many AI generations are left.
  */
@@ -81,7 +80,6 @@ onBeforeUnmount(() => clearTimeout(retry))
 
 <template>
   <div class="design-new">
-    <TestBar text="Testvaade: Jõulupass (Stripe'i testrežiim)." link="Vaata näidet" :to="`${NEW_DESIGN_ROOT}/naide`" />
     <div class="container section pass-page">
       <header>
         <span class="eyebrow pass-page__tag">Jõulupass</span>

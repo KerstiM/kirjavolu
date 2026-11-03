@@ -84,8 +84,9 @@ describe('dates and default layout', () => {
     expect(items[23]?.date).toBe('2026-12-24')
   })
 
-  it('long letter series default to the poster, toddler series to simple cards', () => {
+  it('long and medium letter series default to the poster, toddler series to simple cards', () => {
     expect(defaultLayoutFor(makeRequest('letter', { occasionId: 'christmas', children: [RUBEN] }))).toBe('poster')
+    expect(defaultLayoutFor(makeRequest('letter', { occasionId: 'christmas', children: [RUBEN], general: { length: 'medium' } }))).toBe('poster')
     expect(defaultLayoutFor(makeRequest('letter', { occasionId: 'christmas', children: [BRITA] }))).toBe('mini')
     expect(defaultLayoutFor(makeRequest('letter', { options: { count: 1 } }))).toBe('page')
   })
@@ -145,8 +146,11 @@ describe('compact daily series', () => {
   })
 
   it('daily letters are whole stories of a few paragraphs, not a list of fragments', () => {
-    const items = runTemplates(makeRequest('letter', { occasionId: 'christmas' })).items
-    for (const item of items) expect(item.body.split('\n\n').length).toBeLessThanOrEqual(5)
-    expect(items.filter((item) => item.body.split('\n\n').length >= 3).length).toBeGreaterThanOrEqual(12)
+    const medium = runTemplates(makeRequest('letter', { occasionId: 'christmas', general: { length: 'medium' } })).items
+    for (const item of medium) expect(item.body.split('\n\n').length).toBeLessThanOrEqual(5)
+    expect(medium.filter((item) => item.body.split('\n\n').length >= 3).length).toBeGreaterThanOrEqual(12)
+    // Long letters: the story goes on, then a riddle or a task, then the P.S.
+    const long = runTemplates(makeRequest('letter', { occasionId: 'christmas' })).items
+    for (const item of long) expect(item.body.split('\n\n').length).toBeLessThanOrEqual(6)
   })
 })

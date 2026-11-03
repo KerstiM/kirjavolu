@@ -10,6 +10,8 @@ const props = defineProps<{
   content: GeneratedContent
   puzzle?: { imageUrl: string; grid: PuzzleGrid } | null
   posterLabels?: string[] | null
+  /** Large poster cards: the poster takes more sheets, so the map must match. */
+  posterLarge?: boolean
 }>()
 const solved = computed(() => props.content.items.filter((item) => item.answer || item.parentNote))
 </script>
@@ -31,7 +33,7 @@ const solved = computed(() => props.content.items.filter((item) => item.answer |
       </ol>
     </div>
 
-    <PosterGuide v-if="posterLabels" :count="posterLabels.length" :labels="posterLabels" />
+    <PosterGuide v-if="posterLabels" :count="posterLabels.length" :labels="posterLabels" :large="posterLarge" />
 
     <AssemblyGuide
       v-if="puzzle"

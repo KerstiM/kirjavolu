@@ -3,8 +3,8 @@ import { computed } from 'vue'
 import { computePoster, itemAt } from '../../../domain/posterLayout'
 
 /** Parent-sheet map of the poster: which day sits where, and how the sheets join. */
-const props = defineProps<{ count: number; labels: string[] }>()
-const layout = computed(() => computePoster(props.count))
+const props = defineProps<{ count: number; labels: string[]; large?: boolean }>()
+const layout = computed(() => computePoster(props.count, { large: props.large }))
 const rows = computed(() =>
   Array.from({ length: layout.value.pageRows * layout.value.rowsPerPage }, (_, row) =>
     Array.from({ length: layout.value.cols }, (_, col) => itemAt({ col, row }, layout.value)),

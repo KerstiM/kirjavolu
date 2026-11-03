@@ -71,6 +71,35 @@ export function writeDecember(childId: string, text: string): void {
   }
 }
 
+/** How long each personal letter is; medium unless the parent picks otherwise. */
+export type LetterLength = 'short' | 'medium' | 'long'
+export const LETTER_LENGTH_OPTIONS: { value: LetterLength; label: string; hint: string }[] = [
+  { value: 'short', label: 'Lühike', hint: 'Umbes 5–7 lauset.' },
+  { value: 'medium', label: 'Keskmine', hint: 'Paar lõiku, igas kirjas väike sündmus ja ülesanne.' },
+  { value: 'long', label: 'Pikk', hint: 'Umbes pool A4 lehte, mahub A5 kaardile.' },
+]
+
+/** The length picked for each child, so a single letter rewritten later keeps it. */
+const LENGTH_KEY = 'kirjavolu.joulupass.pikkus'
+
+export function readLength(childId: string): LetterLength {
+  try {
+    const stored = (JSON.parse(localStorage.getItem(LENGTH_KEY) ?? '{}') as Record<string, unknown>)[childId]
+    return LETTER_LENGTH_OPTIONS.some((option) => option.value === stored) ? (stored as LetterLength) : 'medium'
+  } catch {
+    return 'medium'
+  }
+}
+
+export function writeLength(childId: string, length: LetterLength): void {
+  try {
+    const all = JSON.parse(localStorage.getItem(LENGTH_KEY) ?? '{}') as Record<string, string>
+    localStorage.setItem(LENGTH_KEY, JSON.stringify({ ...all, [childId]: length }))
+  } catch {
+    // The choice is still on screen.
+  }
+}
+
 interface Letter {
   heading: string
   body: string
@@ -129,7 +158,7 @@ export function seriesContent(child: ChildProfile, letters: Letter[], now = new 
  * What leaves the browser for the AI: the child's profile as the parent filled it in, without
  * the notes meant only for the parent, and this December's plans.
  */
-export function seriesChild(child: ChildProfile, december: string) {
+export function seriesChild(child: ChildProfile, december: string, length: LetterLength = readLength(child.id)) {
   return {
     name: child.name,
     age: child.age,
@@ -141,6 +170,7 @@ export function seriesChild(child: ChildProfile, december: string) {
     achievements: child.achievements,
     details: child.details,
     december,
+    length,
   }
 }
 
@@ -170,8 +200,9 @@ export async function requestPassLetters(
   code: string,
   child: ChildProfile,
   december = '',
+  length: LetterLength = readLength(child.id),
 ): Promise<{ content: GeneratedContent; pass: SeasonPass }> {
-  const data = await post('/api/joulupass/kirjad', { code, child: seriesChild(child, december) })
+  const data = await post('/api/joulupass/kirjad', { code, child: seriesChild(child, december, length) })
   const letters = data.letters
   if (!Array.isArray(letters) || letters.length !== 24 || !letters.every(isLetter)) throw new LettersRequestError('failed')
   return { content: seriesContent(child, letters), pass: data.pass as SeasonPass }

@@ -5,7 +5,8 @@ import { todayIso } from './text/estonian'
 
 export const DEFAULT_GENERAL: GeneralOptions = {
   tone: 'magical',
-  length: 'medium',
+  // Long by default: a small child is read to, and a short letter is little to read.
+  length: 'long',
   difficulty: 'auto',
   notes: '',
 }

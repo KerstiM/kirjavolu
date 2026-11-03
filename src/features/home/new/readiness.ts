@@ -1,10 +1,11 @@
 import type { ContentTypeId } from '../../../domain/models'
 
 /**
- * Which kinds of creation the new design offers yet. The rest are shown gray with a label, so
- * it is plain what still needs work; their wizard links stay off until they are ready.
+ * Which kinds of creation the wizard offers. All six since the new design became the main one:
+ * they worked in the old design and use the same templates, preview and print. A kind taken
+ * off this list is shown gray with a label and cannot be picked.
  */
-export const READY_TYPES: readonly ContentTypeId[] = ['letter', 'story']
+export const READY_TYPES: readonly ContentTypeId[] = ['letter', 'treasure-hunt', 'story', 'puzzle', 'calendar', 'certificate']
 
 export const isReady = (type: ContentTypeId) => READY_TYPES.includes(type)
 

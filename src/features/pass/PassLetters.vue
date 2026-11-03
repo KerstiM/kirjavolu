@@ -11,7 +11,6 @@ import TopicPicker from '../children/TopicPicker.vue'
 import { useChildrenStore } from '../children/childrenStore'
 import { useCreationsStore } from '../preview/creationsStore'
 import { nameCase } from '../../domain/text/estonian'
-import { NEW_DESIGN_ROOT } from '../../components/brand/design'
 import type { ChildProfile, ChildProfileDraft } from '../../domain/models'
 import type { TopicId } from '../../data/topics'
 import { track } from '../../app/analytics'
@@ -101,7 +100,7 @@ async function write(): Promise<void> {
     const { content, pass } = await requestPassLetters(props.pass.code, saved, december.value)
     creations.add(content)
     emit('spent', pass)
-    await router.push({ path: `${NEW_DESIGN_ROOT}/looming/${content.id}`, query: { uus: '1' } })
+    await router.push({ path: `/looming/${content.id}`, query: { uus: '1' } })
   } catch (failure) {
     error.value = LETTERS_ERROR_TEXTS[failure instanceof LettersRequestError ? failure.reason : 'failed']
   } finally {

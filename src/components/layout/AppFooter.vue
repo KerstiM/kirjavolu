@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { designForPath, designPath } from '../brand/design'
-
-// The terms and the privacy notice open in the design the visitor is looking at.
-const route = useRoute()
-const design = computed(() => designForPath(route.path))
+import { PASS_PAGE } from '../../features/pass/seasonPass'
 </script>
 
 <template>
@@ -19,8 +13,9 @@ const design = computed(() => designForPath(route.path))
         valid. Lapsed ja loomingud jäävad sinu seadmesse.
       </p>
       <nav class="app-footer__links" aria-label="Tingimused">
-        <RouterLink :to="designPath(design, '/tingimused')">Müügitingimused</RouterLink>
-        <RouterLink :to="designPath(design, '/privaatsus')">Privaatsus</RouterLink>
+        <RouterLink :to="PASS_PAGE">Mul on Jõulupassi kood</RouterLink>
+        <RouterLink to="/tingimused">Müügitingimused</RouterLink>
+        <RouterLink to="/privaatsus">Privaatsus</RouterLink>
       </nav>
     </div>
   </footer>
@@ -45,7 +40,8 @@ const design = computed(() => designForPath(route.path))
 }
 .app-footer__links {
   display: flex;
-  gap: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
   a {
     color: var(--ink-soft);
   }
