@@ -6,10 +6,21 @@ import BaseButton from '../../components/ui/BaseButton.vue'
 import { iconFor } from '../../components/ui/icons'
 import { getContentType } from '../../domain/contentTypes'
 import { useCreationsStore } from '../preview/creationsStore'
-import { designPath, useDesign } from '../../components/brand/design'
+import { CHRISTMAS_ROOT, designPath, useDesign } from '../../components/brand/design'
+import { AI_SERIES_GENERATOR } from '../pass/passLetters'
+import type { GeneratedContent } from '../../domain/models'
 
+/** `inline`: inside a page that already has its own container, e.g. under the Christmas letters. */
+const props = defineProps<{ inline?: boolean; heading?: string }>()
 const store = useCreationsStore()
 const design = useDesign()
+
+// Christmas letters open in their own page, where the personal letters can be written.
+const isChristmasLetters = (creation: GeneratedContent) =>
+  creation.request.contentType === 'letter' && creation.request.occasionId === 'christmas'
+const openPath = (creation: GeneratedContent) =>
+  isChristmasLetters(creation) ? `${CHRISTMAS_ROOT}/${creation.id}` : designPath(design, `/looming/${creation.id}`)
+const isPersonal = (creation: GeneratedContent) => creation.generator.id === AI_SERIES_GENERATOR
 
 function formatCreated(iso: string): string {
   return new Date(iso).toLocaleDateString('et-EE', { day: 'numeric', month: 'long' })
@@ -21,11 +32,11 @@ function remove(id: string, title: string): void {
 </script>
 
 <template>
-  <section class="section" aria-labelledby="recent-title">
-    <div class="container">
+  <section :class="{ section: !props.inline }" aria-labelledby="recent-title">
+    <div :class="{ container: !props.inline }">
       <div class="section-head">
         <div>
-          <h2 id="recent-title">Minu loomingud</h2>
+          <h2 id="recent-title">{{ props.heading ?? 'Minu loomingud' }}</h2>
           <p class="muted">Salvestatud sinu brauserisse. Ava, muuda ja prindi uuesti.</p>
         </div>
       </div>
@@ -43,9 +54,9 @@ function remove(id: string, title: string): void {
             <component :is="iconFor(getContentType(creation.request.contentType).icon)" :size="20" />
           </span>
           <div class="recent__text">
-            <RouterLink :to="designPath(design, `/looming/${creation.id}`)" class="recent__title">{{ creation.title }}</RouterLink>
+            <RouterLink :to="openPath(creation)" class="recent__title">{{ creation.title }}</RouterLink>
             <span class="recent__meta">
-              {{ creation.subtitle }} · {{ creation.items.length }} osa · {{ formatCreated(creation.createdAt) }}
+              <template v-if="isChristmasLetters(creation)">{{ isPersonal(creation) ? 'Isiklikud' : 'Tasuta' }} · </template>{{ creation.subtitle }} · {{ creation.items.length }} osa · {{ formatCreated(creation.createdAt) }}
             </span>
           </div>
           <button

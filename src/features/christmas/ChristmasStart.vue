@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { computed, onMounted, provide, ref, watch } from 'vue'
+import { computed, onMounted, provide, reactive, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowRight, Plus, X } from 'lucide-vue-next'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import TopicPicker from '../children/TopicPicker.vue'
+import ListInput from '../../components/ui/ListInput.vue'
+import { readDecember, writeDecember } from '../pass/passLetters'
 import type { TopicId } from '../../data/topics'
 import Mascot from '../../components/brand/Mascot.vue'
 import { CHRISTMAS_ROOT, DESIGN_KEY } from '../../components/brand/design'
@@ -66,6 +68,20 @@ const single = computed(() => (count.value === 1 ? (picked.value[0] ?? null) : u
 const topics = ref<TopicId[]>([])
 watch(single, (child) => (topics.value = [...(child?.topics ?? [])]), { immediate: true })
 
+// Optional, for one child: kept in the profile, so the personal letters start from it.
+// The free letters do not use these; the personal ones do.
+const about = reactive({ family: [] as string[], interests: [] as string[], december: '' })
+watch(
+  single,
+  (child) => {
+    about.family = [...(child?.family ?? [])]
+    about.interests = [...(child?.interests ?? [])]
+    about.december = child ? readDecember(child.id) : ''
+  },
+  { immediate: true },
+)
+const aboutCount = computed(() => [about.family.length > 0, about.interests.length > 0, about.december.trim() !== ''].filter(Boolean).length)
+
 onMounted(() => track('christmas_start', {}))
 
 function childrenForLetters(): ChildProfile[] | null {
@@ -76,7 +92,8 @@ function childrenForLetters(): ChildProfile[] | null {
   const chosen = picked.value.map((child) => {
     if (!single.value) return child
     const { id, createdAt: _created, updatedAt: _updated, ...profile } = child
-    children.update(id, { ...profile, topics: topics.value })
+    children.update(id, { ...profile, topics: topics.value, family: about.family, interests: about.interests })
+    writeDecember(id, about.december)
     return children.byId(id) ?? child
   })
   if (!filledKids.value.length) {
@@ -104,15 +121,20 @@ function addNewKids(): ChildProfile[] | null {
       return null
     }
   }
+  const alone = single.value === null
   return filledKids.value.map((kid) => {
     track('child_added', { from: 'wizard' })
-    return children.add({
+    const added = children.add({
       ...emptyChildDraft(),
       name: kid.name.trim(),
       age: Number(kid.age),
       readingLevel: readingLevelForAge(Number(kid.age)),
-      topics: single.value === null ? topics.value : [],
+      topics: alone ? topics.value : [],
+      family: alone ? about.family : [],
+      interests: alone ? about.interests : [],
     })
+    if (alone) writeDecember(added.id, about.december)
+    return added
   })
 }
 
@@ -200,6 +222,28 @@ async function start(): Promise<void> {
           </summary>
           <p class="christmas-start__hint">Iga teema kohta on kirjades valmis lood, näiteks päkapikk proovib ise jalgpalli.</p>
           <TopicPicker v-model="topics" />
+        </details>
+
+        <details v-if="count <= 1" class="christmas-start__topics">
+          <summary>
+            Räägi lapsest veel
+            <span class="christmas-start__optional">{{ aboutCount ? `${aboutCount} lisatud` : 'valikuline, jääb isiklike kirjade jaoks' }}</span>
+          </summary>
+          <p class="christmas-start__hint">
+            Tasuta kirjad valmivad ka ilma. Need andmed jäävad lapse juurde ja on valmis, kui teed kirjad isiklikumaks.
+          </p>
+          <label class="field">
+            <span>Pereliikmed ja lemmikloomad</span>
+            <ListInput id="start-family" v-model="about.family" placeholder="Näiteks mamma, issi, kass Miisu" />
+          </label>
+          <label class="field">
+            <span>Huvid ja lemmikud</span>
+            <ListInput id="start-interests" v-model="about.interests" placeholder="Näiteks autod, jalgpall" />
+          </label>
+          <label class="field">
+            <span>Detsembri plaanid</span>
+            <textarea v-model="about.december" class="input" rows="2" placeholder="Näiteks jõulupidu lasteaias 20. detsembril" />
+          </label>
         </details>
 
         <p v-if="error" class="christmas-start__error" role="alert">{{ error }}</p>

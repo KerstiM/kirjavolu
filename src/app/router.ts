@@ -11,6 +11,7 @@ const Create = () => import('../features/creation/CreatePage.vue')
 const Preview = () => import('../features/preview/PreviewPage.vue')
 const Children = () => import('../features/children/ChildrenPage.vue')
 const Sample = () => import('../features/home/DemoPage.vue')
+const MyCreations = () => import('../features/home/MyCreationsPage.vue')
 const Pass = () => import('../features/pass/PassPage.vue')
 const Terms = () => import('../features/legal/TermsPage.vue')
 const Privacy = () => import('../features/legal/PrivacyPage.vue')
@@ -24,6 +25,7 @@ export const routes: RouteRecordRaw[] = [
   { path: '/joulukirjad/:id', name: 'christmas-letters', component: ChristmasLetters, props: true, meta: { title: 'Jõulukirjad' } },
   { path: '/loo', name: 'create', component: Create, meta: { title: 'Loo uus' } },
   { path: '/looming/:id', name: 'preview', component: Preview, props: true, meta: { title: 'Eelvaade' } },
+  { path: '/minu', name: 'my-creations', component: MyCreations, meta: { title: 'Minu kirjad' } },
   { path: '/lapsed', name: 'children', component: Children, meta: { title: 'Lapsed' } },
   { path: '/naide', name: 'sample', component: Sample, meta: { title: 'Näide' } },
   // Jõulupass: the code, what is left, and typing a code in on another device.
