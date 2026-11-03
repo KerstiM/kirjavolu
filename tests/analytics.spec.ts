@@ -79,7 +79,7 @@ describe('analytics', () => {
       ['child_added', { from: 'wizard' }],
       ['free_generated', { type: 'letter', occasion: 'christmas', items: 24 }],
       ['preview_shown', { type: 'letter', occasion: 'christmas', items: 24, children: 1 }],
-      ['print_clicked', { type: 'letter', layout: 'poster', mode: 'all' }],
+      ['print_clicked', { type: 'letter', layout: 'cards', mode: 'all' }],
     ])
     // The child's name, age and interests never leave the browser.
     expect(JSON.stringify(sent)).not.toMatch(/Salme|dinosaurs|"age"/)

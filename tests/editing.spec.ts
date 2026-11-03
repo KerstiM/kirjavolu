@@ -17,6 +17,8 @@ async function openPreview(children = [RUBEN]) {
     occasionId: 'christmas',
     children,
     options: { startDate: '2026-12-01' },
+    // The puzzle poster is for short and medium letters.
+    general: { length: 'medium' },
   }) as RequestFor<'letter'>
   const content = await templateGenerator.generate(request)
   const store = useCreationsStore()

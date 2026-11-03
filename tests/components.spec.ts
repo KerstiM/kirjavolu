@@ -194,7 +194,8 @@ describe('preview with choices beside it', () => {
   it('updates the letters right away when a choice changes', async () => {
     const { user, store } = await letterPreview()
     expect(store.creations[0]?.items).toHaveLength(24)
-    expect(store.creations[0]?.layout).toBe('poster')
+    // Long letters by default: slipper cards, as they do not fit the poster.
+    expect(store.creations[0]?.layout).toBe('cards')
     const { id } = store.creations[0]!
     store.setDecoration(id, { ...EMPTY_DECORATION, pattern: 'stars', inkSaver: true })
     const panel = screen.getByRole('region', { name: /Kohanda/ })
@@ -228,14 +229,14 @@ describe('preview with choices beside it', () => {
     confirm.mockRestore()
   })
 
-  it('offers three print presets and keeps the rest under "Rohkem valikuid"', async () => {
+  it('offers the puzzle poster only for letters that fit it, and keeps the rest under "Rohkem valikuid"', async () => {
     const { user, store } = await letterPreview()
     const presets = screen.getByRole('group', { name: 'Kuidas prindid?' })
-    expect(within(presets).getAllByRole('radio').map((radio) => radio.closest('label')?.textContent?.trim())).toEqual([
-      'Kaardid sussi sisse',
-      'Pusleplakat',
-      'Terve leht',
-    ])
+    const labels = () => within(presets).getAllByRole('radio').map((radio) => radio.closest('label')?.textContent?.trim())
+    // Long letters (the default) do not fit the poster cards, so it is not offered.
+    expect(labels()).toEqual(['Kaardid sussi sisse', 'Terve leht'])
+    await user.click(within(screen.getByRole('region', { name: /Kohanda/ })).getByRole('radio', { name: 'Keskmine' }))
+    await vi.waitFor(() => expect(labels()).toEqual(['Kaardid sussi sisse', 'Pusleplakat', 'Terve leht']))
     await user.click(within(presets).getByRole('radio', { name: 'Kaardid sussi sisse' }))
     expect(store.creations[0]?.layout).toBe('cards')
     expect(screen.getByText('Rohkem valikuid').closest('details')).not.toHaveAttribute('open')

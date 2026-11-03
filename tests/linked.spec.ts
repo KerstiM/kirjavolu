@@ -122,7 +122,9 @@ describe('linked preview', () => {
   it('shows each child separately with their own layout and a filter', async () => {
     const pinia = createPinia()
     setActivePinia(pinia)
-    const content = await templateGenerator.generate(family())
+    // The puzzle poster is for short and medium letters.
+    const request = family()
+    const content = await templateGenerator.generate({ ...request, general: { ...request.general, length: 'medium' } })
     useCreationsStore().add(content)
     const router = createRouter({ history: createMemoryHistory(), routes })
     router.push(`/looming/${content.id}`)

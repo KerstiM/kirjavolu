@@ -226,9 +226,10 @@ describe('age and reading level', () => {
     expect(plan.children[0]!.band).toBe('older')
   })
 
-  it('toddler cards are one short paragraph meant for reading aloud; reader cards fit the poster', () => {
+  it('toddler cards are one short paragraph meant for reading aloud; medium reader letters fit the poster', () => {
     for (let seed = 1; seed <= 10; seed++) {
-      const { plan, items } = build(christmas([RUBEN, JASPER, BRITA], { sundaySweets: true }, seed))
+      const request = christmas([RUBEN, JASPER, BRITA], { sundaySweets: true }, seed)
+      const { plan, items } = build({ ...request, general: { ...request.general, length: 'medium' } })
       plan.days.forEach((d, k) => {
         const band = plan.children.find((p) => p.child.id === d.childId)!.band
         const body = items[k]!.body
@@ -236,6 +237,21 @@ describe('age and reading level', () => {
         if (band === 'toddler') expect(body.split('\n\n')).toHaveLength(1)
       })
     }
+  })
+
+  it('long letters add a riddle or a task on most days, but toddler cards stay one paragraph', () => {
+    const request = christmas([RUBEN, JASPER, BRITA], { sundaySweets: true }, 3)
+    const long = build({ ...request, general: { ...request.general, length: 'long' } })
+    const medium = build({ ...request, general: { ...request.general, length: 'medium' } })
+    const words = (items: { body: string }[]) => items.reduce((sum, item) => sum + item.body.split(/\s+/).length, 0)
+    const readers = (built: typeof long) => built.items.filter((_, k) => built.plan.days[k]!.childId !== BRITA.id)
+    expect(words(readers(long))).toBeGreaterThan(words(readers(medium)) * 1.15)
+    expect(long.plan.long).toBe(true)
+    expect(long.items.filter((item) => /päkapiku mõistatus|tänane ülesanne/.test(item.body)).length).toBeGreaterThan(20)
+    long.plan.days.forEach((d, k) => {
+      if (d.childId === BRITA.id) expect(long.items[k]!.body.split('\n\n')).toHaveLength(1)
+    })
+    expect(validateCollection(long.plan, long.items, library).filter((i) => i.severity === 'error')).toEqual([])
   })
 
   it('a three-year-old hears longer stories read aloud, not the one-year-old’s cards', () => {

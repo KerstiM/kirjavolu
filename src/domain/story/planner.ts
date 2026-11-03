@@ -5,8 +5,10 @@ import { adjustBand, ageBand, listensToLongerStories } from '../generators/audie
 import { familyExtras } from '../generators/familyEvents'
 import { familyPlan, pairContext, personasFor, type PairedDay } from '../generators/linkedLetters'
 import { HELPER_INVITE, HELPER_MISSIONS, type HelperContext } from '../../data/templates/helper'
+import { RIDDLES } from '../../data/templates/riddles'
+import { ACTIVITIES, MATERIAL_LABELS } from '../../data/templates/activities'
 import { STAND_IN_CAST } from './characters'
-import { profileHooks } from './hooks'
+import { PERSONAL_HOOKS, profileHooks } from './hooks'
 import { effectiveHooks } from './sample'
 import { scenarioIn, type ScenarioLibrary } from './library'
 import type { Band, Cast, HookId, Scenario } from './types'
@@ -92,6 +94,8 @@ export interface CollectionPlan {
   facts: Map<string, number>
   pairs: PairedDay[]
   secret?: SecretHelperPlan
+  /** "Pikk": a riddle or a task on the days without one, too long for the puzzle poster cards. */
+  long: boolean
 }
 
 type Slots = Map<string, (PlannedDay | undefined)[]>
@@ -424,6 +428,15 @@ export function planCollection(
     })
   }
 
+  // 8. "Pikk": the days without an activity get a riddle (answered in tomorrow's P.S.) or a task.
+  const long = request.general.length === 'long'
+  // Siblings compare letters, so no riddle or task is given twice in one family.
+  // The stories' own puzzles count too: their answers are not asked again.
+  const usedExtras = new Set<string>(
+    planned.flatMap((p) => slotOf(p).flatMap((d) => (d?.answer ? [`answer:${d.answer}`] : []))),
+  )
+  if (long) for (const p of planned) addLongExtras(p, slotOf(p), last, request, usedExtras)
+
   return {
     occasionId: request.occasionId,
     count,
@@ -436,6 +449,60 @@ export function planCollection(
     facts,
     pairs,
     secret,
+    long,
+  }
+}
+
+/** Christmas riddles and tasks from the hand-written banks, in a seeded order without repeats. */
+function addLongExtras(
+  p: PlannedChild,
+  days: (PlannedDay | undefined)[],
+  last: number,
+  request: RequestFor<'letter'>,
+  used: Set<string>,
+): void {
+  if (p.band === 'toddler') return
+  const rng = createRng(hashSeed(request.seed, 'long', p.child.id))
+  const fitsSeason = (occasions?: readonly string[]) => !occasions || occasions.includes(request.occasionId)
+  // A task about singing or football would claim an interest the child may not have.
+  const noTopic = (text: string) => !PERSONAL_HOOKS.some((hook) => hook.mentions.test(text))
+  const riddles = rng.shuffle(
+    RIDDLES.filter(
+      (r) => (r.level === 'any' || r.level === p.band) && fitsSeason(r.occasions) && noTopic(r.question) && !used.has(`answer:${r.answer}`),
+    ),
+  )
+  const tasks = rng.shuffle(
+    ACTIVITIES.filter(
+      (a) =>
+        a.minAge <= p.child.age &&
+        a.setting !== 'outdoor' &&
+        fitsSeason(a.occasions) &&
+        noTopic(a.text((singular) => singular)) &&
+        !used.has(a.id),
+    ),
+  )
+  let turn = 0
+  // The first and the last letter belong to greeting and farewell.
+  for (let index = 1; index < last; index++) {
+    const entry = days[index]
+    if (!entry || entry.content.kind !== 'scenario' || entry.content.activity) continue
+    const next = days[index + 1]
+    // A riddle needs tomorrow's letter for its answer, and not the farewell.
+    const riddle = turn % 2 === 0 && next && index + 1 < last ? riddles.shift() : undefined
+    if (riddle && next) {
+      entry.addenda.push(`Ja nüüd üks päkapiku mõistatus: ${riddle.question} Vastuse kirjutan homme.`)
+      entry.answer = riddle.answer
+      next.postscripts.unshift(`Eilse mõistatuse vastus: ${riddle.answer}.`)
+      used.add(`answer:${riddle.answer}`)
+    } else {
+      const task = tasks.shift()
+      if (!task) continue
+      used.add(task.id)
+      const text = task.text((singular) => singular)
+      entry.addenda.push(`Minu tänane ülesanne sulle: ${text.charAt(0).toLowerCase()}${text.slice(1)}`)
+      if (task.materials.length) entry.prep.push(`ülesandeks ${task.materials.map((m) => MATERIAL_LABELS[m]).join(', ')}`)
+    }
+    turn++
   }
 }
 

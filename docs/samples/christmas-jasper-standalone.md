@@ -40,7 +40,11 @@ Kirjutasin ise ühe mõistatuse: „Mis on valge ja külm ning kaob, kui seda so
 
 Nüüd saan aru, miks see sulle nii meeldib. Homme proovin uuesti!
 
+Ja nüüd üks päkapiku mõistatus: Talvel ja suvel ühte karva. Vastuse kirjutan homme.
+
 _Jahusena · Päkapikk Tuduja_
+
+> Vastus: kuusk
 
 ### 4. detsember 2026
 
@@ -52,7 +56,13 @@ Proovisin vett juua, hinge kinni hoida ja pea peal seista. Ei aidanud. Kõlin! K
 
 Lõpuks hiilis põhjapõder Välk mulle selja taha ja ütles kõrva: „Pöö!“ Ehmusin nii, et luksumine läks ära. Kellukesed on nüüd vaiksed. Peaaegu kahju.
 
+Minu tänane ülesanne sulle: voldi paberlennukid ja vaata, kelle oma lendab kõige kaugemale. Proovi erinevaid voltimisviise!
+
+P.S. Eilse mõistatuse vastus: kuusk.
+
 _Tervitustega köögist · Päkapikk Tuduja_
+
+> Valmista ette: ülesandeks paber
 
 ### 5. detsember 2026
 
@@ -64,7 +74,11 @@ Kõige naljakam oli see, et Kribu-Krabu istus terve õhtu katusel ja ootas neid.
 
 Mina võitsin virmaliste võistluse ja sain kõige pehmema pingi. Aga ma hoian sellel ka talle kohta. Ta on ju minu sõber.
 
+Ja nüüd üks päkapiku mõistatus: Olen roheline ja okkaline, jõuludel ehitakse mind tuledega. Vastuse kirjutan homme.
+
 _Hüpates · Päkapikk Tuduja_
+
+> Vastus: kuusk
 
 ### 6. detsember 2026
 
@@ -75,6 +89,10 @@ Kas sa tead, miks päkapikud putru armastavad? Vanasti jäeti jõuluõhtul päka
 Sina sööd ju ka kõige meelsamini riisiputru – sa tead, et see on õige puder!
 
 Mina olen töökoja pudrukeetja. Eile küsis Jõuluvana kolm korda juurde. Neljandal korral ütlesin, et pada on tühi. Polnud – aga mul oli endal ka kõht tühi.
+
+Minu tänane ülesanne sulle: korralda perele kontsert: laulud, pillid potikaantest ja kummardus lõpus!
+
+P.S. Eilse mõistatuse vastus: kuusk.
 
 _Sinu sõber · Päkapikk Tuduja_
 
@@ -88,7 +106,11 @@ Ta on leidnud Miki Hiire koomiksi ja vaatab seda iga päev. Lugeda ta ei oska, a
 
 Kust ta selle mõtte sai? Kahtlustan, et keegi on talle sinust rääkinud.
 
+Ja nüüd üks päkapiku mõistatus: Kes jätab detsembris aknalaual olevasse sussi kommi? Vastuse kirjutan homme.
+
 _Sinu · Päkapikk Tuduja_
+
+> Vastus: päkapikk
 
 ### 8. detsember 2026
 
@@ -99,6 +121,10 @@ Töökojas on üks tuba, kus hoitakse sädelust. Sinna tohib minna ainult hiilid
 Mina läksin eile sinna paelu tooma – ja mul hakkas nina sügelema. Aaa… aaa… AATŠIHH!
 
 Nüüd sädeleb kõik: seinad, laud, kass ja Jõuluvana habe. Jõuluvana vaatas peeglisse ja ütles, et nii pidulik pole ta kunagi olnud.
+
+Minu tänane ülesanne sulle: loe kokku, mitu punast ehet on kuusel. Aga mitu kuldset? Kumba on rohkem?
+
+P.S. Eilse mõistatuse vastus: päkapikk.
 
 _Kiirelt-kiirelt · Päkapikk Tuduja_
 
@@ -112,7 +138,11 @@ Me otsisime igalt poolt. Mina vaatasin isegi pudrupotti. Siis kuulsime: norr… 
 
 Ta magas ahju ääres kuivava kinda sees! Täpselt pöidla kohal. Nii armas, et keegi ei raatsinud teda äratada.
 
+Ja nüüd üks päkapiku mõistatus: Kes tuleb jõuluööl, punane kuub seljas ja valge habe ees? Vastuse kirjutan homme.
+
 _Hüpates · Päkapikk Tuduja_
+
+> Vastus: Jõuluvana
 
 ### 10. detsember 2026
 
@@ -124,7 +154,13 @@ Otsisin terve päeva. Kapist, voodi alt, pesukorvist. Ei kusagil!
 
 Õhtul tuli põhjapõder Välk tallist välja ja see sokk oli tal ühe kõrva peal. Ta ei öelnud midagi – ta on ju põder –, aga ta nägi välja väga uhke. Las kannab.
 
+Minu tänane ülesanne sulle: vali raamat ja loe koos. Pärast joonista oma lemmikkoht loost.
+
+P.S. Eilse mõistatuse vastus: Jõuluvana.
+
 _Kiirelt-kiirelt · Päkapikk Tuduja_
+
+> Valmista ette: ülesandeks raamatud
 
 ### 11. detsember 2026
 
@@ -136,7 +172,11 @@ Siis kuulsin, et üks kingipakk teeb: nurr-nurr-nurr. Pakid ju ei nurru! Tegin p
 
 Nurr oli karbis magama jäänud ja keegi oli ta kogemata ära pakkinud. Peaaegu oleks ta Lapimaale sõitnud.
 
+Ja nüüd üks päkapiku mõistatus: Mul on paber ümber ja pael peal, sees on üllatus. Vastuse kirjutan homme.
+
 _Hüpates · Päkapikk Tuduja_
+
+> Vastus: kingitus
 
 ### 12. detsember 2026
 
@@ -147,6 +187,10 @@ Ma tahtsin eile kõigile päkapikkudele üllatust teha ja keetsin riisiputru. Si
 Ma segasin ja segasin. Aga puder kasvas ja kasvas. Mulks! Mulks! Lõpuks ronis ta üle ääre ja läks trepist alla.
 
 Jõuluvana sõi kaks kaussi otse trepi pealt ja ütles: „Parim puder!“ Minu põsed läksid punaseks. Ja kleepuvaks.
+
+Minu tänane ülesanne sulle: kui õues on lund, ehita lumememm. Kui lund pole, ehita toas patjadest „padjamemm“ ja pane talle müts pähe.
+
+P.S. Eilse mõistatuse vastus: kingitus.
 
 _Jahusena · Päkapikk Tuduja_
 
@@ -160,7 +204,11 @@ Esimesena jõudis finišisse põhjapõder Välk, kuigi ta ei olnudki võistleja 
 
 Kribu-Krabu tuli viimasena. Ta ütles, et valis ilusama tee. Mina hoidsin talle kakaotassi alles.
 
+Ja nüüd üks päkapiku mõistatus: Käib, aga jalgu ei ole; tiksub, aga südant ei ole. Vastuse kirjutan homme.
+
 _Sinu · Päkapikk Tuduja_
+
+> Vastus: kell
 
 ### 14. detsember 2026
 
@@ -171,6 +219,10 @@ Eile oli nii tugev tuisk, et aknast ei paistnud midagi. Huuuu! tegi tuul.
 Öösel koputas keegi uksele: kopp-kopp. Ukse taga olid seitse lumist jänest! Lasime nad sooja.
 
 Nad sõid ära kõik lumememmede porgandid. Nüüd elavad nad puuriida taga ja ma viin neile igal hommikul kapsalehti.
+
+Minu tänane ülesanne sulle: täiskasvanu süütab küünla. Räägi kordamööda, mis oli sel aastal kõige toredam hetk.
+
+P.S. Eilse mõistatuse vastus: kell.
 
 _Kiirelt-kiirelt · Päkapikk Tuduja_
 
@@ -200,9 +252,13 @@ Täna nägin oma sokki kuuse otsas. Tihased on teinud sellest talvemaja. Välja 
 
 Las nad peavad selle. Mina saan uue soki.
 
+Ja nüüd üks päkapiku mõistatus: Mul on neli jalga ja selg, aga ma ei kõnni kunagi. Vastuse kirjutan homme.
+
 P.S. Eilse mõistatuse vastus oli: lumi. Välk arvas, et jäätis.
 
 _Sinu sõber · Päkapikk Tuduja_
+
+> Vastus: tool
 
 ### 17. detsember 2026
 
@@ -214,7 +270,13 @@ Mina vajutasin kogemata suurt punast nuppu. Masin hakkas palle tegema sada tükk
 
 Kribu-Krabu ütles, et see nupp oli „ainult katsetamiseks“. Nüüd on meil lumepalle terveks talveks.
 
+Minu tänane ülesanne sulle: aita valmistada pere hommikusöök: kata laud ja pane igale taldrikule väike üllatus.
+
+P.S. Eilse mõistatuse vastus: tool.
+
 _Hüpates · Päkapikk Tuduja_
+
+> Valmista ette: ülesandeks köögitarbed ja toiduained
 
 ### 18. detsember 2026
 
@@ -242,9 +304,13 @@ Esimene pannkook kukkus põrandale. Teine kukkus kass Nurri peale. Kolmas lendas
 
 Ta on seal siiani. Jõuluvana ütles, et las jääb, see on nüüd töökoja kuu. Õhtul, kui tuled kustuvad, on ta tõesti natuke kuu moodi.
 
+Ja nüüd üks päkapiku mõistatus: Ütlen „mõmm“ ja magan terve talve. Vastuse kirjutan homme.
+
 P.S. Eilse piparkoogiülesande vastus: 16. Nurri nuusutatud piparkook on ka alles.
 
 _Sinu · Päkapikk Tuduja_
+
+> Vastus: karu
 
 ### 20. detsember 2026
 
@@ -255,6 +321,10 @@ Mu kelk oli eile kadunud! Ma otsisin seda kuuri tagant ja lume alt.
 Siis nägin: Jõuluvana sõitis minu kelguga mäest alla! Tema on nii suur ja kelk nii väike, et paistsid ainult habe ja saapad.
 
 Ta ütles, et laenas seda ainult üheks korraks. Aga siis tuli Kribu-Krabu ka ja nad sõitsid üksteist korda. Järgmine kord lähen mina ka järjekorda.
+
+Minu tänane ülesanne sulle: üks teeb liigutusi, teine kordab nagu peegel. Vaheta rolle!
+
+P.S. Eilse mõistatuse vastus: karu.
 
 _Jahusena · Päkapikk Tuduja_
 
@@ -286,9 +356,13 @@ Põhjapõder Välk raputab kellukesi ja kass Nurr nurrub mikrofoni – teda on k
 
 Eile proovisime esimest korda. Jõuluvana kuulas ja ütles, et see oli väga… vali.
 
+Ja nüüd üks päkapiku mõistatus: Olen ümmargune ja põrkan. Mind visatakse ja lüüakse jalaga. Vastuse kirjutan homme.
+
 P.S. Eilse katse vastus: soolaga jää sulab kiiremini. Seepärast puistatakse talvel teedele soola. Kelgujalased on nüüd jälle libedad.
 
 _Sinu · Päkapikk Tuduja_
+
+> Vastus: pall
 
 ### 23. detsember 2026
 
@@ -300,7 +374,13 @@ Oi-oi! Ma ehitasin eile terve päeva lumememme. Tal oli porgandnina, kaks nööp
 
 Nüüd seisab õues lumememm, kellel on sarved. Porgandi sõi Välk ära. Ma arvan, et nad said sõpradeks.
 
+Minu tänane ülesanne sulle: kes ehitab klotsidest kõige kõrgema torni, mis ise püsti püsib? Mõõda tulemus!
+
+P.S. Eilse mõistatuse vastus: pall.
+
 _Jahusena · Päkapikk Tuduja_
+
+> Valmista ette: ülesandeks klotsid
 
 ### 24. detsember 2026
 

@@ -89,10 +89,12 @@ const generalSummary = computed(() =>
     .join(' · ')
     .toLowerCase(),
 )
-// Long series are kept short enough for the puzzle poster cards unless "Pikk" is chosen.
+// Only short and medium series fit the puzzle poster cards; long letters add a riddle or a task.
 const lengthHint = computed(() =>
   type.value === 'letter' && draft.value.options.letter.count >= 7
-    ? 'Sarja kirjad mahuvad lühikese ja keskmise pikkusega pusleplakati kaartidele. „Pikk“ sobib tervele või poolele lehele.'
+    ? draft.value.general.length === 'long'
+      ? 'Pikkades kirjades on lisaks loole mõistatus või päkapiku ülesanne. Pusleplakatile need ei mahu.'
+      : 'Lühikesed ja keskmised kirjad mahuvad pusleplakati kaartidele.'
     : '',
 )
 </script>

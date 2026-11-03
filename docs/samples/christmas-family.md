@@ -38,7 +38,11 @@ Mina tegin jääst kuubiku, mille kõik ruudud on eri värvi – külmutasin vet
 
 Võitjat ei valitudki. Žürii – Jõuluvana – ütles, et kõik on võitjad, ja läks siis kiiresti tuppa, sest tal hakkas külm.
 
+Ja nüüd üks päkapiku mõistatus: Mida rohkem seda on, seda vähem näed. Vastuse kirjutan homme.
+
 _Sinu · Kõpsu-Mõpsu_
+
+> Vastus: pimedus
 
 ### 4. detsember 2026
 
@@ -50,7 +54,13 @@ See pole tavaline ehe. Jõuluööl näitab see täht Jõuluvana kelgule teed lä
 
 Eile õhtul oli ta veel paigal – nägin teda, kui tuled kustutasin. Täna hommikul oli kuuse tipp tühi. Uks oli lukus, aken kinni. Ma ei tea veel, mida sellest arvata. Aga ma kavatsen välja uurida.
 
+Minu tänane ülesanne sulle: voldi paber kolmnurgaks, lõika servadesse mustreid ja ava – iga lumehelves tuleb ainulaadne!
+
+P.S. Eilse mõistatuse vastus: pimedus.
+
 _Tervitustega põhjast · Kõpsu-Mõpsu_
+
+> Valmista ette: ülesandeks paber, käärid
 
 ### 5. detsember 2026
 
@@ -70,9 +80,13 @@ See ei ole tavaline sulg. Ta on hõbedane, minu nimetissõrme pikkune ja pimedas
 
 Ükski meie lind nii ei helenda. Panin sule klaaspurki ja purgi oma lauale. Täna öösel vaatan teda. Võib-olla räägib ta mulle midagi.
 
+Ja nüüd üks päkapiku mõistatus: See on sinu oma, aga teised kasutavad seda palju rohkem kui sina. Vastuse kirjutan homme.
+
 P.S. Täna on pühapäev, nii et sussis on üks komm.
 
 _Sinu vana sõber · Kõpsu-Mõpsu_
+
+> Vastus: nimi
 
 > Valmista ette: komm sussi
 
@@ -81,6 +95,8 @@ _Sinu vana sõber · Kõpsu-Mõpsu_
 **Kallis Ruben!**
 
 Salamissioon: joonista väike pilt ja peida see õhtul salaja Jasperi sussi juurde. Kui ta homme küsib, kust see tuli, ütle lihtsalt: „Ehk päkapikud?“
+
+P.S. Eilse mõistatuse vastus: nimi.
 
 _Tervitustega põhjast · Kõpsu-Mõpsu_
 
@@ -110,7 +126,11 @@ Otsisime riiulitelt, tööpinkide alt ja pudrupotist. Siis kuulsin ahju juurest 
 
 Ahju ääres kuivas minu vana kinnas. Selle sees, pöidla kohal, magas Pisi-Pätsi – soe, rahul ja natuke villane. Me ei äratanud teda. Teist kinnast kuivatan nüüd mujal.
 
+Minu tänane ülesanne sulle: paki paberisse mõni pisike asi ja kaunista pakk ise joonistatud mustritega.
+
 _Sinu · Kõpsu-Mõpsu_
+
+> Valmista ette: ülesandeks paber, pliiatsid või värvid
 
 ### 10. detsember 2026
 
@@ -132,13 +152,19 @@ Võtsin kaasa sule ja purgitäie hõbedast tolmu, mille Tipp-Topp köögiaknalt 
 
 Aga sel ööl, kui täht kadus, nägi ta väikest valgust, mis lendas madalalt üle lumevälja mäe poole. „Ta lendas nagu lind,“ ütles Huugo, „aga linnud ei helenda.“ Ma mõtlen selle üle.
 
+Ja nüüd üks päkapiku mõistatus: Hommikul käib neljal jalal, lõunal kahel ja õhtul kolmel. Vastuse kirjutan homme.
+
 _Mõtlikult · Kõpsu-Mõpsu_
+
+> Vastus: inimene
 
 ### 12. detsember 2026
 
 **Kallis Ruben!**
 
 Salamissioon: aita täna Jasperi ja Britaga mänguasjad ära koristada – enne, kui keegi seda palub.
+
+P.S. Eilse mõistatuse vastus: inimene.
 
 _Töökoja nurgast · Kõpsu-Mõpsu_
 
@@ -151,6 +177,8 @@ Pean tunnistama ühte viga. Töökojas otsustati eile, et tähe võttis harakas 
 Läksime kogu seltskonnaga Helmi pesa juurde. Pesas olid kolm teelusikat, üks võti, Jõuluvana sõrmkübar ja vispel, mida Tipp-Topp oli juba nädal aega otsinud. Tähte ei olnud.
 
 Helmi oli väga solvunud. Palusime vabandust ja Tipp-Topp küpsetas talle vabanduseks koogi. Helmi sõi koogi ära ja jättis lusikad endale. Õiglane.
+
+Minu tänane ülesanne sulle: vali kolm lemmikut jõululaulu ja laula need koos perega. Kes oskab kõige rohkem salme peast?
 
 P.S. Täna on pühapäev, nii et sussis on üks komm.
 
@@ -168,7 +196,11 @@ Joonistasin kolm pilti. Esimesel vaatab põhjapõder Välk peeglisse. Teisel nä
 
 Joonistades mõtlesin Miki Hiire koomiksitele, mida sina loed: seal on ka alati hetk, kus kõik läheb viltu – ja just siis läheb huvitavaks. Minu lugu on muide tõsi. Välk liigub juba neljandat päeva väga ettevaatlikult.
 
+Ja nüüd üks päkapiku mõistatus: Olen pruun ja lõhnan kaneeli järele. Mind lõigatakse vormiga ja küpsetatakse ahjus. Vastuse kirjutan homme.
+
 _Töökoja nurgast · Kõpsu-Mõpsu_
+
+> Vastus: piparkook
 
 ### 15. detsember 2026
 
@@ -181,6 +213,8 @@ DNILEHÄT
 Sinusugusele salakoodide lahendajale on see ilmselt kerge. Mina lugesin seda kolm korda valesti.
 
 Kui tahad, loe linnu nimi välja – homme kirjutan, mida raamat temast rääkis.
+
+P.S. Eilse mõistatuse vastus: piparkook.
 
 _Sinu · Kõpsu-Mõpsu_
 
@@ -196,9 +230,13 @@ Valin alati kõige ilusama tee: üle külmunud oja, vana kuuse alt ja läbi kits
 
 Jõudsin finišisse viimasena, kui teised juba kakaod jõid. Tipp-Topp oli mulle tassi alles hoidnud. Kakao oli küll jahtunud, aga ma ei öelnud talle seda.
 
+Minu tänane ülesanne sulle: ehita toast takistusrada: üle padja, laua alt läbi, ümber tooli. Täiskasvanu võtab aega!
+
 P.S. Raamatu sõna oli TÄHELIND. Raamat kirjutab, et tähelinnud korjavad talvel kokku valgust, mis on kuhugi kaotsi läinud – ja et inimesed näevad neid väga harva.
 
 _Mõtlikult · Kõpsu-Mõpsu_
+
+> Valmista ette: ülesandeks tekid ja padjad
 
 ### 17. detsember 2026
 
@@ -234,9 +272,13 @@ Esimesed üksteist korda maandus ta hanges. Kaheteistkümnendal korral tabas ta 
 
 Kui ukse avasin, seisis seal lumest põhjapõder: välja paistsid ainult sarved ja väga uhke nägu. Minu arvates oli see edu. Välk arvab, et homme proovib ta silmad lahti.
 
+Ja nüüd üks päkapiku mõistatus: Käib, aga jalgu ei ole; tiksub, aga südant ei ole. Vastuse kirjutan homme.
+
 P.S. Eilse eksamiküsimuse vastus: 14 jalga. Üks noor päkapikk vastas 18, sest ta luges ka laua jalad kokku.
 
 _Töökoja nurgast · Kõpsu-Mõpsu_
+
+> Vastus: kell
 
 ### 20. detsember 2026
 
@@ -244,7 +286,7 @@ _Töökoja nurgast · Kõpsu-Mõpsu_
 
 Tee täna Jasperiga midagi toredat: mängige koos või ajage teineteist naerma. Tipp-Topp arvab, et Jasperile meeldiks see väga.
 
-P.S. Täna on pühapäev, nii et sussis on üks komm.
+P.S. Eilse mõistatuse vastus: kell. Täna on pühapäev, nii et sussis on üks komm.
 
 _Tervitustega põhjast · Kõpsu-Mõpsu_
 
@@ -260,6 +302,8 @@ Mäe taga, sinna, kuhu Huugo valgust lendamas nägi, kasvab vana kuusk. Kõige k
 
 Ema-lind ei tahtnud kellelegi halba. Talveööd on siin pikad ja pimedad ning pojad kartsid. Ta võttis kõige ilusama valguse, mida nägi. Keegi meist ei suutnud tema peale pahane olla.
 
+Minu tänane ülesanne sulle: korralda perele kontsert: laulud, pillid potikaantest ja kummardus lõpus!
+
 _Sinu vana sõber · Kõpsu-Mõpsu_
 
 ### 22. detsember 2026
@@ -272,7 +316,11 @@ Aga linnupojad ei pea enam pimedas olema. Ehitasin neile laterna: vana moosipurk
 
 Täna hommikul riputasime laterna pesa kõrvale. Täht on jälle kuuse otsas ja särab natuke eredamalt kui enne. Või mulle ainult tundub nii.
 
+Ja nüüd üks päkapiku mõistatus: Talvel ja suvel ühte karva. Vastuse kirjutan homme.
+
 _Tervitustega põhjast · Kõpsu-Mõpsu_
+
+> Vastus: kuusk
 
 ### 23. detsember 2026
 
@@ -283,6 +331,10 @@ Täna hommikul leidsin oma tööpingilt kokkumurtud sedeli. Allkirja polnud, ain
 Kui tähed kustuvad, / Astu trepist üles. / Katusel on / Aega ja / Ootab üks tass.
 
 Esmapilgul tundub see lihtsalt kehva luuletusena. Salakoodimeister aga teab, et nii kehv luuletus ei saa olla juhuslik. Mina taipasin alles kolmanda tassi tee juures, kust otsida.
+
+Minu tänane ülesanne sulle: tee täna kellelegi heategu nii, et ta ei saa teada, kes see oli – täpselt nagu päkapikud.
+
+P.S. Eilse mõistatuse vastus: kuusk.
 
 _Mõtlikult · Kõpsu-Mõpsu_
 
@@ -340,7 +392,11 @@ Kirjutasin ise ühe mõistatuse: „Mis on valge ja külm ning kaob, kui seda so
 
 Nüüd saan aru, miks see sulle nii meeldib. Homme proovin uuesti!
 
+Ja nüüd üks päkapiku mõistatus: Kes jätab detsembris aknalaual olevasse sussi kommi? Vastuse kirjutan homme.
+
 _Jahusena · Tipp-Topp_
+
+> Vastus: päkapikk
 
 ### 4. detsember 2026
 
@@ -351,6 +407,10 @@ Kujuta ette: meie töökoja kuuse otsast on täht kadunud!
 Eile õhtul oli ta veel seal, ma olen kindel. Ta särab nii, et isegi minu tuppa paistab valgust. Aga täna hommikul oli kuuse tipp tühi.
 
 Ilma täheta ei leia Jõuluvana jõuluööl teed. Kõik päkapikud otsivad. Mina otsisin ka – isegi pudrupotist. Seal teda ei olnud.
+
+Minu tänane ülesanne sulle: täiskasvanu süütab küünla. Räägi kordamööda, mis oli sel aastal kõige toredam hetk.
+
+P.S. Eilse mõistatuse vastus: päkapikk.
 
 _Tervitustega köögist · Tipp-Topp_
 
@@ -372,9 +432,13 @@ Ta on avastanud riisipudru. Igal hommikul seisab ta köögiukse taga ja ootab, k
 
 Kust ta selle mõtte sai? Kahtlustan, et keegi on talle sinust rääkinud.
 
+Ja nüüd üks päkapiku mõistatus: Mul on paber ümber ja pael peal, sees on üllatus. Vastuse kirjutan homme.
+
 P.S. Täna on pühapäev, nii et sussis on üks komm.
 
 _Sinu sõber · Tipp-Topp_
+
+> Vastus: kingitus
 
 > Valmista ette: komm sussi
 
@@ -388,6 +452,10 @@ Eile oli nii tugev tuisk, et aknast ei paistnud midagi. Huuuu! tegi tuul.
 
 Nad sõid ära kõik lumememmede porgandid. Nüüd elavad nad puuriida taga ja ma viin neile igal hommikul kapsalehti.
 
+Minu tänane ülesanne sulle: vali lemmikmuinasjutt ja mängi see mänguasjadega ette. Lõpp võib olla täiesti uus!
+
+P.S. Eilse mõistatuse vastus: kingitus.
+
 _Sinu · Tipp-Topp_
 
 ### 8. detsember 2026
@@ -400,7 +468,11 @@ Täna hommikul vaatasin köögiaknast välja ja aknalaual oli hõbedane tolm. Mi
 
 Kõpsu-Mõpsu ütles, et see on väga tähtis, ja korjas tolmu pintsliga purki. Ma tunnen end nüüd nagu päris detektiiv.
 
+Ja nüüd üks päkapiku mõistatus: Mul on neli jalga ja selg, aga ma ei kõnni kunagi. Vastuse kirjutan homme.
+
 _Kiirelt-kiirelt · Tipp-Topp_
+
+> Vastus: tool
 
 ### 9. detsember 2026
 
@@ -411,6 +483,10 @@ Eile õhtul kadus Pisi-Pätsi ära! Ta on nii pisike, et teda on raske leida.
 Me otsisime igalt poolt. Mina vaatasin isegi pudrupotti. Siis kuulsime: norr… norr…
 
 Ta magas ahju ääres kuivava kinda sees! Täpselt pöidla kohal. Nii armas, et keegi ei raatsinud teda äratada.
+
+Minu tänane ülesanne sulle: mängi mängu „Ma näen midagi, mis on…“ ja ütle ainult värv või kuju. Teised arvavad.
+
+P.S. Eilse mõistatuse vastus: tool.
 
 _Hüpates · Tipp-Topp_
 
@@ -440,9 +516,13 @@ Kõige naljakam oli see, et Kõpsu-Mõpsu istus terve õhtu katusel ja ootas nei
 
 Mina võitsin virmaliste võistluse ja sain kõige pehmema pingi. Aga ma hoian sellel ka talle kohta. Ta on ju minu sõber.
 
+Ja nüüd üks päkapiku mõistatus: Ütlen „mõmm“ ja magan terve talve. Vastuse kirjutan homme.
+
 P.S. Eilse mõistatuse vastus oli: lumi. Välk arvas, et jäätis.
 
 _Hüpates · Tipp-Topp_
+
+> Vastus: karu
 
 ### 12. detsember 2026
 
@@ -454,7 +534,13 @@ Ma segasin ja segasin. Aga puder kasvas ja kasvas. Mulks! Mulks! Lõpuks ronis t
 
 Jõuluvana sõi kaks kaussi otse trepi pealt ja ütles: „Parim puder!“ Minu põsed läksid punaseks. Ja kleepuvaks.
 
+Minu tänane ülesanne sulle: joonista kaheksale kaardile neli paari pilte ja mängi nendega mälumängu.
+
+P.S. Eilse mõistatuse vastus: karu.
+
 _Jahusena · Tipp-Topp_
+
+> Valmista ette: ülesandeks paber, pliiatsid või värvid, käärid
 
 ### 13. detsember 2026
 
@@ -466,9 +552,13 @@ Me läksime tema pesa juurde. Ja mis seal oli? Lusikad, üks võti… ja minu vi
 
 Helmi oli meie peale pahane. Ma küpsetasin talle vabanduseks koogi. Ta sõi selle ära ja andis mulle mu vispli tagasi. Lusikad jättis endale.
 
+Ja nüüd üks päkapiku mõistatus: Olen ümmargune ja põrkan. Mind visatakse ja lüüakse jalaga. Vastuse kirjutan homme.
+
 P.S. Täna on pühapäev, nii et sussis on üks komm.
 
 _Sinu · Tipp-Topp_
+
+> Vastus: pall
 
 > Valmista ette: komm sussi
 
@@ -482,7 +572,13 @@ Proovisin vett juua, hinge kinni hoida ja pea peal seista. Ei aidanud. Kõlin! K
 
 Lõpuks hiilis põhjapõder Välk mulle selja taha ja ütles kõrva: „Pöö!“ Ehmusin nii, et luksumine läks ära. Kellukesed on nüüd vaiksed. Peaaegu kahju.
 
+Minu tänane ülesanne sulle: joonista jõulukaart ja kirjuta sinna üks soe soov. Kaardi võib postiga saata või ise üle anda.
+
+P.S. Eilse mõistatuse vastus: pall.
+
 _Kiirelt-kiirelt · Tipp-Topp_
+
+> Valmista ette: ülesandeks paber, pliiatsid või värvid
 
 ### 15. detsember 2026
 
@@ -502,7 +598,11 @@ Esimesena jõudis finišisse põhjapõder Välk, kuigi ta ei olnudki võistleja 
 
 Kõpsu-Mõpsu tuli viimasena. Ta ütles, et valis ilusama tee. Mina hoidsin talle kakaotassi alles.
 
+Ja nüüd üks päkapiku mõistatus: Kes tuleb jõuluööl, punane kuub seljas ja valge habe ees? Vastuse kirjutan homme.
+
 _Sinu sõber · Tipp-Topp_
+
+> Vastus: Jõuluvana
 
 ### 17. detsember 2026
 
@@ -513,6 +613,10 @@ Mul oli eile suurepärane plaan. Kes korjab öösel läikivaid asju, see armasta
 Küpsetasin tähekujulised küpsised ja panin need õhtul mäe peale. Hommikul olid küpsised kadunud! Lumel olid pisikesed linnujäljed ja kaks hõbedast sulge.
 
 Kõpsu-Mõpsu vaatas sulgi ja ütles, et nüüd teame, kuhu minna. Mäe taga on vana kuusk. Varsti läheme vaatama!
+
+Minu tänane ülesanne sulle: suuna taskulamp seinale ja tee kätega varjuloomi. Kas keegi arvab ära, mis loom see on?
+
+P.S. Eilse mõistatuse vastus: Jõuluvana.
 
 _Hüpates · Tipp-Topp_
 
@@ -526,7 +630,11 @@ Otsisin terve päeva. Kapist, voodi alt, pesukorvist. Ei kusagil!
 
 Õhtul tuli põhjapõder Välk tallist välja ja see sokk oli tal ühe kõrva peal. Ta ei öelnud midagi – ta on ju põder –, aga ta nägi välja väga uhke. Las kannab.
 
+Minu tänane ülesanne sulle: voldi paberlennukid ja vaata, kelle oma lendab kõige kaugemale. Proovi erinevaid voltimisviise!
+
 _Kiirelt-kiirelt · Tipp-Topp_
+
+> Valmista ette: ülesandeks paber
 
 ### 19. detsember 2026
 
@@ -537,6 +645,8 @@ Oi-oi! Ma ehitasin eile terve päeva lumememme. Tal oli porgandnina, kaks nööp
 Õhtul harjutas põhjapõder Välk katusele maandumist. Ta libises katuselt alla – ja maandus otse minu lumememme peale! Põmm!
 
 Nüüd seisab õues lumememm, kellel on sarved. Porgandi sõi Välk ära. Ma arvan, et nad said sõpradeks.
+
+Minu tänane ülesanne sulle: mõtle välja kolm mõistatust kodus leiduvate asjade kohta ja lase teistel ära arvata.
 
 _Sinu · Tipp-Topp_
 
@@ -562,6 +672,8 @@ Ta oli mäe taga vana kuuse otsas linnupesas. Pesas olid kolm pisikest linnupoeg
 
 Ema-lind oli tähe sinna viinud, sest pojad kartsid pimedat. Me ei saanud tema peale üldse pahane olla. Pojad olid nii armsad!
 
+Minu tänane ülesanne sulle: loe kokku, mitu punast ehet on kuusel. Aga mitu kuldset? Kumba on rohkem?
+
 _Tervitustega köögist · Tipp-Topp_
 
 ### 22. detsember 2026
@@ -574,7 +686,11 @@ Aga linnupojad said endale päris oma laterna. Kõpsu-Mõpsu ehitas selle moosip
 
 Nüüd on kõigil valge: kuusel, kelgul ja linnupesal. Ja minul on mälestuseks üks hõbedane sulg.
 
+Minu tänane ülesanne sulle: kes ehitab klotsidest kõige kõrgema torni, mis ise püsti püsib? Mõõda tulemus!
+
 _Sinu · Tipp-Topp_
+
+> Valmista ette: ülesandeks klotsid
 
 ### 23. detsember 2026
 
@@ -586,7 +702,11 @@ Mina läksin eile sinna paelu tooma – ja mul hakkas nina sügelema. Aaa… aaa
 
 Nüüd sädeleb kõik: seinad, laud, kass ja Jõuluvana habe. Jõuluvana vaatas peeglisse ja ütles, et nii pidulik pole ta kunagi olnud.
 
+Minu tänane ülesanne sulle: aita valmistada pere hommikusöök: kata laud ja pane igale taldrikule väike üllatus.
+
 _Jahusena · Tipp-Topp_
+
+> Valmista ette: ülesandeks köögitarbed ja toiduained
 
 ### 24. detsember 2026
 

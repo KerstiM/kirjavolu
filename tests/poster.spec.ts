@@ -84,8 +84,9 @@ describe('dates and default layout', () => {
     expect(items[23]?.date).toBe('2026-12-24')
   })
 
-  it('long letter series default to the poster, toddler series to simple cards', () => {
-    expect(defaultLayoutFor(makeRequest('letter', { occasionId: 'christmas', children: [RUBEN] }))).toBe('poster')
+  it('letter series default to slipper cards when long, the poster when medium, toddler series to simple cards', () => {
+    expect(defaultLayoutFor(makeRequest('letter', { occasionId: 'christmas', children: [RUBEN] }))).toBe('cards')
+    expect(defaultLayoutFor(makeRequest('letter', { occasionId: 'christmas', children: [RUBEN], general: { length: 'medium' } }))).toBe('poster')
     expect(defaultLayoutFor(makeRequest('letter', { occasionId: 'christmas', children: [BRITA] }))).toBe('mini')
     expect(defaultLayoutFor(makeRequest('letter', { options: { count: 1 } }))).toBe('page')
   })

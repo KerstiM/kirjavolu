@@ -119,11 +119,19 @@ const cardLabel = computed(() => {
   if (allToddlers.value) return 'Väikelapse kaardid'
   return toddlers.value > 0 ? 'Plakat ja väikelapse kaardid' : 'Pusleplakat'
 })
+/**
+ * Long letters do not fit the puzzle poster cards, so the poster is not offered for them; the
+ * text is never cut to fit. Toddler cards stay, as a toddler's texts do not grow.
+ */
+const posterFits = computed(() => {
+  const request = content.value?.request
+  return !(request?.contentType === 'letter' && request.general.length === 'long' && !allToddlers.value)
+})
 const layoutOptions = computed<{ value: PrintableLayout; label: string }[]>(() => [
   { value: 'page', label: 'Terve leht' },
   { value: 'half', label: 'Pool lehte' },
   { value: 'cards', label: 'Kaardid (4 lehel)' },
-  { value: 'poster', label: cardLabel.value },
+  ...(posterFits.value ? [{ value: 'poster' as const, label: cardLabel.value }] : []),
 ])
 /**
  * The three ways most families print; the other layouts and settings wait under "Rohkem valikuid".
@@ -135,7 +143,7 @@ const presetOptions = computed<{ value: PrintableLayout; label: string }[]>(() =
   const series = (current?.items.length ?? 0) >= 3
   return [
     { value: 'cards', label: letters ? 'Kaardid sussi sisse' : 'Kaardid' },
-    ...(series || layout.value === 'poster' ? [{ value: 'poster' as const, label: cardLabel.value }] : []),
+    ...((series || layout.value === 'poster') && posterFits.value ? [{ value: 'poster' as const, label: cardLabel.value }] : []),
     { value: 'page', label: 'Terve leht' },
   ]
 })
@@ -153,6 +161,10 @@ const rawLayout = computed(() => content.value?.layout ?? 'page')
 const layout = computed({
   get: () => (rawLayout.value === 'mini' ? 'poster' : rawLayout.value),
   set: (value: PrintableLayout) => store.setLayout(props.id, value),
+})
+// Letters made long while on the poster move to the slipper cards.
+watch(posterFits, (fits) => {
+  if (!fits && layout.value === 'poster') layout.value = 'cards'
 })
 const certificateStyle = computed<CertificateStyle | undefined>(() =>
   content.value?.request.contentType === 'certificate' ? content.value.request.options.style : undefined,
