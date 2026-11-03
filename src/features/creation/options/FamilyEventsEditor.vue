@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Plus, Trash2 } from 'lucide-vue-next'
+import DateInput from '../../../components/ui/DateInput.vue'
 import type { ChildProfile, EventKind, FamilyEvent } from '../../../domain/models'
 import { EVENT_TEMPLATES } from '../../../data/templates/events'
 import { eventIndex } from '../../../domain/generators/familyEvents'
@@ -57,13 +58,12 @@ function outOfRange(event: FamilyEvent): boolean {
     <div v-for="event in list" :key="event.id" class="event">
       <label class="event__field">
         <span class="event__label">Kuupäev</span>
-        <input
-          class="input"
-          type="date"
-          :value="event.date"
+        <DateInput
+          :model-value="event.date"
           :min="startDate"
           :max="lastDate"
-          @input="patch(event.id, { date: ($event.target as HTMLInputElement).value })"
+          label="Sündmuse kuupäev"
+          @update:model-value="(date) => patch(event.id, { date })"
         />
       </label>
       <label class="event__field">
@@ -107,6 +107,8 @@ function outOfRange(event: FamilyEvent): boolean {
 
 <style scoped lang="scss">
 .events {
+  // Sized by the room it has (the wizard page or the narrow preview panel), not the screen.
+  container: events / inline-size;
   border: 0;
   padding: 0;
   margin: 0;
@@ -198,11 +200,19 @@ function outOfRange(event: FamilyEvent): boolean {
     cursor: not-allowed;
   }
 }
+// A sentence, not a chip: a pill shape looks clumsy once it wraps onto several lines.
 .events__rule {
   align-self: flex-start;
+  align-items: flex-start;
   margin-top: 0.4rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: var(--radius-sm);
+  input {
+    flex: none;
+    margin-top: 0.2rem;
+  }
 }
-@media (max-width: 720px) {
+@container events (max-width: 720px) {
   .event {
     grid-template-columns: 1fr 1fr auto;
   }
@@ -212,7 +222,7 @@ function outOfRange(event: FamilyEvent): boolean {
   }
 }
 // On a phone the date shares a row with the remove button; the event and its detail get full rows.
-@media (max-width: 520px) {
+@container events (max-width: 520px) {
   .event {
     grid-template-columns: 1fr auto;
   }

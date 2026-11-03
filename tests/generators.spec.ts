@@ -351,3 +351,41 @@ describe('TemplateGenerator', () => {
     expect(templateGenerator.label).toContain('ilma tehisintellektita')
   })
 })
+
+describe('any number of letters from 1 to 24', () => {
+  it('makes exactly as many letters as asked, for every count and occasion kind', async () => {
+    for (let count = 1; count <= 24; count++) {
+      for (const occasionId of ['christmas', 'birthday'] as const) {
+        const request = makeRequest('letter', { occasionId, children: [JASPER], options: { count, startDate: '2026-12-01' } })
+        const content = await templateGenerator.generate(request)
+        expect(content.items, `${occasionId}, ${count} kirja`).toHaveLength(count)
+        expect(content.items.every((item) => item.body.trim().length > 0)).toBe(true)
+      }
+    }
+  })
+
+  it('refuses 0 and more than 24 letters', async () => {
+    for (const count of [0, 25, 2.5]) {
+      await expect(templateGenerator.generate(makeRequest('letter', { options: { count } }))).rejects.toBeInstanceOf(GenerationError)
+    }
+  })
+})
+
+describe('letters without a date', () => {
+  it('numbers a series instead of dating it, per child, and keeps the start date for the plan', async () => {
+    const dated = await templateGenerator.generate(makeRequest('letter', { occasionId: 'christmas', children: [RUBEN, JASPER], options: { count: 7, startDate: '2026-12-01' } }))
+    const undated = await templateGenerator.generate(
+      makeRequest('letter', { occasionId: 'christmas', children: [RUBEN, JASPER], options: { count: 7, startDate: '2026-12-01', dated: false } }),
+    )
+    expect(dated.items[0]?.label).toMatch(/detsember/)
+    expect(undated.items.every((item) => item.date === undefined && !/detsember/.test(item.label))).toBe(true)
+    const ruben = undated.items.filter((item) => item.childId === RUBEN.id).map((item) => item.label)
+    expect(ruben).toEqual(['1. kiri', '2. kiri', '3. kiri', '4. kiri', '5. kiri', '6. kiri', '7. kiri'])
+    expect(undated.instructions.flatMap((block) => block.steps).join(' ')).toContain('Kirjad on nummerdatud')
+  })
+
+  it('labels a single undated letter with its occasion, not a date', async () => {
+    const content = await templateGenerator.generate(makeRequest('letter', { occasionId: 'christmas', options: { count: 1, startDate: '2026-12-01', dated: false } }))
+    expect(content.items[0]).toMatchObject({ label: 'Jõulud', date: undefined })
+  })
+})

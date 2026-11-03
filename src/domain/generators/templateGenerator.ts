@@ -1,4 +1,5 @@
-import type { GeneratedContent, GeneratedItem, GenerationRequest, PrintableLayout } from '../models'
+import type { GeneratedContent, GeneratedItem, GenerationRequest, PrintableLayout, RequestFor } from '../models'
+import { getOccasion } from '../occasions/occasions'
 import { usesSmallCards } from './audience'
 import { getContentType } from '../contentTypes'
 import { validateGenerationRequest } from '../validation'
@@ -24,11 +25,14 @@ export class GenerationError extends Error {
 /** Runs the type-specific generator. Pure and deterministic for a given request + variants. */
 export function runTemplates(request: GenerationRequest, variants: readonly number[] = []): TypeResult {
   switch (request.contentType) {
-    case 'letter':
-      if (usesScenarioEngine(request)) return generateScenarioLetters(request, variants)
-      return request.options.mode === 'linked' && request.children.length > 1
-        ? generateLinkedLetters(request, variants)
-        : generateLetters(request, variants)
+    case 'letter': {
+      const result = usesScenarioEngine(request)
+        ? generateScenarioLetters(request, variants)
+        : request.options.mode === 'linked' && request.children.length > 1
+          ? generateLinkedLetters(request, variants)
+          : generateLetters(request, variants)
+      return request.options.dated === false ? undated(result, request) : result
+    }
     case 'treasure-hunt':
       return generateTreasureHunt(request, variants)
     case 'story':
@@ -40,6 +44,22 @@ export function runTemplates(request: GenerationRequest, variants: readonly numb
     case 'certificate':
       return generateCertificates(request, variants)
   }
+}
+
+/** "Ilma kuupäevata": each child's letters are numbered instead of dated; a single letter keeps its title. */
+function undated(result: TypeResult, request: RequestFor<'letter'>): TypeResult {
+  if (request.options.count === 1) {
+    // A dated single letter is labelled with its date; undated, with the occasion instead.
+    const label = getOccasion(request.occasionId).name
+    return { ...result, items: result.items.map((item) => ({ ...item, date: undefined, label })) }
+  }
+  const seen = new Map<string, number>()
+  const items = result.items.map((item) => {
+    const n = (seen.get(item.childId ?? '') ?? 0) + 1
+    seen.set(item.childId ?? '', n)
+    return { ...item, date: undefined, label: `${n}. kiri` }
+  })
+  return { ...result, items }
 }
 
 const MAX_REGENERATION_ATTEMPTS = 25

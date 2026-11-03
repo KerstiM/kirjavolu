@@ -34,9 +34,11 @@ describe('validateGenerationRequest', () => {
     expect(validateGenerationRequest(makeRequest('story', { children: [] }))).toContain('Vali vähemalt üks laps.')
   })
 
-  it('rejects unsupported letter counts', () => {
-    const request = makeRequest('letter', { options: { count: 5 as 1 } })
-    expect(validateGenerationRequest(request)).toContain('Kirjade arv peab olema 1, 3, 7 või 24.')
+  it('accepts any whole number of letters from 1 to 24, and nothing else', () => {
+    for (const count of [1, 5, 13, 24]) expect(validateGenerationRequest(makeRequest('letter', { options: { count } }))).toEqual([])
+    for (const count of [0, 25, 2.5]) {
+      expect(validateGenerationRequest(makeRequest('letter', { options: { count } }))).toContain('Kirjade arv peab olema 1–24.')
+    }
   })
 
   it('checks treasure hunt clue range', () => {
