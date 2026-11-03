@@ -106,7 +106,7 @@ describe('what is ready in the new design', () => {
     await open('/uus-disain')
     const types = await screen.findByRole('region', { name: 'Mida meisterdame?' })
     expect(within(types).getByRole('link', { name: /Personaalne lugu/ })).toHaveTextContent('Jõulupass')
-    expect(within(types).getByRole('link', { name: /Maagiline kiri/ })).toHaveTextContent('Isiklik versioon lapse ja pere järgi')
+    expect(within(types).getByRole('link', { name: /Maagiline kiri/ })).toHaveTextContent('Jõulupassiga: isiklik versioon lapse ja pere järgi')
     expect(within(types).getByText('Aardejaht').closest('.postcard')).not.toHaveTextContent('Jõulupass')
     expect(within(types).getByText('Aardejaht').closest('.postcard')).not.toHaveTextContent('Tasuta')
     const band = screen.getByRole('region', { name: 'Jõulupass' })
