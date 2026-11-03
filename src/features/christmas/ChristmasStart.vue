@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, provide, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { ArrowRight } from 'lucide-vue-next'
+import { ArrowRight, Plus, X } from 'lucide-vue-next'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import TopicPicker from '../children/TopicPicker.vue'
 import type { TopicId } from '../../data/topics'
@@ -28,9 +28,26 @@ const creations = useCreationsStore()
 
 // Several children make one linked family series, as in the wizard.
 const pickedIds = ref<string[]>(children.children[0] ? [children.children[0].id] : [])
-const name = ref('')
-const age = ref<number | ''>('')
-const adding = ref(children.children.length === 0)
+/** New children typed in here, any number of them: all are saved when the letters are made. */
+interface NewKid {
+  key: number
+  name: string
+  age: number | ''
+}
+let nextKey = 0
+const blankKid = (): NewKid => ({ key: nextKey++, name: '', age: '' })
+const newKids = ref<NewKid[]>(children.children.length === 0 ? [blankKid()] : [])
+const adding = computed(() => newKids.value.length > 0)
+function addKid(): void {
+  newKids.value = [...newKids.value, blankKid()]
+}
+function removeKid(key: number): void {
+  newKids.value = newKids.value.filter((kid) => kid.key !== key)
+}
+/** The "+ Uus laps" chip: on adds a row, off takes the typed rows away. */
+function toggleAdding(on: boolean): void {
+  newKids.value = on ? [blankKid()] : []
+}
 const error = ref('')
 const busy = ref(false)
 
@@ -38,18 +55,21 @@ const picked = computed(() => children.children.filter((child) => pickedIds.valu
 function toggle(id: string): void {
   pickedIds.value = pickedIds.value.includes(id) ? pickedIds.value.filter((other) => other !== id) : [...pickedIds.value, id]
 }
-const count = computed(() => picked.value.length + (adding.value ? 1 : 0))
+// A row nobody has typed in yet does not count, so the button never says more than there are.
+const typed = (kid: NewKid) => kid.name.trim() !== '' || kid.age !== ''
+const filledKids = computed(() => newKids.value.filter(typed))
+const count = computed(() => picked.value.length + filledKids.value.length)
 
 // Optional, but each picked topic brings its own hand-written stories into the free letters.
 // Asked here only for one child; with several, each brings the topics of its own profile.
-const single = computed(() => (count.value === 1 ? (adding.value ? null : picked.value[0]) : undefined))
+const single = computed(() => (count.value === 1 ? (picked.value[0] ?? null) : undefined))
 const topics = ref<TopicId[]>([])
 watch(single, (child) => (topics.value = [...(child?.topics ?? [])]), { immediate: true })
 
 onMounted(() => track('christmas_start', {}))
 
 function childrenForLetters(): ChildProfile[] | null {
-  if (!count.value) {
+  if (!count.value && !adding.value) {
     error.value = 'Vali, kellele kirjad on.'
     return null
   }
@@ -59,29 +79,40 @@ function childrenForLetters(): ChildProfile[] | null {
     children.update(id, { ...profile, topics: topics.value })
     return children.byId(id) ?? child
   })
-  if (!adding.value) return chosen
-  const added = newChild()
-  return added ? [...chosen, added] : null
-}
-
-function newChild(): ChildProfile | null {
-  const trimmed = name.value.trim()
-  const years = Number(age.value)
-  if (!trimmed) {
+  if (!filledKids.value.length) {
+    if (chosen.length) return chosen
     error.value = 'Kirjuta lapse nimi.'
     return null
   }
-  if (age.value === '' || !Number.isInteger(years) || years < 0 || years > 14) {
-    error.value = 'Kirjuta lapse vanus (0–14).'
-    return null
+  const added = addNewKids()
+  return added ? [...chosen, ...added] : null
+}
+
+/** Checks every typed row first, so nobody is saved when one of them still lacks a name or age. */
+function addNewKids(): ChildProfile[] | null {
+  const many = newKids.value.length > 1
+  for (const [index, kid] of newKids.value.entries()) {
+    if (!typed(kid)) continue
+    const whose = many ? `${index + 1}. lapse` : 'lapse'
+    const years = Number(kid.age)
+    if (!kid.name.trim()) {
+      error.value = `Kirjuta ${whose} nimi.`
+      return null
+    }
+    if (kid.age === '' || !Number.isInteger(years) || years < 0 || years > 14) {
+      error.value = `Kirjuta ${whose} vanus (0–14).`
+      return null
+    }
   }
-  track('child_added', { from: 'wizard' })
-  return children.add({
-    ...emptyChildDraft(),
-    name: trimmed,
-    age: years,
-    readingLevel: readingLevelForAge(years),
-    topics: single.value === null ? topics.value : [],
+  return filledKids.value.map((kid) => {
+    track('child_added', { from: 'wizard' })
+    return children.add({
+      ...emptyChildDraft(),
+      name: kid.name.trim(),
+      age: Number(kid.age),
+      readingLevel: readingLevelForAge(Number(kid.age)),
+      topics: single.value === null ? topics.value : [],
+    })
   })
 }
 
@@ -127,7 +158,7 @@ async function start(): Promise<void> {
             {{ child.name }}
           </label>
           <label class="kid" :class="{ 'is-active': adding }">
-            <input v-model="adding" type="checkbox" class="visually-hidden" />
+            <input type="checkbox" class="visually-hidden" :checked="adding" @change="toggleAdding(($event.target as HTMLInputElement).checked)" />
             + Uus laps
           </label>
         </fieldset>
@@ -136,16 +167,28 @@ async function start(): Promise<void> {
         </p>
         <p v-else class="christmas-start__who">Kellele?</p>
 
-        <div v-if="adding" class="christmas-start__new">
+        <div v-for="(kid, index) in newKids" :key="kid.key" class="christmas-start__new">
           <label class="field">
-            <span>Lapse nimi</span>
-            <input v-model="name" class="input" type="text" autocomplete="off" enterkeyhint="next" />
+            <span>{{ newKids.length > 1 ? `${index + 1}. lapse nimi` : 'Lapse nimi' }}</span>
+            <input v-model="kid.name" class="input" type="text" autocomplete="off" enterkeyhint="next" />
           </label>
           <label class="field">
             <span>Vanus</span>
-            <input v-model.number="age" class="input" type="number" min="0" max="14" inputmode="numeric" enterkeyhint="go" />
+            <input v-model.number="kid.age" class="input" type="number" min="0" max="14" inputmode="numeric" enterkeyhint="go" />
           </label>
+          <button
+            v-if="newKids.length > 1 || children.children.length"
+            type="button"
+            class="christmas-start__remove"
+            :aria-label="kid.name.trim() ? `Eemalda ${kid.name.trim()}` : `Eemalda ${index + 1}. laps`"
+            @click="removeKid(kid.key)"
+          >
+            <X :size="16" aria-hidden="true" />
+          </button>
         </div>
+        <button v-if="adding" type="button" class="christmas-start__more" @click="addKid">
+          <Plus :size="16" aria-hidden="true" /> Lisa veel üks laps
+        </button>
 
         <!-- Folded, so the button stays in sight; the summary says what picking a topic brings. -->
         <details v-if="count <= 1" class="christmas-start__topics">
@@ -243,10 +286,40 @@ async function start(): Promise<void> {
 }
 .christmas-start__new {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+  align-items: end;
   gap: 0.75rem;
   align-self: stretch;
   text-align: left;
+}
+.christmas-start__remove {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink-faint);
+  cursor: pointer;
+  &:hover {
+    color: var(--danger);
+  }
+}
+.christmas-start__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  align-self: flex-start;
+  min-height: 2.75rem;
+  padding: 0.4rem 0.9rem;
+  border: 1.5px dashed var(--lavender-mid);
+  border-radius: 999px;
+  background: none;
+  color: var(--lavender-ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
 }
 .field {
   display: flex;

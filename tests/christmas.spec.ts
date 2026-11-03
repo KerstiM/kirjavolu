@@ -103,6 +103,52 @@ describe('Christmas letters: who for and the free letters', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Rubeni 24 jõulukirja on valmis' })).toBeInTheDocument()
   })
 
+  it('lets a new family type in several children at once', async () => {
+    const { router, pinia } = await open('/joulukirjad')
+    const user = userEvent.setup()
+    await user.type(await screen.findByLabelText('Lapse nimi'), 'Mia')
+    await user.type(screen.getByLabelText('Vanus'), '5')
+    await user.click(screen.getByRole('button', { name: /Lisa veel üks laps/ }))
+    // The second row says whose it is, and an empty row is caught before anyone is saved.
+    await user.type(screen.getByLabelText('2. lapse nimi'), 'Oskar')
+    await user.click(screen.getByRole('button', { name: /Loo 2 lapsele tasuta kirjad/ }))
+    expect(await screen.findByRole('alert')).toHaveTextContent('Kirjuta 2. lapse vanus (0–14).')
+    expect(useChildrenStore(pinia).children).toHaveLength(0)
+    await user.type(screen.getAllByLabelText('Vanus')[1]!, '9')
+    await user.click(screen.getByRole('button', { name: /Loo 2 lapsele tasuta kirjad/ }))
+    await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/joulukirjad\//), { timeout: 5000 })
+    expect(await screen.findByRole('heading', { level: 1, name: 'Mia ja Oskari jõulukirjad on valmis' })).toBeInTheDocument()
+    expect(useChildrenStore(pinia).children.map((child) => child.name).sort()).toEqual(['Mia', 'Oskar'])
+    expect(useCreationsStore(pinia).creations[0]?.request.children.map((child) => child.name)).toEqual(['Mia', 'Oskar'])
+  })
+
+  it('counts only the children picked or typed in, not empty rows', async () => {
+    const { router } = await open('/joulukirjad', () => {
+      useChildrenStore().restoreDemo()
+    })
+    const user = userEvent.setup()
+    await user.click(within(await screen.findByRole('group', { name: /Kellele\?/ })).getByRole('checkbox', { name: /Uus laps/ }))
+    await user.click(screen.getByRole('button', { name: /Lisa veel üks laps/ }))
+    // Ruben is picked; two empty rows do not make it three.
+    expect(screen.getByRole('button', { name: /^Loo tasuta kirjad/ })).toBeInTheDocument()
+    await user.type(screen.getByLabelText('1. lapse nimi'), 'Mia')
+    expect(screen.getByRole('button', { name: /Loo 2 lapsele tasuta kirjad/ })).toBeInTheDocument()
+    await user.type(screen.getAllByLabelText('Vanus')[0]!, '5')
+    await user.click(screen.getByRole('button', { name: /Loo 2 lapsele tasuta kirjad/ }))
+    // The empty second row is left out, not an error.
+    await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/joulukirjad\//), { timeout: 5000 })
+    expect(await screen.findByRole('heading', { level: 1, name: 'Rubeni ja Mia jõulukirjad on valmis' })).toBeInTheDocument()
+  })
+
+  it('lets a typed row be taken away again', async () => {
+    await open('/joulukirjad')
+    const user = userEvent.setup()
+    await user.click(await screen.findByRole('button', { name: /Lisa veel üks laps/ }))
+    await user.click(screen.getByRole('button', { name: 'Eemalda 2. laps' }))
+    expect(screen.getAllByLabelText(/nimi$/)).toHaveLength(1)
+    expect(screen.getByRole('button', { name: /^Loo tasuta kirjad/ })).toBeInTheDocument()
+  })
+
   it('makes linked letters for siblings, as the wizard does', async () => {
     const { router, pinia } = await open('/joulukirjad', () => {
       useChildrenStore().restoreDemo()
