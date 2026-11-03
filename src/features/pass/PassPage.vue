@@ -7,6 +7,7 @@ import FormField from '../../components/ui/FormField.vue'
 import TestBar from '../../components/brand/TestBar.vue'
 import PassLetters from './PassLetters.vue'
 import PassPurchase from './PassPurchase.vue'
+import PassComparison from './PassComparison.vue'
 import { DESIGN_KEY, NEW_DESIGN_ROOT } from '../../components/brand/design'
 import {
   checkPass,
@@ -118,7 +119,10 @@ onBeforeUnmount(() => clearTimeout(retry))
 
       <PassLetters v-if="pass && isActive(pass)" :pass="pass" @spent="(next) => (pass = next)" />
 
-      <PassPurchase v-if="!pass && ['', 'open', 'expired'].includes(purchase)" on-pass-page />
+      <template v-if="!pass && ['', 'open', 'expired'].includes(purchase)">
+        <PassComparison />
+        <PassPurchase on-pass-page />
+      </template>
 
       <form class="pass-form" @submit.prevent="submit">
         <h2>{{ pass ? 'Teine kood?' : 'Mul on juba Jõulupass' }}</h2>

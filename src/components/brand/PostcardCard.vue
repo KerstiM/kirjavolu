@@ -20,8 +20,13 @@ const props = withDefaults(
     badge?: string
     /** Not ready yet: drawn gray with this label and not a link or a choice. */
     soon?: string
+    /**
+     * What the Jõulupass adds: "only" marks the whole card as Jõulupass, "extra" names the
+     * personal version under the free one. Free is the default and is not marked.
+     */
+    pass?: 'only' | 'extra'
   }>(),
-  { tagline: '', description: '', to: undefined, selected: false, badge: '', soon: '' },
+  { tagline: '', description: '', to: undefined, selected: false, badge: '', soon: '', pass: undefined },
 )
 defineEmits<{ select: [] }>()
 
@@ -36,16 +41,18 @@ const style = computed(() => ({
 </script>
 
 <template>
-  <div v-if="soon" class="postcard is-soon" :style="style">
+  <div v-if="soon" class="postcard is-soon" :class="{ 'is-pass': pass === 'only' }" :style="style">
     <span class="postcard__edge" aria-hidden="true" />
     <span class="postcard__body">
       <span class="postcard__text">
+        <span v-if="pass === 'only'" class="postcard__pass">Jõulupass</span>
         <span class="postcard__title">{{ title }}</span>
         <span v-if="tagline" class="postcard__tagline">{{ tagline }}</span>
       </span>
       <span class="postcard__icon" aria-hidden="true"><component :is="icon" :size="20" :stroke-width="1.8" /></span>
     </span>
     <span v-if="description" class="postcard__desc">{{ description }}</span>
+    <span v-if="pass === 'extra'" class="postcard__extra"><span class="postcard__pass">Jõulupass</span> Isiklik versioon lapse ja pere järgi</span>
     <span class="postcard__badge">{{ soon }}</span>
   </div>
   <component
@@ -56,13 +63,14 @@ const style = computed(() => ({
     :role="to ? undefined : 'radio'"
     :aria-checked="to ? undefined : selected"
     class="postcard"
-    :class="{ 'is-selected': selected }"
+    :class="{ 'is-selected': selected, 'is-pass': pass === 'only' }"
     :style="style"
     @click="!to && $emit('select')"
   >
     <span class="postcard__edge" aria-hidden="true" />
     <span class="postcard__body">
       <span class="postcard__text">
+        <span v-if="pass === 'only'" class="postcard__pass">Jõulupass</span>
         <span class="postcard__title">{{ title }}</span>
         <span v-if="tagline" class="postcard__tagline">{{ tagline }}</span>
       </span>
@@ -72,6 +80,7 @@ const style = computed(() => ({
       </span>
     </span>
     <span v-if="description" class="postcard__desc">{{ description }}</span>
+    <span v-if="pass === 'extra'" class="postcard__extra"><span class="postcard__pass">Jõulupass</span> Isiklik versioon lapse ja pere järgi</span>
     <span v-if="badge" class="postcard__badge">{{ badge }}</span>
   </component>
 </template>
@@ -111,6 +120,9 @@ const style = computed(() => ({
     border-color: var(--card-ink);
     box-shadow: 0 6px 0 var(--card-ink);
   }
+}
+.postcard.is-pass:not(.is-selected) {
+  border-color: #f5c4b3;
 }
 .postcard.is-soon {
   cursor: default;
@@ -166,6 +178,27 @@ const style = computed(() => ({
   font-size: 0.9rem;
 }
 // "Sobib hästi" sits on the card like a rubber stamp.
+.postcard__pass {
+  align-self: flex-start;
+  margin-bottom: 0.25rem;
+  padding: 0.05rem 0.55rem;
+  border-radius: 999px;
+  background: var(--coral-soft);
+  color: var(--coral-ink);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.postcard__extra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--coral-ink);
+  font-size: 0.85rem;
+  .postcard__pass {
+    margin-bottom: 0;
+  }
+}
 .postcard__badge {
   position: absolute;
   right: 0.8rem;

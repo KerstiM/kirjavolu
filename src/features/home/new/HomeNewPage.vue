@@ -13,7 +13,8 @@ import { OCCASIONS } from '../../../domain/occasions/occasions'
 import { isInSeason, sortBySeason } from '../../../domain/occasions/season'
 import { useChildrenStore } from '../../children/childrenStore'
 import RecentCreations from '../RecentCreations.vue'
-import { COMING_SOON, isReady, NOT_READY_LABEL } from './readiness'
+import { COMING_SOON, isReady, NOT_READY_LABEL, PASS_MARK } from './readiness'
+import PassComparison from '../../pass/PassComparison.vue'
 import { isActive, loadPass, PASS_PRICE } from '../../pass/seasonPass'
 
 /**
@@ -85,12 +86,15 @@ const WIZARD = designPath('new', '/loo')
           </p>
           <p v-else>
             Päkapikk kirjutab kõik 24 detsembrikirja päriselt sinu lapse kohta: tema huvid, pere, lemmikloomad
-            ja selle detsembri plaanid. 10 loomist ja 30 parandust kuni 31. jaanuarini, ühekordne makse {{ PASS_PRICE }}.
+            ja selle detsembri plaanid. Kehtib 31. jaanuarini, ühekordne makse {{ PASS_PRICE }}.
           </p>
         </div>
         <RouterLink :to="`${NEW_DESIGN_ROOT}/joulupass`" class="chunky chunky--primary">
           {{ hasPass ? 'Kirjuta isiklikud kirjad' : 'Vaata Jõulupassi' }} <ArrowRight :size="18" aria-hidden="true" />
         </RouterLink>
+      </div>
+      <div v-if="!hasPass" class="container pass-band__compare">
+        <PassComparison />
       </div>
     </section>
 
@@ -107,6 +111,7 @@ const WIZARD = designPath('new', '/loo')
               :icon="iconFor(type.icon)"
               :index="index"
               :soon="isReady(type.id) ? '' : NOT_READY_LABEL"
+              :pass="PASS_MARK[type.id]"
             />
           </li>
           <li v-for="(item, index) in COMING_SOON" :key="item.id">
@@ -117,6 +122,7 @@ const WIZARD = designPath('new', '/loo')
               :icon="iconFor(item.icon)"
               :index="CONTENT_TYPES.length + index"
               :soon="item.label"
+              pass="only"
             />
           </li>
         </ul>
@@ -308,6 +314,9 @@ const WIZARD = designPath('new', '/loo')
   align-items: center;
   justify-content: space-between;
   gap: 1rem 2rem;
+}
+.pass-band__compare {
+  margin-top: 1.25rem;
 }
 .pass-band__text {
   flex: 1 1 28rem;
