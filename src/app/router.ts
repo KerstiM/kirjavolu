@@ -47,6 +47,28 @@ export const routes: RouteRecordRaw[] = [
     meta: { title: 'Jõulupass' },
   },
   {
+    // The short Christmas journey, tried out next to /uus-disain: who for, the free
+    // letters at once, and making them personal right beside them.
+    path: '/ud2',
+    name: 'ud2',
+    component: () => import('../features/home/new/HomeNewPage.vue'),
+    props: { short: true },
+    meta: { title: 'Uus disain' },
+  },
+  {
+    path: '/ud2/alusta',
+    name: 'ud2-start',
+    component: () => import('../features/ud2/Ud2Start.vue'),
+    meta: { title: 'Jõulukirjad' },
+  },
+  {
+    path: '/ud2/kirjad/:id',
+    name: 'ud2-letters',
+    component: () => import('../features/ud2/Ud2Letters.vue'),
+    props: true,
+    meta: { title: 'Jõulukirjad' },
+  },
+  {
     path: '/uus-disain/tingimused',
     name: 'terms-new',
     component: () => import('../features/legal/TermsPage.vue'),

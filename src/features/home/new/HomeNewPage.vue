@@ -6,7 +6,7 @@ import Mascot from '../../../components/brand/Mascot.vue'
 import PostcardCard from '../../../components/brand/PostcardCard.vue'
 import StampCard from '../../../components/brand/StampCard.vue'
 import TestBar from '../../../components/brand/TestBar.vue'
-import { DESIGN_KEY, designPath, NEW_DESIGN_ROOT, STAMP_COLORS } from '../../../components/brand/design'
+import { DESIGN_KEY, designPath, NEW_DESIGN_ROOT, SHORT_JOURNEY_ROOT, STAMP_COLORS } from '../../../components/brand/design'
 import { iconFor } from '../../../components/ui/icons'
 import { CONTENT_TYPES } from '../../../domain/contentTypes'
 import { OCCASIONS } from '../../../domain/occasions/occasions'
@@ -20,7 +20,9 @@ import { isActive, loadPass, PASS_PRICE } from '../../pass/seasonPass'
 /**
  * Test view of the new home page design (/uus-disain). The current home page at "/"
  * stays as it is until this one is chosen; the links lead into the same wizard.
+ * At /ud2 (`short`) the Christmas letters start the short journey instead.
  */
+const props = withDefaults(defineProps<{ short?: boolean }>(), { short: false })
 provide(DESIGN_KEY, 'new')
 const childrenStore = useChildrenStore()
 const occasions = computed(() => sortBySeason(OCCASIONS))
@@ -33,11 +35,15 @@ const hasPass = pass !== null && isActive(pass)
 
 // Every link leads into the new-design wizard, so the whole new journey can be tried.
 const WIZARD = designPath('new', '/loo')
+// The short journey: who for, and the free Christmas letters at once.
+const START = `${SHORT_JOURNEY_ROOT}/alusta`
+const lettersLink = (query: Record<string, string>) => (props.short ? START : { path: WIZARD, query })
 </script>
 
 <template>
   <div class="home-new">
-    <TestBar text="Testvaade: uus avalehe disain." link="Vaata praegust avalehte" to="/" />
+    <TestBar v-if="short" text="Testvaade: lühike jõuluteekond." link="Vaata uut disaini" :to="NEW_DESIGN_ROOT" />
+    <TestBar v-else text="Testvaade: uus avalehe disain." link="Vaata praegust avalehte" to="/" />
 
     <section class="hero">
       <div class="container hero__inner">
@@ -48,7 +54,9 @@ const WIZARD = designPath('new', '/loo')
             Jõulukirjad, sünnipäevaseiklused, aardejahid ja hambahaldja kirjad. Valmis kahe klõpsuga – prindi ja peida.
           </p>
           <div class="hero__actions">
-            <RouterLink :to="WIZARD" class="chunky chunky--primary">Alusta loomist <ArrowRight :size="18" aria-hidden="true" /></RouterLink>
+            <RouterLink :to="short ? START : WIZARD" class="chunky chunky--primary">
+              {{ short ? 'Loo jõulukirjad' : 'Alusta loomist' }} <ArrowRight :size="18" aria-hidden="true" />
+            </RouterLink>
             <RouterLink :to="designPath('new', '/naide')" class="chunky chunky--secondary"><Eye :size="18" aria-hidden="true" /> Vaata näidet</RouterLink>
           </div>
         </div>
@@ -89,7 +97,7 @@ const WIZARD = designPath('new', '/loo')
             ja selle detsembri plaanid. Kehtib 31. jaanuarini, ühekordne makse {{ PASS_PRICE }}.
           </p>
         </div>
-        <RouterLink :to="`${NEW_DESIGN_ROOT}/joulupass`" class="chunky chunky--primary">
+        <RouterLink :to="short ? START : `${NEW_DESIGN_ROOT}/joulupass`" class="chunky chunky--primary">
           {{ hasPass ? 'Kirjuta isiklikud kirjad' : 'Vaata Jõulupassi' }} <ArrowRight :size="18" aria-hidden="true" />
         </RouterLink>
       </div>
@@ -104,7 +112,7 @@ const WIZARD = designPath('new', '/loo')
         <ul class="postcards" role="list">
           <li v-for="(type, index) in CONTENT_TYPES" :key="type.id">
             <PostcardCard
-              :to="isReady(type.id) ? { path: WIZARD, query: { tyyp: type.id } } : undefined"
+              :to="!isReady(type.id) ? undefined : type.id === 'letter' ? lettersLink({ tyyp: type.id }) : { path: WIZARD, query: { tyyp: type.id } }"
               :title="type.title"
               :tagline="type.tagline"
               :description="type.description"

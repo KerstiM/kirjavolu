@@ -13,6 +13,13 @@ export function useDesign(): Design {
 
 /** The new-design test views live under this path, next to the current pages. */
 export const NEW_DESIGN_ROOT = '/uus-disain'
+/** The short Christmas journey: its own test path, in the new design too. */
+export const SHORT_JOURNEY_ROOT = '/ud2'
+
+/** Which look the menu and the footer show on a page, from its path. */
+export function designForPath(path: string): Design {
+  return path.startsWith(NEW_DESIGN_ROOT) || path.startsWith(SHORT_JOURNEY_ROOT) ? 'new' : 'current'
+}
 /** The same page in the given design, so links keep a visitor in the look they are trying out. */
 export function designPath(design: Design, path: string): string {
   if (design === 'current') return path

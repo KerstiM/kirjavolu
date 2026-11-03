@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { designPath, NEW_DESIGN_ROOT } from '../brand/design'
+import { designForPath, designPath } from '../brand/design'
 
 // The terms and the privacy notice open in the design the visitor is looking at.
 const route = useRoute()
-const design = computed(() => (route.path.startsWith(NEW_DESIGN_ROOT) ? 'new' : 'current'))
+const design = computed(() => designForPath(route.path))
 </script>
 
 <template>

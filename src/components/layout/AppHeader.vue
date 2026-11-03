@@ -4,14 +4,17 @@ import { RouterLink, useRoute } from 'vue-router'
 import { Plus } from 'lucide-vue-next'
 import BrandMark from './BrandMark.vue'
 import BaseButton from '../ui/BaseButton.vue'
-import { designPath, NEW_DESIGN_ROOT } from '../brand/design'
+import { designForPath, designPath, NEW_DESIGN_ROOT, SHORT_JOURNEY_ROOT } from '../brand/design'
 import { newCreationRequests } from '../../features/creation/newCreation'
 import { isActive, loadPass, PASS_CHANGED } from '../../features/pass/seasonPass'
 
 const route = useRoute()
 // Inside a new-design test view the menu keeps the visitor there.
-const design = computed(() => (route.path.startsWith(NEW_DESIGN_ROOT) ? 'new' : 'current'))
-const home = computed(() => designPath(design.value, '/'))
+const design = computed(() => designForPath(route.path))
+// Inside the short journey the menu keeps the visitor there too.
+const short = computed(() => route.path.startsWith(SHORT_JOURNEY_ROOT))
+const home = computed(() => (short.value ? SHORT_JOURNEY_ROOT : designPath(design.value, '/')))
+const create = computed(() => (short.value ? `${SHORT_JOURNEY_ROOT}/alusta` : designPath(design.value, '/loo')))
 // Jõulupass lives in the new design only; with a valid pass the link shows what is left.
 const pass = ref(loadPass())
 const refreshPass = () => (pass.value = loadPass())
@@ -44,7 +47,7 @@ function startOver(): void {
         >
           Jõulupass<span v-if="passLeft !== null" class="nav__count" aria-hidden="true">{{ passLeft }}</span>
         </RouterLink>
-        <BaseButton :to="designPath(design, '/loo')" size="sm" class="nav__cta" @click="startOver">
+        <BaseButton :to="create" size="sm" class="nav__cta" @click="startOver">
           <Plus aria-hidden="true" />
           <span class="nav__cta-text">Loo uus</span>
         </BaseButton>

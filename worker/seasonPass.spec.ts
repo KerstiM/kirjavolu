@@ -82,6 +82,19 @@ describe('POST /api/joulupass/ost', () => {
   const post = (headers: Record<string, string> = ownPage) =>
     new Request('https://kirjavolu.ee/api/joulupass/ost', { method: 'POST', headers })
 
+  it('returns to the letters page of the short journey when it asks, and to the pass page otherwise', async () => {
+    const { env, stripe, deps } = setup()
+    const create = vi
+      .spyOn(stripe.checkout.sessions, 'create')
+      .mockResolvedValue({ client_secret: 'cs_secret' } as Stripe.Response<Stripe.Checkout.Session>)
+    const ask = (returnTo: string) =>
+      new Request('https://kirjavolu.ee/api/joulupass/ost', { method: 'POST', headers: ownPage, body: JSON.stringify({ returnTo }) })
+    await handlePurchase(ask('/ud2/kirjad/abc-123'), env, deps)
+    expect(create.mock.calls[0]![0]!.return_url).toBe('https://kirjavolu.ee/ud2/kirjad/abc-123?session_id={CHECKOUT_SESSION_ID}')
+    await handlePurchase(ask('https://evil.example/x'), env, deps)
+    expect(create.mock.calls[1]![0]!.return_url).toBe('https://kirjavolu.ee/uus-disain/joulupass?session_id={CHECKOUT_SESSION_ID}')
+  })
+
   it('starts an embedded checkout for the pass without tax, with the code in the metadata', async () => {
     const { env, stripe, deps } = setup()
     const create = vi

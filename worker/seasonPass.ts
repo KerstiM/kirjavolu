@@ -29,6 +29,15 @@ export const PASS_GENERATIONS = 10
 export const PASS_FIXES = 30
 /** Where Stripe sends the buyer back after paying; the page asks /api/joulupass/ost for the code. */
 export const RETURN_PATH = '/uus-disain/joulupass'
+/** Pages a checkout may return to instead: the short journey's letters page (/ud2/kirjad/<id>). */
+const RETURN_TO = /^\/ud2\/kirjad\/[A-Za-z0-9-]{1,64}$/
+
+/** Where Stripe sends the buyer back: the page that asked, if it is one we know, else the pass page. */
+export async function returnPath(request: Request): Promise<string> {
+  const body: unknown = await request.json().catch(() => null)
+  const asked = (body as { returnTo?: unknown } | null)?.returnTo
+  return typeof asked === 'string' && RETURN_TO.test(asked) ? asked : RETURN_PATH
+}
 const INTEGRATION = 'kirjavolu-joulupass-qhzvtmwr'
 const MAX_BODY_BYTES = 1000
 const MAX_EVENT_BYTES = 64 * 1024
@@ -138,6 +147,8 @@ export async function handlePurchase(request: Request, env: PassEnv, deps = defa
     const origin = request.headers.get('Origin')
     if (!allowedOrigin(origin, request.url)) return fail(403, 'forbidden')
     if (await limited(request, env)) return fail(429, 'too_many')
+    if (Number(request.headers.get('Content-Length') ?? 0) > MAX_BODY_BYTES) return fail(413, 'too_large')
+    const back = await returnPath(request)
     const code = newCode()
     const metadata = { kirjavolu: 'joulupass', joulupass_code: code }
     try {
@@ -146,7 +157,7 @@ export async function handlePurchase(request: Request, env: PassEnv, deps = defa
         mode: 'payment',
         line_items: [{ price: env.STRIPE_PRICE_ID, quantity: 1 }],
         locale: 'et',
-        return_url: `${origin}${RETURN_PATH}?session_id={CHECKOUT_SESSION_ID}`,
+        return_url: `${origin}${back}?session_id={CHECKOUT_SESSION_ID}`,
         metadata,
         payment_intent_data: { description: `Kirjavõlu Jõulupass ${code}`, metadata },
         integration_identifier: INTEGRATION,
