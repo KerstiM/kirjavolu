@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { render, screen, within } from '@testing-library/vue'
 import userEvent from '@testing-library/user-event'
 import { createPinia, setActivePinia } from 'pinia'
@@ -11,6 +11,13 @@ import { emptyChildDraft, useChildrenStore } from '@/features/children/childrenS
 import { useCreationsStore } from '@/features/preview/creationsStore'
 import { EMPTY_DECORATION, type GeneratedItem } from '@/domain/models'
 import { defaultLayoutFor } from '@/domain/generators/templateGenerator'
+
+// These tests walk the wizard with kinds that are switched off for now (readiness.ts); the
+// wizard itself works the same, so here every kind counts as ready.
+vi.mock('@/features/home/new/readiness', async (original) => ({
+  ...(await original<typeof import('@/features/home/new/readiness')>()),
+  isReady: () => true,
+}))
 
 async function renderApp(path: string, { demo = true } = {}) {
   const pinia = createPinia()

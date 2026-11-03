@@ -14,7 +14,10 @@ import MascotGuide from '../../components/brand/MascotGuide.vue'
 import { DESIGN_KEY, designPath, type Design } from '../../components/brand/design'
 import { mascotLine } from './mascotLines'
 import StepWhat from './steps/StepWhat.vue'
+import { isReady } from '../home/new/readiness'
 import StepChildren from './steps/StepChildren.vue'
+import BaseDialog from '../../components/ui/BaseDialog.vue'
+import ChildrenPage from '../children/ChildrenPage.vue'
 import QuickChildDialog from '../children/QuickChildDialog.vue'
 import type { ChildProfileDraft } from '../../domain/models'
 import { useWizard, WIZARD_STEPS, type WizardInit } from './useWizard'
@@ -48,7 +51,8 @@ function initFromRoute(): WizardInit {
   const queryType = route.query.tyyp
   const queryOccasion = route.query.puhk
   return {
-    contentType: isContentTypeId(queryType) ? queryType : undefined,
+    // A link to a kind still being polished starts the wizard without a type.
+    contentType: isContentTypeId(queryType) && isReady(queryType) ? queryType : undefined,
     occasionId: isOccasionId(queryOccasion) ? queryOccasion : undefined,
     childIds: childrenStore.children.length === 1 ? [childrenStore.children[0]?.id ?? ''] : [],
   }
@@ -93,6 +97,15 @@ watch(
 
 // A child added here is selected at once, so the parent never has to leave the wizard.
 const addingChild = ref(false)
+// "Halda profiile" opens in a dialog, so the wizard keeps its place; closing it comes back to the same step.
+const managing = ref(false)
+// A child deleted in there is no longer picked.
+watch(
+  () => childrenStore.children.map((child) => child.id),
+  (ids) => {
+    if (state.childIds.some((id) => !ids.includes(id))) state.childIds = state.childIds.filter((id) => ids.includes(id))
+  },
+)
 function addChild(draft: ChildProfileDraft): void {
   const child = childrenStore.add(draft)
   track('child_added', { from: 'wizard' })
@@ -151,9 +164,13 @@ async function create(): Promise<void> {
         @toggle="wizard.toggleChild"
         @select-all="selectAll"
         @add="addingChild = true"
+        @manage="managing = true"
       />
     </div>
 
+    <BaseDialog v-if="managing" title="Lapsed" @close="managing = false">
+      <ChildrenPage embedded />
+    </BaseDialog>
     <QuickChildDialog v-if="addingChild" @save="addChild" @close="addingChild = false" />
 
     <div v-if="errors.length" class="error-box" role="alert">

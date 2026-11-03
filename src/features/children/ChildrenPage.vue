@@ -12,7 +12,8 @@ import { emptyChildDraft, useChildrenStore } from './childrenStore'
 import { DESIGN_KEY, type Design } from '../../components/brand/design'
 
 /** "new" at /uus-disain/lapsed: the same profiles in the new design, children as address labels. */
-const props = withDefaults(defineProps<{ design?: Design }>(), { design: 'new' })
+/** `embedded`: inside a dialog, so without the page's own heading and spacing. */
+const props = withDefaults(defineProps<{ design?: Design; embedded?: boolean }>(), { design: 'new', embedded: false })
 provide(DESIGN_KEY, props.design)
 
 const store = useChildrenStore()
@@ -52,9 +53,9 @@ function remove(child: ChildProfile): void {
 
 <template>
   <div :class="{ 'design-new': design === 'new' }">
-  <div class="container section">
+  <div :class="{ 'container section': !embedded }">
     <div class="section-head">
-      <div>
+      <div v-if="!embedded">
         <span class="eyebrow">Profiilid</span>
         <h1 class="page-title">Lapsed</h1>
         <p class="muted">

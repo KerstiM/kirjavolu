@@ -47,19 +47,15 @@ describe('the home page', () => {
     expect(document.querySelector('.home')!.textContent).not.toMatch(/tehisaru|\bAI\b/)
   })
 
-  it('lists the six kinds right after the hero, each opening the wizard with it chosen', async () => {
+  it('lists the six kinds right after the hero; only the letter and the certificate open the wizard for now', async () => {
     await open('/')
     const types = await screen.findByRole('region', { name: 'Mida soovid luua?' })
     const links = within(types).getAllByRole('link')
     expect(links.map((link) => link.getAttribute('href'))).toEqual([
       '/loo?tyyp=letter',
-      '/loo?tyyp=treasure-hunt',
-      '/loo?tyyp=story',
-      '/loo?tyyp=puzzle',
-      '/loo?tyyp=calendar',
       '/loo?tyyp=certificate',
     ])
-    expect(within(types).getByRole('link', { name: /Salamissioon/ })).toHaveTextContent('Väikestele nuputajatele')
+    expect(within(types).getByText('Salamissioon').closest('.postcard')).toHaveTextContent('Töös')
     expect(within(types).getByRole('link', { name: /Diplom ja õnnitluskaart/ })).toBeInTheDocument()
   })
 

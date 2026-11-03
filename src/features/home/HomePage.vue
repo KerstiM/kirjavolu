@@ -12,7 +12,7 @@ import { useCreationsStore } from '../preview/creationsStore'
 import PrintableItem from '../preview/PrintableItem.vue'
 import { isActive, loadPass } from '../pass/seasonPass'
 import RecentCreations from './RecentCreations.vue'
-import { COMING_SOON } from './new/readiness'
+import { COMING_SOON, isReady, NOT_READY_LABEL } from './new/readiness'
 import { EXAMPLES, EXAMPLES_SECTION, HERO, PRIVACY, STEPS_SECTION, TYPE_CARDS, TYPES_SECTION } from './content'
 import { currentPromo } from './seasonal'
 
@@ -103,7 +103,8 @@ async function showExamples(): Promise<void> {
         <ul class="types__grid" role="list">
           <li v-for="(card, index) in cards" :key="card.id">
             <PostcardCard
-              :to="{ path: WIZARD, query: { tyyp: card.id } }"
+              :to="isReady(card.id) ? { path: WIZARD, query: { tyyp: card.id } } : undefined"
+              :soon="isReady(card.id) ? '' : NOT_READY_LABEL"
               :title="card.title"
               :tagline="card.subtitle"
               :description="card.description"
