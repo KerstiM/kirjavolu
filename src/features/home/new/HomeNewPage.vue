@@ -130,7 +130,7 @@ const lettersLink = (query: Record<string, string>) => (props.short ? START : { 
               :icon="iconFor(item.icon)"
               :index="CONTENT_TYPES.length + index"
               :soon="item.label"
-              pass="only"
+              :pass="item.pass"
             />
           </li>
         </ul>

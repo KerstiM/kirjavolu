@@ -7,6 +7,8 @@ import FormField from '../../components/ui/FormField.vue'
 import PassLetters from './PassLetters.vue'
 import PassPurchase from './PassPurchase.vue'
 import PassComparison from './PassComparison.vue'
+import RecentCreations from '../home/RecentCreations.vue'
+import { useCreationsStore } from '../preview/creationsStore'
 import { DESIGN_KEY } from '../../components/brand/design'
 import {
   checkPass,
@@ -26,6 +28,7 @@ import {
  */
 provide(DESIGN_KEY, 'new')
 const route = useRoute()
+const creations = useCreationsStore()
 const router = useRouter()
 
 const pass = ref<SeasonPass | null>(loadPass())
@@ -116,6 +119,8 @@ onBeforeUnmount(() => clearTimeout(retry))
       </section>
 
       <PassLetters v-if="pass && isActive(pass)" :pass="pass" @spent="(next) => (pass = next)" />
+
+      <RecentCreations v-if="creations.creations.length" inline heading="Minu kirjad ja lood" />
 
       <template v-if="!pass && ['', 'open', 'expired'].includes(purchase)">
         <PassComparison />

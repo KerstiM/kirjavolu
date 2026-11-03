@@ -30,6 +30,7 @@ import { checkPass, formatValidUntil, isActive, loadPass, purchaseStatus, type S
 import { SELLER } from '../legal/seller'
 import { track } from '../../app/analytics'
 import PremiumOffer from './PremiumOffer.vue'
+import RecentCreations from '../home/RecentCreations.vue'
 import JourneySteps from './JourneySteps.vue'
 import { finishWriting, startWriting, takePending, takeWriting } from './pending'
 
@@ -104,7 +105,7 @@ async function fixWithAi(wish: string): Promise<Pick<GeneratedItem, 'heading' | 
     throw new Error(FIX_ERROR_TEXTS[failure instanceof LettersRequestError ? failure.reason : 'failed'])
   }
 }
-function saveEdit(patch: Pick<GeneratedItem, 'heading' | 'body' | 'signature'>): void {
+function saveEdit(patch: Pick<GeneratedItem, 'label' | 'heading' | 'body' | 'signature'>): void {
   if (editing.value) creations.editItem(props.id, editing.value.id, patch)
   editing.value = null
 }
@@ -295,7 +296,7 @@ onBeforeUnmount(() => {
         <div>
           <p class="writing__line">Päkapikk kirjutab {{ child ? nameCase(child, 'allative') : '' }} 24 isiklikku kirja</p>
           <p class="writing__time">
-            Tavaliselt võtab see poolteist kuni kolm minutit, pikemate kirjadega kauem. Hoia see leht lahti, kirjad
+            Tavaliselt võtab see paar minutit, pikemate kirjadega kauem. Hoia see leht lahti, kirjad
             ilmuvad siia kõik korraga. Möödunud {{ elapsed }}
           </p>
         </div>
@@ -317,11 +318,16 @@ onBeforeUnmount(() => {
           :disabled="writing"
           @click="pick(member.id)"
         >
-          {{ member.name }}<span v-if="personalFor(member.id)" class="kid__mark"> · isiklikud valmis</span>
+          {{ member.name }}<span class="kid__mark"> · {{ personalFor(member.id) ? 'isiklikud valmis' : 'tasuta kirjad' }}</span>
         </button>
       </div>
 
-      <div class="letters__list">
+      <p v-if="isFamily && !writing && !personal" class="kids__hint">
+        Isiklikud kirjad kirjutatakse igale lapsele eraldi: vali sakk ja vajuta allpool nuppu. Iga laps kulutab Jõulupassist ühe kirjasarja.
+      </p>
+      <p v-if="writing" class="letters__status">Allpool on praegused tasuta kirjad. Uued isiklikud kirjad ilmuvad, kui need on valmis.</p>
+
+      <div class="letters__list" :class="{ 'is-writing': writing }" :inert="writing">
         <PrintableItem v-for="item in shown" :key="item.id" :item="item" no-variants @edit="editing = item" />
       </div>
       <BaseButton v-if="!showAll && ownItems.length > 3" variant="secondary" @click="showAll = true">
@@ -361,6 +367,8 @@ onBeforeUnmount(() => {
         @write="write"
         @pass="(next) => (pass = next)"
       />
+
+      <RecentCreations v-if="!writing" inline heading="Kõik minu kirjad" />
     </div>
 
     <ItemEditorDialog
@@ -502,6 +510,15 @@ onBeforeUnmount(() => {
     outline: 3px solid var(--focus);
     outline-offset: 2px;
   }
+}
+.kids__hint {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+}
+.letters__list.is-writing {
+  opacity: 0.45;
+  filter: grayscale(0.6);
 }
 .kid__mark {
   font-weight: 400;

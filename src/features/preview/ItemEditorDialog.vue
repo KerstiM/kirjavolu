@@ -22,12 +22,13 @@ const props = defineProps<{
   aiNote?: string
 }>()
 const emit = defineEmits<{
-  save: [patch: Pick<GeneratedItem, 'heading' | 'body' | 'signature'>]
+  save: [patch: Pick<GeneratedItem, 'label' | 'heading' | 'body' | 'signature'>]
   regenerate: []
   close: []
 }>()
 
 const draft = reactive({
+  label: props.item.label,
   heading: props.item.heading,
   body: props.item.body,
   signature: props.item.signature ?? '',
@@ -61,6 +62,7 @@ async function fixWithAi(): Promise<void> {
 
 function save(): void {
   emit('save', {
+    label: draft.label.trim(),
     heading: draft.heading.trim(),
     body: draft.body.trim(),
     signature: draft.signature.trim() || undefined,
@@ -113,6 +115,10 @@ onBeforeUnmount(() => {
       </header>
       <form class="dialog__form" @submit.prevent="save">
         <p v-if="aiFix || aiNote" class="dialog__hint">Muuda teksti ise: see on alati tasuta.</p>
+        <template v-if="item.label">
+          <label class="dialog__label" for="item-editor-label">Ülemine rida</label>
+          <input id="item-editor-label" v-model="draft.label" class="input" type="text" />
+        </template>
         <label class="dialog__label" for="item-editor-heading">Pöördumine või pealkiri</label>
         <input id="item-editor-heading" v-model="draft.heading" class="input" type="text" />
         <label class="dialog__label" for="item-editor-body">Tekst</label>

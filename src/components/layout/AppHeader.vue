@@ -5,10 +5,13 @@ import { Plus } from 'lucide-vue-next'
 import BrandMark from './BrandMark.vue'
 import BaseButton from '../ui/BaseButton.vue'
 import { newCreationRequests } from '../../features/creation/newCreation'
+import { useCreationsStore } from '../../features/preview/creationsStore'
 import { currentPromo } from '../../features/home/seasonal'
 import { isActive, loadPass, PASS_CHANGED, PASS_PAGE } from '../../features/pass/seasonPass'
 
 const route = useRoute()
+// Everything already made stays one click away, whichever page the parent is on.
+const creations = useCreationsStore()
 // In season the menu has a short way to the seasonal journey (now the Christmas letters).
 const promo = currentPromo()
 // A family with a Jõulupass sees what is left; without one the link would only be an ad.
@@ -27,13 +30,13 @@ function startOver(): void {
 <template>
   <header class="app-header" :class="{ 'app-header--long': promo && pass }">
     <div class="container app-header__inner">
-      <RouterLink to="/" class="brand" aria-label="Kirjavõlu avaleht">
+      <RouterLink to="/" class="brand" exact-active-class="is-active" aria-label="Kirjavõlu avaleht">
         <BrandMark />
         <span class="brand__name">Kirjavõlu</span>
       </RouterLink>
       <nav aria-label="Peamenüü" class="nav">
-        <RouterLink to="/" class="nav__link nav__link--home" exact-active-class="is-active">Avaleht</RouterLink>
         <RouterLink v-if="promo" :to="promo.to" class="nav__link nav__link--season" active-class="is-active">{{ promo.menu }}</RouterLink>
+        <RouterLink v-if="creations.creations.length" to="/minu" class="nav__link" active-class="is-active">Minu kirjad</RouterLink>
         <RouterLink to="/lapsed" class="nav__link" active-class="is-active">Lapsed</RouterLink>
         <RouterLink
           v-if="pass"
@@ -81,6 +84,10 @@ function startOver(): void {
   font-size: 1.35rem;
   font-weight: 600;
   letter-spacing: -0.02em;
+}
+// On the home page the name is the "you are here" mark, since the menu has no Avaleht link.
+.brand.is-active .brand__name {
+  color: var(--lavender-ink);
 }
 .nav {
   display: flex;
@@ -134,10 +141,6 @@ function startOver(): void {
   .nav__link {
     padding: 0.4rem 0.55rem;
     font-size: 0.92rem;
-  }
-  // The brand already links home; keep the bar within phone width.
-  .nav__link--home {
-    display: none;
   }
 }
 // "Loo uus" keeps only its plus on a phone, so the menu stays one line.

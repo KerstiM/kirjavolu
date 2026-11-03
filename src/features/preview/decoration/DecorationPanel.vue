@@ -66,9 +66,9 @@ async function onFile(event: Event): Promise<void> {
   error.value = ''
   try {
     const image = await saveImage(file)
-    // A fresh picture becomes the puzzle by default – that is the main reason to upload one.
-    // On the poster that means the picture behind the cards.
-    update(cardSheets.value ? { image, puzzle: true, imageAsBackground: true, posterArt: false, pattern: null } : { image, puzzle: true })
+    // On the poster a fresh picture goes behind the cards. Elsewhere cutting it into pieces is
+    // the parent's own choice (a certificate wants the picture whole).
+    update(cardSheets.value ? { image, puzzle: true, imageAsBackground: true, posterArt: false, pattern: null } : { image, puzzle: false })
   } catch {
     error.value = 'Pilti ei õnnestunud salvestada. Proovi teist pilti või teist brauserit.'
   } finally {
@@ -136,8 +136,12 @@ function removeImage(): void {
     <fieldset class="decor__group">
       <legend>Oma pilt</legend>
       <p class="decor__hint">
-        Laadi üles pere foto või lapse joonistus. Pilt jääb ainult sinu seadmesse. Seda saab kasutada taustana
-        või lõigata tükkideks, nii et iga osa juures on üks tükk – kui kõik on koos, tuleb välja terve pilt.
+        Laadi üles pere foto või lapse joonistus. Pilt jääb ainult sinu seadmesse.
+        <template v-if="itemCount > 1 && !cardSheets">
+          Seda saab kasutada taustana või lõigata tükkideks, nii et iga osa juures on üks tükk – kui kõik on koos,
+          tuleb välja terve pilt.
+        </template>
+        <template v-else>Seda saab kasutada taustana.</template>
       </p>
       <div class="upload-row">
         <label class="upload" :class="{ 'is-busy': uploading }">
@@ -153,7 +157,8 @@ function removeImage(): void {
       <p v-if="poster && background === 'image'" class="decor__hint" role="status">
         Pusleplakatil on see pilt kogu plakati taust – kui kõik kaardid on koos, tuleb pilt välja.
       </p>
-      <template v-if="decoration.image && grid && !cardSheets">
+      <!-- One part is one piece: nothing to cut. -->
+      <template v-if="decoration.image && grid && !cardSheets && itemCount > 1">
         <label class="check">
           <input type="checkbox" :checked="decoration.puzzle" @change="update({ puzzle: !decoration.puzzle })" />
           <span>Lõika pilt tükkideks (iga osa juurde üks tükk)</span>
