@@ -12,11 +12,12 @@ import { useCreationsStore } from '../preview/creationsStore'
 import PrintableItem from '../preview/PrintableItem.vue'
 import { isActive, loadPass } from '../pass/seasonPass'
 import RecentCreations from './RecentCreations.vue'
+import { COMING_SOON } from './new/readiness'
 import { EXAMPLES, EXAMPLES_SECTION, HERO, PRIVACY, STEPS_SECTION, TYPE_CARDS, TYPES_SECTION } from './content'
 import { currentPromo } from './seasonal'
 
 /**
- * The home page: what Kirjavõlu is, the six kinds right under a compact hero, the season's
+ * The home page: what Kirjavõlu is, the six kinds (and the gray ones coming later) right under a compact hero, the season's
  * journey (Christmas letters now), real-looking samples, three steps, the family's own
  * creations and how the child's data is kept. Grew out of the /ud3 test version.
  */
@@ -108,6 +109,18 @@ async function showExamples(): Promise<void> {
               :description="card.description"
               :icon="card.icon"
               :index="index"
+            />
+          </li>
+          <!-- Coming later: gray, not links -->
+          <li v-for="(item, index) in COMING_SOON" :key="item.id">
+            <PostcardCard
+              :title="item.title"
+              :tagline="item.tagline"
+              :description="item.description"
+              :icon="iconFor(item.icon)"
+              :index="cards.length + index"
+              :soon="item.label"
+              :pass="item.pass"
             />
           </li>
         </ul>
