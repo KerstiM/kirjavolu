@@ -8,11 +8,11 @@ import type { Scenario } from '../../../domain/story/types'
 
 const NOTE_WORD = 'KAKAO'
 const NOTE_LINES = [
-  'Kui tähed kustuvad,',
-  'Astu trepist üles.',
-  'Katusel on',
-  'Aega ja',
-  'Ootab üks tass.',
+  'Kui tähed süttivad,',
+  'Astu vaikselt trepist üles.',
+  'Katusel ootan sind.',
+  'Ainult ära salli unusta.',
+  'Ootab ka soe tass.',
 ]
 const EXAM_ANSWER = 2 * 4 + 3 * 2
 
@@ -32,7 +32,7 @@ export const OLDER_SCENARIOS: Scenario[] = [
     },
     variants: {
       older: (c) => [
-        'Jõuluvana pööningult leiti eile vana puust kast, mille üks mänguasjameister talle sada aastat tagasi kinkis. Kuus külge, igaühel üheksa keeratavat ruutu. Võtit pole.',
+        'Jõuluvana pööningult leiti hiljuti vana puust kast, mille üks mänguasjameister talle sada aastat tagasi kinkis. Kuus külge, igaühel üheksa keeratavat ruutu. Võtit pole.',
         c.uses('rubik')
           ? 'Keerasin seda kaks õhtut ja mõtlesin sulle. Sina kuubikusõbrana oleksid ilmselt kohe näinud, mida mina alles kolmandal õhtul taipasin: nurgad enne servi.'
           : 'Keerasin seda kaks õhtut. Kolmandal õhtul taipasin: nurgad tuleb paika saada enne servi. Edasi läks kiiresti.',
@@ -121,8 +121,8 @@ export const OLDER_SCENARIOS: Scenario[] = [
         'Täna hommikul leidsin oma tööpingilt kokkumurtud sedeli. Allkirja polnud, ainult viis rida:',
         NOTE_LINES.join(' / '),
         c.uses('codes')
-          ? 'Esmapilgul tundub see lihtsalt kehva luuletusena. Salakoodimeister aga teab, et nii kehv luuletus ei saa olla juhuslik. Mina taipasin alles kolmanda tassi tee juures, kust otsida.'
-          : 'Esmapilgul tundub see lihtsalt kehva luuletusena. Aga nii kehv luuletus ei saa olla juhuslik. Mina taipasin alles kolmanda tassi tee juures, kust otsida.',
+          ? 'Esmapilgul tundub see lihtsalt kehv luuletus. Salakoodimeister aga teab, et nii kehv luuletus ei saa olla juhuslik. Mina taipasin alles kolmanda tassi tee juures, kust otsida.'
+          : 'Esmapilgul tundub see lihtsalt kehv luuletus. Aga nii kehv luuletus ei saa olla juhuslik. Mina taipasin alles kolmanda tassi tee juures, kust otsida.',
       ],
     },
     activities: {
@@ -145,7 +145,7 @@ export const OLDER_SCENARIOS: Scenario[] = [
     tones: ['humorous'],
     more: {
       older: () => [
-        'Täna proovis põhjapõder Välk ka pakkimist. Ta hoidis sarvedega paela ja keeras ennast nii mitu korda ringi, et oli lõpuks ise ilusasti pakitud. Lahti pakkisime ta kahekesi. Pärast seda otsustas pakkimisosakond, et kõik ümmargused asjad lähevad edaspidi sokkidesse. Minu skeem jääb seinale. Võib-olla küsib keegi mõni aasta.',
+        'Täna proovis põhjapõder Välk ka pakkimist. Ta hoidis sarvedega paela ja keeras ennast nii mitu korda ringi, et oli lõpuks ise ilusasti pakitud. Lahti pakkisime ta kahekesi. Pärast seda otsustas pakkimisosakond, et kõik ümmargused asjad lähevad edaspidi sokkidesse – ja Välk pakkimisruumi enam ei tule.',
       ],
     },
     variants: {
@@ -238,9 +238,9 @@ export const OLDER_SCENARIOS: Scenario[] = [
       older: {
         essential: true,
         text: () => 'Laua all on kaks põhjapõtra ja kolm päkapikku. Mitu jalga on laua all kokku?',
-        answer: `${EXAM_ANSWER} jalga (põhjapõtradel 8, päkapikkudel 6)`,
+        answer: `${EXAM_ANSWER} jalga (põhjapõtradel 8, päkapikkudel 6); kui lugeda ka laua 4 jalga, siis ${EXAM_ANSWER + 4} – mõlemad on õiged`,
         reveal: () =>
-          `Eilse eksamiküsimuse vastus: ${EXAM_ANSWER} jalga. Üks noor päkapikk vastas 18, sest ta luges ka laua jalad kokku.`,
+          `Eilse eksamiküsimuse vastus: ${EXAM_ANSWER} jalga, kui lugeda põhjapõdrad ja päkapikud. Aga kui lugesid kokku ka laua neli jalga, said ${EXAM_ANSWER + 4} – ja see on samuti õige. Komisjon andis mõlemale vastusele viie.`,
         check: () => EXAM_ANSWER === 14,
       },
     },

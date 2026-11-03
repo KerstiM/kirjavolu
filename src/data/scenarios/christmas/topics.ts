@@ -29,19 +29,19 @@ export const TOPIC_SCENARIOS: Scenario[] = [
       older: (c) => [
         'Eile oli töökojas vaba õhtu ja ma mõtlesin sinu peale.',
         topicOf(c).tryout,
-        'Nüüd saan aru, miks see sulle nii meeldib. Homme proovin uuesti – ja seekord paremini.',
+        'Nüüd saan aru, mis selles nii toredat on. Homme proovin uuesti – ja seekord paremini.',
       ],
       young: (c) => [
         'Eile oli töökojas vaba õhtu ja ma mõtlesin sinu peale.',
         topicOf(c).tryout,
-        'Nüüd saan aru, miks see sulle nii meeldib. Homme proovin uuesti!',
+        'Nüüd saan aru, mis selles nii toredat on. Homme proovin uuesti!',
       ],
       toddler: (c) => [topicOf(c).toddlerTryout],
     },
     readAloud: (c) => [
       'Eile oli töökojas vaba õhtu ja ma mõtlesin sinu peale.',
       topicOf(c).tryout,
-      'Nüüd saan aru, miks see sulle nii meeldib!',
+      'Nüüd saan aru, mis selles nii toredat on!',
     ],
   },
   {

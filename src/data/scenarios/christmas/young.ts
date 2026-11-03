@@ -72,7 +72,7 @@ export const YOUNG_SCENARIOS: Scenario[] = [
     tones: ['humorous', 'heartwarming'],
     more: {
       young: () => [
-        'Täna hommikul käisin neid vaatamas. Üks tihane piilus sokist välja ja vaatas mind nii, nagu oleksin mina tema majja külla tulnud. Ütlesin talle tere ja panin ukse ette veel peotäie seemneid. Nüüd oleme sõbrad. Vähemalt mina arvan nii.',
+        'Hiljem käisin neid lähemalt vaatamas. Üks tihane piilus sokist välja ja vaatas mind nii, nagu oleksin mina tema majja külla tulnud. Ütlesin talle tere ja panin ukse ette veel peotäie seemneid. Nüüd oleme sõbrad. Vähemalt mina arvan nii.',
       ],
     },
     variants: {
@@ -185,7 +185,7 @@ export const YOUNG_SCENARIOS: Scenario[] = [
     tones: ['humorous', 'magical'],
     more: {
       young: () => [
-        'Täna pühkisime terve päeva. Aga sädelus on selline asi, mis kunagi päris ära ei lähe. Leidsin seda oma taskust, oma mütsist ja isegi pudrukausist. Põhjapõder Välk sädeleb ka. Kui ta pead raputab, sajab tallis väikest kuldset lund. Ma arvan, et ta on sellega väga rahul.',
+        'Täna pühkisime terve päeva. Aga sädelus on selline asi, mis kunagi päris ära ei lähe. Leidsin seda oma taskust, oma mütsist ja isegi pudrukausist. Põhjapõder Välk sädeleb ka. Kui ta pead raputab, sajab tallis väikest kuldset lund. Ta paistab sellega väga rahul olevat.',
       ],
     },
     variants: {

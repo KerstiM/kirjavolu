@@ -248,7 +248,11 @@ describe('age and reading level', () => {
     const readers = (built: typeof long) => built.items.filter((_, k) => built.plan.days[k]!.childId !== BRITA.id)
     expect(words(readers(long))).toBeGreaterThan(words(readers(medium)) * 1.15)
     expect(long.plan.long).toBe(true)
-    expect(long.items.filter((item) => /päkapiku mõistatus|tänane ülesanne/.test(item.body)).length).toBeGreaterThan(20)
+    const extra = /Vastuse kirjutan homme|Vastus tuleb homses kirjas|Homme ütlen vastuse|kui tahad, |Kui sul täna aega on|Mul on sulle üks mõte/
+    expect(long.items.filter((item) => extra.test(item.body)).length).toBeGreaterThan(20)
+    // The openings vary: no single one carries the series.
+    const openings = long.items.map((item) => item.body.match(/(Kas oskad ära arvata\?|Nuputa natuke:|Mul on sulle üks mõistatus:|Üks mõistatus ka:)/)?.[1]).filter(Boolean)
+    expect(new Set(openings).size).toBeGreaterThan(1)
     long.plan.days.forEach((d, k) => {
       if (d.childId === BRITA.id) expect(long.items[k]!.body.split('\n\n')).toHaveLength(1)
     })

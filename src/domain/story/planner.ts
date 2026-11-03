@@ -374,6 +374,9 @@ export function planCollection(
         if ((s.requires ?? []).some((fact) => !((facts.get(fact) ?? Infinity) < i))) return false
         if (s.until !== undefined && (facts.get(s.until) ?? Infinity) < i) return false
         if (s.onlyWithHook && canPersonalize(child, s, i).length === 0) return false
+        // A story that asks today and answers tomorrow needs a tomorrow before the farewell.
+        const activity = s.activities?.[child.band]
+        if (activity?.essential && activity.reveal && i >= last - 1) return false
         return true
       }
 
@@ -453,6 +456,13 @@ export function planCollection(
   }
 }
 
+const RIDDLE_OPENINGS = {
+  young: ['Kas oskad ära arvata?', 'Põhjapõder Välk tõi mulle täna ühe mõistatuse:', 'Nuputa natuke:', 'Mul on sulle üks mõistatus:'],
+  older: ['Üks mõistatus ka:', 'Selle mõistatuse leidsin töökoja vanast raamatust:', 'Nuputa natuke:', 'Täna on mul sulle üks mõistatus:'],
+} as const
+const RIDDLE_CLOSINGS = ['Vastuse kirjutan homme.', 'Vastus tuleb homses kirjas.', 'Homme ütlen vastuse.'] as const
+const TASK_OPENINGS = ['Mul on sulle üks mõte: kui tahad, ', 'Kui sul täna aega on, ', 'Üks päkapiku ettepanek: kui tahad, '] as const
+
 /** Christmas riddles and tasks from the hand-written banks, in a seeded order without repeats. */
 function addLongExtras(
   p: PlannedChild,
@@ -467,10 +477,18 @@ function addLongExtras(
   // A task about singing or football would claim an interest the child may not have.
   const noTopic = (text: string) => !PERSONAL_HOOKS.some((hook) => hook.mentions.test(text))
   const riddles = rng.shuffle(
-    RIDDLES.filter(
-      (r) => (r.level === 'any' || r.level === p.band) && fitsSeason(r.occasions) && noTopic(r.question) && !used.has(`answer:${r.answer}`),
-    ),
+    RIDDLES.filter((r) => (r.level === 'any' || r.level === p.band) && fitsSeason(r.occasions) && noTopic(r.question)),
   )
+  // Several riddles share an answer ("kuusk"), so the answer is checked when one is taken.
+  const nextRiddle = () => {
+    const at = riddles.findIndex((r) => !used.has(`answer:${r.answer}`))
+    return at < 0 ? undefined : riddles.splice(at, 1)[0]
+  }
+  // 24 letters with the same opening would read like a form; the helper says it differently.
+  const say = <T,>(options: readonly T[]) => options[turn % options.length] as T
+  const riddleOpenings = rng.shuffle(RIDDLE_OPENINGS[p.band === 'older' ? 'older' : 'young'])
+  const riddleClosings = rng.shuffle(RIDDLE_CLOSINGS)
+  const taskOpenings = rng.shuffle(TASK_OPENINGS)
   const tasks = rng.shuffle(
     ACTIVITIES.filter(
       (a) =>
@@ -488,9 +506,9 @@ function addLongExtras(
     if (!entry || entry.content.kind !== 'scenario' || entry.content.activity) continue
     const next = days[index + 1]
     // A riddle needs tomorrow's letter for its answer, and not the farewell.
-    const riddle = turn % 2 === 0 && next && index + 1 < last ? riddles.shift() : undefined
+    const riddle = turn % 2 === 0 && next && index + 1 < last ? nextRiddle() : undefined
     if (riddle && next) {
-      entry.addenda.push(`Ja nüüd üks päkapiku mõistatus: ${riddle.question} Vastuse kirjutan homme.`)
+      entry.addenda.push(`${say(riddleOpenings)} ${riddle.question} ${say(riddleClosings)}`)
       entry.answer = riddle.answer
       next.postscripts.unshift(`Eilse mõistatuse vastus: ${riddle.answer}.`)
       used.add(`answer:${riddle.answer}`)
@@ -499,7 +517,9 @@ function addLongExtras(
       if (!task) continue
       used.add(task.id)
       const text = task.text((singular) => singular)
-      entry.addenda.push(`Minu tänane ülesanne sulle: ${text.charAt(0).toLowerCase()}${text.slice(1)}`)
+      // A suggestion, never a duty: "kui tahad, voldi …". Texts that already set the scene stay whole.
+      const whole = /^(Täiskasvanu|Kui )/.test(text)
+      entry.addenda.push(whole ? `Mul on sulle üks mõte! ${text}` : `${say(taskOpenings)}${text.charAt(0).toLowerCase()}${text.slice(1)}`)
       if (task.materials.length) entry.prep.push(`ülesandeks ${task.materials.map((m) => MATERIAL_LABELS[m]).join(', ')}`)
     }
     turn++

@@ -109,7 +109,8 @@ describe('daily preparation for the parent', () => {
     render(ParentSheet, { props: { content } })
     expect(screen.getByText('Vastused ja ettevalmistus')).toBeInTheDocument()
     expect(screen.getAllByText('Ruben · 6. detsember 2026').length).toBeGreaterThan(0)
-    expect(screen.getAllByText('Valmista ette: komm sussi').length).toBe(9)
+    // A Sunday may also prepare a task ("Valmista ette: komm sussi; ülesandeks paber").
+    expect(screen.getAllByText(/^Valmista ette: .*komm sussi/).length).toBe(9)
     expect(screen.getByText('Ruben on salajane abiline')).toBeInTheDocument()
   })
 

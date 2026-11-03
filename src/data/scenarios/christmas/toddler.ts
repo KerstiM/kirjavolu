@@ -78,7 +78,7 @@ export const TODDLER_SCENARIOS: Scenario[] = [
     'tree-lights',
     'Kuusetuled',
     ['lights', 'count'],
-    () => ['Kuusel põlevad tuled. Üks, kaks, kolm! Loeme koos: mitu tuld sinu kodus põleb?'],
+    () => ['Kuusel põlevad tuled. Loeme koos kuusetulesid! Üks, kaks, kolm…'],
     () => [
       'Töökoja kuusel on palju tulesid: punased, kollased ja sinised. Õhtul panin ma need põlema.',
       'Siis tahtsin tulesid üle lugeda: üks, kaks, kolm … Ma ronisin oksalt oksale, aga ühel oksal oli nii soe, et jäin magama.',
