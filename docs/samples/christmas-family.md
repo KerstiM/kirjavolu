@@ -12,6 +12,8 @@ Tere! Mina olen Kõpsu-Mõpsu Kuubikuvõlur – Jõuluvana töökoja kõige vane
 
 Igal hommikul leiad siit kirja. Mõnikord on mul uudiseid töökojast, mõnikord mõni mõistatus ja mõnikord ainult see, et põhjapõder Välk sõi jälle mu kindad ära.
 
+Enne kui alustame, pean sind ühest asjast hoiatama. Töökojas juhtub detsembris rohkem kui kogu ülejäänud aasta jooksul. Kelgud vajavad õlitamist, kirjad sorteerimist ja põhjapõder Välk pidevat valvamist. Mina olen siin selleks, et sulle kõigest ausalt kirjutada. Isegi siis, kui Välk palub mul midagi mitte rääkida.
+
 P.S. Päkapikkude reegel: maiustusi toome ainult pühapäeviti. Teistel päevadel on sinu sussis midagi muud toredat.
 
 _Sinu · Kõpsu-Mõpsu_
@@ -38,6 +40,8 @@ Mina tegin jääst kuubiku, mille kõik ruudud on eri värvi – külmutasin vet
 
 Võitjat ei valitudki. Žürii – Jõuluvana – ütles, et kõik on võitjad, ja läks siis kiiresti tuppa, sest tal hakkas külm.
 
+Täna hommikul olid kõik jääkujud alles, peale ühe asja: pudrupoti lusikas oli kadunud. Jälgedest oli näha, et keegi oli öösel seda lakkumas käinud. Neli jalga, üks saba ja kerge pudrulõhn. Välk ei tunnista midagi. Aga terve hommiku hoidis ta suud natuke lahti, nagu oleks keel külmunud.
+
 Ja nüüd üks päkapiku mõistatus: Mida rohkem seda on, seda vähem näed. Vastuse kirjutan homme.
 
 _Sinu · Kõpsu-Mõpsu_
@@ -53,6 +57,8 @@ Kirjutan täna lühidalt, sest töökojas on ärevus. Kuuse tipust on kadunud t�
 See pole tavaline ehe. Jõuluööl näitab see täht Jõuluvana kelgule teed läbi tuisu ja pilvede. Ilma temata on kelk nagu laev ilma tuletornita.
 
 Eile õhtul oli ta veel paigal – nägin teda, kui tuled kustutasin. Täna hommikul oli kuuse tipp tühi. Uks oli lukus, aken kinni. Ma ei tea veel, mida sellest arvata. Aga ma kavatsen välja uurida.
+
+Kõigepealt tegin seda, mida iga uurija teeb: vaatasin hoolikalt ringi ja kirjutasin kõik üles. Kuuse all ei olnud ühtegi jalajälge. Ehteid polnud keegi puutunud. Ainult kõige ülemine oks oli natuke kõver, nagu oleks keegi kerge sellele maandunud ja siis jälle õhku tõusnud. Kes, seda ma veel ei tea. Aga oksa panin märkmikku kirja.
 
 Minu tänane ülesanne sulle: voldi paber kolmnurgaks, lõika servadesse mustreid ja ava – iga lumehelves tuleb ainulaadne!
 
@@ -79,6 +85,8 @@ Mul on esimene vihje. Kuuse alt, täpselt sealt, kuhu täht oleks kukkunud, kui 
 See ei ole tavaline sulg. Ta on hõbedane, minu nimetissõrme pikkune ja pimedas helendab natuke – nagu oleks ta kunagi palju valgust näinud ja meenutaks seda nüüd.
 
 Ükski meie lind nii ei helenda. Panin sule klaaspurki ja purgi oma lauale. Täna öösel vaatan teda. Võib-olla räägib ta mulle midagi.
+
+Tegelikult ei jõudnud ma ööni oodata. Kohe, kui seda kirja kirjutama hakkasin, kustutasin lambi. Algul ei juhtunud midagi. Siis hakkas sulg vaikselt helendama, nagu hingaks: valgus tuli ja läks, tuli ja läks. Kirjutasin märkmikku: sulg helendab pimedas, rahulikult nagu magaja. Homme küsin kelleltki, kes linde paremini tunneb.
 
 Ja nüüd üks päkapiku mõistatus: See on sinu oma, aga teised kasutavad seda palju rohkem kui sina. Vastuse kirjutan homme.
 
@@ -112,6 +120,8 @@ Keerasin seda kaks õhtut ja mõtlesin sulle. Sina kuubikusõbrana oleksid ilmse
 
 Kastis oli lapsekäekirjaga sedel: „Kes selle lahti saab, saab minu tagavaraprillid.“ Prillid olid ka seal. Jõuluvana ütleb, et näeb nendega sada aastat tagasi.
 
+Prillid on nüüd Jõuluvana laual karbis, mille peale kirjutasin: „Ettevaatust, vanad.“ Kasti ennast tahavad kõik proovida. Noored päkapikud keeravad seda kordamööda ja igal õhtul on keegi kindel, et peaaegu sai. Mina nippi ette ei ütle. Kõige rohkem õpib see, kes kolmandal õhtul ise taipab.
+
 Kui sul on kuubik käepärast, proovi seda nippi ka.
 
 _Nuputades · Kõpsu-Mõpsu_
@@ -125,6 +135,8 @@ Eile õhtul hõikasid kõik töökojas ühte nime: „Pisi-Pätsi! Pisi-Pätsi!�
 Otsisime riiulitelt, tööpinkide alt ja pudrupotist. Siis kuulsin ahju juurest õrna norskamist.
 
 Ahju ääres kuivas minu vana kinnas. Selle sees, pöidla kohal, magas Pisi-Pätsi – soe, rahul ja natuke villane. Me ei äratanud teda. Teist kinnast kuivatan nüüd mujal.
+
+Hommikul ärkas Pisi-Pätsi ega saanud alguses aru, kus ta on. Ta ronis kindast välja, haigutas ja küsis, miks kõik teda vaatavad. Nüüd on tal oma kinnas, mille sisse õmblesin väikese padja. See ripub ahju kõrval naela otsas, sildiga: „Kinni, magab.“
 
 Minu tänane ülesanne sulle: paki paberisse mõni pisike asi ja kaunista pakk ise joonistatud mustritega.
 
@@ -152,6 +164,8 @@ Võtsin kaasa sule ja purgitäie hõbedast tolmu, mille Tipp-Topp köögiaknalt 
 
 Aga sel ööl, kui täht kadus, nägi ta väikest valgust, mis lendas madalalt üle lumevälja mäe poole. „Ta lendas nagu lind,“ ütles Huugo, „aga linnud ei helenda.“ Ma mõtlen selle üle.
 
+Koju jõudes võtsin välja vana kaardi ja tõmbasin pliiatsiga joone sealt, kus Huugo valgust nägi, mäe poole. Joon läks otse üle meie töökoja. Kas see on juhus? Uurijana ma juhustesse ei usu. Aga ma usun, et öökullid näevad öösel rohkem, kui räägivad. Huugo lubas silmad lahti hoida. Tal on selles kogemust.
+
 Ja nüüd üks päkapiku mõistatus: Hommikul käib neljal jalal, lõunal kahel ja õhtul kolmel. Vastuse kirjutan homme.
 
 _Mõtlikult · Kõpsu-Mõpsu_
@@ -178,6 +192,8 @@ Läksime kogu seltskonnaga Helmi pesa juurde. Pesas olid kolm teelusikat, üks v
 
 Helmi oli väga solvunud. Palusime vabandust ja Tipp-Topp küpsetas talle vabanduseks koogi. Helmi sõi koogi ära ja jättis lusikad endale. Õiglane.
 
+Sellest juhtumist sain õppetunni: uurija ei tohi otsustada enne, kui on kõiki vihjeid näinud. Kirjutasin selle suurte tähtedega märkmiku esimesele lehele. Ja veel üks asi. Helmi pesas oli ka üks hõbedane sulg. Ta ütles, et leidis selle mäe pealt. Harakas selliste asjade kohta ei valeta. Mina vaatan nüüd mäe poole.
+
 Minu tänane ülesanne sulle: vali kolm lemmikut jõululaulu ja laula need koos perega. Kes oskab kõige rohkem salme peast?
 
 P.S. Täna on pühapäev, nii et sussis on üks komm.
@@ -195,6 +211,8 @@ Töökojal on oma seinaleht „Põhjanaela Postimees“ ja sel nädalal oli koom
 Joonistasin kolm pilti. Esimesel vaatab põhjapõder Välk peeglisse. Teisel näeb ta, et tal on sarvede vahel lind. Kolmandal on lind sinna pesa ehitanud ja Välk ei julge enam pead liigutada.
 
 Joonistades mõtlesin Miki Hiire koomiksitele, mida sina loed: seal on ka alati hetk, kus kõik läheb viltu – ja just siis läheb huvitavaks. Minu lugu on muide tõsi. Välk liigub juba neljandat päeva väga ettevaatlikult.
+
+Täna hommikul käis pool töökoda seinalehe juures naermas. Välk käis ka. Ta vaatas pilte väga kaua, siis vaatas peeglisse ja siis jälle pilte. Lind tema sarvede vahel säutsus. Järgmises numbris tahan joonistada, kuidas lind kevadel ära lendab. Aga enne peab ta seda tegema.
 
 Ja nüüd üks päkapiku mõistatus: Olen pruun ja lõhnan kaneeli järele. Mind lõigatakse vormiga ja küpsetatakse ahjus. Vastuse kirjutan homme.
 
@@ -229,6 +247,8 @@ Eile oli päkapikkude iga-aastane suusavõistlus ümber Jõuluvana kuusiku. Mina
 Valin alati kõige ilusama tee: üle külmunud oja, vana kuuse alt ja läbi kitsa oru, kus lumi sädeleb. See on küll pikem, aga see-eest vaiksem.
 
 Jõudsin finišisse viimasena, kui teised juba kakaod jõid. Tipp-Topp oli mulle tassi alles hoidnud. Kakao oli küll jahtunud, aga ma ei öelnud talle seda.
+
+Täna hommikul tegin oma ilusast teest kaardi ja panin selle töökoja seinale. Kaardil on oja, vana kuusk ja kitsas org ning nende juures on kirjas, mida sealt näeb. Kolm noort päkapikku küsisid juba, kas võivad järgmisel aastal minuga koos sõita. Võivad. Aga kakao tuleb võtta termosega.
 
 Minu tänane ülesanne sulle: ehita toast takistusrada: üle padja, laua alt läbi, ümber tooli. Täiskasvanu võtab aega!
 
@@ -272,6 +292,8 @@ Esimesed üksteist korda maandus ta hanges. Kaheteistkümnendal korral tabas ta 
 
 Kui ukse avasin, seisis seal lumest põhjapõder: välja paistsid ainult sarved ja väga uhke nägu. Minu arvates oli see edu. Välk arvab, et homme proovib ta silmad lahti.
 
+Täna tegi ta seda. Kolmeteistkümnes katse oli nagu raamatus: neli kabjaplaksu katusel, natuke lund ja siis vaikus. Välk vaatas alla, kas keegi nägi. Mina nägin. Plaksutasin aknast nii kõvasti, et kass Nurr kukkus diivanilt. Nüüd tahab Välk harjutada maandumist korstnale. Seda ma talle veel ei soovita.
+
 Ja nüüd üks päkapiku mõistatus: Käib, aga jalgu ei ole; tiksub, aga südant ei ole. Vastuse kirjutan homme.
 
 P.S. Eilse eksamiküsimuse vastus: 14 jalga. Üks noor päkapikk vastas 18, sest ta luges ka laua jalad kokku.
@@ -302,6 +324,8 @@ Mäe taga, sinna, kuhu Huugo valgust lendamas nägi, kasvab vana kuusk. Kõige k
 
 Ema-lind ei tahtnud kellelegi halba. Talveööd on siin pikad ja pimedad ning pojad kartsid. Ta võttis kõige ilusama valguse, mida nägi. Keegi meist ei suutnud tema peale pahane olla.
 
+Tagasiteel ei rääkinud keegi. Lumi krudises jalge all ja mäe tagant paistis veel kaua pisike valgus. Kodus küsis Jõuluvana, mida me nüüd teeme. Täht peab jõuluööks kuusele tagasi tulema. Aga linnupojad ei tohi jälle pimedas olla. Täna istun terve õhtu oma töölaua taga. Mul on üks mõte.
+
 Minu tänane ülesanne sulle: korralda perele kontsert: laulud, pillid potikaantest ja kummardus lõpus!
 
 _Sinu vana sõber · Kõpsu-Mõpsu_
@@ -315,6 +339,8 @@ Tähe lugu on lahendatud – ja minu meelest päris hästi. Täht tuleb jõuluö
 Aga linnupojad ei pea enam pimedas olema. Ehitasin neile laterna: vana moosipurk, vasktraadist sang ja sees üks pisike tähekild, mille täht ise ära andis. Tipp-Topp värvis purgile lumehelbed.
 
 Täna hommikul riputasime laterna pesa kõrvale. Täht on jälle kuuse otsas ja särab natuke eredamalt kui enne. Või mulle ainult tundub nii.
+
+Õhtul käisime veel korra pesa juures. Latern põles pehme kollase valgusega ja linnupojad magasid. Ema-lind istus oksal ja vaatas meid. Siis lendas ta alla, astus kolm sammu minu poole ja noogutas. Vähemalt mulle tundus nii. Noogutasin vastu. See oli selle loo kõige ilusam hetk.
 
 Ja nüüd üks päkapiku mõistatus: Talvel ja suvel ühte karva. Vastuse kirjutan homme.
 
@@ -361,6 +387,8 @@ _Tervitustega põhjast · Kõpsu-Mõpsu_
 Tere! Mina olen Tipp-Topp Riisiterake – noor ja rõõmus päkapikk. Sel detsembril käib Rubeni juures Kõpsu-Mõpsu Kuubikuvõlur ja Brita juures Pisi-Pätsi. Me oleme kõik head sõbrad ja räägime üksteisele kõigest.
 
 Ma tulin otse töökoja köögist – kui kiri lõhnab kaneeli järele, siis ongi nii. Igal hommikul kirjutan sulle, mis meil juhtus. Meil juhtub palju!
+
+Mul on seljakotis kõik vajalik: lusikas, villased sokid ja väike taskulamp, et öösel sinu sussi üles leida. Teekond põhjast oli pikk ja lumine. Põhjapõder Välk tõi mind poole maa peale, edasi kõndisin ise. Nüüd olen kohal ja mul on nii hea meel! Homme hommikul kirjutan, mis töökojas uut on.
 
 P.S. Päkapikkude reegel: maiustusi toome ainult pühapäeviti. Teistel päevadel on sinu sussis midagi muud toredat.
 
@@ -410,6 +438,8 @@ Eile õhtul oli ta veel seal, ma olen kindel. Ta särab nii, et isegi minu tuppa
 
 Ilma täheta ei leia Jõuluvana jõuluööl teed. Kõik päkapikud otsivad. Mina otsisin ka – isegi pudrupotist. Seal teda ei olnud.
 
+Siis pidasime töökojas koosoleku. Jõuluvana ütles, et keegi ei tohi kurvaks jääda, sest jõuludeni on veel aega. Kõik said ülesande. Mina otsin köögist ja kuuri tagant. Kass Nurr otsib laua alt, sest seal on tema lemmikkoht. Põhjapõder Välk ülesannet ei saanud, sest ta sõi kogemata ära kuusele riputatud piparkoogi.
+
 Minu tänane ülesanne sulle: täiskasvanu süütab küünla. Räägi kordamööda, mis oli sel aastal kõige toredam hetk.
 
 P.S. Eilse mõistatuse vastus: päkapikk.
@@ -454,6 +484,8 @@ Eile oli nii tugev tuisk, et aknast ei paistnud midagi. Huuuu! tegi tuul.
 
 Nad sõid ära kõik lumememmede porgandid. Nüüd elavad nad puuriida taga ja ma viin neile igal hommikul kapsalehti.
 
+Täna hommikul nägin, et kõige väiksem jänesepoeg on julge. Ta tuli minu juurde ja nuusutas mu saabast. Siis sõi ta kapsalehe otse mu käest. Panin talle nimeks Hopsti. Teistele ma veel nime ei pannud, sest nad hüppavad nii kiiresti, et ma ei tea, kes on kes.
+
 Minu tänane ülesanne sulle: vali lemmikmuinasjutt ja mängi see mänguasjadega ette. Lõpp võib olla täiesti uus!
 
 P.S. Eilse mõistatuse vastus: kingitus.
@@ -470,6 +502,8 @@ Täna hommikul vaatasin köögiaknast välja ja aknalaual oli hõbedane tolm. Mi
 
 Kõpsu-Mõpsu ütles, et see on väga tähtis, ja korjas tolmu pintsliga purki. Ma tunnen end nüüd nagu päris detektiiv.
 
+Pärast seda vaatasin igalt aknalaualt. Tolmu oli ainult köögiaknal, mitte kusagil mujal. Kõpsu-Mõpsu ütles, et keegi on just selle akna juures käinud. Aga uks oli öösel lukus. Kes saab sisse, kui uks on lukus? Ainult keegi, kes oskab lennata. Või väga väike päkapikk. Või mõlemad.
+
 Ja nüüd üks päkapiku mõistatus: Mul on neli jalga ja selg, aga ma ei kõnni kunagi. Vastuse kirjutan homme.
 
 _Kiirelt-kiirelt · Tipp-Topp_
@@ -485,6 +519,8 @@ Eile õhtul kadus Pisi-Pätsi ära! Ta on nii pisike, et teda on raske leida.
 Me otsisime igalt poolt. Mina vaatasin isegi pudrupotti. Siis kuulsime: norr… norr…
 
 Ta magas ahju ääres kuivava kinda sees! Täpselt pöidla kohal. Nii armas, et keegi ei raatsinud teda äratada.
+
+Hommikul ronis Pisi-Pätsi kindast välja ja haigutas nii suurelt, et kõik naersid. Tema ei saanud aru, miks. Nüüd on tal oma kinnas, mis ripub ahju kõrval ja mille sees on pisike padi. Kui kinnas norskab, räägime sosinal.
 
 Minu tänane ülesanne sulle: mängi mängu „Ma näen midagi, mis on…“ ja ütle ainult värv või kuju. Teised arvavad.
 
@@ -518,6 +554,8 @@ Kõige naljakam oli see, et Kõpsu-Mõpsu istus terve õhtu katusel ja ootas nei
 
 Mina võitsin virmaliste võistluse ja sain kõige pehmema pingi. Aga ma hoian sellel ka talle kohta. Ta on ju minu sõber.
 
+Täna õhtul läheme katusele mõlemad. Mina võtan kaks tassi kakaod ja Kõpsu-Mõpsu võtab teki. Ma ütlesin talle, et kui ta jälle magama jääb, äratan ta kohe, kui taevas roheliseks läheb. Kass Nurr tuleb ka. Tema on meie äratuskell.
+
 Ja nüüd üks päkapiku mõistatus: Ütlen „mõmm“ ja magan terve talve. Vastuse kirjutan homme.
 
 P.S. Eilse mõistatuse vastus oli: lumi. Välk arvas, et jäätis.
@@ -536,6 +574,8 @@ Ma segasin ja segasin. Aga puder kasvas ja kasvas. Mulks! Mulks! Lõpuks ronis t
 
 Jõuluvana sõi kaks kaussi otse trepi pealt ja ütles: „Parim puder!“ Minu põsed läksid punaseks. Ja kleepuvaks.
 
+Täna pesime treppi. Mina pesin, Kõpsu-Mõpsu pesi ja kass Nurr lakkus. Nurr oli kõige kiirem. Nüüd on köögi uksel silt, et suurt katelt tohib kasutada ainult koos vanema päkapikuga. Homme keedame koos. Ta lubas, et mina saan segada.
+
 Minu tänane ülesanne sulle: joonista kaheksale kaardile neli paari pilte ja mängi nendega mälumängu.
 
 P.S. Eilse mõistatuse vastus: karu.
@@ -553,6 +593,8 @@ Kõik arvasid, et tähe võttis harakas Helmi. Harakad korjavad ju läikivaid as
 Me läksime tema pesa juurde. Ja mis seal oli? Lusikad, üks võti… ja minu vispel, mida ma juba nädal aega otsisin! Aga tähte ei olnud.
 
 Helmi oli meie peale pahane. Ma küpsetasin talle vabanduseks koogi. Ta sõi selle ära ja andis mulle mu vispli tagasi. Lusikad jättis endale.
+
+Kogu koduteel oli Kõpsu-Mõpsu vait. Siis ütles ta: „Me arvasime liiga kiiresti.“ Küsisin, mida see tähendab. Ta seletas, et enne, kui kedagi süüdistad, pead kõik vihjed üle vaatama. Hästi, ma vaatan. Aga minu vispel on tagasi. Vähemalt üks asi on leitud!
 
 Ja nüüd üks päkapiku mõistatus: Olen ümmargune ja põrkan. Mind visatakse ja lüüakse jalaga. Vastuse kirjutan homme.
 
@@ -602,6 +644,8 @@ Esimesena jõudis finišisse põhjapõder Välk, kuigi ta ei olnudki võistleja 
 
 Kõpsu-Mõpsu tuli viimasena. Ta ütles, et valis ilusama tee. Mina hoidsin talle kakaotassi alles.
 
+Täna hommikul läksin ka ise seda ilusat teed vaatama. Seal on külmunud oja, mis klõbiseb, ja vana kuusk, mille all on nii vaikne, et kuuled oma südant. Kõpsu-Mõpsu oli õigus: see tee on ilus. Järgmisel aastal sõidame koos. Mina kiiresti, tema aeglaselt, ja kohtume kakao juures.
+
 Ja nüüd üks päkapiku mõistatus: Kes tuleb jõuluööl, punane kuub seljas ja valge habe ees? Vastuse kirjutan homme.
 
 _Sinu sõber · Tipp-Topp_
@@ -617,6 +661,8 @@ Mul oli eile suurepärane plaan. Kes korjab öösel läikivaid asju, see armasta
 Küpsetasin tähekujulised küpsised ja panin need õhtul mäe peale. Hommikul olid küpsised kadunud! Lumel olid pisikesed linnujäljed ja kaks hõbedast sulge.
 
 Kõpsu-Mõpsu vaatas sulgi ja ütles, et nüüd teame, kuhu minna. Mäe taga on vana kuusk. Varsti läheme vaatama!
+
+Õhtul tegin veel ühe plaaditäie küpsiseid, et linnul oleks teel midagi süüa. Kõpsu-Mõpsu pakkis seljakotti laterna, köie ja termose. Mina pakkisin oma sussid. Mitte jalga, vaid kaasa, igaks juhuks. Kui täht on tõesti mäe taga, tahan seda näha esimesena. Või vähemalt teisena.
 
 Minu tänane ülesanne sulle: suuna taskulamp seinale ja tee kätega varjuloomi. Kas keegi arvab ära, mis loom see on?
 
@@ -652,6 +698,8 @@ Oi-oi! Ma ehitasin eile terve päeva lumememme. Tal oli porgandnina, kaks nööp
 
 Nüüd seisab õues lumememm, kellel on sarved. Porgandi sõi Välk ära. Ma arvan, et nad said sõpradeks.
 
+Täna hommikul seisid nad õues kahekesi: Välk ja sarvedega lumememm. Välk tõi talle uue porgandi. Ma arvan, et see oli vabanduseks. Siis harjutas Välk veel natuke ja maandus seekord ilusti katusele. Ainult natuke lund kukkus. Ja see kukkus otse minu kraesse. Brr!
+
 Minu tänane ülesanne sulle: mõtle välja kolm mõistatust kodus leiduvate asjade kohta ja lase teistel ära arvata.
 
 _Sinu · Tipp-Topp_
@@ -678,6 +726,8 @@ Ta oli mäe taga vana kuuse otsas linnupesas. Pesas olid kolm pisikest linnupoeg
 
 Ema-lind oli tähe sinna viinud, sest pojad kartsid pimedat. Me ei saanud tema peale üldse pahane olla. Pojad olid nii armsad!
 
+Tagasiteel küsisin: „Mis nüüd saab? Kas me võtame tähe ära?“ Kõpsu-Mõpsu ei vastanud kohe. Siis ütles ta, et tal on üks mõte. Kui ta nii ütleb, tuleb sellest alati midagi head. Lähen nüüd kuuri moosipurke otsima. Ta küsis neid. Milleks, seda ma veel ei tea.
+
 Minu tänane ülesanne sulle: loe kokku, mitu punast ehet on kuusel. Aga mitu kuldset? Kumba on rohkem?
 
 _Tervitustega köögist · Tipp-Topp_
@@ -691,6 +741,8 @@ Täht on tagasi kuuse otsas! Ta särab jälle nii, et minu tuppagi paistab.
 Aga linnupojad said endale päris oma laterna. Kõpsu-Mõpsu ehitas selle moosipurgist ja mina värvisin sellele lumehelbed. Kõige ilusam latern maailmas!
 
 Nüüd on kõigil valge: kuusel, kelgul ja linnupesal. Ja minul on mälestuseks üks hõbedane sulg.
+
+Õhtul käisime pesa juures. Latern põles ja linnupojad magasid nagu kolm väikest palli. Ema-lind vaatas meid ja ütles: piiu. Ma arvan, et see tähendas aitäh. Ütlesin vastu: piiu. Nüüd oskan natuke linnukeelt.
 
 Minu tänane ülesanne sulle: kes ehitab klotsidest kõige kõrgema torni, mis ise püsti püsib? Mõõda tulemus!
 

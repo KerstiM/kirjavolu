@@ -8,6 +8,14 @@ export const FRAME_SCENARIOS: Scenario[] = [
     occasions: ['christmas'],
     role: 'introduction',
     tags: ['frame'],
+    more: {
+      older: () => [
+        'Enne kui alustame, pean sind ühest asjast hoiatama. Töökojas juhtub detsembris rohkem kui kogu ülejäänud aasta jooksul. Kelgud vajavad õlitamist, kirjad sorteerimist ja põhjapõder Välk pidevat valvamist. Mina olen siin selleks, et sulle kõigest ausalt kirjutada. Isegi siis, kui Välk palub mul midagi mitte rääkida.',
+      ],
+      young: () => [
+        'Mul on seljakotis kõik vajalik: lusikas, villased sokid ja väike taskulamp, et öösel sinu sussi üles leida. Teekond põhjast oli pikk ja lumine. Põhjapõder Välk tõi mind poole maa peale, edasi kõndisin ise. Nüüd olen kohal ja mul on nii hea meel! Homme hommikul kirjutan, mis töökojas uut on.',
+      ],
+    },
     variants: {
       older: (c) => [
         introLine(c.helper, c.frame.title, c.frame.origin, c.frame.siblingHelpers),
@@ -36,6 +44,14 @@ export const FRAME_SCENARIOS: Scenario[] = [
     occasions: ['christmas'],
     role: 'resolution',
     tags: ['frame'],
+    more: {
+      older: () => [
+        'Täna õhtul vaatan aknast, kuidas kelk taevasse tõuseb. Igal aastal tundub mulle, et see on kogu aasta kõige vaiksem hetk: kõik töö on tehtud ja jääb üle ainult oodata. Kui sina täna õhtul taevasse vaatad ja näed kuskil väikest valgust liikumas, võib-olla oleme see meie. Lehvita igaks juhuks.',
+      ],
+      young: () => [
+        'Täna hommikul aitasin viimaseid kingipakke kelgule tõsta. Üks pakk oli nii suur, et ma ei näinud selle tagant midagi ja kõndisin otse põhjapõder Välgu otsa. Välk ei pahandanud. Ta lakkus mu mütsi märjaks. Õhtul vaatan aknast, kuidas kelk õhku tõuseb. Kas sina vaatad ka?',
+      ],
+    },
     variants: {
       older: (c) => [
         `Täna on jõululaupäev! Töökoda on vaikseks jäänud ja kingid on kelgul.${c.knows('star-back') ? ' Täht särab kuuse tipus ja Jõuluvana leiab täna öösel tee.' : ''}`,

@@ -12,6 +12,8 @@ Tere! Mina olen Päkapikk Tuduja. Tulin põhjast, Jõuluvana töökojast, ja jä
 
 Ma tulin otse töökoja köögist – kui kiri lõhnab kaneeli järele, siis ongi nii. Igal hommikul kirjutan sulle, mis meil juhtus. Meil juhtub palju!
 
+Mul on seljakotis kõik vajalik: lusikas, villased sokid ja väike taskulamp, et öösel sinu sussi üles leida. Teekond põhjast oli pikk ja lumine. Põhjapõder Välk tõi mind poole maa peale, edasi kõndisin ise. Nüüd olen kohal ja mul on nii hea meel! Homme hommikul kirjutan, mis töökojas uut on.
+
 _Sinu · Päkapikk Tuduja_
 
 ### 2. detsember 2026
@@ -77,6 +79,8 @@ Kas sa tead, mis on virmalised? Need on rohelised ja lillad tuled, mis tantsivad
 Kõige naljakam oli see, et Kribu-Krabu istus terve õhtu katusel ja ootas neid. Aga ta jäi magama! Kass Nurr pidi ta üles äratama.
 
 Mina võitsin virmaliste võistluse ja sain kõige pehmema pingi. Aga ma hoian sellel ka talle kohta. Ta on ju minu sõber.
+
+Täna õhtul läheme katusele mõlemad. Mina võtan kaks tassi kakaod ja Kribu-Krabu võtab teki. Ma ütlesin talle, et kui ta jälle magama jääb, äratan ta kohe, kui taevas roheliseks läheb. Kass Nurr tuleb ka. Tema on meie äratuskell.
 
 Ja nüüd üks päkapiku mõistatus: Olen roheline ja okkaline, jõuludel ehitakse mind tuledega. Vastuse kirjutan homme.
 
@@ -146,6 +150,8 @@ Me otsisime igalt poolt. Mina vaatasin isegi pudrupotti. Siis kuulsime: norr… 
 
 Ta magas ahju ääres kuivava kinda sees! Täpselt pöidla kohal. Nii armas, et keegi ei raatsinud teda äratada.
 
+Hommikul ronis Tillu kindast välja ja haigutas nii suurelt, et kõik naersid. Tema ei saanud aru, miks. Nüüd on tal oma kinnas, mis ripub ahju kõrval ja mille sees on pisike padi. Kui kinnas norskab, räägime sosinal.
+
 Ja nüüd üks päkapiku mõistatus: Kes tuleb jõuluööl, punane kuub seljas ja valge habe ees? Vastuse kirjutan homme.
 
 _Hüpates · Päkapikk Tuduja_
@@ -182,6 +188,8 @@ Siis kuulsin, et üks kingipakk teeb: nurr-nurr-nurr. Pakid ju ei nurru! Tegin p
 
 Nurr oli karbis magama jäänud ja keegi oli ta kogemata ära pakkinud. Peaaegu oleks ta Lapimaale sõitnud.
 
+Pärast seda tegin Nurrile oma karbi. Sees on pehme tekk ja peal silt: „Seda pakki ära saada!“ Nurrile see meeldis. Ta magas seal terve öö ja nurrus nii kõvasti, et karp värises. Hommikul käis ta kõiki pakke nuusutamas. Ma arvan, et ta kontrollis, kas mõnes on veel mõni kass.
+
 Ja nüüd üks päkapiku mõistatus: Mul on paber ümber ja pael peal, sees on üllatus. Vastuse kirjutan homme.
 
 _Hüpates · Päkapikk Tuduja_
@@ -197,6 +205,8 @@ Ma tahtsin eile kõigile päkapikkudele üllatust teha ja keetsin riisiputru. Si
 Ma segasin ja segasin. Aga puder kasvas ja kasvas. Mulks! Mulks! Lõpuks ronis ta üle ääre ja läks trepist alla.
 
 Jõuluvana sõi kaks kaussi otse trepi pealt ja ütles: „Parim puder!“ Minu põsed läksid punaseks. Ja kleepuvaks.
+
+Täna pesime treppi. Mina pesin, Kribu-Krabu pesi ja kass Nurr lakkus. Nurr oli kõige kiirem. Nüüd on köögi uksel silt, et suurt katelt tohib kasutada ainult koos vanema päkapikuga. Homme keedame koos. Ta lubas, et mina saan segada.
 
 Minu tänane ülesanne sulle: kui õues on lund, ehita lumememm. Kui lund pole, ehita toas patjadest „padjamemm“ ja pane talle müts pähe.
 
@@ -214,6 +224,8 @@ Esimesena jõudis finišisse põhjapõder Välk, kuigi ta ei olnudki võistleja 
 
 Kribu-Krabu tuli viimasena. Ta ütles, et valis ilusama tee. Mina hoidsin talle kakaotassi alles.
 
+Täna hommikul läksin ka ise seda ilusat teed vaatama. Seal on külmunud oja, mis klõbiseb, ja vana kuusk, mille all on nii vaikne, et kuuled oma südant. Kribu-Krabu oli õigus: see tee on ilus. Järgmisel aastal sõidame koos. Mina kiiresti, tema aeglaselt, ja kohtume kakao juures.
+
 Ja nüüd üks päkapiku mõistatus: Käib, aga jalgu ei ole; tiksub, aga südant ei ole. Vastuse kirjutan homme.
 
 _Sinu · Päkapikk Tuduja_
@@ -229,6 +241,8 @@ Eile oli nii tugev tuisk, et aknast ei paistnud midagi. Huuuu! tegi tuul.
 Öösel koputas keegi uksele: kopp-kopp. Ukse taga olid seitse lumist jänest! Lasime nad sooja.
 
 Nad sõid ära kõik lumememmede porgandid. Nüüd elavad nad puuriida taga ja ma viin neile igal hommikul kapsalehti.
+
+Täna hommikul nägin, et kõige väiksem jänesepoeg on julge. Ta tuli minu juurde ja nuusutas mu saabast. Siis sõi ta kapsalehe otse mu käest. Panin talle nimeks Hopsti. Teistele ma veel nime ei pannud, sest nad hüppavad nii kiiresti, et ma ei tea, kes on kes.
 
 Minu tänane ülesanne sulle: täiskasvanu süütab küünla. Räägi kordamööda, mis oli sel aastal kõige toredam hetk.
 
@@ -338,6 +352,8 @@ Siis nägin: Jõuluvana sõitis minu kelguga mäest alla! Tema on nii suur ja ke
 
 Ta ütles, et laenas seda ainult üheks korraks. Aga siis tuli Kribu-Krabu ka ja nad sõitsid üksteist korda. Järgmine kord lähen mina ka järjekorda.
 
+Täna hommikul oli minu kelk kuuri ukse juures tagasi. Selle peal oli väike kiri: „Aitäh laenamast! Jõuluvana.“ Ja kelgunööri külge oli seotud punane lehv. Nüüd on minu kelk kõige pidulikum kelk terves töökojas.
+
 Minu tänane ülesanne sulle: üks teeb liigutusi, teine kordab nagu peegel. Vaheta rolle!
 
 P.S. Eilse mõistatuse vastus: karu.
@@ -391,6 +407,8 @@ Oi-oi! Ma ehitasin eile terve päeva lumememme. Tal oli porgandnina, kaks nööp
 Õhtul harjutas põhjapõder Välk katusele maandumist. Ta libises katuselt alla – ja maandus otse minu lumememme peale! Põmm!
 
 Nüüd seisab õues lumememm, kellel on sarved. Porgandi sõi Välk ära. Ma arvan, et nad said sõpradeks.
+
+Täna hommikul seisid nad õues kahekesi: Välk ja sarvedega lumememm. Välk tõi talle uue porgandi. Ma arvan, et see oli vabanduseks. Siis harjutas Välk veel natuke ja maandus seekord ilusti katusele. Ainult natuke lund kukkus. Ja see kukkus otse minu kraesse. Brr!
 
 Minu tänane ülesanne sulle: kes ehitab klotsidest kõige kõrgema torni, mis ise püsti püsib? Mõõda tulemus!
 

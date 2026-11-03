@@ -14,6 +14,14 @@ export const WORLD_SCENARIOS: Scenario[] = [
     world: true,
     tags: ['reindeer', 'snow'],
     tones: ['humorous'],
+    more: {
+      older: () => [
+        'Täna tegi ta seda. Kolmeteistkümnes katse oli nagu raamatus: neli kabjaplaksu katusel, natuke lund ja siis vaikus. Välk vaatas alla, kas keegi nägi. Mina nägin. Plaksutasin aknast nii kõvasti, et kass Nurr kukkus diivanilt. Nüüd tahab Välk harjutada maandumist korstnale. Seda ma talle veel ei soovita.',
+      ],
+      young: () => [
+        'Täna hommikul seisid nad õues kahekesi: Välk ja sarvedega lumememm. Välk tõi talle uue porgandi. Ma arvan, et see oli vabanduseks. Siis harjutas Välk veel natuke ja maandus seekord ilusti katusele. Ainult natuke lund kukkus. Ja see kukkus otse minu kraesse. Brr!',
+      ],
+    },
     variants: {
       older: () => [
         'Põhjapõder Välk on noor ja tal on suur unistus: maanduda töökoja katusele sama pehmelt nagu lumehelves. Teooria on tal suurepärane. Eile õhtul harjutas ta kaksteist korda.',
@@ -44,6 +52,14 @@ export const WORLD_SCENARIOS: Scenario[] = [
     hooks: ['porridge'],
     tags: ['kitchen', 'porridge'],
     tones: ['humorous'],
+    more: {
+      older: () => [
+        'Täna hommikul oli trepp jälle puhas. Selleks kulus neli päkapikku, kaks ämbrit ja kass Nurr, kes lakkus ära kõik, mis meie harjade eest ära jõudis. Köögi uksel ripub nüüd uus silt: „Suur katel ainult koos vanema päkapikuga.“ Vanem päkapikk olen mina. Homme keedame koos.',
+      ],
+      young: (c) => [
+        `Täna pesime treppi. Mina pesin, ${c.cast.older} pesi ja kass Nurr lakkus. Nurr oli kõige kiirem. Nüüd on köögi uksel silt, et suurt katelt tohib kasutada ainult koos vanema päkapikuga. Homme keedame koos. Ta lubas, et mina saan segada.`,
+      ],
+    },
     variants: {
       older: (c) => [
         `Töökoja köögis juhtus eile midagi, millest räägitakse veel aastaid. ${c.cast.young} otsustas keeta kogu töökojale hommikuputru – ühe korraga, kõige suuremas katlas.`,
@@ -67,6 +83,14 @@ export const WORLD_SCENARIOS: Scenario[] = [
     world: true,
     tags: ['sky', 'night'],
     tones: ['magical', 'heartwarming'],
+    more: {
+      older: (c) => [
+        `Täna õhtul lähen uuesti katusele, seekord ilma tekita, et mitte magama jääda. ${c.cast.young} lubas tulla kahe tassi kakaoga. Virmalisi ei pruugi tulla, aga see ei olegi kõige tähtsam. Ma ei mäleta, millal ma viimati lihtsalt taevast vaatasin koos kellegagi, kes ei kiirusta.`,
+      ],
+      young: (c) => [
+        `Täna õhtul läheme katusele mõlemad. Mina võtan kaks tassi kakaod ja ${c.cast.older} võtab teki. Ma ütlesin talle, et kui ta jälle magama jääb, äratan ta kohe, kui taevas roheliseks läheb. Kass Nurr tuleb ka. Tema on meie äratuskell.`,
+      ],
+    },
     variants: {
       older: (c) => [
         'Päkapikkudel on igal talvel võistlus: kes näeb esimesena virmalisi. Võitja saab terve aasta istuda ahju kõrval kõige pehmemal pingil.',
@@ -88,6 +112,14 @@ export const WORLD_SCENARIOS: Scenario[] = [
     world: true,
     tags: ['cat', 'gifts'],
     tones: ['humorous'],
+    more: {
+      older: () => [
+        'Täna hommikul leidsin Nurri jälle kingikottide juurest. Seekord istus ta karbi kõrval ja vaatas mind väga tähtsalt, nagu ootaks oma paberit ja paela. Tegin talle ahju juurde oma karbi, vana tekiga ja sildiga „Mitte saata“. Ta magab seal juba kolm tundi.',
+      ],
+      young: () => [
+        'Pärast seda tegin Nurrile oma karbi. Sees on pehme tekk ja peal silt: „Seda pakki ära saada!“ Nurrile see meeldis. Ta magas seal terve öö ja nurrus nii kõvasti, et karp värises. Hommikul käis ta kõiki pakke nuusutamas. Ma arvan, et ta kontrollis, kas mõnes on veel mõni kass.',
+      ],
+    },
     variants: {
       older: (c) => [
         'Töökoja kass Nurr oli eile terve päeva kadunud. Otsisime teda laudade alt, kappidest ja isegi Jõuluvana saapast.',
@@ -117,6 +149,14 @@ export const WORLD_SCENARIOS: Scenario[] = [
     world: true,
     tags: ['kitchen', 'reindeer', 'building'],
     tones: ['humorous'],
+    more: {
+      older: (c) => [
+        `Täna parandasime nurga ära. Uue nurga tegi ${c.cast.young} ja sinna sai ka väike rõdu, millel istub suhkrust põhjapõder. Välk vaatas seda kaua. Siis läks ta tallist välja ja tuli tagasi ühe porgandiga, mille pani maja ette. Ma võtan seda vabandusena.`,
+      ],
+      young: (c) => [
+        `Täna tegime uue nurga ja sinna sai väike rõdu. Rõdul istub suhkrust põhjapõder. Välk vaatas seda kaua ja tõi siis maja ette porgandi. Ma arvan, et see oli vabandus. ${c.cast.older} ütles, et nüüd on meil maailma esimene piparkoogimaja koos porgandiga.`,
+      ],
+    },
     variants: {
       older: (c) => [
         'Teeme sel aastal piparkoogidest töökoja mudeli. Seinad on valmis, aknad on suhkrust ja korstnast tuleb vatist suitsu. Probleem on katus.',
@@ -146,6 +186,14 @@ export const WORLD_SCENARIOS: Scenario[] = [
     world: true,
     tags: ['tiny', 'cozy'],
     tones: ['heartwarming', 'humorous'],
+    more: {
+      older: (c) => [
+        `Hommikul ärkas ${c.cast.tiny} ega saanud alguses aru, kus ta on. Ta ronis kindast välja, haigutas ja küsis, miks kõik teda vaatavad. Nüüd on tal oma kinnas, mille sisse õmblesin väikese padja. See ripub ahju kõrval naela otsas, sildiga: „Kinni, magab.“`,
+      ],
+      young: (c) => [
+        `Hommikul ronis ${c.cast.tiny} kindast välja ja haigutas nii suurelt, et kõik naersid. Tema ei saanud aru, miks. Nüüd on tal oma kinnas, mis ripub ahju kõrval ja mille sees on pisike padi. Kui kinnas norskab, räägime sosinal.`,
+      ],
+    },
     variants: {
       older: (c) => [
         `Eile õhtul hõikasid kõik töökojas ühte nime: „${c.cast.tiny}! ${c.cast.tiny}!“ Ta on meist kõige pisem ja kaob vahel ära lihtsalt seepärast, et teda on nii vähe.`,
@@ -175,6 +223,14 @@ export const WORLD_SCENARIOS: Scenario[] = [
     world: true,
     tags: ['santa', 'snow', 'sled'],
     tones: ['humorous', 'adventurous'],
+    more: {
+      older: () => [
+        'Täna hommikul istus Jõuluvana jälle laua taga ja kirjutas kirju, nagu poleks midagi juhtunud. Aga tema saabaste ümber oli väike lumelomp ja põsed olid veel punased. Kui talle teed tõin, pilgutas ta mulle silma. Väike kelk seisab nüüd kuuri ukse kõrval. Keegi on selle sinna valmis pannud.',
+      ],
+      young: () => [
+        'Täna hommikul oli minu kelk kuuri ukse juures tagasi. Selle peal oli väike kiri: „Aitäh laenamast! Jõuluvana.“ Ja kelgunööri külge oli seotud punane lehv. Nüüd on minu kelk kõige pidulikum kelk terves töökojas.',
+      ],
+    },
     variants: {
       older: () => [
         'Jõuluvanal on detsembris väga vähe vaba aega, aga eile kadus ta pärast lõunat kuhugi ära. Töökoda läks ärevaks: kirjad ootavad, kelk ootab, põhjapõdrad ootavad.',
@@ -196,6 +252,14 @@ export const WORLD_SCENARIOS: Scenario[] = [
     world: true,
     tags: ['animals', 'weather'],
     tones: ['heartwarming'],
+    more: {
+      older: () => [
+        'Täna hommikul läksin puuriida taha vaatama. Jänesed olid lume sisse kaevanud käigud ja ühes otsas oli midagi väikese tagatoa sarnast. Viis poega magasid seal reas nagu soojad kartulid. Ema vaatas mind ja liigutas kõrvu. Viisin neile kapsalehti. Sel talvel on meil seitse uut naabrit.',
+      ],
+      young: () => [
+        'Täna hommikul nägin, et kõige väiksem jänesepoeg on julge. Ta tuli minu juurde ja nuusutas mu saabast. Siis sõi ta kapsalehe otse mu käest. Panin talle nimeks Hopsti. Teistele ma veel nime ei pannud, sest nad hüppavad nii kiiresti, et ma ei tea, kes on kes.',
+      ],
+    },
     variants: {
       older: () => [
         'Eile õhtul tuli tuisk, mille sarnast ma ei mäleta. Aknad olid valged, korsten ulgus ja põhjapõdrad pugesid laudas üksteise vastu.',
@@ -225,6 +289,14 @@ export const WORLD_SCENARIOS: Scenario[] = [
     world: true,
     tags: ['sport', 'snow'],
     tones: ['humorous', 'adventurous'],
+    more: {
+      older: () => [
+        'Täna hommikul tegin oma ilusast teest kaardi ja panin selle töökoja seinale. Kaardil on oja, vana kuusk ja kitsas org ning nende juures on kirjas, mida sealt näeb. Kolm noort päkapikku küsisid juba, kas võivad järgmisel aastal minuga koos sõita. Võivad. Aga kakao tuleb võtta termosega.',
+      ],
+      young: (c) => [
+        `Täna hommikul läksin ka ise seda ilusat teed vaatama. Seal on külmunud oja, mis klõbiseb, ja vana kuusk, mille all on nii vaikne, et kuuled oma südant. ${c.cast.older} oli õigus: see tee on ilus. Järgmisel aastal sõidame koos. Mina kiiresti, tema aeglaselt, ja kohtume kakao juures.`,
+      ],
+    },
     variants: {
       older: (c) => [
         'Eile oli päkapikkude iga-aastane suusavõistlus ümber Jõuluvana kuusiku. Mina pole kunagi võitnud ega kavatse ka sel aastal sellega alustada.',
