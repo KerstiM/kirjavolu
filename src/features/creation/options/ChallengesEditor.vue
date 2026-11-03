@@ -79,6 +79,8 @@ function remove(id: string): void {
 
 <style scoped lang="scss">
 .challenges {
+  // Sized by the room it has (the wizard page or the narrow preview panel), not the screen.
+  container: challenges / inline-size;
   border: 0;
   padding: 0;
   margin: 0;
@@ -159,7 +161,7 @@ function remove(id: string): void {
   }
 }
 // Narrower screens: child and challenge on the first row next to the remove button, dates below.
-@media (max-width: 760px) {
+@container challenges (max-width: 760px) {
   .challenge {
     grid-template-columns: 1fr 1fr auto;
   }
@@ -175,7 +177,7 @@ function remove(id: string): void {
   }
 }
 // On a phone every field gets its own row; only the child shares a row with the remove button.
-@media (max-width: 520px) {
+@container challenges (max-width: 520px) {
   .challenge {
     grid-template-columns: 1fr auto;
   }

@@ -46,6 +46,8 @@ function update(childId: string, field: keyof ElfPersona, text: string): void {
 
 <style scoped lang="scss">
 .personas {
+  // Sized by the room it has (the wizard page or the narrow preview panel), not the screen.
+  container: personas / inline-size;
   border: 0;
   padding: 0;
   margin: 0;
@@ -78,7 +80,7 @@ function update(childId: string, field: keyof ElfPersona, text: string): void {
   font-size: 0.8rem;
   color: var(--ink-soft);
 }
-@media (max-width: 560px) {
+@container personas (max-width: 560px) {
   .persona {
     grid-template-columns: 1fr 1fr;
   }

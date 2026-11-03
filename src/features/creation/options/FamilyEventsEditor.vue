@@ -107,6 +107,8 @@ function outOfRange(event: FamilyEvent): boolean {
 
 <style scoped lang="scss">
 .events {
+  // Sized by the room it has (the wizard page or the narrow preview panel), not the screen.
+  container: events / inline-size;
   border: 0;
   padding: 0;
   margin: 0;
@@ -202,7 +204,7 @@ function outOfRange(event: FamilyEvent): boolean {
   align-self: flex-start;
   margin-top: 0.4rem;
 }
-@media (max-width: 720px) {
+@container events (max-width: 720px) {
   .event {
     grid-template-columns: 1fr 1fr auto;
   }
@@ -212,7 +214,7 @@ function outOfRange(event: FamilyEvent): boolean {
   }
 }
 // On a phone the date shares a row with the remove button; the event and its detail get full rows.
-@media (max-width: 520px) {
+@container events (max-width: 520px) {
   .event {
     grid-template-columns: 1fr auto;
   }
