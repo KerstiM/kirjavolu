@@ -9,11 +9,10 @@ import { genitive, nameCase } from '../../domain/text/estonian'
 import ChildCard from './ChildCard.vue'
 import ChildForm from './ChildForm.vue'
 import { emptyChildDraft, useChildrenStore } from './childrenStore'
-import TestBar from '../../components/brand/TestBar.vue'
 import { DESIGN_KEY, type Design } from '../../components/brand/design'
 
 /** "new" at /uus-disain/lapsed: the same profiles in the new design, children as address labels. */
-const props = withDefaults(defineProps<{ design?: Design }>(), { design: 'current' })
+const props = withDefaults(defineProps<{ design?: Design }>(), { design: 'new' })
 provide(DESIGN_KEY, props.design)
 
 const store = useChildrenStore()
@@ -53,7 +52,6 @@ function remove(child: ChildProfile): void {
 
 <template>
   <div :class="{ 'design-new': design === 'new' }">
-  <TestBar v-if="design === 'new'" text="Testvaade: lapsed uues disainis." link="Vaata praegust" to="/lapsed" />
   <div class="container section">
     <div class="section-head">
       <div>

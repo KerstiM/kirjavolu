@@ -30,11 +30,10 @@ import { loadPass, type SeasonPass } from '../pass/seasonPass'
 import { useChildrenStore } from '../children/childrenStore'
 import EnvelopeReveal from './EnvelopeReveal.vue'
 import { track } from '../../app/analytics'
-import TestBar from '../../components/brand/TestBar.vue'
 import { DESIGN_KEY, designPath, type Design } from '../../components/brand/design'
 
 /** "new" at /uus-disain/looming/…: the same preview in the new design, tried out next to the current one. */
-const props = withDefaults(defineProps<{ id: string; design?: Design }>(), { design: 'current' })
+const props = withDefaults(defineProps<{ id: string; design?: Design }>(), { design: 'new' })
 provide(DESIGN_KEY, props.design)
 const store = useCreationsStore()
 const generator = useGenerator()
@@ -383,12 +382,6 @@ function exportText(): void {
   </div>
 
   <div v-else class="preview" :class="{ 'preview--new design-new': design === 'new' }">
-    <TestBar
-      v-if="design === 'new'"
-      text="Testvaade: eelvaade uues disainis."
-      link="Vaata praegust"
-      :to="`/looming/${content.id}`"
-    />
     <EnvelopeReveal v-if="revealing && content" :content="content" @done="endReveal" />
     <div class="toolbar no-print">
       <div class="container toolbar__inner">

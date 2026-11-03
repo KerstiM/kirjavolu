@@ -52,19 +52,18 @@ describe('analytics', () => {
     ])
   })
 
-  it('counts the way from a home page card to printing without any child data', async () => {
+  it('counts the way from the wizard to printing without any child data', async () => {
     setupAnalytics('site-1')
     const sent = fakeUmami()
     vi.spyOn(window, 'print').mockImplementation(() => undefined)
     const pinia = createPinia()
     setActivePinia(pinia)
     const router = createRouter({ history: createMemoryHistory(), routes })
-    router.push('/')
+    router.push('/loo?tyyp=letter&puhk=christmas')
     await router.isReady()
     render(App, { global: { plugins: [pinia, router] } })
     const user = userEvent.setup()
 
-    await user.click(await screen.findByRole('link', { name: '24 päkapikukirja' }))
     await user.click(await screen.findByRole('button', { name: /Lisa laps/ }))
     const dialog = await screen.findByRole('dialog', { name: 'Lisa laps' })
     await user.type(within(dialog).getByLabelText('Nimi'), 'Salme')
@@ -78,6 +77,7 @@ describe('analytics', () => {
     expect(sent).toEqual([
       ['wizard_start', { type: 'letter', occasion: 'christmas' }],
       ['child_added', { from: 'wizard' }],
+      ['free_generated', { type: 'letter', occasion: 'christmas', items: 24 }],
       ['preview_shown', { type: 'letter', occasion: 'christmas', items: 24, children: 1 }],
       ['print_clicked', { type: 'letter', layout: 'poster', mode: 'all' }],
     ])

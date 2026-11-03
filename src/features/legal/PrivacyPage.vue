@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { provide } from 'vue'
-import { DESIGN_KEY, NEW_DESIGN_ROOT, type Design } from '../../components/brand/design'
+import { DESIGN_KEY, type Design } from '../../components/brand/design'
 import { LEGAL_UPDATED, SELLER } from './seller'
 
 /** Privaatsuspõhimõtted: what stays in the browser, what goes to the AI and to Stripe. */
-const props = withDefaults(defineProps<{ design?: Design }>(), { design: 'current' })
+const props = withDefaults(defineProps<{ design?: Design }>(), { design: 'new' })
 provide(DESIGN_KEY, props.design)
-const terms = props.design === 'new' ? `${NEW_DESIGN_ROOT}/tingimused` : '/tingimused'
+const terms = '/tingimused'
 </script>
 
 <template>

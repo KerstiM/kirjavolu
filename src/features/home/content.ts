@@ -1,15 +1,15 @@
 import type { ContentTypeId, GeneratedItem } from '../../domain/models'
 
 /**
- * The words of the /ud3 home page in one place, so they can be changed without touching the
- * layout, and the seasonal block can later become Easter or anything else.
+ * The words of the home page in one place, so they can be changed without touching the
+ * layout. The seasonal block has its own list in seasonal.ts.
  */
 export const HERO = {
   eyebrow: 'KIRJAD · LOOD · SEIKLUSED',
-  titleStart: 'Väikesed kirjad. Suured ',
+  titleStart: 'Väikesed üllatused. Suured ',
   titleAccent: 'imelised hetked',
   titleEnd: '.',
-  lead: 'Loo oma lapsele isiklikke päkapikukirju, aardejahte ja vahvaid lugusid. Just tema huvide ja lemmikute järgi. Valmis printimiseks mõne minutiga.',
+  lead: 'Loo oma lapsele isiklikke kirju, aardejahte ja vahvaid lugusid. Just tema huvide ja lemmikute järgi. Kohanda ja prindi kodus.',
   primary: 'Loo esimene üllatus',
   secondary: 'Vaata näidist',
   // Each claim holds: no account, every text can be edited, everything is printed at home.
@@ -36,14 +36,6 @@ export const TYPE_CARDS: { id: ContentTypeId; title: string; subtitle: string; d
   },
 ]
 
-/** The seasonal block: now Christmas; swap the words and the link for Easter or another season. */
-export const SEASON = {
-  title: '24 hommikut täis üllatusi',
-  lead: 'Loo oma lapsele terve detsembrikuu päkapikukirjad korraga. Iga päev uus lugu, väike saladus või lõbus seiklus.',
-  note: 'Vali laps, kohanda kirjad ja prindi välja.',
-  cta: 'Loo 24 päkapikukirja',
-} as const
-
 export const EXAMPLES_SECTION = {
   title: 'Vaata, milline võlu välja näeb',
   lead: 'Väike pilguheit kirjadele, lugudele ja seiklustele, mida saad oma lapsele luua.',
@@ -57,7 +49,7 @@ export const EXAMPLES: { caption: string; item: GeneratedItem }[] = [
   {
     caption: 'Päkapikukiri',
     item: sample({
-      id: 'ud3-letter',
+      id: 'home-letter',
       kind: 'letter',
       label: '1. detsember',
       heading: 'Kallis Jasper!',
@@ -68,7 +60,7 @@ export const EXAMPLES: { caption: string; item: GeneratedItem }[] = [
   {
     caption: 'Aardejahi vihje',
     item: sample({
-      id: 'ud3-clue',
+      id: 'home-clue',
       kind: 'clue',
       label: 'Vihje 2',
       heading: 'Kuum jälg!',
@@ -78,7 +70,7 @@ export const EXAMPLES: { caption: string; item: GeneratedItem }[] = [
   {
     caption: 'Isiklik lugu',
     item: sample({
-      id: 'ud3-story',
+      id: 'home-story',
       kind: 'story-page',
       label: 'Lk 1',
       heading: 'Jasper ja kadunud täht',

@@ -1,4 +1,5 @@
 import type { ContentTypeId, OccasionId, PrintableLayout } from '../domain/models'
+import type { LettersError } from '../features/pass/passLetters'
 
 /**
  * Privacy-friendly usage counts (Umami, no cookies). Only the events below can be
@@ -15,9 +16,21 @@ export interface AnalyticsEvents {
   print_clicked: { type: ContentTypeId; layout: PrintableLayout; mode: 'all' | 'child' | 'parent' }
   /** "Vaata näidet" on the home page. */
   sample_shown: Record<string, never>
-  // Step 3 (Jõulupass) will send these.
+  /** The Christmas letters page opened (/joulukirjad). */
+  christmas_start: Record<string, never>
+  /** Free template letters were made in the Christmas journey. */
+  free_generated: { type: ContentTypeId; occasion: OccasionId; items: number }
+  /** The offer to make them more personal was shown beside free letters. */
   paywall_shown: { type: ContentTypeId; items: number }
+  /** "Osta Jõulupass" was pressed (the consent box ticked). */
+  premium_selected: { product: 'season-pass' }
+  /** Stripe's payment form is open on the page. */
+  checkout_started: { product: 'season-pass' }
+  /** The server confirmed the payment with Stripe. */
   purchase: { product: 'season-pass' }
+  premium_generated: { type: ContentTypeId; items: number }
+  /** Why writing failed: the server's reason (a closed list), never the child's data. */
+  premium_failed: { reason: LettersError }
 }
 
 export type AnalyticsEventName = keyof AnalyticsEvents

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { computed, provide, ref, watch } from 'vue'
+import { computed, onMounted, provide, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ArrowRight } from 'lucide-vue-next'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import TopicPicker from '../children/TopicPicker.vue'
 import type { TopicId } from '../../data/topics'
 import Mascot from '../../components/brand/Mascot.vue'
-import { DESIGN_KEY } from '../../components/brand/design'
+import { CHRISTMAS_ROOT, DESIGN_KEY } from '../../components/brand/design'
 import { emptyChildDraft, useChildrenStore } from '../children/childrenStore'
 import { useCreationsStore } from '../preview/creationsStore'
 import { readingLevelForAge } from '../../domain/generators/audience'
@@ -14,12 +14,12 @@ import { templateGenerator } from '../../domain/generators/templateGenerator'
 import { DEFAULT_GENERAL, defaultOptions } from '../../domain/defaults'
 import type { ChildProfile } from '../../domain/models'
 import { track } from '../../app/analytics'
+import JourneySteps from './JourneySteps.vue'
 
 /**
- * /ud2/alusta: the short Christmas journey, started from the home page at /ud2. One question
- * (who is it for), and the 24 free letters
- * are ready at once; making them personal with the Jõulupass happens on the next page,
- * beside the letters.
+ * /joulukirjad: the Christmas letters. One question (who is it for) and the 24 free letters
+ * are ready at once; making them more personal is offered on the next page, beside them.
+ * A child already in this browser needs no typing at all; its topics are only shown to check.
  */
 provide(DESIGN_KEY, 'new')
 const router = useRouter()
@@ -39,6 +39,8 @@ const picked = computed(() => (adding.value ? undefined : children.children.find
 const topics = ref<TopicId[]>([])
 watch(picked, (child) => (topics.value = [...(child?.topics ?? [])]), { immediate: true })
 
+onMounted(() => track('christmas_start', {}))
+
 function childForLetters(): ChildProfile | null {
   if (picked.value) {
     const { id, createdAt: _created, updatedAt: _updated, ...profile } = picked.value
@@ -51,8 +53,8 @@ function childForLetters(): ChildProfile | null {
     error.value = 'Kirjuta lapse nimi.'
     return null
   }
-  if (!Number.isInteger(years) || years < 0 || years > 14) {
-    error.value = 'Vanus peab olema täisarv 0–14.'
+  if (age.value === '' || !Number.isInteger(years) || years < 0 || years > 14) {
+    error.value = 'Kirjuta lapse vanus (0–14).'
     return null
   }
   track('child_added', { from: 'wizard' })
@@ -81,7 +83,8 @@ async function start(): Promise<void> {
       options: defaultOptions('christmas').letter,
     })
     creations.add(content)
-    await router.push(`/ud2/kirjad/${content.id}`)
+    track('free_generated', { type: 'letter', occasion: 'christmas', items: content.items.length })
+    await router.push(`${CHRISTMAS_ROOT}/${content.id}`)
   } catch {
     error.value = 'Kirjade tegemine ei õnnestunud. Proovi uuesti.'
   } finally {
@@ -91,64 +94,66 @@ async function start(): Promise<void> {
 </script>
 
 <template>
-  <div class="design-new ud2">
-    <section class="container section ud2-start" aria-labelledby="ud2-title">
-      <Mascot mood="wave" :size="96" />
-      <h1 id="ud2-title">Päkapikk kirjutab sinu lapsele 24 jõulukirja</h1>
-      <p class="ud2-start__lead">Üks kiri igaks hommikuks 1.–24. detsembrini. Prindi ja peida. Tasuta.</p>
+  <div class="design-new christmas">
+    <section class="container section christmas-start" aria-labelledby="christmas-title">
+      <Mascot mood="wave" :size="88" />
+      <h1 id="christmas-title">Päkapikk kirjutab sinu lapsele 24 jõulukirja</h1>
+      <p class="christmas-start__lead">Üks kiri igaks hommikuks 1.–24. detsembrini. Prindi välja ja peida sussi sisse. Tasuta.</p>
+      <JourneySteps :current="1" />
 
-      <form class="ud2-start__form" novalidate @submit.prevent="start">
-        <fieldset v-if="children.children.length" class="ud2-start__kids">
+      <form class="christmas-start__form" novalidate @submit.prevent="start">
+        <fieldset v-if="children.children.length" class="christmas-start__kids">
           <legend>Kellele?</legend>
           <label v-for="child in children.children" :key="child.id" class="kid" :class="{ 'is-active': !adding && pickedId === child.id }">
-            <input v-model="pickedId" type="radio" name="ud2-child" :value="child.id" class="visually-hidden" @change="adding = false" />
+            <input v-model="pickedId" type="radio" name="christmas-child" :value="child.id" class="visually-hidden" @change="adding = false" />
             {{ child.name }}
           </label>
           <label class="kid" :class="{ 'is-active': adding }">
-            <input type="radio" name="ud2-child" class="visually-hidden" :checked="adding" @change="adding = true" />
+            <input type="radio" name="christmas-child" class="visually-hidden" :checked="adding" @change="adding = true" />
             + Uus laps
           </label>
         </fieldset>
+        <p v-else class="christmas-start__who">Kellele?</p>
 
-        <div v-if="adding" class="ud2-start__new">
+        <div v-if="adding" class="christmas-start__new">
           <label class="field">
             <span>Lapse nimi</span>
-            <input v-model="name" class="input" type="text" autocomplete="off" />
+            <input v-model="name" class="input" type="text" autocomplete="off" enterkeyhint="next" />
           </label>
-          <label class="field field--age">
+          <label class="field">
             <span>Vanus</span>
-            <input v-model.number="age" class="input" type="number" min="0" max="14" inputmode="numeric" />
+            <input v-model.number="age" class="input" type="number" min="0" max="14" inputmode="numeric" enterkeyhint="go" />
           </label>
         </div>
 
         <!-- Folded, so the button stays in sight; the summary says what picking a topic brings. -->
-        <details class="ud2-start__topics">
+        <details class="christmas-start__topics">
           <summary>
             Mis lapsele meeldib?
-            <span class="ud2-start__optional">
+            <span class="christmas-start__optional">
               {{ topics.length ? `${topics.length} valitud` : 'valikuline, siis tulevad kirjadesse tema lood' }}
             </span>
           </summary>
-          <p class="ud2-start__hint">Iga teema kohta on kirjades valmis lood, näiteks päkapikk proovib ise jalgpalli.</p>
+          <p class="christmas-start__hint">Iga teema kohta on kirjades valmis lood, näiteks päkapikk proovib ise jalgpalli.</p>
           <TopicPicker v-model="topics" />
         </details>
 
-        <p v-if="error" class="ud2-start__error" role="alert">{{ error }}</p>
+        <p v-if="error" class="christmas-start__error" role="alert">{{ error }}</p>
         <BaseButton type="submit" size="lg" :disabled="busy">
-          {{ busy ? 'Päkapikk kirjutab…' : 'Vaata kirju' }} <ArrowRight aria-hidden="true" />
+          {{ busy ? 'Päkapikk kirjutab…' : 'Loo tasuta kirjad' }} <ArrowRight aria-hidden="true" />
         </BaseButton>
       </form>
-      <p class="ud2-start__note">Jõulupassiga saad need hiljem päriselt lapse, tema pere ja detsembri plaanide kohta.</p>
+      <p class="christmas-start__note">Kontot pole vaja. Lapse andmed ja kirjad jäävad sinu brauserisse.</p>
     </section>
   </div>
 </template>
 
 <style scoped lang="scss">
-.ud2-start {
+.christmas-start {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 0.9rem;
   max-width: 36rem;
   text-align: center;
   h1 {
@@ -157,23 +162,29 @@ async function start(): Promise<void> {
     text-wrap: balance;
   }
 }
-.ud2-start__lead {
+.christmas-start__lead {
   margin: 0;
   color: var(--ink-soft);
 }
-.ud2-start__form {
+.christmas-start__form {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
   align-self: stretch;
-  margin-top: 0.5rem;
   padding: 1.25rem;
   border: 2px solid #f0e2cf;
   border-radius: 16px;
   background: #fff;
+  @media (max-width: 480px) {
+    padding: 1rem;
+    :deep(.btn) {
+      align-self: stretch;
+      justify-content: center;
+    }
+  }
 }
-.ud2-start__kids {
+.christmas-start__kids {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -186,7 +197,14 @@ async function start(): Promise<void> {
     font-weight: 600;
   }
 }
+.christmas-start__who {
+  margin: 0;
+  font-weight: 600;
+}
 .kid {
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
   padding: 0.45rem 1rem;
   border: 2px solid var(--lavender-mid);
   border-radius: 999px;
@@ -202,7 +220,7 @@ async function start(): Promise<void> {
     outline-offset: 2px;
   }
 }
-.ud2-start__new {
+.christmas-start__new {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
   gap: 0.75rem;
@@ -216,28 +234,29 @@ async function start(): Promise<void> {
   font-weight: 600;
   font-size: 0.9rem;
 }
-.ud2-start__topics {
+.christmas-start__topics {
   align-self: stretch;
   text-align: left;
   summary {
     cursor: pointer;
     font-weight: 600;
+    padding-block: 0.35rem;
   }
 }
-.ud2-start__optional {
+.christmas-start__optional {
   font-weight: 400;
   color: var(--ink-faint);
 }
-.ud2-start__hint {
+.christmas-start__hint {
   margin: 0.4rem 0 0.75rem;
   color: var(--ink-soft);
   font-size: 0.9rem;
 }
-.ud2-start__error {
+.christmas-start__error {
   margin: 0;
   color: var(--danger);
 }
-.ud2-start__note {
+.christmas-start__note {
   margin: 0;
   color: var(--ink-faint);
   font-size: 0.9rem;

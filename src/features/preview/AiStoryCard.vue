@@ -4,10 +4,9 @@ import { Sparkles } from 'lucide-vue-next'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import type { GeneratedContent } from '../../domain/models'
 import { joinList, namesInCase } from '../../domain/text/estonian'
-import { NEW_DESIGN_ROOT } from '../../components/brand/design'
 import { useChildrenStore } from '../children/childrenStore'
 import { LettersRequestError, requestStory, STORY_ERROR_TEXTS } from '../pass/passLetters'
-import { isActive, type SeasonPass } from '../pass/seasonPass'
+import { isActive, PASS_PAGE, type SeasonPass } from '../pass/seasonPass'
 
 /**
  * Beside a template story: the same choices (genre, theme, characters, length) written into a
@@ -60,7 +59,7 @@ async function write(): Promise<void> {
     </template>
     <p v-else>
       Mallid panevad loo kokku valmis lõikudest. Jõulupassiga kirjutab päkapikk sellest pika ja päris muinasjutu.
-      <RouterLink :to="`${NEW_DESIGN_ROOT}/joulupass`">Jõulupass</RouterLink>
+      <RouterLink :to="PASS_PAGE">Jõulupass</RouterLink>
     </p>
   </section>
 </template>

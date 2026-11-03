@@ -8,18 +8,17 @@ import BaseButton from '../../components/ui/BaseButton.vue'
 import PrintableItem from '../preview/PrintableItem.vue'
 import { track } from '../../app/analytics'
 import Mascot from '../../components/brand/Mascot.vue'
-import TestBar from '../../components/brand/TestBar.vue'
 import AiSampleLetter from './AiSampleLetter.vue'
 import PassPurchase from '../pass/PassPurchase.vue'
-import { DESIGN_KEY, designPath, type Design } from '../../components/brand/design'
+import { CHRISTMAS_ROOT, DESIGN_KEY, type Design } from '../../components/brand/design'
 
 /**
  * "Vaata näidet": the first letter of a sample 24-letter Christmas series, written
  * on the spot for a sample child. Nothing is saved and no data has to be entered.
- * "new" at /uus-disain/naide: the letter lies on the cream desk with an airmail edge, and
+ * In the new design the letter lies on the cream desk with an airmail edge, and
  * the AI writes a sample letter for the family's own child, and the Jõulupass can be bought.
  */
-const props = withDefaults(defineProps<{ design?: Design }>(), { design: 'current' })
+const props = withDefaults(defineProps<{ design?: Design }>(), { design: 'new' })
 provide(DESIGN_KEY, props.design)
 const generator = useGenerator()
 const letter = ref<GeneratedItem | null>(null)
@@ -33,7 +32,6 @@ onMounted(async () => {
 
 <template>
   <div :class="{ 'demo-page--new design-new': design === 'new' }">
-  <TestBar v-if="design === 'new'" text="Testvaade: näide uues disainis." link="Vaata praegust" to="/naide" />
   <div class="container section demo">
     <header class="demo__head">
       <span class="eyebrow demo__tag">Näide</span>
@@ -57,7 +55,7 @@ onMounted(async () => {
       <div>
         <h2>Sinu lapse kirjad räägivad tema huvidest</h2>
         <p>Lisa nimi ja vanus ning näed kohe kõiki 24 kirja. Konto pole vaja, andmed jäävad sinu brauserisse.</p>
-        <BaseButton :to="{ path: designPath(design, '/loo'), query: { puhk: 'christmas', tyyp: 'letter' } }" size="lg">
+        <BaseButton :to="CHRISTMAS_ROOT" size="lg">
           Loo oma lapsele 24 kirja <ArrowRight aria-hidden="true" />
         </BaseButton>
       </div>

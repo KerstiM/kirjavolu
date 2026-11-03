@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { provide } from 'vue'
-import { DESIGN_KEY, NEW_DESIGN_ROOT, type Design } from '../../components/brand/design'
+import { DESIGN_KEY, type Design } from '../../components/brand/design'
 import { PASS_PRICE } from '../pass/seasonPass'
 import { LEGAL_UPDATED, SELLER } from './seller'
 
 /** Müügitingimused: the Jõulupass is the only thing sold. Linked from the footer in both designs. */
-const props = withDefaults(defineProps<{ design?: Design }>(), { design: 'current' })
+const props = withDefaults(defineProps<{ design?: Design }>(), { design: 'new' })
 provide(DESIGN_KEY, props.design)
-const privacy = props.design === 'new' ? `${NEW_DESIGN_ROOT}/privaatsus` : '/privaatsus'
+const privacy = '/privaatsus'
 </script>
 
 <template>

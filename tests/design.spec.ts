@@ -28,28 +28,29 @@ async function open(path: string | ((id: string) => string)) {
   return router
 }
 
-describe('new home page design as a test view', () => {
-  it('lives at /uus-disain and leads into the wizard in the new design', async () => {
+describe('the earlier /uus-disain home page, kept for comparison', () => {
+  it('still answers, says it is an earlier test view, and leads into the main pages', async () => {
     await open('/uus-disain')
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Kiri, mis teab sinu lapse nime.')
-    expect(screen.getByRole('link', { name: 'Vaata praegust avalehte' })).toHaveAttribute('href', '/')
-    expect(screen.getByRole('link', { name: 'Alusta loomist' })).toHaveAttribute('href', '/uus-disain/loo')
-    expect(screen.getByRole('link', { name: /Maagiline kiri/ })).toHaveAttribute('href', '/uus-disain/loo?tyyp=letter')
-    expect(screen.getByRole('link', { name: /Sünnipäev/ })).toHaveAttribute('href', '/uus-disain/loo?puhk=birthday')
+    expect(screen.getByText('Varasem testvaade: uus avalehe disain.')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Ava avaleht' })).toHaveAttribute('href', '/')
+    expect(screen.getByRole('link', { name: 'Alusta loomist' })).toHaveAttribute('href', '/loo')
+    expect(screen.getByRole('link', { name: /Maagiline kiri/ })).toHaveAttribute('href', '/loo?tyyp=letter')
+    expect(screen.getByRole('link', { name: /Sünnipäev/ })).toHaveAttribute('href', '/loo?puhk=birthday')
   })
 
-  it('leaves the current home page at /', async () => {
+  it('has the new home page at /', async () => {
     await open('/')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Väikesed maagilised hetked sinu lapsele.')
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Väikesed üllatused. Suured imelised hetked.')
   })
 })
 
-describe('wizard in the new design', () => {
-  it('shows postcards, stamps and address labels at /uus-disain/loo', async () => {
-    await open('/uus-disain/loo')
+describe('the wizard in the new design at /loo', () => {
+  it('shows postcards, stamps and address labels', async () => {
+    await open('/loo')
     const user = userEvent.setup()
-    expect(await screen.findByText('Testvaade: loomise sammud uues disainis.')).toBeInTheDocument()
-    const types = screen.getByRole('radiogroup', { name: 'Mida soovid luua?' })
+    const types = await screen.findByRole('radiogroup', { name: 'Mida soovid luua?' })
+    expect(screen.queryByText(/Testvaade/)).toBeNull()
     expect(document.querySelectorAll('.postcard')).toHaveLength(6)
     await user.click(within(types).getByRole('radio', { name: /Maagiline kiri/ }))
     // The choice stays as one line; "Muuda" opens the list again with it marked.
@@ -65,40 +66,41 @@ describe('wizard in the new design', () => {
     expect(document.querySelectorAll('.label')).toHaveLength(3)
   })
 
-  it('draws the simpler envelope mascot only in the new design', async () => {
-    await open('/uus-disain/loo')
-    await screen.findByText('Testvaade: loomise sammud uues disainis.')
+  it('draws the simpler envelope mascot', async () => {
+    await open('/loo')
+    await screen.findByRole('radiogroup', { name: 'Mida soovid luua?' })
     // The folds every envelope has: the flap and the two lower seams.
     expect(document.querySelector('.mascot__seam')).not.toBeNull()
     expect(document.querySelector('.mascot__hand')).toBeNull()
   })
 
   it('shows a type picked on the home page as one line, not the whole list again', async () => {
-    await open('/uus-disain/loo?tyyp=story')
+    await open('/loo?tyyp=story')
     expect(await screen.findByRole('button', { name: 'Muuda, mida luua' })).toBeInTheDocument()
     expect(document.querySelector('.picked')).toHaveTextContent('Personaalne lugu')
-    expect(screen.getByRole('button', { name: 'Muuda, mida luua' })).toBeInTheDocument()
     expect(document.querySelector('.postcard')).toBeNull()
     expect(screen.getByRole('radiogroup', { name: 'Mis puhul?' })).toBeInTheDocument()
   })
 
-  it('keeps the plain choice cards at /loo', async () => {
+  it('offers all six kinds, as the old design did', async () => {
     await open('/loo')
+    const types = await screen.findByRole('radiogroup', { name: 'Mida soovid luua?' })
+    expect(within(types).getAllByRole('radio')).toHaveLength(6)
+    expect(document.querySelector('.postcard.is-soon')).toBeNull()
+  })
+
+  it('still answers at the earlier /uus-disain/loo', async () => {
+    await open('/uus-disain/loo')
     expect(await screen.findByRole('radiogroup', { name: 'Mida soovid luua?' })).toBeInTheDocument()
-    expect(document.querySelector('.postcard')).toBeNull()
-    expect(screen.queryByText(/Testvaade/)).toBeNull()
-    expect(document.querySelector('.mascot__seam')).toBeNull()
   })
 })
 
-describe('what is ready in the new design', () => {
-  it('shows unfinished kinds gray and the Santa greeting as coming soon', async () => {
+describe('what the earlier /uus-disain home page marks', () => {
+  it('shows the Santa greeting as coming soon', async () => {
     await open('/uus-disain')
     const types = await screen.findByRole('region', { name: 'Mida meisterdame?' })
     expect(within(types).getByRole('link', { name: /Maagiline kiri/ })).toBeInTheDocument()
-    expect(within(types).getByRole('link', { name: /Personaalne lugu/ })).toBeInTheDocument()
-    expect(within(types).queryByRole('link', { name: /Aardejaht/ })).toBeNull()
-    expect(within(types).getByText('Aardejaht').closest('.postcard')).toHaveClass('is-soon')
+    expect(within(types).getByRole('link', { name: /Aardejaht/ })).toBeInTheDocument()
     expect(within(types).getByText('Jõuluvana tervitus').closest('.postcard')).toHaveTextContent('Varsti')
   })
 
@@ -116,44 +118,37 @@ describe('what is ready in the new design', () => {
 })
 
 describe('the rest of the journey in the new design', () => {
-  it('shows the preview at /uus-disain/looming/… with links that stay in the new design', async () => {
-    await open((id) => `/uus-disain/looming/${id}`)
-    expect(await screen.findByText('Testvaade: eelvaade uues disainis.')).toBeInTheDocument()
+  it('shows the preview at /looming/… with links to the main pages', async () => {
+    await open((id) => `/looming/${id}`)
+    expect(await screen.findByRole('link', { name: 'Tagasi avalehele' })).toHaveAttribute('href', '/')
     expect(document.querySelector('.preview--new')).not.toBeNull()
-    expect(screen.getByRole('link', { name: 'Tagasi avalehele' })).toHaveAttribute('href', '/uus-disain')
-    expect(screen.getByRole('link', { name: /Lapsed ja tüüp/ }).getAttribute('href')).toMatch(/^\/uus-disain\/loo\?muuda=/)
-    expect(screen.getByRole('link', { name: 'Vaata praegust' }).getAttribute('href')).toMatch(/^\/looming\//)
+    expect(screen.queryByText(/Testvaade/)).toBeNull()
+    expect(screen.getByRole('link', { name: /Lapsed ja tüüp/ }).getAttribute('href')).toMatch(/^\/loo\?muuda=/)
   })
 
-  it('shows children as address labels at /uus-disain/lapsed', async () => {
-    await open('/uus-disain/lapsed')
-    expect(await screen.findByText('Testvaade: lapsed uues disainis.')).toBeInTheDocument()
-    expect(document.querySelectorAll('.child-card--label')).toHaveLength(3)
-    const menu = screen.getByRole('navigation', { name: 'Peamenüü' })
-    expect(within(menu).getByRole('link', { name: 'Lapsed' })).toHaveAttribute('href', '/uus-disain/lapsed')
-    expect(within(menu).getByRole('link', { name: /Loo uus/ })).toHaveAttribute('href', '/uus-disain/loo')
+  it('still opens a preview at the earlier /uus-disain/looming/… address', async () => {
+    await open((id) => `/uus-disain/looming/${id}`)
+    expect(await screen.findByRole('link', { name: 'Tagasi avalehele' })).toHaveAttribute('href', '/')
+    expect(document.querySelector('.preview--new')).not.toBeNull()
   })
 
-  it('leads from the sample at /uus-disain/naide into the new-design wizard', async () => {
-    await open('/uus-disain/naide')
-    expect(await screen.findByText('Testvaade: näide uues disainis.')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /Loo oma lapsele 24 kirja/ })).toHaveAttribute(
-      'href',
-      '/uus-disain/loo?puhk=christmas&tyyp=letter',
-    )
-  })
-
-  it('keeps the current pages and menu as they are', async () => {
+  it('shows children as address labels at /lapsed', async () => {
     await open('/lapsed')
     await screen.findByRole('heading', { level: 1, name: 'Lapsed' })
-    expect(document.querySelector('.child-card--label')).toBeNull()
-    expect(screen.queryByText(/Testvaade/)).toBeNull()
+    expect(document.querySelectorAll('.child-card--label')).toHaveLength(3)
     const menu = screen.getByRole('navigation', { name: 'Peamenüü' })
+    expect(within(menu).getByRole('link', { name: 'Lapsed' })).toHaveAttribute('href', '/lapsed')
     expect(within(menu).getByRole('link', { name: /Loo uus/ })).toHaveAttribute('href', '/loo')
+  })
+
+  it('leads from the sample at /naide into the Christmas letters', async () => {
+    await open('/naide')
+    expect(await screen.findByRole('link', { name: /Loo oma lapsele 24 kirja/ })).toHaveAttribute('href', '/joulukirjad')
+    expect(screen.queryByText(/Testvaade/)).toBeNull()
   })
 })
 
-describe('AI sample letter on the new-design sample page', () => {
+describe('AI sample letter on the sample page', () => {
   afterEach(() => vi.unstubAllGlobals())
 
   it('asks the server for a letter for the chosen child and shows it', async () => {
@@ -161,7 +156,7 @@ describe('AI sample letter on the new-design sample page', () => {
       Response.json({ heading: 'Kallis Brita!', body: 'Tere!\n\nMina olen päkapikk.', signature: 'Sinu päkapikk Tuduja' }),
     )
     vi.stubGlobal('fetch', fetch)
-    await open('/uus-disain/naide')
+    await open('/naide')
     const user = userEvent.setup()
     const section = await screen.findByRole('region', { name: 'Proovi AI-kirja' })
     await user.click(within(section).getByRole('radio', { name: 'Brita' }))
@@ -184,9 +179,8 @@ describe('AI sample letter on the new-design sample page', () => {
     expect(await within(section).findByRole('alert')).toHaveTextContent('Tänased proovikirjad said otsa.')
   })
 
-  it('is not on the current sample page', async () => {
+  it('is on the sample page at its main path', async () => {
     await open('/naide')
-    await screen.findByRole('heading', { level: 1 })
-    expect(screen.queryByRole('region', { name: 'Proovi AI-kirja' })).toBeNull()
+    expect(await screen.findByRole('region', { name: 'Proovi AI-kirja' })).toBeInTheDocument()
   })
 })

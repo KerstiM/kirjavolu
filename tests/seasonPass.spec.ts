@@ -29,20 +29,20 @@ afterEach(() => {
   localStorage.removeItem(PASS_KEY)
 })
 
-describe('buying the Jõulupass on the new-design sample page', () => {
+describe('buying the Jõulupass on the sample page', () => {
   it('offers the pass with its price next to the AI sample letter', async () => {
-    await open('/uus-disain/naide')
+    await open('/naide')
     const section = await screen.findByRole('region', { name: 'Jõulupass' })
     expect(within(section).getByRole('button', { name: /Osta Jõulupass – 9,90 €/ })).toBeInTheDocument()
     expect(within(section).getByText(/10 kirjasarja või lugu/)).toBeInTheDocument()
     expect(within(section).getByText(/Kehtib 31\. jaanuarini/)).toBeInTheDocument()
-    expect(within(section).getByRole('link', { name: 'Mul on juba Jõulupass' })).toHaveAttribute('href', '/uus-disain/joulupass')
+    expect(within(section).getByRole('link', { name: 'Mul on juba Jõulupass' })).toHaveAttribute('href', '/joulupass')
   })
 
   it('explains when the payment form cannot be opened', async () => {
     const fetch = vi.fn(async () => Response.json({ error: 'too_many' }, { status: 429 }))
     vi.stubGlobal('fetch', fetch)
-    await open('/uus-disain/naide')
+    await open('/naide')
     const user = userEvent.setup()
     const section = await screen.findByRole('region', { name: 'Jõulupass' })
     // Without the consent to start at once, nothing is sent.
@@ -52,13 +52,14 @@ describe('buying the Jõulupass on the new-design sample page', () => {
     await user.click(within(section).getByRole('checkbox', { name: /soovin, et Jõulupass hakkaks kohe kehtima/ }))
     await user.click(within(section).getByRole('button', { name: /Osta Jõulupass/ }))
     expect(await within(section).findByRole('alert')).toHaveTextContent('Liiga palju katseid')
-    expect(fetch).toHaveBeenCalledWith('/api/joulupass/ost', { method: 'POST' })
+    // Stripe sends the buyer back to the pass page at its main path.
+    const [, init] = fetch.mock.calls[0] as unknown as [string, RequestInit]
+    expect(JSON.parse(String(init.body))).toEqual({ returnTo: '/joulupass' })
   })
 
-  it('is not on the current sample page', async () => {
-    await open('/naide')
-    await screen.findByRole('heading', { level: 1 })
-    expect(screen.queryByRole('region', { name: 'Jõulupass' })).toBeNull()
+  it('is on the earlier test path too', async () => {
+    await open('/uus-disain/naide')
+    expect(await screen.findByRole('region', { name: 'Jõulupass' })).toBeInTheDocument()
   })
 })
 
@@ -145,7 +146,7 @@ describe('AI letters with the Jõulupass', () => {
     await user.click(screen.getByRole('button', { name: /Kirjuta Rubenile isiklikud kirjad/ }))
 
     // Saving the profile and opening the 24-letter preview can take a while on a busy machine.
-    await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/uus-disain\/looming\//), { timeout: 5000 })
+    await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/looming\//), { timeout: 5000 })
     const [url, init] = fetch.mock.calls[0] as unknown as [string, RequestInit]
     expect(url).toBe('/api/joulupass/kirjad')
     const body = JSON.parse(String(init.body))
@@ -262,31 +263,31 @@ describe('AI story with the Jõulupass', () => {
   it('tells what the pass gives when there is none', async () => {
     await storyPreview()
     const card = await screen.findByRole('region', { name: /Ruben: oma muinasjutt/ })
-    expect(within(card).getByRole('link', { name: 'Jõulupass' })).toHaveAttribute('href', '/uus-disain/joulupass')
+    expect(within(card).getByRole('link', { name: 'Jõulupass' })).toHaveAttribute('href', '/joulupass')
     expect(within(card).queryByRole('button')).toBeNull()
   })
 })
 
 describe('finding the Jõulupass', () => {
-  it('is in the new-design menu, with what is left once this browser has a pass', async () => {
-    await open('/uus-disain')
-    const menu = await screen.findByRole('navigation', { name: 'Peamenüü' })
-    expect(within(menu).getByRole('link', { name: 'Jõulupass' })).toHaveAttribute('href', '/uus-disain/joulupass')
-    localStorage.setItem(PASS_KEY, JSON.stringify(PASS))
-    window.dispatchEvent(new Event('kirjavolu:joulupass'))
-    expect(await within(menu).findByRole('link', { name: 'Jõulupass, kirjasarju või lugusid alles 10' })).toBeInTheDocument()
-  })
-
-  it('is not in the current design menu', async () => {
+  it('is in the menu once this browser has a pass, with what is left; without one it is not an ad there', async () => {
     await open('/')
     const menu = await screen.findByRole('navigation', { name: 'Peamenüü' })
     expect(within(menu).queryByRole('link', { name: /Jõulupass/ })).toBeNull()
+    localStorage.setItem(PASS_KEY, JSON.stringify(PASS))
+    window.dispatchEvent(new Event('kirjavolu:joulupass'))
+    const link = await within(menu).findByRole('link', { name: 'Jõulupass, kirjasarju või lugusid alles 10' })
+    expect(link).toHaveAttribute('href', '/joulupass')
   })
 
-  it('is offered on the new home page', async () => {
+  it('has its code page linked from the footer', async () => {
+    await open('/')
+    expect(await screen.findByRole('link', { name: 'Mul on Jõulupassi kood' })).toHaveAttribute('href', '/joulupass')
+  })
+
+  it('is still offered on the earlier /uus-disain home page, linking to the main pass page', async () => {
     await open('/uus-disain')
     const band = await screen.findByRole('region', { name: 'Jõulupass' })
-    expect(within(band).getByRole('link', { name: /Vaata Jõulupassi/ })).toHaveAttribute('href', '/uus-disain/joulupass')
+    expect(within(band).getByRole('link', { name: /Vaata Jõulupassi/ })).toHaveAttribute('href', '/joulupass')
   })
 
   it('can be bought on the pass page itself', async () => {
@@ -312,29 +313,53 @@ describe('finding the Jõulupass', () => {
     })
     useCreationsStore(pinia).add(content)
     const router = createRouter({ history: createMemoryHistory(), routes })
-    router.push(`/uus-disain/looming/${content.id}`)
+    router.push(`/looming/${content.id}`)
     await router.isReady()
     render(App, { global: { plugins: [pinia, router] } })
     const card = await screen.findByRole('region', { name: /Kirjad päriselt sinu lapse kohta/ })
     expect(within(card).getByText(/ei tea Rubeni perest/)).toBeInTheDocument()
-    expect(within(card).getByRole('link', { name: 'Vaata Jõulupassi' })).toHaveAttribute('href', '/uus-disain/joulupass')
+    // Three letters: the personal series is 24, so it is written as a new series on the pass page.
+    expect(within(card).getByRole('link', { name: 'Vaata Jõulupassi' })).toHaveAttribute('href', '/joulupass')
+  })
+
+  it('leads from one child’s 24 template letters to making these same letters personal', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const children = useChildrenStore()
+    children.restoreDemo()
+    const ruben = children.children.find((child) => child.name === 'Ruben')!
+    const content = await templateGenerator.generate({
+      contentType: 'letter',
+      children: [ruben],
+      occasionId: 'christmas',
+      general: { ...DEFAULT_GENERAL },
+      seed: 1,
+      options: defaultOptions('christmas').letter,
+    })
+    useCreationsStore(pinia).add(content)
+    const router = createRouter({ history: createMemoryHistory(), routes })
+    router.push(`/looming/${content.id}`)
+    await router.isReady()
+    render(App, { global: { plugins: [pinia, router] } })
+    const card = await screen.findByRole('region', { name: /Kirjad päriselt sinu lapse kohta/ })
+    expect(within(card).getByRole('link', { name: 'Vaata Jõulupassi' })).toHaveAttribute('href', `/joulukirjad/${content.id}#isiklikumaks`)
   })
 })
 
 describe('terms and privacy', () => {
-  it('are linked from the footer and open in the design the visitor is in', async () => {
+  it('are linked from the footer and open at their main paths, also from an earlier test view', async () => {
     const { router } = await open('/uus-disain')
     const user = userEvent.setup()
     await user.click(await screen.findByRole('link', { name: 'Müügitingimused' }))
     expect(await screen.findByRole('heading', { level: 1, name: 'Müügitingimused' })).toBeInTheDocument()
-    expect(router.currentRoute.value.path).toBe('/uus-disain/tingimused')
+    expect(router.currentRoute.value.path).toBe('/tingimused')
     expect(screen.getByText(/kaob 14-päevane taganemisõigus/)).toBeInTheDocument()
     await user.click(screen.getByRole('link', { name: 'Privaatsus' }))
     expect(await screen.findByRole('heading', { level: 1, name: 'Privaatsuspõhimõtted' })).toBeInTheDocument()
-    expect(router.currentRoute.value.path).toBe('/uus-disain/privaatsus')
+    expect(router.currentRoute.value.path).toBe('/privaatsus')
   })
 
-  it('are in the current design too', async () => {
+  it('are on the home page', async () => {
     await open('/')
     expect(await screen.findByRole('link', { name: 'Privaatsus' })).toHaveAttribute('href', '/privaatsus')
     expect(screen.getByRole('link', { name: 'Müügitingimused' })).toHaveAttribute('href', '/tingimused')

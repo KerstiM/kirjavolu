@@ -1,137 +1,58 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import HomePage from '../features/home/HomePage.vue'
 
+/**
+ * Two main journeys: the home page ("/") with every kind of creation, and the Christmas
+ * letters ("/joulukirjad"). The earlier test views (/uus-disain…, /ud2…, /ud3) still answer,
+ * so shared links and Stripe return addresses keep working, but nothing links to them any
+ * more; docs/route-migration.md has the plan for redirecting them once this is accepted.
+ */
+const Create = () => import('../features/creation/CreatePage.vue')
+const Preview = () => import('../features/preview/PreviewPage.vue')
+const Children = () => import('../features/children/ChildrenPage.vue')
+const Sample = () => import('../features/home/DemoPage.vue')
+const Pass = () => import('../features/pass/PassPage.vue')
+const Terms = () => import('../features/legal/TermsPage.vue')
+const Privacy = () => import('../features/legal/PrivacyPage.vue')
+const ChristmasStart = () => import('../features/christmas/ChristmasStart.vue')
+const ChristmasLetters = () => import('../features/christmas/ChristmasLetters.vue')
+const LegacyHome = () => import('../features/home/new/HomeNewPage.vue')
+
 export const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: HomePage, meta: { title: 'Kirjavõlu' } },
-  {
-    // Test view of the new home page design; "/" keeps the current one until it is chosen.
-    path: '/uus-disain',
-    name: 'home-new',
-    component: () => import('../features/home/new/HomeNewPage.vue'),
-    meta: { title: 'Uus disain' },
-  },
-  {
-    // The same wizard in the new design, so the whole new journey can be tried out.
-    path: '/uus-disain/loo',
-    name: 'create-new',
-    component: () => import('../features/creation/CreatePage.vue'),
-    props: { design: 'new' },
-    meta: { title: 'Loo uus' },
-  },
-  {
-    path: '/uus-disain/looming/:id',
-    name: 'preview-new',
-    component: () => import('../features/preview/PreviewPage.vue'),
-    props: (route) => ({ id: route.params.id, design: 'new' }),
-    meta: { title: 'Eelvaade' },
-  },
-  {
-    path: '/uus-disain/lapsed',
-    name: 'children-new',
-    component: () => import('../features/children/ChildrenPage.vue'),
-    props: { design: 'new' },
-    meta: { title: 'Lapsed' },
-  },
-  {
-    path: '/uus-disain/naide',
-    name: 'sample-new',
-    component: () => import('../features/home/DemoPage.vue'),
-    props: { design: 'new' },
-    meta: { title: 'Näide' },
-  },
-  {
-    // Jõulupass: Stripe returns here after payment, and a code can be typed in on another device.
-    path: '/uus-disain/joulupass',
-    name: 'season-pass-new',
-    component: () => import('../features/pass/PassPage.vue'),
-    meta: { title: 'Jõulupass' },
-  },
-  {
-    // The short Christmas journey, tried out next to /uus-disain: who for, the free
-    // letters at once, and making them personal right beside them.
-    path: '/ud2',
-    name: 'ud2',
-    component: () => import('../features/home/new/HomeNewPage.vue'),
-    props: { short: true },
-    meta: { title: 'Uus disain' },
-  },
-  {
-    // Home page test version: the playful new design with the compact layout of the current one.
-    path: '/ud3',
-    name: 'ud3',
-    component: () => import('../features/ud3/Ud3Home.vue'),
-    meta: { title: 'Kirjavõlu' },
-  },
-  {
-    path: '/ud2/alusta',
-    name: 'ud2-start',
-    component: () => import('../features/ud2/Ud2Start.vue'),
-    meta: { title: 'Jõulukirjad' },
-  },
-  {
-    path: '/ud2/kirjad/:id',
-    name: 'ud2-letters',
-    component: () => import('../features/ud2/Ud2Letters.vue'),
-    props: true,
-    meta: { title: 'Jõulukirjad' },
-  },
-  {
-    path: '/uus-disain/tingimused',
-    name: 'terms-new',
-    component: () => import('../features/legal/TermsPage.vue'),
-    props: { design: 'new' },
-    meta: { title: 'Müügitingimused' },
-  },
-  {
-    path: '/uus-disain/privaatsus',
-    name: 'privacy-new',
-    component: () => import('../features/legal/PrivacyPage.vue'),
-    props: { design: 'new' },
-    meta: { title: 'Privaatsus' },
-  },
-  {
-    path: '/tingimused',
-    name: 'terms',
-    component: () => import('../features/legal/TermsPage.vue'),
-    meta: { title: 'Müügitingimused' },
-  },
-  {
-    path: '/privaatsus',
-    name: 'privacy',
-    component: () => import('../features/legal/PrivacyPage.vue'),
-    meta: { title: 'Privaatsus' },
-  },
-  {
-    path: '/lapsed',
-    name: 'children',
-    component: () => import('../features/children/ChildrenPage.vue'),
-    meta: { title: 'Lapsed' },
-  },
-  {
-    path: '/loo',
-    name: 'create',
-    component: () => import('../features/creation/CreatePage.vue'),
-    meta: { title: 'Loo uus' },
-  },
-  {
-    path: '/naide',
-    name: 'sample',
-    component: () => import('../features/home/DemoPage.vue'),
-    meta: { title: 'Näide' },
-  },
+  { path: '/joulukirjad', name: 'christmas', component: ChristmasStart, meta: { title: 'Jõulukirjad' } },
+  { path: '/joulukirjad/:id', name: 'christmas-letters', component: ChristmasLetters, props: true, meta: { title: 'Jõulukirjad' } },
+  { path: '/loo', name: 'create', component: Create, meta: { title: 'Loo uus' } },
+  { path: '/looming/:id', name: 'preview', component: Preview, props: true, meta: { title: 'Eelvaade' } },
+  { path: '/lapsed', name: 'children', component: Children, meta: { title: 'Lapsed' } },
+  { path: '/naide', name: 'sample', component: Sample, meta: { title: 'Näide' } },
+  // Jõulupass: the code, what is left, and typing a code in on another device.
+  { path: '/joulupass', name: 'season-pass', component: Pass, meta: { title: 'Jõulupass' } },
+  { path: '/tingimused', name: 'terms', component: Terms, meta: { title: 'Müügitingimused' } },
+  { path: '/privaatsus', name: 'privacy', component: Privacy, meta: { title: 'Privaatsus' } },
   {
     path: '/kolin',
     name: 'transfer',
     component: () => import('../features/moving/TransferPage.vue'),
     meta: { title: 'Andmete toomine' },
   },
-  {
-    path: '/looming/:id',
-    name: 'preview',
-    component: () => import('../features/preview/PreviewPage.vue'),
-    props: true,
-    meta: { title: 'Eelvaade' },
-  },
+
+  // --- earlier test views, kept answering until the redirects are approved ---------------
+  // Their own home pages stay as they were, for comparison.
+  { path: '/uus-disain', name: 'home-new', component: LegacyHome, meta: { title: 'Uus disain' } },
+  { path: '/ud2', name: 'ud2', component: LegacyHome, props: { short: true }, meta: { title: 'Uus disain' } },
+  // /ud3 grew into the home page.
+  { path: '/ud3', name: 'ud3', component: HomePage, meta: { title: 'Kirjavõlu' } },
+  // The same pages as the main paths: old links and Stripe's way back after paying still land.
+  { path: '/uus-disain/loo', name: 'create-new', component: Create, meta: { title: 'Loo uus' } },
+  { path: '/uus-disain/looming/:id', name: 'preview-new', component: Preview, props: true, meta: { title: 'Eelvaade' } },
+  { path: '/uus-disain/lapsed', name: 'children-new', component: Children, meta: { title: 'Lapsed' } },
+  { path: '/uus-disain/naide', name: 'sample-new', component: Sample, meta: { title: 'Näide' } },
+  { path: '/uus-disain/joulupass', name: 'season-pass-new', component: Pass, meta: { title: 'Jõulupass' } },
+  { path: '/uus-disain/tingimused', name: 'terms-new', component: Terms, meta: { title: 'Müügitingimused' } },
+  { path: '/uus-disain/privaatsus', name: 'privacy-new', component: Privacy, meta: { title: 'Privaatsus' } },
+  { path: '/ud2/alusta', name: 'ud2-start', component: ChristmasStart, meta: { title: 'Jõulukirjad' } },
+  { path: '/ud2/kirjad/:id', name: 'ud2-letters', component: ChristmasLetters, props: true, meta: { title: 'Jõulukirjad' } },
   { path: '/:pathMatch(.*)*', redirect: '/' },
 ]
 

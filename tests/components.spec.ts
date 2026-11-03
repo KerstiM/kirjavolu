@@ -134,15 +134,14 @@ describe('creation flow', () => {
     // "Tagasi" still reaches the card's choices.
     await user.click(screen.getByRole('button', { name: /Tagasi/ }))
     expect(await screen.findByRole('heading', { name: 'Mida soovid luua?' })).toBeInTheDocument()
-    expect(screen.getByRole('radio', { name: /Tegevuskalender/ })).toHaveAttribute('aria-checked', 'true')
+    // The picked kind stays one line; "Muuda" opens the cards again.
+    expect(screen.getByRole('button', { name: /Muuda, mida luua/ }).closest('section')).toHaveTextContent('Tegevuskalender')
   })
 
-  it('takes a new family from the home page card to 24 letters in three screens', async () => {
-    const { user, router } = await renderApp('/', { demo: false })
-    // Screen 1: the home page.
-    await user.click(await screen.findByRole('link', { name: '24 päkapikukirja' }))
+  it('takes a new family from a type and occasion link to 24 letters in two screens', async () => {
+    const { user, router } = await renderApp('/loo?tyyp=letter&puhk=christmas', { demo: false })
 
-    // Screen 2: "Kellele?" – the child is added in a dialog, without leaving the wizard.
+    // "Kellele?" – the child is added in a dialog, without leaving the wizard.
     expect(await screen.findByRole('heading', { name: 'Kellele?' })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: /Lisa laps/ }))
     const dialog = await screen.findByRole('dialog', { name: 'Lisa laps' })
@@ -158,7 +157,7 @@ describe('creation flow', () => {
     expect(router.currentRoute.value.path).toBe('/loo')
     expect(screen.getByRole('checkbox', { name: /Mia/ })).toHaveAttribute('aria-checked', 'true')
 
-    // Screen 3: the preview with all 24 letters.
+    // The preview with all 24 letters.
     await user.click(screen.getByRole('button', { name: /Loo ja vaata eelvaadet/ }))
     await vi.waitFor(() => expect(router.currentRoute.value.name).toBe('preview'))
     const [creation] = useCreationsStore().creations
@@ -246,7 +245,7 @@ describe('preview with choices beside it', () => {
 describe('sample letter', () => {
   it('shows the 1 December letter of a sample child without any data entry', async () => {
     const { user, router } = await renderApp('/', { demo: false })
-    await user.click(await screen.findByRole('link', { name: /Vaata näidet/ }))
+    await user.click(await screen.findByRole('link', { name: /Ava terve näidis/ }))
     expect(await screen.findByRole('heading', { level: 1, name: /Jasper saab 1\. detsembril/ })).toBeInTheDocument()
     expect(await screen.findByRole('heading', { name: 'Kallis Jasper!' })).toBeInTheDocument()
     expect(screen.getByText(/^1\. detsember/)).toBeInTheDocument()
@@ -255,6 +254,6 @@ describe('sample letter', () => {
     expect(useCreationsStore().creations).toHaveLength(0)
     expect(useChildrenStore().children).toHaveLength(0)
     await user.click(screen.getByRole('link', { name: /Loo oma lapsele 24 kirja/ }))
-    await vi.waitFor(() => expect(router.currentRoute.value.query).toMatchObject({ puhk: 'christmas', tyyp: 'letter' }))
+    await vi.waitFor(() => expect(router.currentRoute.value.path).toBe('/joulukirjad'))
   })
 })
