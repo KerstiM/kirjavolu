@@ -8,6 +8,7 @@ import { iconFor } from '../../../components/ui/icons'
 import PostcardCard from '../../../components/brand/PostcardCard.vue'
 import { postcardLook, useDesign } from '../../../components/brand/design'
 import PickedChoice from './PickedChoice.vue'
+import { isReady, NOT_READY_LABEL } from '../../home/new/readiness'
 
 const props = defineProps<{ occasionId: OccasionId | null }>()
 const model = defineModel<ContentTypeId | null>({ required: true })
@@ -56,6 +57,7 @@ const recommended = computed(() => (props.occasionId ? getOccasion(props.occasio
         :index="index"
         :selected="model === type.id"
         :badge="recommended.includes(type.id) ? 'Sobib hästi' : ''"
+        :soon="isReady(type.id) ? '' : NOT_READY_LABEL"
         @select="choose(type.id)"
       />
     </div>

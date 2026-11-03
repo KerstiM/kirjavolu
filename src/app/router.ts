@@ -47,6 +47,32 @@ export const routes: RouteRecordRaw[] = [
     meta: { title: 'Jõulupass' },
   },
   {
+    path: '/uus-disain/tingimused',
+    name: 'terms-new',
+    component: () => import('../features/legal/TermsPage.vue'),
+    props: { design: 'new' },
+    meta: { title: 'Müügitingimused' },
+  },
+  {
+    path: '/uus-disain/privaatsus',
+    name: 'privacy-new',
+    component: () => import('../features/legal/PrivacyPage.vue'),
+    props: { design: 'new' },
+    meta: { title: 'Privaatsus' },
+  },
+  {
+    path: '/tingimused',
+    name: 'terms',
+    component: () => import('../features/legal/TermsPage.vue'),
+    meta: { title: 'Müügitingimused' },
+  },
+  {
+    path: '/privaatsus',
+    name: 'privacy',
+    component: () => import('../features/legal/PrivacyPage.vue'),
+    meta: { title: 'Privaatsus' },
+  },
+  {
     path: '/lapsed',
     name: 'children',
     component: () => import('../features/children/ChildrenPage.vue'),

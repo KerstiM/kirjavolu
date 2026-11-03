@@ -16,11 +16,18 @@ defineProps<{
 const open = ref(false)
 const busy = ref(false)
 const error = ref('')
+// Digital content starts at once, so the buyer agrees to that (and to losing the 14-day
+// withdrawal right) before paying; without it the right would stay.
+const consent = ref(false)
 const target = ref<HTMLElement | null>(null)
 let checkout: EmbeddedCheckout | null = null
 
 async function buy(): Promise<void> {
   if (busy.value || checkout) return
+  if (!consent.value) {
+    error.value = 'Märgi enne ostu, et nõustud tingimustega.'
+    return
+  }
   busy.value = true
   error.value = ''
   open.value = true
@@ -51,6 +58,13 @@ onBeforeUnmount(() => checkout?.destroy())
       <li><strong>30 päkapiku muudatust</strong>: kirjuta, mida muuta, ja päkapikk kirjutab selle kirja ümber. Ise saad muuta alati ja tasuta.</li>
       <li>Kehtib 31. jaanuarini. Ühekordne makse {{ PASS_PRICE }}, püsimaksu ega kontot pole.</li>
     </ul>
+    <label v-if="!open" class="pass-buy__consent">
+      <input v-model="consent" type="checkbox" @change="error = ''" />
+      <span>
+        Nõustun <RouterLink :to="`${NEW_DESIGN_ROOT}/tingimused`">müügitingimustega</RouterLink> ja soovin, et Jõulupass
+        hakkaks kohe kehtima. Tean, et sellega kaob 14-päevane taganemisõigus.
+      </span>
+    </label>
     <BaseButton v-if="!open" size="lg" :disabled="busy" @click="buy">
       <Gift aria-hidden="true" /> Osta Jõulupass – {{ PASS_PRICE }}
     </BaseButton>
@@ -87,6 +101,19 @@ onBeforeUnmount(() => checkout?.destroy())
 .pass-buy__lead {
   margin: 0;
   color: var(--ink-soft);
+}
+.pass-buy__consent {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  font-size: 0.9rem;
+  input {
+    margin-top: 0.25rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    flex: none;
+    accent-color: var(--lavender);
+  }
 }
 .pass-buy__list {
   margin: 0;

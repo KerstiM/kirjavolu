@@ -18,8 +18,10 @@ const props = withDefaults(
     to?: RouteLocationRaw
     selected?: boolean
     badge?: string
+    /** Not ready yet: drawn gray with this label and not a link or a choice. */
+    soon?: string
   }>(),
-  { tagline: '', description: '', to: undefined, selected: false, badge: '' },
+  { tagline: '', description: '', to: undefined, selected: false, badge: '', soon: '' },
 )
 defineEmits<{ select: [] }>()
 
@@ -34,8 +36,21 @@ const style = computed(() => ({
 </script>
 
 <template>
+  <div v-if="soon" class="postcard is-soon" :style="style">
+    <span class="postcard__edge" aria-hidden="true" />
+    <span class="postcard__body">
+      <span class="postcard__text">
+        <span class="postcard__title">{{ title }}</span>
+        <span v-if="tagline" class="postcard__tagline">{{ tagline }}</span>
+      </span>
+      <span class="postcard__icon" aria-hidden="true"><component :is="icon" :size="20" :stroke-width="1.8" /></span>
+    </span>
+    <span v-if="description" class="postcard__desc">{{ description }}</span>
+    <span class="postcard__badge">{{ soon }}</span>
+  </div>
   <component
     :is="to ? RouterLink : 'button'"
+    v-else
     :to="to"
     :type="to ? undefined : 'button'"
     :role="to ? undefined : 'radio'"
@@ -95,6 +110,15 @@ const style = computed(() => ({
     transform: rotate(0) translateY(-4px);
     border-color: var(--card-ink);
     box-shadow: 0 6px 0 var(--card-ink);
+  }
+}
+.postcard.is-soon {
+  cursor: default;
+  filter: grayscale(1);
+  opacity: 0.55;
+  &:hover {
+    transform: rotate(var(--tilt));
+    box-shadow: none;
   }
 }
 .postcard__edge {
