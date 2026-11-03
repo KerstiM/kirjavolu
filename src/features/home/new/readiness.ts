@@ -35,8 +35,8 @@ export const COMING_SOON = [
   {
     id: 'parent-gift',
     title: 'Kingitus emale või isale',
-    tagline: 'Isadepäevaks, emadepäevaks või vanavanematele',
-    description: 'Laps räägib oma emast, isast või vanaemast ja tema enda sõnadest saab kingileht, kupongid või väike raamat.',
+    tagline: 'Emadepäevaks, isadepäevaks või vanavanematele',
+    description: 'Lapse enda sõnadest sünnib südamlik kingileht, kupongiraamat või väike personaalne raamat.',
     icon: 'HeartHandshake',
     label: 'Varsti',
     pass: undefined,

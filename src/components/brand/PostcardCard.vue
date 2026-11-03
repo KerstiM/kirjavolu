@@ -46,14 +46,13 @@ const style = computed(() => ({
     <span class="postcard__body">
       <span class="postcard__text">
         <span v-if="pass" class="postcard__pass">Jõulupass</span>
-        <span class="postcard__title">{{ title }}</span>
+        <span class="postcard__title">{{ title }} <span class="postcard__soon">{{ soon }}</span></span>
         <span v-if="tagline" class="postcard__tagline">{{ tagline }}</span>
       </span>
       <span class="postcard__icon" aria-hidden="true"><component :is="icon" :size="20" :stroke-width="1.8" /></span>
     </span>
     <span v-if="description" class="postcard__desc">{{ description }}</span>
     <span v-if="pass === 'extra'" class="postcard__extra">Jõulupassiga: isiklik versioon lapse ja pere järgi</span>
-    <span class="postcard__badge">{{ soon }}</span>
   </div>
   <component
     :is="to ? RouterLink : 'button'"
@@ -206,5 +205,20 @@ const style = computed(() => ({
   letter-spacing: 0.04em;
   text-transform: uppercase;
   transform: rotate(-4deg);
+}
+// "Varsti" on a gray card: right after the title, not hanging off the edge.
+.postcard__soon {
+  display: inline-block;
+  margin-left: 0.35rem;
+  padding: 0.05rem 0.5rem;
+  border: 1.5px solid currentColor;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 0.2em;
+  white-space: nowrap;
 }
 </style>
