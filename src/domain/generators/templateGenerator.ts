@@ -1,5 +1,4 @@
 import type { GeneratedContent, GeneratedItem, GenerationRequest, PrintableLayout, RequestFor } from '../models'
-import { getOccasion } from '../occasions/occasions'
 import { usesSmallCards } from './audience'
 import { getContentType } from '../contentTypes'
 import { validateGenerationRequest } from '../validation'
@@ -46,12 +45,11 @@ export function runTemplates(request: GenerationRequest, variants: readonly numb
   }
 }
 
-/** "Ilma kuupäevata": each child's letters are numbered instead of dated; a single letter keeps its title. */
+/** "Ilma kuupäevata": each child's letters are numbered instead of dated; a single letter has no label at all. */
 function undated(result: TypeResult, request: RequestFor<'letter'>): TypeResult {
   if (request.options.count === 1) {
-    // A dated single letter is labelled with its date; undated, with the occasion instead.
-    const label = getOccasion(request.occasionId).name
-    return { ...result, items: result.items.map((item) => ({ ...item, date: undefined, label })) }
+    // A dated single letter is labelled with its date; undated, with nothing (not the occasion either).
+    return { ...result, items: result.items.map((item) => ({ ...item, date: undefined, label: '' })) }
   }
   const seen = new Map<string, number>()
   const items = result.items.map((item) => {

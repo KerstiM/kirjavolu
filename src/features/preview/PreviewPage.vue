@@ -360,7 +360,7 @@ async function regenerate(index: number): Promise<void> {
       announce('Sellele osale teist varianti ei leitud. Muuda teksti käsitsi.')
     } else {
       store.updateItem(props.id, next)
-      announce(`${item.label}: uus variant loodud.`)
+      announce(`${item.label || item.heading || 'Kiri'}: uus variant loodud.`)
     }
   } finally {
     busyItem.value = null
@@ -423,7 +423,7 @@ function exportText(): void {
     </div>
 
     <div class="container preview__body">
-      <aside class="side no-print" aria-label="Kohanda ja prindi">
+      <aside v-scroll-shadow class="side no-print" aria-label="Kohanda ja prindi">
         <p v-if="aiWritten" class="ai-note">
           <template v-if="content.request.contentType === 'story'">
             Selle loo kirjutas päkapikk just {{ namesInCase(content.request.children, 'allative') }}. Iga lehekülge saad muuta nupuga „Muuda“, seal saab ka päkapikult muudatust paluda.

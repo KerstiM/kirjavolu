@@ -52,7 +52,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="backdrop no-print" @click.self="emit('close')">
-    <div ref="dialog" class="dialog" role="dialog" aria-modal="true" :aria-labelledby="titleId" @keydown="onKeydown">
+    <div ref="dialog" v-scroll-shadow class="dialog" role="dialog" aria-modal="true" :aria-labelledby="titleId" @keydown="onKeydown">
       <header class="dialog__head">
         <h2 :id="titleId">{{ title }}</h2>
         <button type="button" class="dialog__close" aria-label="Sulge" @click="emit('close')"><X :size="18" /></button>
@@ -79,6 +79,8 @@ onBeforeUnmount(() => {
   max-height: calc(100vh - 2rem);
   max-height: calc(100dvh - 2rem);
   overflow: auto;
+  // The sticky heading is about this tall; the top shadow starts below it.
+  --scroll-shadow-top: 3.2rem;
   background: var(--surface);
   border-radius: var(--radius);
   box-shadow: var(--shadow-lift);

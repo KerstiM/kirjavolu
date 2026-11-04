@@ -23,6 +23,8 @@ const props = defineProps<{
 }>()
 const emit = defineEmits<{ edit: []; regenerate: [] }>()
 
+// A letter on its own has no label, so the tools name it by its greeting.
+const name = computed(() => props.item.label || props.item.heading || 'kiri')
 const paragraphs = computed(() => props.item.body.split(/\n{2,}/).filter((p) => p.trim()))
 const kindClass = computed(() => [
   `paper--${props.item.kind}`,
@@ -47,10 +49,10 @@ const kindClass = computed(() => [
     <PatternBackground v-else-if="pattern" :pattern="pattern" :ink-saver="!!inkSaver" />
     <div v-if="!readonly" class="paper__tools no-print">
       <span v-if="item.edited" class="edited-badge">Muudetud</span>
-      <button type="button" class="tool" :aria-label="`Muuda: ${item.label}`" @click="emit('edit')">
+      <button type="button" class="tool" :aria-label="`Muuda: ${name}`" @click="emit('edit')">
         <Pencil :size="15" aria-hidden="true" /><span>Muuda</span>
       </button>
-      <button v-if="!noVariants" type="button" class="tool" :disabled="busy" :aria-label="`Uus variant: ${item.label}`" @click="emit('regenerate')">
+      <button v-if="!noVariants" type="button" class="tool" :disabled="busy" :aria-label="`Uus variant: ${name}`" @click="emit('regenerate')">
         <RefreshCw :size="15" aria-hidden="true" :class="{ spin: busy }" /><span>Uus variant</span>
       </button>
     </div>
