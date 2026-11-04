@@ -125,7 +125,7 @@ function revalidate(): void {
             <ListInput id="child-foods" v-model="draft.foods" :described-by="describedBy" />
           </template>
         </FormField>
-        <FormField id="child-family" label="Pereliikmed, õed-vennad" hint="nt ema, isa, vend Jasper, kass Miisu">
+        <FormField id="child-family" label="Pereliikmed, õed-vennad" hint="nt ema, isa, vend Pääru, kass Miisu">
           <template #default="{ describedBy }">
             <ListInput id="child-family" v-model="draft.family" :described-by="describedBy" />
           </template>

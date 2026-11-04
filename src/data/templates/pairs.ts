@@ -14,7 +14,7 @@ export interface PairContext {
 
 /**
  * Paired task templates. Both letters on the same day are written from the same
- * template, so they always match: "loe Britale ette" ↔ "Täna loeb Jasper sulle".
+ * template, so they always match: "loe Kaile ette" ↔ "Täna loeb Pääru sulle".
  * Letters are read in the morning, so anything the giver leaves by a slipper
  * is found by the receiver the next morning, never the same day.
  */

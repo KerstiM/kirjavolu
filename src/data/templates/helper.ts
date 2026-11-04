@@ -1,12 +1,12 @@
 /** Names used in the oldest child's secret helper missions. */
 export interface HelperContext {
-  /** Younger siblings in allative: "Jasperile ja Britale". */
+  /** Younger siblings in allative: "Päärule ja Kaile". */
   siblingsAllative: string
-  /** Younger siblings in comitative: "Jasperi ja Britaga". */
+  /** Younger siblings in comitative: "Pääru ja Kaiga". */
   siblingsComitative: string
-  /** Younger siblings in nominative: "Jasper ja Brita". */
+  /** Younger siblings in nominative: "Pääru ja Kai". */
   siblings: string
-  /** One younger sibling (genitive), for single missions: "Jasperi". */
+  /** One younger sibling (genitive), for single missions: "Pääru". */
   siblingGenitive: string
   sibling: string
   /** "päkapikkude" at Christmas, otherwise e.g. "jänkude". */

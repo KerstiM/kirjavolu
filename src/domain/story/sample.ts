@@ -26,7 +26,7 @@ export function sampleContext(
     frame: {
       title: 'Meister',
       origin: 'Jõuluvana töökoja kõige vanem päkapikk',
-      siblingHelpers: 'Jasperi juures Tipp-Topp ja Brita juures Pisi-Pätsi',
+      siblingHelpers: 'Pääru juures Tipp-Topp ja Kai juures Pisi-Pätsi',
       allHelpers: 'Kõpsu-Mõpsu, Tipp-Topp ja Pisi-Pätsi',
       eve: true,
     },

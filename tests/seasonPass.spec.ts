@@ -117,13 +117,13 @@ describe('the Jõulupass page', () => {
 })
 
 describe('AI letters with the Jõulupass', () => {
-  const LETTERS = Array.from({ length: 24 }, (_, i) => ({ heading: 'Kallis Ruben!', body: `Kiri ${i + 1}.`, signature: 'Sinu päkapikk Tuduja' }))
+  const LETTERS = Array.from({ length: 24 }, (_, i) => ({ heading: 'Kallis Markus!', body: `Kiri ${i + 1}.`, signature: 'Sinu päkapikk Tuduja' }))
 
   it('shows the next step once a valid pass is in this browser', async () => {
     localStorage.setItem(PASS_KEY, JSON.stringify(PASS))
     await open('/uus-disain/joulupass')
     const section = await screen.findByRole('region', { name: /Järgmine samm: isiklikud kirjad/ })
-    expect(within(section).getByRole('button', { name: /Kirjuta Rubenile isiklikud kirjad/ })).toBeInTheDocument()
+    expect(within(section).getByRole('button', { name: /Kirjuta Markusele isiklikud kirjad/ })).toBeInTheDocument()
   })
 
   it('is not offered for a pass that is used up', async () => {
@@ -143,7 +143,7 @@ describe('AI letters with the Jõulupass', () => {
     const family = screen.getByLabelText('Pere ja lemmikloomad')
     await user.clear(family)
     await user.type(family, 'ema, kass Miisu')
-    await user.click(screen.getByRole('button', { name: /Kirjuta Rubenile isiklikud kirjad/ }))
+    await user.click(screen.getByRole('button', { name: /Kirjuta Markusele isiklikud kirjad/ }))
 
     // Saving the profile and opening the 24-letter preview can take a while on a busy machine.
     await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/looming\//), { timeout: 5000 })
@@ -151,10 +151,10 @@ describe('AI letters with the Jõulupass', () => {
     expect(url).toBe('/api/joulupass/kirjad')
     const body = JSON.parse(String(init.body))
     expect(body.code).toBe('KV-7KQM-3FXA')
-    expect(body.child).toMatchObject({ name: 'Ruben', family: ['ema', 'kass Miisu'], december: '12.12 läheme vanaema juurde' })
+    expect(body.child).toMatchObject({ name: 'Markus', family: ['ema', 'kass Miisu'], december: '12.12 läheme vanaema juurde' })
     expect(body.child).not.toHaveProperty('parentNotes')
     // What was typed stays in the profile, so it is not asked again.
-    expect(useChildrenStore(pinia).children.find((c) => c.name === 'Ruben')?.family).toEqual(['ema', 'kass Miisu'])
+    expect(useChildrenStore(pinia).children.find((c) => c.name === 'Markus')?.family).toEqual(['ema', 'kass Miisu'])
     expect(loadPass()?.generationsLeft).toBe(9)
 
     const creation = useCreationsStore(pinia).creations[0]
@@ -165,7 +165,7 @@ describe('AI letters with the Jõulupass', () => {
     // The preview keeps the AI's words: they can be edited, but the template engine does not replace them.
     expect((await screen.findAllByRole('button', { name: /^Muuda: / })).length).toBe(24)
     expect(screen.queryAllByRole('button', { name: /^Uus variant/ })).toHaveLength(0)
-    expect(screen.getByText(/kirjutas päkapikk Tuduja just Rubenile/)).toBeInTheDocument()
+    expect(screen.getByText(/kirjutas päkapikk Tuduja just Markusele/)).toBeInTheDocument()
   })
 
   it('rewrites one letter with the AI as the parent asks, using a fix', async () => {
@@ -173,12 +173,12 @@ describe('AI letters with the Jõulupass', () => {
     const fetch = vi.fn(async (url: string) =>
       url === '/api/joulupass/kirjad'
         ? Response.json({ letters: LETTERS, pass: { ...PASS, generationsLeft: 9, fixesLeft: 30 } })
-        : Response.json({ letter: { heading: 'Kallis Ruben!', body: 'Lühem kiri.', signature: 'Tuduja' }, pass: { ...PASS, generationsLeft: 9, fixesLeft: 29 } }),
+        : Response.json({ letter: { heading: 'Kallis Markus!', body: 'Lühem kiri.', signature: 'Tuduja' }, pass: { ...PASS, generationsLeft: 9, fixesLeft: 29 } }),
     )
     vi.stubGlobal('fetch', fetch)
     const { pinia } = await open('/uus-disain/joulupass')
     const user = userEvent.setup()
-    await user.click(await screen.findByRole('button', { name: /Kirjuta Rubenile isiklikud kirjad/ }))
+    await user.click(await screen.findByRole('button', { name: /Kirjuta Markusele isiklikud kirjad/ }))
     const edits = await screen.findAllByRole('button', { name: /^Muuda: / })
     await user.click(edits[5]!)
 
@@ -204,7 +204,7 @@ describe('AI letters with the Jõulupass', () => {
     vi.stubGlobal('fetch', vi.fn(async () => Response.json({ error: 'used_up' }, { status: 409 })))
     await open('/uus-disain/joulupass')
     const user = userEvent.setup()
-    await user.click(await screen.findByRole('button', { name: /Kirjuta Rubenile isiklikud kirjad/ }))
+    await user.click(await screen.findByRole('button', { name: /Kirjuta Markusele isiklikud kirjad/ }))
     expect(await screen.findByRole('alert')).toHaveTextContent('kirjasarjad ja lood on otsas')
   })
 })
@@ -215,10 +215,10 @@ describe('AI story with the Jõulupass', () => {
     setActivePinia(pinia)
     const children = useChildrenStore()
     children.restoreDemo()
-    const ruben = children.children.find((child) => child.name === 'Ruben')!
+    const markus = children.children.find((child) => child.name === 'Markus')!
     const content = await templateGenerator.generate({
       contentType: 'story',
-      children: [ruben],
+      children: [markus],
       occasionId: 'christmas',
       general: { ...DEFAULT_GENERAL, length: 'short' },
       seed: 1,
@@ -235,34 +235,34 @@ describe('AI story with the Jõulupass', () => {
   it('writes the story again with the AI from the same choices, using a generation', async () => {
     localStorage.setItem(PASS_KEY, JSON.stringify({ ...PASS, fixesLeft: 30 }))
     const fetch = vi.fn(async () =>
-      Response.json({ story: { title: 'Ruben ja lumehelbe saladus', pages: ['Üks.', 'Kaks.', 'Kolm.'] }, pass: { ...PASS, generationsLeft: 9, fixesLeft: 30 } }),
+      Response.json({ story: { title: 'Markus ja lumehelbe saladus', pages: ['Üks.', 'Kaks.', 'Kolm.'] }, pass: { ...PASS, generationsLeft: 9, fixesLeft: 30 } }),
     )
     vi.stubGlobal('fetch', fetch)
     const { pinia, id } = await storyPreview()
     const user = userEvent.setup()
-    const card = await screen.findByRole('region', { name: /Ruben: oma muinasjutt/ })
+    const card = await screen.findByRole('region', { name: /Markus: oma muinasjutt/ })
     expect(within(card).getByText(/alles on 10/)).toBeInTheDocument()
-    await user.click(within(card).getByRole('button', { name: 'Kirjuta Rubeni oma muinasjutt' }))
+    await user.click(within(card).getByRole('button', { name: 'Kirjuta Markuse oma muinasjutt' }))
 
     await vi.waitFor(() => expect(useCreationsStore(pinia).byId(id)?.generator.id).toBe('ai-joulupass'))
     const creation = useCreationsStore(pinia).byId(id)!
-    expect(creation.title).toBe('Ruben ja lumehelbe saladus')
+    expect(creation.title).toBe('Markus ja lumehelbe saladus')
     expect(creation.items.map((item) => item.body)).toEqual(['Üks.', 'Kaks.', 'Kolm.'])
     expect(creation.request.contentType).toBe('story')
     const [url, init] = fetch.mock.calls[0] as unknown as [string, RequestInit]
     expect(url).toBe('/api/joulupass/lugu')
     const body = JSON.parse(String(init.body))
     expect(body.story).toMatchObject({ genre: defaultOptions('christmas').story.genre, length: 'short', occasion: 'Jõulud' })
-    expect(body.children[0]).toMatchObject({ name: 'Ruben' })
+    expect(body.children[0]).toMatchObject({ name: 'Markus' })
     expect(body.children[0]).not.toHaveProperty('parentNotes')
     expect(loadPass()?.generationsLeft).toBe(9)
-    expect(await screen.findByText(/Selle loo kirjutas päkapikk just Rubenile/)).toBeInTheDocument()
-    expect(screen.queryByRole('region', { name: /Ruben: oma muinasjutt/ })).toBeNull()
+    expect(await screen.findByText(/Selle loo kirjutas päkapikk just Markusele/)).toBeInTheDocument()
+    expect(screen.queryByRole('region', { name: /Markus: oma muinasjutt/ })).toBeNull()
   })
 
   it('tells what the pass gives when there is none', async () => {
     await storyPreview()
-    const card = await screen.findByRole('region', { name: /Ruben: oma muinasjutt/ })
+    const card = await screen.findByRole('region', { name: /Markus: oma muinasjutt/ })
     expect(within(card).getByRole('link', { name: 'Jõulupass' })).toHaveAttribute('href', '/joulupass')
     expect(within(card).queryByRole('button')).toBeNull()
   })
@@ -302,10 +302,10 @@ describe('finding the Jõulupass', () => {
     setActivePinia(pinia)
     const children = useChildrenStore()
     children.restoreDemo()
-    const ruben = children.children.find((child) => child.name === 'Ruben')!
+    const markus = children.children.find((child) => child.name === 'Markus')!
     const content = await templateGenerator.generate({
       contentType: 'letter',
-      children: [ruben],
+      children: [markus],
       occasionId: 'christmas',
       general: { ...DEFAULT_GENERAL },
       seed: 1,
@@ -317,7 +317,7 @@ describe('finding the Jõulupass', () => {
     await router.isReady()
     render(App, { global: { plugins: [pinia, router] } })
     const card = await screen.findByRole('region', { name: /Kirjad päriselt sinu lapse kohta/ })
-    expect(within(card).getByText(/ei tea Rubeni perest/)).toBeInTheDocument()
+    expect(within(card).getByText(/ei tea Markuse perest/)).toBeInTheDocument()
     // Three letters: the personal series is 24, so it is written as a new series on the pass page.
     expect(within(card).getByRole('link', { name: 'Vaata Jõulupassi' })).toHaveAttribute('href', '/joulupass')
   })
@@ -327,10 +327,10 @@ describe('finding the Jõulupass', () => {
     setActivePinia(pinia)
     const children = useChildrenStore()
     children.restoreDemo()
-    const ruben = children.children.find((child) => child.name === 'Ruben')!
+    const markus = children.children.find((child) => child.name === 'Markus')!
     const content = await templateGenerator.generate({
       contentType: 'letter',
-      children: [ruben],
+      children: [markus],
       occasionId: 'christmas',
       general: { ...DEFAULT_GENERAL },
       seed: 1,

@@ -7,13 +7,13 @@ import { CONTENT_TYPES } from '@/domain/contentTypes'
 import { OCCASIONS } from '@/domain/occasions/occasions'
 import { HUNT_LOCATIONS } from '@/data/templates/locations'
 import type { ContentTypeId } from '@/domain/models'
-import { BRITA, JASPER, makeRequest, RUBEN } from './helpers'
+import { KAI, PAARU, makeRequest, MARKUS } from './helpers'
 
 describe('age bands', () => {
   it('maps demo children to sensible bands', () => {
-    expect(ageBand(RUBEN)).toBe('older')
-    expect(ageBand(JASPER)).toBe('young')
-    expect(ageBand(BRITA)).toBe('toddler')
+    expect(ageBand(MARKUS)).toBe('older')
+    expect(ageBand(PAARU)).toBe('young')
+    expect(ageBand(KAI)).toBe('toddler')
   })
 
   it('difficulty shifts readers but never toddlers', () => {
@@ -28,7 +28,7 @@ describe('every content type × occasion combination', () => {
   for (const type of types) {
     for (const occasion of OCCASIONS) {
       it(`${type} / ${occasion.id} produces non-empty items`, () => {
-        const result = runTemplates(makeRequest(type, { occasionId: occasion.id, children: [RUBEN, JASPER, BRITA] }))
+        const result = runTemplates(makeRequest(type, { occasionId: occasion.id, children: [MARKUS, PAARU, KAI] }))
         expect(result.items.length).toBeGreaterThan(0)
         for (const item of result.items) {
           expect(item.body.trim().length).toBeGreaterThan(10)
@@ -51,7 +51,7 @@ describe('determinism', () => {
 
 describe('letters', () => {
   it('24 Christmas letters are all different', () => {
-    const result = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [RUBEN, JASPER], options: { mode: 'shared' } }))
+    const result = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [MARKUS, PAARU], options: { mode: 'shared' } }))
     const bodies = result.items.map((i) => i.body)
     expect(bodies).toHaveLength(24)
     expect(new Set(bodies).size).toBe(24)
@@ -73,7 +73,7 @@ describe('letters', () => {
   })
 
   it('regression: no letter after the star is found says the search continues', () => {
-    const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [RUBEN, JASPER, BRITA], seed: 7, options: { mode: 'shared' } })).items
+    const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [MARKUS, PAARU, KAI], seed: 7, options: { mode: 'shared' } })).items
     const found = items.findIndex((i) => i.body.includes('Kutsusin võlutähte ja ta vastas'))
     expect(found).toBe(22)
     expect(items[23]!.body).toContain('Võlutäht on jälle minuga')
@@ -81,24 +81,24 @@ describe('letters', () => {
   })
 
   it('uses profile details and singular address for one child', () => {
-    const result = runTemplates(makeRequest('letter', { children: [JASPER], general: { length: 'long' } }))
+    const result = runTemplates(makeRequest('letter', { children: [PAARU], general: { length: 'long' } }))
     const text = result.items.map((i) => i.body).join(' ')
-    expect(result.items[0]?.heading).toBe('Kallis Jasper!')
+    expect(result.items[0]?.heading).toBe('Kallis Pääru!')
     expect(text).toMatch(/riisiputru|Miki Hiire|mõistatuste/)
   })
 
   it('addresses siblings together and gives each a task', () => {
-    const result = runTemplates(makeRequest('letter', { children: [RUBEN, JASPER, BRITA], options: { mode: 'shared' } }))
+    const result = runTemplates(makeRequest('letter', { children: [MARKUS, PAARU, KAI], options: { mode: 'shared' } }))
     const item = result.items[0]!
-    expect(item.heading).toBe('Kallid Ruben, Jasper ja Brita!')
-    expect(item.body).toContain('Ruben, sinu ülesanne on')
-    expect(item.body).toContain('Brita, sinu ülesanne on')
+    expect(item.heading).toBe('Kallid Markus, Pääru ja Kai!')
+    expect(item.body).toContain('Markus, sinu ülesanne on')
+    expect(item.body).toContain('Kai, sinu ülesanne on')
   })
 
   it('uses simple language for a toddler', () => {
-    const result = runTemplates(makeRequest('letter', { children: [BRITA], options: { count: 3 } }))
+    const result = runTemplates(makeRequest('letter', { children: [KAI], options: { count: 3 } }))
     expect(result.items.some((i) => /Täiskasvanu abiga/.test(i.body))).toBe(true)
-    expect(result.instructions.some((ins) => ins.steps.some((s) => s.includes('Brita jaoks loe kiri ette')))).toBe(true)
+    expect(result.instructions.some((ins) => ins.steps.some((s) => s.includes('Kai jaoks loe kiri ette')))).toBe(true)
   })
 
   it('occasion changes the content', () => {
@@ -123,7 +123,7 @@ describe('treasure hunts', () => {
   })
 
   it('clues do not reveal the location name to readers', () => {
-    const result = runTemplates(makeRequest('treasure-hunt', { children: [JASPER], options: { clueCount: 8 } }))
+    const result = runTemplates(makeRequest('treasure-hunt', { children: [PAARU], options: { clueCount: 8 } }))
     for (const item of result.items) {
       const known = HUNT_LOCATIONS.find((l) => l.name === item.answer)
       if (known) expect(item.body.toLowerCase()).not.toContain(known.name.split(' ')[0]!.toLowerCase())
@@ -148,21 +148,21 @@ describe('treasure hunts', () => {
   })
 
   it('cooperative hunt alternates turns between siblings', () => {
-    const result = runTemplates(makeRequest('treasure-hunt', { children: [RUBEN, JASPER], options: { clueCount: 4 } }))
-    expect(result.items.map((i) => i.forChild)).toEqual(['Ruben', 'Jasper', 'Ruben', 'Jasper'])
+    const result = runTemplates(makeRequest('treasure-hunt', { children: [MARKUS, PAARU], options: { clueCount: 4 } }))
+    expect(result.items.map((i) => i.forChild)).toEqual(['Markus', 'Pääru', 'Markus', 'Pääru'])
   })
 
   it('separate hunts give each child a full chain', () => {
     const result = runTemplates(
-      makeRequest('treasure-hunt', { children: [RUBEN, JASPER], options: { clueCount: 3, cooperative: false } }),
+      makeRequest('treasure-hunt', { children: [MARKUS, PAARU], options: { clueCount: 3, cooperative: false } }),
     )
-    expect(result.items.filter((i) => i.forChild === 'Ruben')).toHaveLength(3)
-    expect(result.items.filter((i) => i.forChild === 'Jasper')).toHaveLength(3)
+    expect(result.items.filter((i) => i.forChild === 'Markus')).toHaveLength(3)
+    expect(result.items.filter((i) => i.forChild === 'Pääru')).toHaveLength(3)
     expect(result.instructions.filter((i) => i.title.startsWith('Peitmise plaan'))).toHaveLength(2)
   })
 
   it('toddler clues are read aloud by an adult', () => {
-    const result = runTemplates(makeRequest('treasure-hunt', { children: [BRITA] }))
+    const result = runTemplates(makeRequest('treasure-hunt', { children: [KAI] }))
     expect(result.items.every((i) => i.body.includes('Täiskasvanu loeb'))).toBe(true)
   })
 })
@@ -171,7 +171,7 @@ describe('puzzles', () => {
   const kinds = ['cipher', 'riddle', 'anagram', 'math', 'sequence'] as const
 
   it.each(kinds)('%s puzzles always include an answer', (kind) => {
-    for (const child of [RUBEN, JASPER]) {
+    for (const child of [MARKUS, PAARU]) {
       const result = runTemplates(makeRequest('puzzle', { children: [child], options: { kind, challengeCount: 6 } }))
       expect(result.items.every((i) => i.answer && i.answer.length > 0)).toBe(true)
     }
@@ -179,7 +179,7 @@ describe('puzzles', () => {
 
   it('math answers are correct', () => {
     for (let seed = 1; seed < 30; seed++) {
-      for (const child of [RUBEN, JASPER]) {
+      for (const child of [MARKUS, PAARU]) {
         const result = runTemplates(makeRequest('puzzle', { seed, children: [child], options: { kind: 'math', challengeCount: 4 } }))
         for (const item of result.items) {
           const body = item.body
@@ -208,7 +208,7 @@ describe('puzzles', () => {
   })
 
   it('anagrams use exactly the letters of the answer', () => {
-    const result = runTemplates(makeRequest('puzzle', { children: [JASPER], options: { kind: 'anagram', challengeCount: 5 } }))
+    const result = runTemplates(makeRequest('puzzle', { children: [PAARU], options: { kind: 'anagram', challengeCount: 5 } }))
     for (const item of result.items) {
       const scrambled = item.body.split('\n\n').find((p) => /^[A-ZÕÄÖÜŠŽ]+$/.test(p))!
       expect(isAnagram(item.answer!, scrambled)).toBe(true)
@@ -233,7 +233,7 @@ describe('puzzles', () => {
 
   it('never puts a partitive after the number 1', () => {
     for (let seed = 1; seed < 80; seed++) {
-      for (const child of [RUBEN, JASPER]) {
+      for (const child of [MARKUS, PAARU]) {
         const result = runTemplates(makeRequest('puzzle', { seed, children: [child], options: { kind: 'math', challengeCount: 4 } }))
         for (const item of result.items) expect(item.body).not.toMatch(/(^|\D)1 (kommi|õuna|piparkooki|palli|muna|klotsi|kivi|münti)/)
       }
@@ -241,7 +241,7 @@ describe('puzzles', () => {
   })
 
   it('secret code is encoded in the final card', () => {
-    const result = runTemplates(makeRequest('puzzle', { children: [JASPER], options: { secretCode: 'Vaata diivani alla' } }))
+    const result = runTemplates(makeRequest('puzzle', { children: [PAARU], options: { secretCode: 'Vaata diivani alla' } }))
     const last = result.items.at(-1)!
     expect(last.answer).toBe('VAATA DIIVANI ALLA')
     const code = last.body.split('\n\n')[1]!
@@ -286,30 +286,30 @@ describe('stories, calendars, certificates', () => {
 
   it('detective title uses the genitive', () => {
     const result = runTemplates(makeRequest('story', { options: { genre: 'detective' } }))
-    expect(result.title).toBe('Ruben ja kadunud küpsisepurgi juhtum')
+    expect(result.title).toBe('Markus ja kadunud küpsisepurgi juhtum')
     const birthday = runTemplates(makeRequest('story', { occasionId: 'birthday', options: { genre: 'detective' } }))
     expect(birthday.title).toContain('kadunud sünnipäevatordi juhtum')
   })
 
   it('toddler story does not repeat "ja" when listing family', () => {
-    const result = runTemplates(makeRequest('story', { children: [BRITA], general: { length: 'long' } }))
+    const result = runTemplates(makeRequest('story', { children: [KAI], general: { length: 'long' } }))
     const home = result.items.at(-1)!.body
-    expect(home).toContain('Ruben ja Jasper ning andsid')
+    expect(home).toContain('Markus ja Pääru ning andsid')
   })
 
   it('occasion calendar keeps occasion activities even with a toddler and short time limit', () => {
-    const result = runTemplates(makeRequest('calendar', { occasionId: 'vastlapaev', children: [JASPER, BRITA] }))
+    const result = runTemplates(makeRequest('calendar', { occasionId: 'vastlapaev', children: [PAARU, KAI] }))
     const titles = result.items.map((i) => i.heading)
     expect(titles.filter((t) => /liug|Vastla|vurr|Lumememm/i.test(t)).length).toBeGreaterThanOrEqual(3)
   })
 
   it('toddler story is short and simple', () => {
-    const result = runTemplates(makeRequest('story', { children: [BRITA], general: { length: 'medium' } }))
-    expect(result.items[0]?.body).toContain('Brita on 1-aastane')
+    const result = runTemplates(makeRequest('story', { children: [KAI], general: { length: 'medium' } }))
+    expect(result.items[0]?.body).toContain('Kai on 1-aastane')
   })
 
   it('calendar fills every day without repeats', () => {
-    const result = runTemplates(makeRequest('calendar', { occasionId: 'summer', children: [RUBEN, JASPER] }))
+    const result = runTemplates(makeRequest('calendar', { occasionId: 'summer', children: [MARKUS, PAARU] }))
     expect(result.items).toHaveLength(30)
     expect(new Set(result.items.map((i) => i.heading)).size).toBe(30)
   })
@@ -322,8 +322,8 @@ describe('stories, calendars, certificates', () => {
   })
 
   it('certificates are made per child', () => {
-    const result = runTemplates(makeRequest('certificate', { children: [RUBEN, JASPER] }))
-    expect(result.items.map((i) => i.forChild)).toEqual(['Ruben', 'Jasper'])
+    const result = runTemplates(makeRequest('certificate', { children: [MARKUS, PAARU] }))
+    expect(result.items.map((i) => i.forChild)).toEqual(['Markus', 'Pääru'])
   })
 })
 
@@ -342,7 +342,7 @@ describe('TemplateGenerator', () => {
   })
 
   it('regenerating a treasure-hunt clue keeps its hiding place', async () => {
-    const content = await templateGenerator.generate(makeRequest('treasure-hunt', { children: [JASPER] }))
+    const content = await templateGenerator.generate(makeRequest('treasure-hunt', { children: [PAARU] }))
     const next = await templateGenerator.regenerateItem(content, 2)
     expect(next.answer).toBe(content.items[2]!.answer)
   })
@@ -356,7 +356,7 @@ describe('any number of letters from 1 to 24', () => {
   it('makes exactly as many letters as asked, for every count and occasion kind', async () => {
     for (let count = 1; count <= 24; count++) {
       for (const occasionId of ['christmas', 'birthday'] as const) {
-        const request = makeRequest('letter', { occasionId, children: [JASPER], options: { count, startDate: '2026-12-01' } })
+        const request = makeRequest('letter', { occasionId, children: [PAARU], options: { count, startDate: '2026-12-01' } })
         const content = await templateGenerator.generate(request)
         expect(content.items, `${occasionId}, ${count} kirja`).toHaveLength(count)
         expect(content.items.every((item) => item.body.trim().length > 0)).toBe(true)
@@ -373,14 +373,14 @@ describe('any number of letters from 1 to 24', () => {
 
 describe('letters without a date', () => {
   it('numbers a series instead of dating it, per child, and keeps the start date for the plan', async () => {
-    const dated = await templateGenerator.generate(makeRequest('letter', { occasionId: 'christmas', children: [RUBEN, JASPER], options: { count: 7, startDate: '2026-12-01' } }))
+    const dated = await templateGenerator.generate(makeRequest('letter', { occasionId: 'christmas', children: [MARKUS, PAARU], options: { count: 7, startDate: '2026-12-01' } }))
     const undated = await templateGenerator.generate(
-      makeRequest('letter', { occasionId: 'christmas', children: [RUBEN, JASPER], options: { count: 7, startDate: '2026-12-01', dated: false } }),
+      makeRequest('letter', { occasionId: 'christmas', children: [MARKUS, PAARU], options: { count: 7, startDate: '2026-12-01', dated: false } }),
     )
     expect(dated.items[0]?.label).toMatch(/detsember/)
     expect(undated.items.every((item) => item.date === undefined && !/detsember/.test(item.label))).toBe(true)
-    const ruben = undated.items.filter((item) => item.childId === RUBEN.id).map((item) => item.label)
-    expect(ruben).toEqual(['1. kiri', '2. kiri', '3. kiri', '4. kiri', '5. kiri', '6. kiri', '7. kiri'])
+    const markus = undated.items.filter((item) => item.childId === MARKUS.id).map((item) => item.label)
+    expect(markus).toEqual(['1. kiri', '2. kiri', '3. kiri', '4. kiri', '5. kiri', '6. kiri', '7. kiri'])
     expect(undated.instructions.flatMap((block) => block.steps).join(' ')).toContain('Kirjad on nummerdatud')
   })
 

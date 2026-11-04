@@ -8,7 +8,7 @@ import { routes } from '@/app/router'
 import { useChildrenStore } from '@/features/children/childrenStore'
 import { useCreationsStore } from '@/features/preview/creationsStore'
 import { templateGenerator } from '@/domain/generators/templateGenerator'
-import { makeRequest, RUBEN } from './helpers'
+import { makeRequest, MARKUS } from './helpers'
 
 async function open(path: string | ((id: string) => string)) {
   const pinia = createPinia()
@@ -16,7 +16,7 @@ async function open(path: string | ((id: string) => string)) {
   useChildrenStore().restoreDemo()
   if (typeof path === 'function') {
     const content = await templateGenerator.generate(
-      makeRequest('letter', { occasionId: 'christmas', children: [RUBEN], options: { startDate: '2026-12-01' } }),
+      makeRequest('letter', { occasionId: 'christmas', children: [MARKUS], options: { startDate: '2026-12-01' } }),
     )
     useCreationsStore().add(content)
     path = path(content.id)
@@ -61,8 +61,8 @@ describe('the wizard in the new design at /loo', () => {
 
     await user.click(screen.getByRole('radio', { name: /Jõulud/ }))
     const kids = await screen.findByRole('group', { name: 'Kellele?' })
-    await user.click(within(kids).getByRole('checkbox', { name: /Jasper/ }))
-    expect(within(kids).getByRole('checkbox', { name: /Jasper/ })).toHaveAttribute('aria-checked', 'true')
+    await user.click(within(kids).getByRole('checkbox', { name: /Pääru/ }))
+    expect(within(kids).getByRole('checkbox', { name: /Pääru/ })).toHaveAttribute('aria-checked', 'true')
     expect(document.querySelectorAll('.label')).toHaveLength(3)
   })
 
@@ -163,21 +163,21 @@ describe('AI sample letter on the sample page', () => {
 
   it('asks the server for a letter for the chosen child and shows it', async () => {
     const fetch = vi.fn(async () =>
-      Response.json({ heading: 'Kallis Brita!', body: 'Tere!\n\nMina olen päkapikk.', signature: 'Sinu päkapikk Tuduja' }),
+      Response.json({ heading: 'Kallis Kai!', body: 'Tere!\n\nMina olen päkapikk.', signature: 'Sinu päkapikk Tuduja' }),
     )
     vi.stubGlobal('fetch', fetch)
     await open('/naide')
     const user = userEvent.setup()
     const section = await screen.findByRole('region', { name: 'Proovi AI-kirja' })
-    await user.click(within(section).getByRole('radio', { name: 'Brita' }))
-    await user.click(within(section).getByRole('button', { name: /Kirjuta Brita jaoks kiri/ }))
+    await user.click(within(section).getByRole('radio', { name: 'Kai' }))
+    await user.click(within(section).getByRole('button', { name: /Kirjuta Kai jaoks kiri/ }))
 
-    expect(await within(section).findByRole('heading', { name: 'Kallis Brita!' })).toBeInTheDocument()
+    expect(await within(section).findByRole('heading', { name: 'Kallis Kai!' })).toBeInTheDocument()
     const [url, init] = fetch.mock.calls[0] as unknown as [string, RequestInit]
     expect(url).toBe('/api/proovikiri')
     const sent = JSON.parse(String(init.body))
     expect(Object.keys(sent).sort()).toEqual(['age', 'interests', 'name', 'readingLevel'])
-    expect(sent.name).toBe('Brita')
+    expect(sent.name).toBe('Kai')
   })
 
   it('explains when the daily letters have run out', async () => {

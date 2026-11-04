@@ -11,7 +11,7 @@ import { STAR_ARC } from '@/data/scenarios/christmas/starArc'
 import { TOPICS } from '@/data/topics'
 import type { ChildProfile, RequestFor } from '@/domain/models'
 import type { DraftItem } from '@/domain/generators/context'
-import { BRITA, JASPER, makeRequest, RUBEN } from './helpers'
+import { KAI, PAARU, makeRequest, MARKUS } from './helpers'
 
 const library = CHRISTMAS_LIBRARY
 
@@ -43,12 +43,12 @@ const bodies = (items: DraftItem[], child: ChildProfile, linked = true) =>
   items.filter((item) => !linked || item.childId === child.id).map((item) => item.body)
 
 const FAMILIES = [
-  [RUBEN, JASPER, BRITA],
-  [RUBEN],
-  [JASPER],
-  [BRITA],
-  [RUBEN, JASPER],
-  [JASPER, BRITA],
+  [MARKUS, PAARU, KAI],
+  [MARKUS],
+  [PAARU],
+  [KAI],
+  [MARKUS, PAARU],
+  [PAARU, KAI],
 ]
 
 describe('scenario library', () => {
@@ -68,10 +68,10 @@ describe('scenario library', () => {
 
 describe('engine selection', () => {
   it('writes Christmas daily series; single letters and shared letters keep the older generator', () => {
-    expect(usesScenarioEngine(christmas([RUBEN]))).toBe(true)
-    expect(usesScenarioEngine(christmas([RUBEN, JASPER], { mode: 'linked' }))).toBe(true)
-    expect(usesScenarioEngine(christmas([RUBEN, JASPER], { mode: 'shared' }))).toBe(false)
-    expect(usesScenarioEngine(christmas([RUBEN], { count: 3 }))).toBe(false)
+    expect(usesScenarioEngine(christmas([MARKUS]))).toBe(true)
+    expect(usesScenarioEngine(christmas([MARKUS, PAARU], { mode: 'linked' }))).toBe(true)
+    expect(usesScenarioEngine(christmas([MARKUS, PAARU], { mode: 'shared' }))).toBe(false)
+    expect(usesScenarioEngine(christmas([MARKUS], { count: 3 }))).toBe(false)
     expect(
       usesScenarioEngine(makeRequest('letter', { occasionId: 'easter', options: { count: 7 } })),
     ).toBe(false)
@@ -104,11 +104,11 @@ describe('collection validation', () => {
   })
 
   it('detects a repeated scenario, a leaked secret and an assumed reply', () => {
-    const request = christmas([RUBEN, JASPER, BRITA])
+    const request = christmas([MARKUS, PAARU, KAI])
     const { plan, items } = build(request)
-    const jasper = plan.days.findIndex((d) => d.childId === JASPER.id && d.index === 10)
+    const paaru = plan.days.findIndex((d) => d.childId === PAARU.id && d.index === 10)
     const broken = items.map((item, k) =>
-      k === jasper
+      k === paaru
         ? { ...item, body: `${item.body}\n\nAitäh vastuse eest! Salamissioon ootab.` }
         : item,
     )
@@ -117,10 +117,10 @@ describe('collection validation', () => {
     expect(codes).toContain('secret-leak')
 
     const twice = { ...plan, days: plan.days.map((d) => ({ ...d })) }
-    const rubenDays = twice.days.filter(
-      (d) => d.childId === RUBEN.id && d.content.kind === 'scenario' && !d.content.stageId,
+    const markusDays = twice.days.filter(
+      (d) => d.childId === MARKUS.id && d.content.kind === 'scenario' && !d.content.stageId,
     )
-    const [first, second] = rubenDays.slice(1, 3)
+    const [first, second] = markusDays.slice(1, 3)
     if (
       first &&
       second &&
@@ -137,31 +137,31 @@ describe('collection validation', () => {
 
 describe('reproducibility', () => {
   it('the same input and seed give the same letters; another seed gives others', () => {
-    const a = runTemplates(christmas([RUBEN, JASPER, BRITA], {}, 7)).items.map((i) => i.body)
-    const b = runTemplates(christmas([RUBEN, JASPER, BRITA], {}, 7)).items.map((i) => i.body)
-    const c = runTemplates(christmas([RUBEN, JASPER, BRITA], {}, 8)).items.map((i) => i.body)
+    const a = runTemplates(christmas([MARKUS, PAARU, KAI], {}, 7)).items.map((i) => i.body)
+    const b = runTemplates(christmas([MARKUS, PAARU, KAI], {}, 7)).items.map((i) => i.body)
+    const c = runTemplates(christmas([MARKUS, PAARU, KAI], {}, 8)).items.map((i) => i.body)
     expect(a).toEqual(b)
     expect(c).not.toEqual(a)
   })
 
   it('regenerating one day changes only that day’s scenario choice', () => {
-    const request = christmas([JASPER], { connected: false })
+    const request = christmas([PAARU], { connected: false })
     const base = planCollection(request, library)
-    const variants = Array.from({ length: 24 }, (_, i) => (i === 9 ? 1 : 0))
+    const variants = Array.from({ length: 24 }, (_, i) => (i === 10 ? 1 : 0))
     const changed = planCollection(request, library, variants)
     const pick = (plan: CollectionPlan, i: number) =>
       (plan.days[i]?.content as { scenarioId: string }).scenarioId
-    expect(pick(changed, 9)).not.toBe(pick(base, 9))
-    for (let i = 0; i < 9; i++) expect(pick(changed, i)).toBe(pick(base, i))
+    expect(pick(changed, 10)).not.toBe(pick(base, 10))
+    for (let i = 0; i < 10; i++) expect(pick(changed, i)).toBe(pick(base, i))
   })
 })
 
 describe('collection planning', () => {
-  const request = christmas([RUBEN, JASPER, BRITA], { sundaySweets: true })
+  const request = christmas([MARKUS, PAARU, KAI], { sundaySweets: true })
   const { plan, items } = build(request)
 
   it('plans every day for every child, framed by an introduction and a farewell', () => {
-    for (const child of [RUBEN, JASPER, BRITA]) {
+    for (const child of [MARKUS, PAARU, KAI]) {
       const days = daysOf(plan, child)
       expect(days.map((d) => d.index)).toEqual(Array.from({ length: 24 }, (_, i) => i))
       expect(scenarioIds(plan, child)[0]).toBe('introduction')
@@ -171,7 +171,7 @@ describe('collection planning', () => {
   })
 
   it('each letter has one focus: no scenario twice for a child, siblings get different episodes', () => {
-    for (const child of [RUBEN, JASPER, BRITA]) {
+    for (const child of [MARKUS, PAARU, KAI]) {
       const ids = scenarioIds(plan, child)
       expect(new Set(ids).size).toBe(ids.length)
     }
@@ -184,13 +184,13 @@ describe('collection planning', () => {
           scenarioIn(library, id).role === 'standalone',
       )
     }
-    expect(shared(RUBEN, JASPER)).toEqual([])
+    expect(shared(MARKUS, PAARU)).toEqual([])
   })
 
   it('alternates plot, standalone episodes, family days and activities instead of one long mystery', () => {
-    const ruben = daysOf(plan, RUBEN)
-    const stages = ruben.filter((d) => d.content.kind === 'scenario' && d.content.stageId)
-    const standalone = ruben.filter(
+    const markus = daysOf(plan, MARKUS)
+    const stages = markus.filter((d) => d.content.kind === 'scenario' && d.content.stageId)
+    const standalone = markus.filter(
       (d) =>
         d.content.kind === 'scenario' &&
         scenarioIn(library, d.content.scenarioId).role === 'standalone',
@@ -199,13 +199,13 @@ describe('collection planning', () => {
     expect(stages.length).toBeLessThanOrEqual(10)
     expect(standalone.length).toBeGreaterThanOrEqual(5)
     // Not every letter has a task.
-    const withActivity = ruben.filter((d) => d.content.kind === 'scenario' && d.content.activity)
-    expect(withActivity.length).toBeLessThan(ruben.length / 2)
+    const withActivity = markus.filter((d) => d.content.kind === 'scenario' && d.content.activity)
+    expect(withActivity.length).toBeLessThan(markus.length / 2)
   })
 
   it('length "short" leaves optional activities out, "long" offers them more often', () => {
     const activities = (length: 'short' | 'medium' | 'long') =>
-      planCollection(christmas([JASPER], { connected: false }, 3, { length }), library).days.filter(
+      planCollection(christmas([PAARU], { connected: false }, 3, { length }), library).days.filter(
         (d) =>
           d.content.kind === 'scenario' &&
           d.content.activity &&
@@ -218,18 +218,18 @@ describe('collection planning', () => {
 
 describe('age and reading level', () => {
   it('uses the child’s band: older reader, young reader, read-aloud toddler', () => {
-    const { plan } = build(christmas([RUBEN, JASPER, BRITA]))
+    const { plan } = build(christmas([MARKUS, PAARU, KAI]))
     expect(plan.children.map((p) => p.band)).toEqual(['older', 'young', 'toddler'])
   })
 
   it('a six-year-old who reads advanced texts can be moved up with the difficulty setting', () => {
-    const { plan } = build(christmas([JASPER], {}, 1, { difficulty: 'harder' }))
+    const { plan } = build(christmas([PAARU], {}, 1, { difficulty: 'harder' }))
     expect(plan.children[0]!.band).toBe('older')
   })
 
   it('toddler cards are one short paragraph meant for reading aloud; medium reader letters fit the poster', () => {
     for (let seed = 1; seed <= 10; seed++) {
-      const request = christmas([RUBEN, JASPER, BRITA], { sundaySweets: true }, seed)
+      const request = christmas([MARKUS, PAARU, KAI], { sundaySweets: true }, seed)
       const { plan, items } = build({ ...request, general: { ...request.general, length: 'medium' } })
       plan.days.forEach((d, k) => {
         const band = plan.children.find((p) => p.child.id === d.childId)!.band
@@ -241,11 +241,11 @@ describe('age and reading level', () => {
   })
 
   it('long letters add a riddle or a task on most days, but toddler cards stay one paragraph', () => {
-    const request = christmas([RUBEN, JASPER, BRITA], { sundaySweets: true }, 3)
+    const request = christmas([MARKUS, PAARU, KAI], { sundaySweets: true }, 4)
     const long = build({ ...request, general: { ...request.general, length: 'long' } })
     const medium = build({ ...request, general: { ...request.general, length: 'medium' } })
     const words = (items: { body: string }[]) => items.reduce((sum, item) => sum + item.body.split(/\s+/).length, 0)
-    const readers = (built: typeof long) => built.items.filter((_, k) => built.plan.days[k]!.childId !== BRITA.id)
+    const readers = (built: typeof long) => built.items.filter((_, k) => built.plan.days[k]!.childId !== KAI.id)
     expect(words(readers(long))).toBeGreaterThan(words(readers(medium)) * 1.15)
     expect(long.plan.long).toBe(true)
     const extra = /Vastuse kirjutan homme|Vastus tuleb homses kirjas|Homme ütlen vastuse|kui tahad, |Kui sul täna aega on|Mul on sulle üks mõte/
@@ -254,14 +254,14 @@ describe('age and reading level', () => {
     const openings = long.items.map((item) => item.body.match(/(Kas oskad ära arvata\?|Nuputa natuke:|Mul on sulle üks mõistatus:|Üks mõistatus ka:)/)?.[1]).filter(Boolean)
     expect(new Set(openings).size).toBeGreaterThan(1)
     long.plan.days.forEach((d, k) => {
-      if (d.childId === BRITA.id) expect(long.items[k]!.body.split('\n\n')).toHaveLength(1)
+      if (d.childId === KAI.id) expect(long.items[k]!.body.split('\n\n')).toHaveLength(1)
     })
     expect(validateCollection(long.plan, long.items, library).filter((i) => i.severity === 'error')).toEqual([])
   })
 
   it('writes a valid series for every count from 7 to 24, for one child and for a family', () => {
     for (let count = 7; count <= 24; count++) {
-      for (const family of [[JASPER], [RUBEN, JASPER, BRITA]]) {
+      for (const family of [[PAARU], [MARKUS, PAARU, KAI]]) {
         const { plan, items } = build(christmas(family, { count }, count))
         expect(items.length, `${count} kirja`).toBe(count * family.length)
         const errors = validateCollection(plan, items, library).filter((issue) => issue.severity === 'error')
@@ -271,7 +271,7 @@ describe('age and reading level', () => {
   })
 
   it('tells a story further in long letters only, so medium ones still fit the poster', () => {
-    const request = christmas([JASPER], {}, 5)
+    const request = christmas([PAARU], {}, 5)
     const long = build({ ...request, general: { ...request.general, length: 'long' } })
     const medium = build({ ...request, general: { ...request.general, length: 'medium' } })
     const sample = sampleContext([], 'Tuduja')
@@ -286,8 +286,8 @@ describe('age and reading level', () => {
   })
 
   it('a three-year-old hears longer stories read aloud, not the one-year-old’s cards', () => {
-    const threeYearOld = { ...BRITA, id: 'brita-3', age: 3 }
-    for (const family of [[threeYearOld], [RUBEN, JASPER, threeYearOld]]) {
+    const threeYearOld = { ...KAI, id: 'kai-3', age: 3 }
+    for (const family of [[threeYearOld], [MARKUS, PAARU, threeYearOld]]) {
       for (let seed = 1; seed <= 5; seed++) {
         const request = christmas(family, { sundaySweets: true }, seed)
         const { plan, items } = build(request)
@@ -306,7 +306,7 @@ describe('age and reading level', () => {
       }
     }
     // The one-year-old keeps the short cards.
-    expect(build(christmas([BRITA])).plan.children[0]!.readAloud).toBe(false)
+    expect(build(christmas([KAI])).plan.children[0]!.readAloud).toBe(false)
   })
 
   it('every toddler episode has a longer read-aloud version', () => {
@@ -317,15 +317,15 @@ describe('age and reading level', () => {
 
 describe('personalization', () => {
   it('reads hooks from the profile only', () => {
-    expect([...profileHooks(RUBEN)].sort()).toEqual(['codes', 'comics', 'riddles', 'rubik'])
-    expect([...profileHooks(JASPER)].sort()).toEqual(['comics', 'porridge', 'riddles'])
-    expect([...profileHooks(BRITA)]).toEqual(['peppa'])
+    expect([...profileHooks(MARKUS)].sort()).toEqual(['codes', 'comics', 'riddles', 'rubik'])
+    expect([...profileHooks(PAARU)].sort()).toEqual(['comics', 'porridge', 'riddles'])
+    expect([...profileHooks(KAI)]).toEqual(['peppa'])
   })
 
   it('mixes personal and purely fictional letters, and never overuses one interest', () => {
     for (let seed = 1; seed <= 10; seed++) {
-      const { plan } = build(christmas([RUBEN, JASPER, BRITA], {}, seed))
-      for (const child of [RUBEN, JASPER]) {
+      const { plan } = build(christmas([MARKUS, PAARU, KAI], {}, seed))
+      for (const child of [MARKUS, PAARU]) {
         const days = daysOf(plan, child)
         const personal = days.filter((d) => d.personalizationIds.length > 0)
         expect(personal.length, child.name).toBeGreaterThanOrEqual(2)
@@ -343,14 +343,14 @@ describe('personalization', () => {
   })
 
   it('weaves the interest into the event instead of a standalone remark', () => {
-    const { items } = build(christmas([RUBEN, JASPER, BRITA]))
+    const { items } = build(christmas([MARKUS, PAARU, KAI]))
     const all = items.map((i) => i.body).join('\n')
     expect(all).not.toMatch(/Kuulsin, et (sulle|sa)|Kuulsin sinu lemmikust/)
   })
 
   it('a child without the interest never hears about it', () => {
     const plain: ChildProfile = {
-      ...JASPER,
+      ...PAARU,
       id: 'plain',
       name: 'Mia',
       topics: [],
@@ -369,9 +369,9 @@ describe('story arc and continuity', () => {
   it('stages follow the arc order and the mystery ends before the farewell', () => {
     for (let seed = 1; seed <= 10; seed++) {
       for (const count of [7, 24] as const) {
-        const { plan } = build(christmas([RUBEN, JASPER, BRITA], { count }, seed))
+        const { plan } = build(christmas([MARKUS, PAARU, KAI], { count }, seed))
         const order = STAR_ARC.stages.map((s) => s.id)
-        for (const child of [RUBEN, JASPER, BRITA]) {
+        for (const child of [MARKUS, PAARU, KAI]) {
           const stages = daysOf(plan, child).flatMap((d) =>
             d.content.kind === 'scenario' && d.content.stageId
               ? [order.indexOf(d.content.stageId)]
@@ -387,7 +387,7 @@ describe('story arc and continuity', () => {
   })
 
   it('nothing says the star is still missing once it is found', () => {
-    const { plan, items } = build(christmas([RUBEN, JASPER, BRITA]))
+    const { plan, items } = build(christmas([MARKUS, PAARU, KAI]))
     const found = plan.facts.get('star-found')!
     plan.days.forEach((d, k) => {
       if (d.index > found)
@@ -396,12 +396,12 @@ describe('story arc and continuity', () => {
   })
 
   it('the farewell mentions the returned star only to a child who heard the story', () => {
-    const story = runTemplates(christmas([RUBEN])).items.at(-1)!.body
-    const none = runTemplates(christmas([RUBEN], { connected: false })).items.at(-1)!.body
+    const story = runTemplates(christmas([MARKUS])).items.at(-1)!.body
+    const none = runTemplates(christmas([MARKUS], { connected: false })).items.at(-1)!.body
     expect(story).toContain('Täht särab jälle')
     expect(none).not.toContain('Täht')
     expect(
-      runTemplates(christmas([RUBEN], { connected: false }))
+      runTemplates(christmas([MARKUS], { connected: false }))
         .items.map((i) => i.body)
         .join(' '),
     ).not.toMatch(/täht on kadunud/i)
@@ -409,7 +409,7 @@ describe('story arc and continuity', () => {
 })
 
 describe('shared world for siblings', () => {
-  const { plan, items } = build(christmas([RUBEN, JASPER, BRITA]))
+  const { plan, items } = build(christmas([MARKUS, PAARU, KAI]))
 
   it('a shared event happens on one day and every child hears it from their own helper', () => {
     const shared = plan.worldEvents.filter((e) => e.childIds.length > 1)
@@ -430,52 +430,52 @@ describe('shared world for siblings', () => {
   it('all three children follow the star story, each from their own side', () => {
     const story = (child: ChildProfile) =>
       bodies(items, child).filter((b) => /täht|Täht/.test(b)).length
-    expect(story(RUBEN)).toBeGreaterThanOrEqual(5)
-    expect(story(JASPER)).toBeGreaterThanOrEqual(4)
-    expect(story(BRITA)).toBeGreaterThanOrEqual(2)
+    expect(story(MARKUS)).toBeGreaterThanOrEqual(5)
+    expect(story(PAARU)).toBeGreaterThanOrEqual(4)
+    expect(story(KAI)).toBeGreaterThanOrEqual(2)
     const found = plan.facts.get('star-found')!
     const onDay = (child: ChildProfile) =>
       items[plan.days.findIndex((d) => d.childId === child.id && d.index === found)]!.body
-    expect(onDay(RUBEN)).not.toBe(onDay(JASPER))
-    expect(onDay(BRITA)).toContain('Täht on leitud!')
+    expect(onDay(MARKUS)).not.toBe(onDay(PAARU))
+    expect(onDay(KAI)).toContain('Täht on leitud!')
   })
 
   it('siblings’ helpers appear by their right names in the readers’ letters', () => {
     expect(
-      bodies(items, RUBEN).some((b) => b.includes('Tipp-Topp') && !b.startsWith('Tere!')),
+      bodies(items, MARKUS).some((b) => b.includes('Tipp-Topp') && !b.startsWith('Tere!')),
     ).toBe(true)
     expect(
-      bodies(items, JASPER).some((b) => b.includes('Kõpsu-Mõpsu') && !b.startsWith('Tere!')),
+      bodies(items, PAARU).some((b) => b.includes('Kõpsu-Mõpsu') && !b.startsWith('Tere!')),
     ).toBe(true)
-    for (const b of bodies(items, RUBEN)) expect(b).not.toMatch(/Nupsik|Kribu-Krabu/)
+    for (const b of bodies(items, MARKUS)) expect(b).not.toMatch(/Nupsik|Kribu-Krabu/)
   })
 
   it('a single child meets workshop elves instead of invented siblings', () => {
-    const text = runTemplates(christmas([RUBEN], { connected: false }, 5))
+    const text = runTemplates(christmas([MARKUS], { connected: false }, 5))
       .items.map((i) => i.body)
       .join(' ')
-    expect(text).not.toMatch(/Jasper|Brita|Tipp-Topp/)
+    expect(text).not.toMatch(/Pääru|Kai|Tipp-Topp/)
   })
 })
 
 describe('secrets and real-world actions', () => {
   it('the secret helper is only in the oldest child’s letters, and the invitation needs no answer', () => {
-    const { plan, items } = build(christmas([RUBEN, JASPER, BRITA]))
-    expect(plan.secret?.childId).toBe(RUBEN.id)
-    const ruben = bodies(items, RUBEN)
-    expect(ruben[plan.secret!.inviteIndex]).toContain('ei pea sa midagi vastama')
-    expect(ruben[plan.secret!.inviteIndex]).toContain('eriti mitte Jasper ja Brita')
-    expect(ruben.filter((b) => b.startsWith('Salamissioon:'))).toHaveLength(3)
-    for (const child of [JASPER, BRITA])
+    const { plan, items } = build(christmas([MARKUS, PAARU, KAI]))
+    expect(plan.secret?.childId).toBe(MARKUS.id)
+    const markus = bodies(items, MARKUS)
+    expect(markus[plan.secret!.inviteIndex]).toContain('ei pea sa midagi vastama')
+    expect(markus[plan.secret!.inviteIndex]).toContain('eriti mitte Pääru ja Kai')
+    expect(markus.filter((b) => b.startsWith('Salamissioon:'))).toHaveLength(3)
+    for (const child of [PAARU, KAI])
       for (const b of bodies(items, child))
         expect(b).not.toMatch(/salajane abiline|Salamissioon|salajane missioon/i)
   })
 
   it('a secret mission never repeats that day’s paired task', () => {
     for (let seed = 1; seed <= 10; seed++) {
-      const { plan, items } = build(christmas([RUBEN, JASPER, BRITA], {}, seed))
-      const ruben = bodies(items, RUBEN)
-      const slipper = ruben.filter((b) => /suss/.test(b) && /aknalaual/.test(b))
+      const { plan, items } = build(christmas([MARKUS, PAARU, KAI], {}, seed))
+      const markus = bodies(items, MARKUS)
+      const slipper = markus.filter((b) => /suss/.test(b) && /aknalaual/.test(b))
       expect(slipper.length, `seed ${seed}`).toBeLessThanOrEqual(1)
       expect(plan.secret).toBeDefined()
     }
@@ -483,7 +483,7 @@ describe('secrets and real-world actions', () => {
 
   it('no letter claims the child answered, drew or completed something', () => {
     for (let seed = 1; seed <= 10; seed++) {
-      const text = runTemplates(christmas([RUBEN, JASPER, BRITA], {}, seed))
+      const text = runTemplates(christmas([MARKUS, PAARU, KAI], {}, seed))
         .items.map((i) => i.body)
         .join('\n')
       expect(text).not.toMatch(
@@ -496,7 +496,7 @@ describe('secrets and real-world actions', () => {
 describe('puzzles and activities', () => {
   it('every puzzle answer is correct, on the parent sheet and revealed the next morning', () => {
     for (let seed = 1; seed <= 10; seed++) {
-      const request = christmas([RUBEN, JASPER], {}, seed)
+      const request = christmas([MARKUS, PAARU], {}, seed)
       const { plan, items } = build(request)
       plan.days.forEach((d, k) => {
         if (d.content.kind !== 'scenario' || !d.content.activity) return
@@ -514,7 +514,7 @@ describe('puzzles and activities', () => {
   })
 
   it('activities that need materials tell the parent what to prepare', () => {
-    const { plan, items } = build(christmas([JASPER], { connected: false }, 11))
+    const { plan, items } = build(christmas([PAARU], { connected: false }, 11))
     plan.days.forEach((d, k) => {
       if (d.content.kind !== 'scenario' || !d.content.activity) return
       const prep = scenarioIn(library, d.content.scenarioId).activities?.young?.prep
@@ -526,15 +526,15 @@ describe('puzzles and activities', () => {
 describe('editing flow', () => {
   it('regenerating one letter of a family series replaces only that letter', async () => {
     const { templateGenerator } = await import('@/domain/generators/templateGenerator')
-    const content = await templateGenerator.generate(christmas([RUBEN, JASPER, BRITA]))
+    const content = await templateGenerator.generate(christmas([MARKUS, PAARU, KAI]))
     const index = content.items.findIndex(
-      (item) => item.childId === JASPER.id && item.date === '2026-12-10',
+      (item) => item.childId === PAARU.id && item.date === '2026-12-10',
     )
     const before = content.items[index]!
     const after = await templateGenerator.regenerateItem(content, index)
     expect(after.id).toBe(before.id)
     expect(after.body).not.toBe(before.body)
-    expect(after.childId).toBe(JASPER.id)
+    expect(after.childId).toBe(PAARU.id)
     expect(content.items.filter((item, i) => i !== index).map((item) => item.body)).not.toContain(
       after.body,
     )
@@ -543,7 +543,7 @@ describe('editing flow', () => {
 
 describe('topics from the profile list', () => {
   const fan = (topics: ChildProfile['topics'], age = 7): ChildProfile => ({
-    ...JASPER,
+    ...PAARU,
     id: `fan-${topics?.join('-')}`,
     name: 'Mia',
     age,

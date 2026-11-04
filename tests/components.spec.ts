@@ -61,7 +61,7 @@ describe('PrintableItem editing', () => {
     id: 'i1',
     kind: 'letter',
     label: '1. kiri',
-    heading: 'Kallis Ruben!',
+    heading: 'Kallis Markus!',
     body: 'Esimene lõik.\n\nTeine lõik.',
     signature: 'Päkapikk Tuduja',
     variant: 0,
@@ -92,22 +92,22 @@ describe('creation flow', () => {
     await user.click(await screen.findByRole('radio', { name: /Personaalne lugu/ }))
     await user.click(screen.getByRole('radio', { name: /Sünnipäev/ }))
 
-    await user.click(await screen.findByRole('checkbox', { name: /Ruben/ }))
-    await user.click(screen.getByRole('checkbox', { name: /Jasper/ }))
+    await user.click(await screen.findByRole('checkbox', { name: /Markus/ }))
+    await user.click(screen.getByRole('checkbox', { name: /Pääru/ }))
     expect(screen.getByText(/Ühine elamus\./)).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: /Loo ja vaata eelvaadet/ }))
 
     // Generating the story and opening the preview can take a while on a busy machine.
     await vi.waitFor(() => expect(router.currentRoute.value.name).toBe('preview'), { timeout: 5000 })
     const title = await screen.findByRole('heading', { level: 1 })
-    expect(title.textContent).toContain('Ruben, Jasper ja kadunud sünnipäevatordi juhtum')
+    expect(title.textContent).toContain('Markus, Pääru ja kadunud sünnipäevatordi juhtum')
     // A new creation first arrives in an envelope.
     await user.click(screen.getByRole('button', { name: 'Jäta vahele' }))
     await vi.waitFor(() => expect(router.currentRoute.value.query.uus).toBeUndefined())
 
     const store = useCreationsStore()
     expect(store.creations).toHaveLength(1)
-    expect(store.creations[0]?.request.children.map((c) => c.name)).toEqual(['Ruben', 'Jasper'])
+    expect(store.creations[0]?.request.children.map((c) => c.name)).toEqual(['Markus', 'Pääru'])
 
     const firstEdit = screen.getAllByRole('button', { name: /^Muuda:/ })[0]!
     await user.click(firstEdit)
@@ -192,7 +192,7 @@ describe('quick child dialog', () => {
 describe('preview with choices beside it', () => {
   async function letterPreview() {
     const { user, router } = await renderApp('/loo?tyyp=letter&puhk=christmas')
-    await user.click(await screen.findByRole('checkbox', { name: /Jasper/ }))
+    await user.click(await screen.findByRole('checkbox', { name: /Pääru/ }))
     await user.click(screen.getByRole('button', { name: /Loo ja vaata eelvaadet/ }))
     await vi.waitFor(() => expect(router.currentRoute.value.name).toBe('preview'))
     return { user, store: useCreationsStore() }
@@ -285,8 +285,8 @@ describe('sample letter', () => {
   it('shows the 1 December letter of a sample child without any data entry', async () => {
     const { user, router } = await renderApp('/', { demo: false })
     await user.click(await screen.findByRole('link', { name: /Ava terve näidis/ }))
-    expect(await screen.findByRole('heading', { level: 1, name: /Jasper saab 1\. detsembril/ })).toBeInTheDocument()
-    expect(await screen.findByRole('heading', { name: 'Kallis Jasper!' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: /Pääru saab 1\. detsembril/ })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Kallis Pääru!' })).toBeInTheDocument()
     expect(screen.getByText(/^1\. detsember/)).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /^Muuda:/ })).not.toBeInTheDocument()
     // Nothing was saved.

@@ -14,7 +14,7 @@ import { defaultLayoutFor, runTemplates } from '@/domain/generators/templateGene
 import PosterBoard from '@/features/preview/poster/PosterBoard.vue'
 import PosterGuide from '@/features/preview/poster/PosterGuide.vue'
 import type { GeneratedItem } from '@/domain/models'
-import { BRITA, JASPER, makeRequest, RUBEN } from './helpers'
+import { KAI, PAARU, makeRequest, MARKUS } from './helpers'
 
 describe('poster geometry', () => {
   it('24 letters: 4 columns × 6 rows over 2 × 2 sheets', () => {
@@ -85,24 +85,24 @@ describe('dates and default layout', () => {
   })
 
   it('long and medium letter series default to the poster, toddler series to simple cards', () => {
-    expect(defaultLayoutFor(makeRequest('letter', { occasionId: 'christmas', children: [RUBEN] }))).toBe('poster')
-    expect(defaultLayoutFor(makeRequest('letter', { occasionId: 'christmas', children: [RUBEN], general: { length: 'medium' } }))).toBe('poster')
-    expect(defaultLayoutFor(makeRequest('letter', { occasionId: 'christmas', children: [BRITA] }))).toBe('mini')
+    expect(defaultLayoutFor(makeRequest('letter', { occasionId: 'christmas', children: [MARKUS] }))).toBe('poster')
+    expect(defaultLayoutFor(makeRequest('letter', { occasionId: 'christmas', children: [MARKUS], general: { length: 'medium' } }))).toBe('poster')
+    expect(defaultLayoutFor(makeRequest('letter', { occasionId: 'christmas', children: [KAI] }))).toBe('mini')
     expect(defaultLayoutFor(makeRequest('letter', { options: { count: 1 } }))).toBe('page')
   })
 })
 
 describe('poster components', () => {
-  const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [JASPER], options: { startDate: '2026-12-01' } }))
+  const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [PAARU], options: { startDate: '2026-12-01' } }))
     .items.map((item, i) => ({ ...item, id: `i${i}`, variant: 0, edited: false })) as GeneratedItem[]
 
   it('renders four labelled sheets with all 24 cards, dates and weekdays', () => {
     render(PosterBoard, {
-      props: { items, occasionId: 'christmas', title: 'Jasper · 24 maagilist kirja', imageUrl: null, pattern: null, uppercase: true },
+      props: { items, occasionId: 'christmas', title: 'Pääru · 24 maagilist kirja', imageUrl: null, pattern: null, uppercase: true },
     })
     expect(document.querySelectorAll('.sheet')).toHaveLength(4)
     expect(document.querySelectorAll('.card')).toHaveLength(24)
-    expect(screen.getByText('Jasper · 24 maagilist kirja, leht 3/4: pildi alumine pool, vasak')).toBeInTheDocument()
+    expect(screen.getByText('Pääru · 24 maagilist kirja, leht 3/4: pildi alumine pool, vasak')).toBeInTheDocument()
     expect(screen.getByText('1. detsember')).toBeInTheDocument()
     expect(screen.getAllByText('teisipäev').length).toBeGreaterThan(0)
   })

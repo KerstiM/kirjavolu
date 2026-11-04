@@ -137,9 +137,9 @@ funny, warm or well written – read the golden files for that.
 
 `tests/golden.spec.ts` writes full collections to `docs/samples/`:
 
-- `christmas-family.md` – Ruben, Jasper and Brita, 24 letters each (72 letters,
+- `christmas-family.md` – Markus, Pääru and Kai, 24 letters each (72 letters,
   with the parent sheet);
-- `christmas-jasper-standalone.md` – one child without the story arc.
+- `christmas-paaru-standalone.md` – one child without the story arc.
 
 After changing a scenario or the planner, run `npx vitest run -u tests/golden.spec.ts`
 and read the diff as a whole. Look for: the same motif on neighbouring days,

@@ -5,7 +5,7 @@ import { runTemplates } from '@/domain/generators/templateGenerator'
 import MiniSheet from '@/features/preview/mini/MiniSheet.vue'
 import { ANIMALS, animalFor, colorFor } from '@/features/preview/mini/animals'
 import type { GeneratedItem } from '@/domain/models'
-import { BRITA, makeRequest } from './helpers'
+import { KAI, makeRequest } from './helpers'
 
 describe('toddler card layout', () => {
   it('puts 12 cards on a sheet, snaking down the left and up the right column', () => {
@@ -34,11 +34,11 @@ describe('toddler card layout', () => {
 })
 
 describe('toddler daily letters', () => {
-  const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [BRITA], options: { startDate: '2026-12-01' } })).items
+  const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [KAI], options: { startDate: '2026-12-01' } })).items
 
   it('hold one small thing per day', () => {
     for (const item of items.slice(1)) expect(item.body.split('\n\n')).toHaveLength(1)
-    expect(items[0]!.body).toBe('Tere, väike Brita! Mina olen Päkapikk Tuduja. Ma olen nii väike, et mahun sinu sussi sisse.')
+    expect(items[0]!.body).toBe('Tere, väike Kai! Mina olen Päkapikk Tuduja. Ma olen nii väike, et mahun sinu sussi sisse.')
   })
 
   it('invite the child to join in: a sound, a movement or something to look at', () => {
@@ -53,20 +53,20 @@ describe('toddler daily letters', () => {
 
   it('render as sheets with a number, weekday and animal on every card', () => {
     const generated = items.map((item, i) => ({ ...item, id: `b${i}`, variant: 0, edited: false })) as GeneratedItem[]
-    render(MiniSheet, { props: { items: generated, title: 'Brita · 24 maagilist kirja', uppercase: true } })
+    render(MiniSheet, { props: { items: generated, title: 'Kai · 24 maagilist kirja', uppercase: true } })
     expect(document.querySelectorAll('.mini-sheet')).toHaveLength(2)
     expect(document.querySelectorAll('.mini')).toHaveLength(24)
     expect(document.querySelectorAll('.mini__face svg')).toHaveLength(24)
     expect(document.querySelector('.mini__number')!.textContent).toBe('1.')
     expect(document.querySelector('.mini__weekday')!.textContent).toBe('teisipäev')
-    expect(document.querySelector('.mini-sheet__label')!.textContent).toBe('Brita · 24 maagilist kirja, leht 1/2')
+    expect(document.querySelector('.mini-sheet__label')!.textContent).toBe('Kai · 24 maagilist kirja, leht 1/2')
   })
 })
 
 describe('toddler cards do not repeat', () => {
   it('no text appears twice in a 24-card series', () => {
     for (const occasionId of ['christmas', 'easter', 'everyday'] as const) {
-      const bodies = runTemplates(makeRequest('letter', { occasionId, children: [BRITA], options: { count: 24 } })).items.map(
+      const bodies = runTemplates(makeRequest('letter', { occasionId, children: [KAI], options: { count: 24 } })).items.map(
         (item) => item.body,
       )
       expect(new Set(bodies).size).toBe(24)
@@ -76,7 +76,7 @@ describe('toddler cards do not repeat', () => {
 
 describe('toddler finale', () => {
   it('ends the series with a wish for the big day', () => {
-    const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [BRITA] })).items
-    expect(items[23]!.body).toBe('Häid jõule, väike Brita! Päkapikk Tuduja kallistab sind. Musi-musi!')
+    const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [KAI] })).items
+    expect(items[23]!.body).toBe('Häid jõule, väike Kai! Päkapikk Tuduja kallistab sind. Musi-musi!')
   })
 })

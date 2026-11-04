@@ -4,7 +4,7 @@ const VOWEL_END = /[aeiouõäöüy]$/i
 
 /**
  * Genitive (omastav) form of a first name. Names ending in a vowel stay the same,
- * names ending in a consonant get "-i" (Ruben → Rubeni). Irregular names can be
+ * names ending in a consonant get "-i" (Markus → Markuse). Irregular names can be
  * overridden in the child profile.
  */
 export function genitive(name: string, override?: string): string {
@@ -29,7 +29,7 @@ export function nameCase(child: Pick<ChildProfile, 'name' | 'nameGenitive'>, for
   return gen + SUFFIX[form]
 }
 
-/** Joins words with commas and "ja": "Ruben, Jasper ja Brita". */
+/** Joins words with commas and "ja": "Markus, Pääru ja Kai". */
 export function joinList(words: string[]): string {
   const clean = words.map((word) => word.trim()).filter(Boolean)
   if (clean.length <= 1) return clean[0] ?? ''
@@ -38,7 +38,7 @@ export function joinList(words: string[]): string {
 
 /**
  * Names in a grammatical case. Comitative ("-ga") is attached only to the last
- * word in Estonian lists ("Rubeni ja Jasperiga"), other cases to every word.
+ * word in Estonian lists ("Markuse ja Pääruga"), other cases to every word.
  */
 export function namesInCase(
   children: Pick<ChildProfile, 'name' | 'nameGenitive'>[],

@@ -10,7 +10,7 @@ import type {
   RequestFor,
 } from '@/domain/models'
 
-export const [RUBEN, JASPER, BRITA] = DEMO_CHILDREN as [ChildProfile, ChildProfile, ChildProfile]
+export const [MARKUS, PAARU, KAI] = DEMO_CHILDREN as [ChildProfile, ChildProfile, ChildProfile]
 
 export function makeRequest<K extends ContentTypeId>(
   contentType: K,
@@ -25,7 +25,7 @@ export function makeRequest<K extends ContentTypeId>(
   const occasionId = overrides.occasionId ?? 'everyday'
   return {
     contentType,
-    children: overrides.children ?? [RUBEN],
+    children: overrides.children ?? [MARKUS],
     occasionId,
     general: { ...DEFAULT_GENERAL, ...overrides.general },
     seed: overrides.seed ?? 1234,

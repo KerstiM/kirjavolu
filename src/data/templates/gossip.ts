@@ -1,4 +1,4 @@
-/** Names for a remark about a sibling's helper: "Tipp-Topp" visiting "Jasper". */
+/** Names for a remark about a sibling's helper: "Tipp-Topp" visiting "Pääru". */
 export interface GossipContext {
   helper: string
   child: string
@@ -46,11 +46,11 @@ export const TODDLER_HELPER_GOSSIP: ((c: GossipContext) => string)[] = [
 ]
 
 export interface SiblingNames {
-  /** "Ruben ja Jasper" */
+  /** "Markus ja Pääru" */
   names: string
-  /** "Rubenile ja Jasperile" */
+  /** "Markusele ja Päärule" */
   allative: string
-  /** "Ruben, Jasper ja sina" */
+  /** "Markus, Pääru ja sina" */
   withYou: string
   plural: boolean
 }

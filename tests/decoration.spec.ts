@@ -64,7 +64,7 @@ describe('decorated printable items', () => {
     id: 'a',
     kind: 'letter',
     label: '1. kiri',
-    heading: 'Kallis Ruben!',
+    heading: 'Kallis Markus!',
     body: 'Tekst.',
     variant: 0,
     edited: false,
@@ -116,8 +116,8 @@ describe('sheet background per child', () => {
   const shared = { ...EMPTY_DECORATION, image, imageAsBackground: true }
 
   it('follows the shared background unless the child has a choice of their own', () => {
-    expect(sheetBackground(shared, 'jasper').image).toBe(image)
-    expect(sheetBackground({ ...EMPTY_DECORATION, pattern: 'stars' }, 'jasper').pattern).toBe('stars')
+    expect(sheetBackground(shared, 'paaru').image).toBe(image)
+    expect(sheetBackground({ ...EMPTY_DECORATION, pattern: 'stars' }, 'paaru').pattern).toBe('stars')
   })
 
   it('gives a child their own picture or no background at all', () => {
@@ -125,12 +125,12 @@ describe('sheet background per child', () => {
       ...shared,
       childDecorations: {
         mia: { background: 'image' as const, image: own },
-        brita: { background: 'none' as const, image: null },
+        kai: { background: 'none' as const, image: null },
       },
     }
     expect(sheetBackground(decoration, 'mia').image).toBe(own)
-    expect(sheetBackground(decoration, 'brita')).toEqual({ image: null, pattern: null, posterArt: false })
-    expect(sheetBackground(decoration, 'jasper').image).toBe(image)
+    expect(sheetBackground(decoration, 'kai')).toEqual({ image: null, pattern: null, posterArt: false })
+    expect(sheetBackground(decoration, 'paaru').image).toBe(image)
   })
 
   it('falls back to the shared background while an own picture is not uploaded yet', () => {

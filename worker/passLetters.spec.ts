@@ -20,8 +20,8 @@ import type { SeasonPass } from './seasonPass'
 
 const CODE = 'KV-7KQM-3FXA'
 const NOW = new Date('2026-11-20T10:00:00Z')
-const JASPER = { name: 'Jasper', age: 6, readingLevel: 'independent', interests: ['mõistatused'] }
-const LETTER = { heading: 'Kallis Jasper!', body: 'Tere!\n\nMina olen päkapikk.', signature: 'Sinu päkapikk Tuduja' }
+const PAARU = { name: 'Pääru', age: 6, readingLevel: 'independent', interests: ['mõistatused'] }
+const LETTER = { heading: 'Kallis Pääru!', body: 'Tere!\n\nMina olen päkapikk.', signature: 'Sinu päkapikk Tuduja' }
 const SERIES = Array.from({ length: SERIES_LENGTH }, () => LETTER)
 
 const VALID = { code: CODE, generationsLeft: 10, fixesLeft: 30, validUntil: '2027-01-31T21:59:59.000Z' }
@@ -76,7 +76,7 @@ const post = (body: unknown, headers: Record<string, string> = {}) =>
 describe('POST /api/joulupass/kirjad', () => {
   it('writes the series and takes exactly one generation', async () => {
     const { env, rows, write, deps } = setup()
-    const response = await handlePassLetters(post({ code: 'kv-7kqm-3fxa', child: { ...JASPER, family: 'x' } }), env, deps)
+    const response = await handlePassLetters(post({ code: 'kv-7kqm-3fxa', child: { ...PAARU, family: 'x' } }), env, deps)
     expect(response.status).toBe(200)
     const data = (await response.json()) as { letters: unknown[]; pass: SeasonPass }
     expect(data.letters).toHaveLength(SERIES_LENGTH)
@@ -84,12 +84,12 @@ describe('POST /api/joulupass/kirjad', () => {
     expect(rows.get(CODE)?.generationsLeft).toBe(9)
     // Only what the letters use goes to the AI; anything else in the request is dropped.
     expect(write).toHaveBeenCalledWith(expect.not.objectContaining({ family: 'x' }), 'test-key')
-    expect(write.mock.calls[0]?.[0]).toMatchObject({ name: 'Jasper', age: 6, readingLevel: 'independent', interests: ['mõistatused'] })
+    expect(write.mock.calls[0]?.[0]).toMatchObject({ name: 'Pääru', age: 6, readingLevel: 'independent', interests: ['mõistatused'] })
   })
 
   it('refuses an expired code without asking the AI', async () => {
     const { env, write, deps } = setup({ ...VALID, validUntil: '2026-01-31T21:59:59.000Z' })
-    const response = await handlePassLetters(post({ code: CODE, child: JASPER }), env, deps)
+    const response = await handlePassLetters(post({ code: CODE, child: PAARU }), env, deps)
     expect(response.status).toBe(410)
     expect(await response.json()).toEqual({ error: 'expired' })
     expect(write).not.toHaveBeenCalled()
@@ -97,7 +97,7 @@ describe('POST /api/joulupass/kirjad', () => {
 
   it('refuses a code with no generations left', async () => {
     const { env, write, deps } = setup({ ...VALID, generationsLeft: 0 })
-    const response = await handlePassLetters(post({ code: CODE, child: JASPER }), env, deps)
+    const response = await handlePassLetters(post({ code: CODE, child: PAARU }), env, deps)
     expect(response.status).toBe(409)
     expect(await response.json()).toEqual({ error: 'used_up' })
     expect(write).not.toHaveBeenCalled()
@@ -105,7 +105,7 @@ describe('POST /api/joulupass/kirjad', () => {
 
   it('refuses an unknown code', async () => {
     const { env, deps } = setup(null)
-    const response = await handlePassLetters(post({ code: CODE, child: JASPER }), env, deps)
+    const response = await handlePassLetters(post({ code: CODE, child: PAARU }), env, deps)
     expect(response.status).toBe(404)
   })
 
@@ -113,7 +113,7 @@ describe('POST /api/joulupass/kirjad', () => {
     const { env, rows, write, deps } = setup()
     write.mockRejectedValueOnce(new Error('boom'))
     vi.spyOn(console, 'error').mockImplementation(() => {})
-    const response = await handlePassLetters(post({ code: CODE, child: JASPER }), env, deps)
+    const response = await handlePassLetters(post({ code: CODE, child: PAARU }), env, deps)
     expect(response.status).toBe(502)
     expect(rows.get(CODE)?.generationsLeft).toBe(10)
   })
@@ -121,8 +121,8 @@ describe('POST /api/joulupass/kirjad', () => {
   it('spends the last generation only once when two requests race', async () => {
     const { env, rows, deps } = setup({ ...VALID, generationsLeft: 1 })
     const results = await Promise.all([
-      handlePassLetters(post({ code: CODE, child: JASPER }), env, deps),
-      handlePassLetters(post({ code: CODE, child: JASPER }), env, deps),
+      handlePassLetters(post({ code: CODE, child: PAARU }), env, deps),
+      handlePassLetters(post({ code: CODE, child: PAARU }), env, deps),
     ])
     expect(results.map((r) => r.status).sort()).toEqual([200, 409])
     expect(rows.get(CODE)?.generationsLeft).toBe(0)
@@ -132,13 +132,13 @@ describe('POST /api/joulupass/kirjad', () => {
     const { env, write, deps } = setup()
     const get = new Request('https://kirjavolu.ee/api/joulupass/kirjad', { headers: { Origin: 'https://kirjavolu.ee' } })
     expect((await handlePassLetters(get, env, deps)).status).toBe(405)
-    expect((await handlePassLetters(post({ code: CODE, child: JASPER }, { Origin: 'https://evil.example' }), env, deps)).status).toBe(403)
+    expect((await handlePassLetters(post({ code: CODE, child: PAARU }, { Origin: 'https://evil.example' }), env, deps)).status).toBe(403)
     expect((await handlePassLetters(post('x'.repeat(25000)), env, deps)).status).toBe(413)
     expect((await handlePassLetters(post('{nope'), env, deps)).status).toBe(400)
-    expect((await handlePassLetters(post({ code: 'nope', child: JASPER }), env, deps)).status).toBe(400)
-    expect((await handlePassLetters(post({ code: CODE, child: { ...JASPER, age: 40 } }), env, deps)).status).toBe(400)
+    expect((await handlePassLetters(post({ code: 'nope', child: PAARU }), env, deps)).status).toBe(400)
+    expect((await handlePassLetters(post({ code: CODE, child: { ...PAARU, age: 40 } }), env, deps)).status).toBe(400)
     const limited = setup(undefined, { burstOk: false })
-    expect((await handlePassLetters(post({ code: CODE, child: JASPER }), limited.env, limited.deps)).status).toBe(429)
+    expect((await handlePassLetters(post({ code: CODE, child: PAARU }), limited.env, limited.deps)).status).toBe(429)
     expect(write).not.toHaveBeenCalled()
   })
 })
@@ -146,8 +146,8 @@ describe('POST /api/joulupass/kirjad', () => {
 describe('daily cap for everyone together', () => {
   it('stops series for the day before a generation is spent', async () => {
     const { env, rows, write, deps } = setup(VALID, { seriesPerDay: '1' })
-    expect((await handlePassLetters(post({ code: CODE, child: JASPER }), env, deps)).status).toBe(200)
-    const second = await handlePassLetters(post({ code: CODE, child: JASPER }), env, deps)
+    expect((await handlePassLetters(post({ code: CODE, child: PAARU }), env, deps)).status).toBe(200)
+    const second = await handlePassLetters(post({ code: CODE, child: PAARU }), env, deps)
     expect(second.status).toBe(503)
     expect(await second.json()).toEqual({ error: 'daily_limit' })
     expect(rows.get(CODE)?.generationsLeft).toBe(9)
@@ -157,9 +157,9 @@ describe('daily cap for everyone together', () => {
 
 const FIX = {
   code: CODE,
-  child: { ...JASPER, december: '6.12 Valka' },
+  child: { ...PAARU, december: '6.12 Valka' },
   day: 6,
-  letter: { heading: 'Kallis Jasper!', body: 'Täna sõidate Valka.', signature: 'Sinu päkapikk Tuduja' },
+  letter: { heading: 'Kallis Pääru!', body: 'Täna sõidate Valka.', signature: 'Sinu päkapikk Tuduja' },
   before: 'Eilne kiri.',
   after: 'Homne kiri.',
   wish: 'tee lühemaks',
@@ -207,7 +207,7 @@ describe('POST /api/joulupass/parandus', () => {
     const prompt = fixPrompt(parseFixInput(FIX)!)
     expect(prompt).toContain('<detsember>\n6.12 Valka\n</detsember>')
     expect(prompt).toContain('<eelmine>\nEilne kiri.\n</eelmine>')
-    expect(prompt).toContain('<kiri päev="6. detsember">\nKallis Jasper!\n\nTäna sõidate Valka.')
+    expect(prompt).toContain('<kiri päev="6. detsember">\nKallis Pääru!\n\nTäna sõidate Valka.')
     expect(prompt).toContain('<soov>\ntee lühemaks\n</soov>')
   })
 })
@@ -215,9 +215,9 @@ describe('POST /api/joulupass/parandus', () => {
 describe('series', () => {
   it('keeps the profile and the December plans, trimmed to size, but never the parent notes', () => {
     const input = parseSeriesInput({
-      ...JASPER,
+      ...PAARU,
       personality: '  uudishimulik ',
-      family: ['ema', 'vend Ruben', 'kass Miisu', 7],
+      family: ['ema', 'vend Markus', 'kass Miisu', 7],
       foods: ['pannkoogid'],
       achievements: ['õppis rattaga sõitma'],
       details: 'd'.repeat(900),
@@ -225,12 +225,12 @@ describe('series', () => {
       parentNotes: 'salajane',
     })
     expect(input).toEqual({
-      name: 'Jasper',
+      name: 'Pääru',
       age: 6,
       readingLevel: 'independent',
       interests: ['mõistatused'],
       personality: 'uudishimulik',
-      family: ['ema', 'vend Ruben', 'kass Miisu'],
+      family: ['ema', 'vend Markus', 'kass Miisu'],
       foods: ['pannkoogid'],
       achievements: ['õppis rattaga sõitma'],
       details: 'd'.repeat(600),
@@ -240,7 +240,7 @@ describe('series', () => {
   })
 
   it('makes each letter as long as the parent picked, whatever the child’s reading level', () => {
-    const young = { ...JASPER, age: 5, readingLevel: 'beginner' }
+    const young = { ...PAARU, age: 5, readingLevel: 'beginner' }
     expect(seriesPrompt(parseSeriesInput(young)!)).toContain('Iga kirja pikkus: 120–170 sõna.')
     expect(seriesPrompt(parseSeriesInput({ ...young, length: 'long' })!)).toContain('200–260 sõna (umbes pool A4 lehekülge)')
     expect(seriesPrompt(parseSeriesInput({ ...young, length: 'short' })!)).toContain('Iga kirja pikkus: 60–90 sõna.')
@@ -259,7 +259,7 @@ describe('series', () => {
   it('writes the series in four parts from one plan', () => {
     const plan = readPlan(JSON.stringify({ world: 'Kass Nurr ja töökoda.', days: Array.from({ length: 24 }, (_, i) => `Sündmus ${i + 1}`) }))
     expect(() => readPlan(JSON.stringify({ world: 'x', days: ['üks'] }))).toThrow()
-    const input = parseSeriesInput(JASPER)!
+    const input = parseSeriesInput(PAARU)!
     const first = partPrompt(input, plan, 0)
     expect(first).toContain('1. kuni 6. detsembri kiri')
     expect(first).toContain('Esimeses kirjas tutvusta ennast.')
@@ -274,15 +274,15 @@ describe('series', () => {
   })
 
   it('hands the child and the plans to the model as data inside tags', () => {
-    const prompt = seriesPrompt(parseSeriesInput({ ...JASPER, family: ['kass Miisu'], december: '19.12 jõulupidu' })!)
-    expect(prompt).toContain('<laps>\nNimi: Jasper\nVanus: 6\nHuvid ja lemmikud: mõistatused\nIseloom: pole teada\nPere ja lemmikloomad: kass Miisu\n')
+    const prompt = seriesPrompt(parseSeriesInput({ ...PAARU, family: ['kass Miisu'], december: '19.12 jõulupidu' })!)
+    expect(prompt).toContain('<laps>\nNimi: Pääru\nVanus: 6\nHuvid ja lemmikud: mõistatused\nIseloom: pole teada\nPere ja lemmikloomad: kass Miisu\n')
     expect(prompt).toContain('<detsember>\n19.12 jõulupidu\n</detsember>')
   })
 
   it('puts back the elf name where the model swapped its letters', () => {
     const letters = SERIES.map((l) => ({ ...l, body: 'Tujudaks kutsutakse mind, sest ma armastan tududa.' }))
     expect(readSeries(JSON.stringify({ letters }))[0]?.body).toBe('Tudujaks kutsutakse mind, sest ma armastan tududa.')
-    expect(seriesPrompt(parseSeriesInput(JASPER)!)).not.toContain('Tujuda')
+    expect(seriesPrompt(parseSeriesInput(PAARU)!)).not.toContain('Tujuda')
   })
 
   it('accepts exactly 24 letters with text', () => {

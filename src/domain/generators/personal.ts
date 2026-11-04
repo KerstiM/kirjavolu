@@ -49,7 +49,7 @@ export function childLines(child: ChildProfile, named = false): string[] {
 
 /**
  * Personal sentences for the whole audience. In a shared experience every line
- * is addressed to one child by name ("Ruben, kuulsin, et …").
+ * is addressed to one child by name ("Markus, kuulsin, et …").
  */
 export function audienceLines(audience: Audience): string[] {
   return audience.children.flatMap((child) =>

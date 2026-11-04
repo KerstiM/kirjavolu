@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { validateChildProfile, validateGenerationRequest } from '@/domain/validation'
 import { emptyChildDraft } from '@/features/children/childrenStore'
-import { makeRequest, RUBEN } from './helpers'
+import { makeRequest, MARKUS } from './helpers'
 
 describe('validateChildProfile', () => {
   it('accepts a complete draft', () => {
@@ -47,7 +47,7 @@ describe('validateGenerationRequest', () => {
   })
 
   it('flags invalid child profiles inside the request', () => {
-    const errors = validateGenerationRequest(makeRequest('puzzle', { children: [{ ...RUBEN, age: 40 }] }))
-    expect(errors[0]).toContain('Ruben')
+    const errors = validateGenerationRequest(makeRequest('puzzle', { children: [{ ...MARKUS, age: 40 }] }))
+    expect(errors[0]).toContain('Markus')
   })
 })
