@@ -26,7 +26,7 @@ export const YOUNG_SCENARIOS: Scenario[] = [
         'Ma joonistasin eile koomiksi! Selles on kolm pilti.',
         'Esimesel pildil kõnnib põhjapõder Välk jää peal. Teisel pildil libiseb ta – vuhh! – ja tal on jalad igas suunas. Kolmandat pilti ma veel ei joonistanud, sest ma ei tea, mis edasi juhtub.',
         c.uses('comics') &&
-          'Sina loed ju Miki Hiire koomikseid, nii et sa tead: viimane pilt on kõige tähtsam!',
+          'Sina loed ju koomikseid, nii et sa tead: viimane pilt on kõige tähtsam!',
       ],
     },
     activities: {

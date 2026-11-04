@@ -194,7 +194,7 @@ export const OLDER_SCENARIOS: Scenario[] = [
         'Töökojal on oma seinaleht „Põhjanaela Postimees“ ja sel nädalal oli koomiksi joonistamise kord minul.',
         'Joonistasin kolm pilti. Esimesel vaatab põhjapõder Välk peeglisse. Teisel näeb ta, et tal on sarvede vahel lind. Kolmandal on lind sinna pesa ehitanud ja Välk ei julge enam pead liigutada.',
         c.uses('comics')
-          ? 'Joonistades mõtlesin Miki Hiire koomiksitele, mida sina loed: seal on ka alati hetk, kus kõik läheb viltu – ja just siis läheb huvitavaks. Minu lugu on muide tõsi. Välk liigub juba neljandat päeva väga ettevaatlikult.'
+          ? 'Joonistades mõtlesin koomiksitele, mida sina loed: seal on ka alati hetk, kus kõik läheb viltu – ja just siis läheb huvitavaks. Minu lugu on muide tõsi. Välk liigub juba neljandat päeva väga ettevaatlikult.'
           : 'Lugu on muide tõsi. Välk liigub juba neljandat päeva väga ettevaatlikult.',
       ],
     },

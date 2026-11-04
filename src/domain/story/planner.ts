@@ -8,7 +8,7 @@ import { HELPER_INVITE, HELPER_MISSIONS, type HelperContext } from '../../data/t
 import { RIDDLES } from '../../data/templates/riddles'
 import { ACTIVITIES, MATERIAL_LABELS } from '../../data/templates/activities'
 import { STAND_IN_CAST } from './characters'
-import { PERSONAL_HOOKS, profileHooks } from './hooks'
+import { narrowedBy, PERSONAL_HOOKS, profileHooks } from './hooks'
 import { effectiveHooks } from './sample'
 import { scenarioIn, type ScenarioLibrary } from './library'
 import type { Band, Cast, HookId, Scenario } from './types'
@@ -186,9 +186,11 @@ export function planCollection(
     const entry = day(p, index, { kind: 'scenario', scenarioId: s.id, stageId, activity: false })
     const hooks = canPersonalize(p, s, index)
     // A topic story is about one topic: the one this child has heard least about so far.
+    // A broad topic whose narrower one the parent named ("Pallimängud: korvpall") comes last.
+    const covered = (hook: HookId) => (narrowedBy(hook, p.hooks) ? 1 : 0)
     entry.personalizationIds = s.topicSlot
       ? [...hooks]
-          .sort((a, b) => usesOf(p, a) - usesOf(p, b))
+          .sort((a, b) => usesOf(p, a) - usesOf(p, b) || covered(a) - covered(b))
           .slice(0, 1)
       : hooks
     markPersonal(p, index, entry.personalizationIds)

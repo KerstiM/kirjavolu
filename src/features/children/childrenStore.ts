@@ -4,7 +4,7 @@ import type { ChildProfile, ChildProfileDraft } from '../../domain/models'
 import { DEMO_CHILDREN } from '../../data/demo/children'
 import { createId } from '../../utils/id'
 import { loadState } from '../../utils/storage'
-import { isTopicId } from '../../data/topics'
+import { upgradeTopics } from '../../data/topics'
 import { clone } from '../../utils/clone'
 
 export function emptyChildDraft(): ChildProfileDraft {
@@ -15,6 +15,7 @@ export function emptyChildDraft(): ChildProfileDraft {
     readingLevel: 'beginner',
     personality: '',
     topics: [],
+    topicNotes: {},
     interests: [],
     favorites: [],
     foods: [],
@@ -30,14 +31,14 @@ function cleanList(list: string[]): string[] {
 }
 
 function cleanDraft(draft: ChildProfileDraft): ChildProfileDraft {
+  const upgraded = upgradeTopics(draft)
   return {
-    ...draft,
+    ...upgraded,
     name: draft.name.trim(),
-    topics: [...new Set((draft.topics ?? []).filter(isTopicId))],
     nameGenitive: draft.nameGenitive?.trim() || undefined,
     interests: cleanList(draft.interests),
     favorites: cleanList(draft.favorites),
-    foods: cleanList(draft.foods),
+    foods: cleanList(upgraded.foods),
     family: cleanList(draft.family),
     achievements: cleanList(draft.achievements),
   }

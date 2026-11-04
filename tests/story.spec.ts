@@ -317,9 +317,9 @@ describe('age and reading level', () => {
 
 describe('personalization', () => {
   it('reads hooks from the profile only', () => {
-    expect([...profileHooks(MARKUS)].sort()).toEqual(['codes', 'comics', 'riddles', 'rubik'])
-    expect([...profileHooks(PAARU)].sort()).toEqual(['comics', 'porridge', 'riddles'])
-    expect([...profileHooks(KAI)]).toEqual(['peppa'])
+    expect([...profileHooks(MARKUS)].sort()).toEqual(['books', 'codes', 'comics', 'riddles', 'rubik'])
+    expect([...profileHooks(PAARU)].sort()).toEqual(['books', 'comics', 'porridge', 'riddles'])
+    expect([...profileHooks(KAI)].sort()).toEqual(['characters', 'peppa'])
   })
 
   it('mixes personal and purely fictional letters, and never overuses one interest', () => {

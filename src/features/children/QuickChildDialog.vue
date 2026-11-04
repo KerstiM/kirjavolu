@@ -21,6 +21,10 @@ const topics = computed({
   get: () => draft.topics ?? [],
   set: (value) => (draft.topics = value),
 })
+const topicNotes = computed({
+  get: () => draft.topicNotes ?? {},
+  set: (value) => (draft.topicNotes = value),
+})
 const errors = ref<FieldErrors>({})
 const submitted = ref(false)
 // The reading level follows the age until the parent picks one.
@@ -42,7 +46,7 @@ function submit(): void {
     document.getElementById(`quick-child-${first}`)?.focus()
     return
   }
-  emit('save', { ...draft, topics: [...topics.value] })
+  emit('save', { ...draft, topics: [...topics.value], topicNotes: { ...topicNotes.value } })
 }
 
 function revalidate(): void {
@@ -107,7 +111,7 @@ function revalidate(): void {
       <fieldset class="quick-child__topics">
         <legend>Mis lapsele meeldib?</legend>
         <p class="quick-child__hint">Vali kõik, mis sobib. Iga teema kohta on kirjades valmis lood. Võid ka vahele jätta.</p>
-        <TopicPicker v-model="topics" />
+        <TopicPicker v-model="topics" v-model:notes="topicNotes" />
       </fieldset>
 
       <footer class="quick-child__actions">

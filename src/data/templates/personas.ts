@@ -1,5 +1,5 @@
 import type { ChildProfile, ElfPersona, OccasionId } from '../../domain/models'
-import { foodTexts, interestTexts, pickedTopics, type TopicId } from '../topics'
+import { foodTexts, interestTexts, pickedTopics, storyTopics, type TopicId } from '../topics'
 import { findInterestHooks } from './interests'
 
 /** Playful reduplicated names in the spirit of Estonian elf names. */
@@ -28,13 +28,22 @@ const HOOK_TITLES: Record<string, string> = {
   books: 'Raamatutark',
   codes: 'Salakoodimeister',
   water: 'Lainetaja',
-  vehicles: 'Rongijuht',
+  vehicles: 'Sõidumeister',
   nature: 'Metsatark',
 }
 
 /** Titles for picked topics the interest templates have no title for. */
 const TOPIC_TITLES: Partial<Record<TopicId, string>> = {
   chess: 'Malemeister',
+  videogames: 'Mängumeister',
+  minecraft: 'Plokimeister',
+  basketball: 'Korvimeister',
+  wintersports: 'Lumeliugur',
+  gymnastics: 'Trikimeister',
+  theatre: 'Lavatäht',
+  characters: 'Multikasõber',
+  fairytales: 'Muinasjutuvõlur',
+  dolls: 'Kaisusõber',
   boardgames: 'Täringuvõlur',
   science: 'Katsetaja',
   robots: 'Robotimeister',
@@ -63,7 +72,7 @@ export function suggestTitle(child: ChildProfile, toddler: boolean): string {
   }
   const hook = findInterestHooks(interestTexts(child))[0]
   if (hook && HOOK_TITLES[hook.id]) return HOOK_TITLES[hook.id] as string
-  const topic = pickedTopics(child).find((candidate) => TOPIC_TITLES[candidate.id])
+  const topic = [...storyTopics(child), ...pickedTopics(child)].find((candidate) => TOPIC_TITLES[candidate.id])
   return (topic && TOPIC_TITLES[topic.id]) ?? 'Abimeister'
 }
 

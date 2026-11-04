@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { pickedTopics } from '../../data/topics'
+import { foodTexts, interestTexts } from '../../data/topics'
 import { computed } from 'vue'
 import { Pencil, Trash2 } from 'lucide-vue-next'
 import type { ChildProfile } from '../../domain/models'
@@ -17,7 +17,7 @@ const tilt = computed(() => [-0.8, 0.6, -0.4, 0.9][props.child.name.length % 4])
 const palette = ['lavender', 'coral', 'sage', 'gold'] as const
 const tone = computed(() => palette[props.child.name.length % palette.length])
 const tags = computed(() =>
-  [...pickedTopics(props.child).map((topic) => topic.label), ...props.child.interests, ...props.child.favorites, ...props.child.foods].slice(0, 6),
+  [...interestTexts(props.child), ...foodTexts(props.child)].slice(0, 6),
 )
 </script>
 

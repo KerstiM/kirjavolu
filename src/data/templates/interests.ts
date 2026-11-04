@@ -40,20 +40,20 @@ export const INTEREST_HOOKS: InterestHook[] = [
   {
     id: 'comics',
     match: /miki|mickey|koomiks|donald/i,
-    topic: 'Miki Hiire koomiksid',
+    topic: 'koomiksid',
     letterLines: [
       (v) =>
         `Kas ${v('sul', 'teil')} on mõni lemmikkoomiks, mida ${v('võiksid', 'võiksite')} mulle soovitada? Lugemisaega mul jagub.`,
       () =>
-        `Kuulsin, et Miki Hiire koomiksites juhtub alati midagi ootamatut. Täpselt nagu minu juures!`,
+        `Kuulsin, et koomiksites juhtub alati midagi ootamatut. Täpselt nagu minu juures!`,
       (v) =>
-        `Ma tean, et ${v('sulle', 'teile')} meeldivad Miki Hiire koomiksid. Minu lemmikud on need lood, kus kõik läheb natuke viltu, aga lõpuks laheneb nutikalt – täpselt nagu päriselus.`,
+        `Ma tean, et ${v('sulle', 'teile')} meeldivad koomiksid. Minu lemmikud on need lood, kus kõik läheb natuke viltu, aga lõpuks laheneb nutikalt – täpselt nagu päriselus.`,
       (v) =>
         `Kui ${v('sa järgmine kord koomiksit loed, otsi', 'te järgmine kord koomiksit loete, otsige')} üles kõige naljakam pilt ja ${v('näita', 'näidake')} seda kellelegi, kes vajab head naeru.`,
     ],
     storyObject: 'vana koomiksiraamat, mille pildid oskasid liikuda',
     storyReflection: (name) =>
-      `„Täpselt nagu Miki Hiire koomiksis!“ naeris ${name}. „Kui midagi läheb viltu, tuleb lihtsalt nutikas plaan välja mõelda.“`,
+      `„Täpselt nagu koomiksis!“ naeris ${name}. „Kui midagi läheb viltu, tuleb lihtsalt nutikas plaan välja mõelda.“`,
     mission: (v) =>
       `${v('Joonista', 'Joonistage')} oma koomiks kolmest pildist: algus, sekeldus ja lõpp. Peategelane võib olla keegi ${v('sinu', 'teie')} perest.`,
   },
@@ -188,10 +188,10 @@ export const INTEREST_HOOKS: InterestHook[] = [
   {
     id: 'codes',
     match: /mõistat|salakood|kood|nuputa|pusle|ristsõna|male/i,
-    topic: 'salakoodid ja mõistatused',
+    topic: 'mõistatused ja nuputamine',
     letterLines: [
       (v) =>
-        `Kuulsin, et ${v('sulle', 'teile')} meeldivad salakoodid. Siin on üks väike: 21-4-16-4. Vihje: A=1, B=2, D=3, E=4 ja nii edasi.`,
+        `Kuulsin, et ${v('sulle', 'teile')} meeldib nuputada. Siin on üks väike salakood: 21-4-16-4. Vihje: A=1, B=2, D=3, E=4 ja nii edasi.`,
       (v) =>
         `Mõistatused teevad aju tugevaks nagu trenn teeb jalad tugevaks. ${v('Sinu', 'Teie')} aju on vist juba päris muskliline!`,
       (v) =>
@@ -221,13 +221,13 @@ export const INTEREST_HOOKS: InterestHook[] = [
   },
   {
     id: 'vehicles',
-    match: /auto|rong|traktor|lennuk|buss/i,
-    topic: 'autod ja rongid',
+    match: /auto|rong|traktor|lennuk|buss|sõiduk/i,
+    topic: 'sõidukid',
     letterLines: [
       (v) =>
         `Kui ${v('sa saaksid', 'te saaksite')} juhtida ükskõik millist sõidukit, mis see oleks? Mina valiksin pilvede peal sõitva rongi.`,
       (v) =>
-        `Mulle räägiti, et ${v('sa tead', 'te teate')} autodest ja rongidest väga palju. Meie juures sõidab üks pisike rong, mis teeb „tuut-tuut“ ainult reedeti.`,
+        `Mulle räägiti, et ${v('sa tead', 'te teate')} sõidukitest väga palju. Meie juures sõidab üks pisike rong, mis teeb „tuut-tuut“ ainult reedeti.`,
     ],
     storyObject: 'pisike rong, mis sõitis pilvede peal',
     storyReflection: (name) =>
