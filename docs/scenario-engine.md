@@ -90,12 +90,21 @@ voice and holds their sign-offs.
 The band comes from age and reading level (`ageBand`) and the difficulty setting
 (`adjustBand`), so a strong six-year-old reader can get the older letters.
 
-**Personalization** (`hooks.ts`, `data/topics.ts`). The parent picks topics for the
-child from a list of about 40 (`TOPICS`, grouped: games and stories, animals, sport,
-creativity, science, puzzles, cartoon characters, foods). Every topic is a hook;
-free-text interests that match a topic's `match` count too. Free text that matches
-nothing is only quoted in the short-letter templates: without a language model it
-cannot be declined or woven into a story.
+**Personalization** (`hooks.ts`, `data/topics.ts`). The parent picks broad topics for
+the child from a list of 28 (`LISTED_TOPICS`, in six groups: games and toys, animals
+and nature, sport, creativity, science and puzzles, characters and fantasy). Their
+stories never assume more than the label says: "Pallimängud" is not football. Under a
+picked topic the parent may write the child's own favourite (`topicNotes`, e.g.
+`{ ballgames: 'korvpall' }`); a narrower topic (`within`) found there brings its own
+stories – Korvpall, Jalgpall, Rubiku kuubik, Peppa and the rest. Food topics are found
+among the favourite foods. Every topic is a hook; free-text interests that match a
+topic's `match` count too. In a topic letter a broad topic whose narrower one was named
+comes last. Free text that matches nothing is only quoted in the short-letter
+templates: without a language model it cannot be declined or woven into a story.
+
+Older profiles picked narrow topics from a longer list; `upgradeTopics` (run on every
+load and save) moves them under their broad topic as the parent's words (`note`), so
+they keep the same stories.
 
 A scenario lists the hooks its story can carry and branches on `c.uses(hook)` inside
 the event (the elf thinks of the child while solving the puzzle box – no “I heard
@@ -214,7 +223,8 @@ titles come from `personasFor` and can be changed by the parent.
 
 ### Add a topic
 
-Add an id to `TopicId` and an entry to `TOPICS` (`data/topics.ts`) with `match`
+Add an id to `TopicId` and an entry to `TOPICS` (`data/topics.ts`): a `group` and
+`hint` to show it on the form, or `within` and `note` for a narrower topic. Give it `match`
 (free-text profile fields), `mentions` (a word only a letter about this topic would
 use – the validator reports unplanned mentions, so keep it narrow) and the four
 texts for the topic scenarios. `validateLibrary` renders both topic scenarios with

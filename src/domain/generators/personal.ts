@@ -6,7 +6,7 @@ import {
   INTEREST_HOOKS,
   type Say,
 } from '../../data/templates/interests'
-import { foodTexts, interestTexts, pickedTopics } from '../../data/topics'
+import { allNoteTexts, foodTexts, interestTexts, storyTopics, TOPICS } from '../../data/topics'
 import type { Audience } from './audience'
 import { ageBand } from './audience'
 import { lowerFirst } from './context'
@@ -19,13 +19,18 @@ function unmatched(texts: string[]): string[] {
 
 /**
  * Personal sentences for one child, written in singular address. A picked topic
- * the templates have no lines for brings its own little story from the topic list;
+ * the templates have no lines for brings its own little story from the topic list
+ * (the narrower one when the parent named it, e.g. Peppa under the cartoons);
  * those are told in the helper's own voice, so they are kept out of shared letters
  * (`named`), where every line starts with the child's name.
  */
 export function childLines(child: ChildProfile, named = false): string[] {
-  const topics = pickedTopics(child).filter((topic) => topic.group !== 'food')
-  const free = [...child.favorites, ...child.interests]
+  const topics = storyTopics(child)
+  // The parent's words under a topic that no story knows ("Uno") are quoted like free text.
+  const looseNotes = allNoteTexts(child).filter(
+    (text) => !TOPICS.some((topic) => topic.within && topic.match.test(text)),
+  )
+  const free = [...child.favorites, ...child.interests, ...looseNotes]
   if (ageBand(child) === 'toddler') {
     const lines = named ? [] : topics.map((topic) => topic.toddlerTryout)
     const quoted = named ? [...topics.map((topic) => topic.label), ...free] : free

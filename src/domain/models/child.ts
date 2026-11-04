@@ -1,4 +1,4 @@
-import type { TopicId } from '../../data/topics'
+import type { TopicId, TopicNotes } from '../../data/topics'
 
 export type ReadingLevel = 'read-aloud' | 'beginner' | 'independent' | 'advanced'
 
@@ -12,6 +12,8 @@ export interface ChildProfile {
   personality: string
   /** Topics picked from the list; letters can tell real stories about these. Missing in older profiles. */
   topics?: TopicId[]
+  /** The parent's own words under a picked topic ("Pallimängud: korvpall"). Missing in older profiles. */
+  topicNotes?: TopicNotes
   /** Free-text interests, mentioned only in the short-letter templates. */
   interests: string[]
   favorites: string[]

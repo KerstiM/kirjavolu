@@ -44,13 +44,13 @@ Kirjutasin ise ühe mõistatuse: „Mis on valge ja külm ning kaob, kui seda so
 
 Nüüd saan aru, mis selles nii toredat on. Homme proovin uuesti!
 
-Üks päkapiku ettepanek: kui tahad, kirjuta või joonista paberile üks asi, mille eest oled täna tänulik, ja pane see purki.
+Üks päkapiku ettepanek: kui tahad, lõika vanadest ajakirjadest pilte ja kleebi neist kokku pilt oma unistuste päevast.
 
 P.S. Eilse mõistatuse vastus: karu.
 
 _Kiirelt-kiirelt · Päkapikk Tuduja_
 
-> Valmista ette: ülesandeks paber
+> Valmista ette: ülesandeks paber, käärid, liim
 
 ### 4. detsember 2026
 
@@ -76,17 +76,17 @@ _Tervitustega köögist · Päkapikk Tuduja_
 
 Põhjapõder Välk käitub viimasel ajal imelikult.
 
-Ta on leidnud Miki Hiire koomiksi ja vaatab seda iga päev. Lugeda ta ei oska, aga pildid meeldivad. Kõige naljakama pildi juures hakkab ta nii kõvasti naerma, et hein lendab.
+Ta on leidnud töökoja raamaturiiulilt koomiksi ja vaatab seda iga päev. Lugeda ta ei oska, aga pildid meeldivad. Kõige naljakama pildi juures hakkab ta nii kõvasti naerma, et hein lendab.
 
 Kust ta selle mõtte sai? Kahtlustan, et keegi on talle sinust rääkinud.
 
-Mul on sulle üks mõte: kui tahad, joonista kaheksale kaardile neli paari pilte ja mängi nendega mälumängu.
+Mul on sulle üks mõte: kui tahad, tee võileivale nägu kurgi, tomati ja juustu abil. Kes teeb kõige naljakama näo?
 
 P.S. Eilse mõistatuse vastus: kingitus.
 
 _Sinu sõber · Päkapikk Tuduja_
 
-> Valmista ette: ülesandeks paber, pliiatsid või värvid, käärid
+> Valmista ette: ülesandeks köögitarbed ja toiduained
 
 ### 6. detsember 2026
 
@@ -118,11 +118,13 @@ Lõpuks hiilis põhjapõder Välk mulle selja taha ja ütles kõrva: „Pöö!�
 
 Õhtul rääkis Jõuluvana, et kui tema oli väike, luksus ta kord terve päeva. Siis helisesid kõik potid ja pannid köögis. Tema vanaema andis talle lusikatäie mett ja luksumine läks üle. Mina proovin järgmine kord ka mett. Kui see ei aita, kutsun Välgu.
 
-Kui sul täna aega on, mängi mängu „Ma näen midagi, mis on…“ ja ütle ainult värv või kuju. Teised arvavad.
+Kui sul täna aega on, voldi paber kolmnurgaks, lõika servadesse mustreid ja ava – iga lumehelves tuleb ainulaadne!
 
 P.S. Eilse mõistatuse vastus: pall.
 
 _Tervitustega köögist · Päkapikk Tuduja_
+
+> Valmista ette: ülesandeks paber, käärid
 
 ### 8. detsember 2026
 
@@ -154,13 +156,13 @@ Mina olen töökoja pudrukeetja. Eile küsis Jõuluvana kolm korda juurde. Nelja
 
 Täna õpetasin pudrukeetmist ka põhjapõder Välgule. Tema ülesanne oli segada. Ta segas sabaga ja puder lendas laeni. Lõpuks sõime kolmekesi: mina, Välk ja kass Nurr. Nurrile meeldis ainult võisilm. Selle ta lakkus ära ja ülejäänu jättis meile.
 
-Üks päkapiku ettepanek: kui tahad, voldi paber kolmnurgaks, lõika servadesse mustreid ja ava – iga lumehelves tuleb ainulaadne!
+Üks päkapiku ettepanek: kui tahad, üks alustab joonistust, teine jätkab ja kolmas lõpetab. Mis tuli välja? Mõtle pildile pealkiri.
 
 P.S. Eilse mõistatuse vastus: kell.
 
 _Hüpates · Päkapikk Tuduja_
 
-> Valmista ette: ülesandeks paber, käärid
+> Valmista ette: ülesandeks paber, pliiatsid või värvid
 
 ### 10. detsember 2026
 
@@ -212,13 +214,13 @@ Leidsime ta lõunasöögi ajal Jõuluvana supikausist. Jõuluvana ütles, et sup
 
 Pärast seda proovisin vurrkanni, trummi ja pehmet karu. Vurrkann vurises, trumm põrises ja karu lihtsalt kallistas. Karu sai ka viie. Õhtuks olid kõik mänguasjad ilusas reas kelgu kõrval ootamas. Konn istub ikka veel eraldi. Igaks juhuks. Ja supikaussidel on nüüd kaaned.
 
-Mul on sulle üks mõte: kui tahad, tee võileivale nägu kurgi, tomati ja juustu abil. Kes teeb kõige naljakama näo?
+Mul on sulle üks mõte: kui tahad, kirjuta või joonista paberile üks asi, mille eest oled täna tänulik, ja pane see purki.
 
 P.S. Eilse katse vastus: soolaga jää sulab kiiremini. Seepärast puistatakse talvel teedele soola. Kelgujalased on nüüd jälle libedad.
 
 _Sinu sõber · Päkapikk Tuduja_
 
-> Valmista ette: ülesandeks köögitarbed ja toiduained
+> Valmista ette: ülesandeks paber
 
 ### 13. detsember 2026
 
@@ -228,7 +230,7 @@ Ma joonistasin eile koomiksi! Selles on kolm pilti.
 
 Esimesel pildil kõnnib põhjapõder Välk jää peal. Teisel pildil libiseb ta – vuhh! – ja tal on jalad igas suunas. Kolmandat pilti ma veel ei joonistanud, sest ma ei tea, mis edasi juhtub.
 
-Sina loed ju Miki Hiire koomikseid, nii et sa tead: viimane pilt on kõige tähtsam!
+Sina loed ju koomikseid, nii et sa tead: viimane pilt on kõige tähtsam!
 
 Näitasin pilte ka Jõuluvanale. Tema arvas, et kolmandal pildil istub Välk lumehanges ja teeb nägu, nagu oleks ta kogu aeg tahtnud just seal istuda. Kass Nurr arvas, et Välk lendab minema. Mina ei tea veel. Praegu tulevad põhjapõdrad mul natuke nagu toolid.
 
@@ -286,7 +288,7 @@ Nad sõid ära kõik lumememmede porgandid. Nüüd elavad nad puuriida taga ja m
 
 Täna hommikul nägin, et kõige väiksem jänesepoeg on julge. Ta tuli minu juurde ja nuusutas mu saabast. Siis sõi ta kapsalehe otse mu käest. Panin talle nimeks Hopsti. Teistele ma veel nime ei pannud, sest nad hüppavad nii kiiresti, et ma ei tea, kes on kes.
 
-Kui sul täna aega on, üks teeb liigutusi, teine kordab nagu peegel. Vaheta rolle!
+Mul on sulle üks mõte! Täiskasvanu süütab küünla. Räägi kordamööda, mis oli sel aastal kõige toredam hetk.
 
 P.S. Eilse mõistatuse vastus oli: lumi. Välk arvas, et jäätis.
 
@@ -358,13 +360,13 @@ Nurr oli karbis magama jäänud ja keegi oli ta kogemata ära pakkinud. Peaaegu 
 
 Pärast seda tegin Nurrile oma karbi. Sees on pehme tekk ja peal silt: „Seda pakki ära saada!“ Nurrile see meeldis. Ta magas seal terve öö ja nurrus nii kõvasti, et karp värises. Hommikul käis ta kõiki pakke nuusutamas. Vist kontrollis, et kuskil poleks veel mõnda kassi.
 
-Üks päkapiku ettepanek: kui tahad, paki paberisse mõni pisike asi ja kaunista pakk ise joonistatud mustritega.
+Üks päkapiku ettepanek: kui tahad, aita valmistada pere hommikusöök: kata laud ja pane igale taldrikule väike üllatus.
 
 P.S. Eilse piparkoogiülesande vastus: 16. Nurri nuusutatud piparkook on ka alles.
 
 _Hüpates · Päkapikk Tuduja_
 
-> Valmista ette: ülesandeks paber, pliiatsid või värvid
+> Valmista ette: ülesandeks köögitarbed ja toiduained
 
 ### 21. detsember 2026
 
@@ -396,11 +398,13 @@ Ta on seal siiani. Jõuluvana ütles, et las jääb, see on nüüd töökoja kuu
 
 Kass Nurr istub iga õhtu laua peal ja vaatab üles. Ta ootab, et kuu alla kukuks. Põhjapõder Välk ootab ka, aga tema tahaks selle ära süüa. Täna küpsetasin veel pannkooke, aga keerasin neid ainult natukene. Kõik jäid pannile. Sõime need moosiga ära ja kuu jäi lakke.
 
-Mul on sulle üks mõte: kui tahad, loe kokku, mitu punast ehet on kuusel. Aga mitu kuldset? Kumba on rohkem?
+Mul on sulle üks mõte: kui tahad, voldi paberlennukid ja vaata, kelle oma lendab kõige kaugemale. Proovi erinevaid voltimisviise!
 
 P.S. Eilse mõistatuse vastus: kuusk.
 
 _Kiirelt-kiirelt · Päkapikk Tuduja_
+
+> Valmista ette: ülesandeks paber
 
 ### 23. detsember 2026
 
@@ -414,11 +418,9 @@ Nüüd seisab õues lumememm, kellel on sarved. Porgandi sõi Välk ära. Ma arv
 
 Täna hommikul seisid nad õues kahekesi: Välk ja sarvedega lumememm. Välk tõi talle vabanduseks uue porgandi. Siis harjutas Välk veel natuke ja maandus seekord ilusti katusele. Ainult natuke lund kukkus. Ja see kukkus otse minu kraesse. Brr!
 
-Üks päkapiku ettepanek: kui tahad, ehita tuppa takistusrada: üle padja, laua alt läbi, ümber tooli. Täiskasvanu võtab aega!
+Üks päkapiku ettepanek: kui tahad, loe kokku, mitu punast ehet on kuusel. Aga mitu kuldset? Kumba on rohkem?
 
 _Tervitustega köögist · Päkapikk Tuduja_
-
-> Valmista ette: ülesandeks tekid ja padjad
 
 ### 24. detsember 2026
 

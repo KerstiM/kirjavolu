@@ -84,7 +84,7 @@ describe('letters', () => {
     const result = runTemplates(makeRequest('letter', { children: [PAARU], general: { length: 'long' } }))
     const text = result.items.map((i) => i.body).join(' ')
     expect(result.items[0]?.heading).toBe('Kallis Pääru!')
-    expect(text).toMatch(/riisiputru|Miki Hiire|mõistatuste/)
+    expect(text).toMatch(/riisiputru|koomiksid|Mõistatused/)
   })
 
   it('addresses siblings together and gives each a task', () => {

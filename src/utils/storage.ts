@@ -1,4 +1,5 @@
 import type { ChildProfile, GeneratedContent } from '../domain/models'
+import { upgradeTopics } from '../data/topics'
 
 export const STORAGE_KEY = 'kirjavolu.state'
 export const SCHEMA_VERSION = 1
@@ -29,9 +30,12 @@ export function migrate(raw: unknown): PersistedState {
   const version = typeof raw.schemaVersion === 'number' ? raw.schemaVersion : 0
   if (version > SCHEMA_VERSION) return emptyState()
   // Version 0 (pre-release) had no schemaVersion; the shape was otherwise the same.
+  // Topics picked from the older, longer list are moved under the broader ones on every load.
   return {
     schemaVersion: SCHEMA_VERSION,
-    children: Array.isArray(raw.children) ? (raw.children as ChildProfile[]) : [],
+    children: Array.isArray(raw.children)
+      ? (raw.children as ChildProfile[]).filter(isRecord).map((child) => upgradeTopics(child))
+      : [],
     creations: Array.isArray(raw.creations) ? (raw.creations as GeneratedContent[]) : [],
     demoSeeded: raw.demoSeeded === true,
   }

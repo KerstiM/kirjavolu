@@ -12,7 +12,7 @@ import { useChildrenStore } from '../children/childrenStore'
 import { useCreationsStore } from '../preview/creationsStore'
 import { nameCase } from '../../domain/text/estonian'
 import type { ChildProfile, ChildProfileDraft } from '../../domain/models'
-import type { TopicId } from '../../data/topics'
+import type { TopicId, TopicNotes } from '../../data/topics'
 import { track } from '../../app/analytics'
 import { LETTERS_ERROR_TEXTS, LettersRequestError, readDecember, requestPassLetters, writeDecember } from './passLetters'
 import type { SeasonPass } from './seasonPass'
@@ -41,6 +41,7 @@ const options = computed(() => children.children.map((candidate) => ({ value: ca
 
 interface About {
   topics: TopicId[]
+  topicNotes: TopicNotes
   interests: string[]
   family: string[]
   foods: string[]
@@ -48,7 +49,7 @@ interface About {
   achievements: string[]
   details: string
 }
-const about = reactive<About>({ topics: [], interests: [], family: [], foods: [], personality: '', achievements: [], details: '' })
+const about = reactive<About>({ topics: [], topicNotes: {}, interests: [], family: [], foods: [], personality: '', achievements: [], details: '' })
 const december = ref('')
 // Another child picked: the form shows what their profile already says.
 watch(
@@ -56,6 +57,7 @@ watch(
   (current) => {
     Object.assign(about, {
       topics: [...(current?.topics ?? [])],
+      topicNotes: { ...current?.topicNotes },
       interests: [...(current?.interests ?? [])],
       family: [...(current?.family ?? [])],
       foods: [...(current?.foods ?? [])],
@@ -170,7 +172,7 @@ async function write(): Promise<void> {
         </div>
         <details class="about__topics">
           <summary>Teemad loendist ({{ about.topics.length }} valitud)</summary>
-          <TopicPicker v-model="about.topics" />
+          <TopicPicker v-model="about.topics" v-model:notes="about.topicNotes" />
         </details>
 
         <p v-if="littleKnown" class="about__thin">

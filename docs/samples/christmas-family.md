@@ -60,13 +60,13 @@ Eile õhtul oli ta veel paigal – nägin teda, kui tuled kustutasin. Täna homm
 
 Kõigepealt tegin seda, mida iga uurija teeb: vaatasin hoolikalt ringi ja kirjutasin kõik üles. Kuuse all ei olnud ühtegi jalajälge. Ehteid polnud keegi puutunud. Ainult kõige ülemine oks oli natuke kõver, nagu oleks keegi kerge sellele maandunud ja siis jälle õhku tõusnud. Kes, seda ma veel ei tea. Aga oksa panin märkmikku kirja.
 
-Mul on sulle üks mõte: kui tahad, üks alustab joonistust, teine jätkab ja kolmas lõpetab. Mis tuli välja? Mõtle pildile pealkiri.
+Mul on sulle üks mõte: kui tahad, ehita tuppa takistusrada: üle padja, laua alt läbi, ümber tooli. Täiskasvanu võtab aega!
 
 P.S. Eilse mõistatuse vastus: nimi.
 
 _Nuputades · Kõpsu-Mõpsu_
 
-> Valmista ette: ülesandeks paber, pliiatsid või värvid
+> Valmista ette: ülesandeks tekid ja padjad
 
 ### 5. detsember 2026
 
@@ -134,11 +134,11 @@ Töökojal on oma seinaleht „Põhjanaela Postimees“ ja sel nädalal oli koom
 
 Joonistasin kolm pilti. Esimesel vaatab põhjapõder Välk peeglisse. Teisel näeb ta, et tal on sarvede vahel lind. Kolmandal on lind sinna pesa ehitanud ja Välk ei julge enam pead liigutada.
 
-Joonistades mõtlesin Miki Hiire koomiksitele, mida sina loed: seal on ka alati hetk, kus kõik läheb viltu – ja just siis läheb huvitavaks. Minu lugu on muide tõsi. Välk liigub juba neljandat päeva väga ettevaatlikult.
+Joonistades mõtlesin koomiksitele, mida sina loed: seal on ka alati hetk, kus kõik läheb viltu – ja just siis läheb huvitavaks. Minu lugu on muide tõsi. Välk liigub juba neljandat päeva väga ettevaatlikult.
 
 Täna hommikul käis pool töökoda seinalehe juures naermas. Välk käis ka. Ta vaatas pilte väga kaua, siis vaatas peeglisse ja siis jälle pilte. Lind tema sarvede vahel säutsus. Järgmises numbris tahan joonistada, kuidas lind kevadel ära lendab. Aga enne peab ta seda tegema.
 
-Üks päkapiku ettepanek: kui tahad, vali kolm lemmikut jõululaulu ja laula need koos perega. Kes oskab kõige rohkem salme peast?
+Üks päkapiku ettepanek: kui tahad, mõtle välja kolm mõistatust kodus leiduvate asjade kohta ja lase teistel ära arvata.
 
 _Tervitustega põhjast · Kõpsu-Mõpsu_
 
@@ -192,25 +192,25 @@ Helmi oli väga solvunud. Palusime vabandust ja Tipp-Topp küpsetas talle vaband
 
 Sellest juhtumist sain õppetunni: uurija ei tohi otsustada enne, kui on kõiki vihjeid näinud. Kirjutasin selle suurte tähtedega märkmiku esimesele lehele. Ja veel üks asi. Helmi pesas oli ka üks hõbedane sulg. Ta ütles, et leidis selle mäe pealt. Harakas selliste asjade kohta ei valeta. Mina vaatan nüüd mäe poole.
 
-Kui sul täna aega on, kes ehitab klotsidest kõige kõrgema torni, mis ise püsti püsib? Mõõda tulemus!
+Kui sul täna aega on, voldi paber kolmnurgaks, lõika servadesse mustreid ja ava – iga lumehelves tuleb ainulaadne!
 
 P.S. Täna on pühapäev, nii et sussis on üks komm.
 
 _Töökoja nurgast · Kõpsu-Mõpsu_
 
-> Valmista ette: komm sussi; ülesandeks klotsid
+> Valmista ette: komm sussi; ülesandeks paber, käärid
 
 ### 14. detsember 2026
 
 **Kallis Markus!**
 
-Eile õhtul tuli tuisk, mille sarnast ma ei mäleta. Aknad olid valged, korsten ulgus ja põhjapõdrad pugesid laudas üksteise vastu.
+Meil on praegu nii külm, et sõnad külmuvad õhus kinni. Kui ma eile hommikul talli ees „tere“ ütlesin, kukkus see väikese jääpurikana lumme. Ta on veel seal.
 
-Keset ööd koputas keegi töökoja uksele. Ukse taga istus jänesepere – ema, isa ja viis poega –, kõik lumest valged. Lasime nad sisse.
+Vanad päkapikud räägivad, et kevadel, kui sõnad sulavad, kostab üle õue korraga kogu talve jutt. Sellepärast valivad kõik praegu oma sõnu väga hoolikalt.
 
-Hommikuks olid nad ära söönud kõik porgandid, mis pidid saama lumememmede ninadeks. Lumememmed jäävad sel aastal ninata. Jänesed jäävad talveks puuriida taha elama.
+Mina olen vait ja kirjutan. Paber ei külmu. Aga kui sa kevadel kuuled kuskilt kaugelt „tere“, siis tead, kellelt see on.
 
-Täna hommikul läksin puuriida taha vaatama. Jänesed olid lume sisse kaevanud käigud ja ühes otsas oli midagi väikese tagatoa sarnast. Viis poega magasid seal reas nagu soojad kartulid. Ema vaatas mind ja liigutas kõrvu. Viisin neile kapsalehti. Sel talvel on meil seitse uut naabrit.
+Täna hommikul nägin, et talli ees on lumes juba terve rida jääpurikaid: Välgu „ahh“, kassi „mjäu“ ja üks väga pikk ja kõver, mis on kindlasti Jõuluvana „hommikust“. Noored päkapikud korjavad neid kokku ja peidavad keldrisse. Nad tahavad kevadel kuulata, kes talvel mida ütles.
 
 Selle mõistatuse leidsin töökoja vanast raamatust: Talvel ja suvel ühte karva. Homme ütlen vastuse.
 
@@ -248,13 +248,11 @@ Täna hommikul oli maja ühel nurgal suur ümmargune auk. Põhjapõder Välk vaa
 
 Täna parandasime nurga ära. Uue nurga tegi Tipp-Topp ja sinna sai ka väike rõdu, millel istub suhkrust põhjapõder. Välk vaatas seda kaua. Siis läks ta tallist välja ja tuli tagasi ühe porgandiga, mille pani maja ette. Ma võtan seda vabandusena.
 
-Mul on sulle üks mõte: kui tahad, voldi paber kolmnurgaks, lõika servadesse mustreid ja ava – iga lumehelves tuleb ainulaadne!
+Mul on sulle üks mõte: kui tahad, vali kolm lemmikut jõululaulu ja laula need koos perega. Kes oskab kõige rohkem salme peast?
 
 P.S. Raamatu sõna oli TÄHELIND. Raamat kirjutab, et tähelinnud korjavad talvel kokku valgust, mis on kuhugi kaotsi läinud – ja et inimesed näevad neid väga harva.
 
 _Töökoja nurgast · Kõpsu-Mõpsu_
-
-> Valmista ette: ülesandeks paber, käärid
 
 ### 17. detsember 2026
 
@@ -324,11 +322,11 @@ Ema-lind ei tahtnud kellelegi halba. Talveööd on siin pikad ja pimedad ning po
 
 Tagasiteel ei rääkinud keegi. Lumi krudises jalge all ja mäe tagant paistis veel kaua pisike valgus. Kodus küsis Jõuluvana, mida me nüüd teeme. Täht peab jõuluööks kuusele tagasi tulema. Aga linnupojad ei tohi jälle pimedas olla. Täna istun terve õhtu oma töölaua taga. Mul on üks mõte.
 
-Üks päkapiku ettepanek: kui tahad, voldi paberlennukid ja vaata, kelle oma lendab kõige kaugemale. Proovi erinevaid voltimisviise!
+Üks päkapiku ettepanek: kui tahad, ehita patjadest ja tekkidest kindlus. Anna kindlusele nimi ja mõtle välja salasõna, millega sisse pääseb.
 
 _Mõtlikult · Kõpsu-Mõpsu_
 
-> Valmista ette: ülesandeks paber
+> Valmista ette: ülesandeks tekid ja padjad
 
 ### 22. detsember 2026
 
@@ -352,21 +350,19 @@ _Sinu vana sõber · Kõpsu-Mõpsu_
 
 **Kallis Markus!**
 
-Kas ma olen sulle rääkinud oma esimesest jõuluööst? Olin siis nii pisike, et mahtusin Jõuluvana kindasse. Mind võeti kelgule kaasa ja anti üks ülesanne: hoida kõvasti kinni laternast, et see ei kukuks.
+Jõuluvanal on detsembris väga vähe vaba aega, aga eile kadus ta pärast lõunat kuhugi ära. Töökoda läks ärevaks: kirjad ootavad, kelk ootab, põhjapõdrad ootavad.
 
-Hoidsin kogu öö. Üle metsade, üle mere, üle tuhande katuse. Käed olid kanged ja nina külm, aga latern ei kukkunud.
+Leidsin ta tagumiselt nõlvalt. Ta oli laenanud kelgu, mis on talle umbes kolm korda liiga väike, ja sõitis mäest alla nii, et habe lehvis üle õla.
 
-Kodus küsis Jõuluvana, mis oli kõige ilusam. Ütlesin: latern. Muud ma polnudki näinud, sest olin terve öö ainult laternat vaadanud. Ta naeris nii, et kelk kõikus.
+Mina ei öelnud midagi. Tema ei öelnud ka midagi. Siis ulatas ta mulle kelgunööri ja ütles: „Ainult üks kord.“ Me sõitsime üksteist korda.
 
-Täna hoian laternat jälle. Mitte kelgul, vaid töökoja trepi ees, et noored päkapikud õhtul pimedas ei komistaks. Olen siiamaani natuke uhke, et see esimene latern ei kukkunud. Ja kui jõuluöö tuleb, istun jälle kelgule. Seekord vaatan ka ümberringi, mitte ainult laternat.
+Täna hommikul istus Jõuluvana jälle laua taga ja kirjutas kirju, nagu poleks midagi juhtunud. Aga tema saabaste ümber oli väike lumelomp ja põsed olid veel punased. Kui talle teed tõin, pilgutas ta mulle silma. Väike kelk seisab nüüd kuuri ukse kõrval. Keegi on selle sinna valmis pannud.
 
-Kui sul täna aega on, vali raamat ja loe koos. Pärast joonista oma lemmikkoht loost.
+Kui sul täna aega on, tee täna kellelegi heategu nii, et ta ei saa teada, kes see oli – täpselt nagu päkapikud.
 
 P.S. Eilse mõistatuse vastus: auk.
 
 _Nuputades · Kõpsu-Mõpsu_
-
-> Valmista ette: ülesandeks raamatud
 
 ### 24. detsember 2026
 
@@ -426,11 +422,13 @@ Kirjutasin ise ühe mõistatuse: „Mis on valge ja külm ning kaob, kui seda so
 
 Nüüd saan aru, mis selles nii toredat on. Homme proovin uuesti!
 
-Üks päkapiku ettepanek: kui tahad, suuna taskulamp seinale ja tee kätega varjuloomi. Kas keegi arvab ära, mis loom see on?
+Üks päkapiku ettepanek: kui tahad, kes ehitab klotsidest kõige kõrgema torni, mis ise püsti püsib? Mõõda tulemus!
 
 P.S. Eilse mõistatuse vastus: karu.
 
 _Kiirelt-kiirelt · Tipp-Topp_
+
+> Valmista ette: ülesandeks klotsid
 
 ### 4. detsember 2026
 
@@ -464,37 +462,37 @@ _Sinu sõber · Tipp-Topp_
 
 **Kallis Pääru!**
 
-Põhjapõder Välk käitub viimasel ajal imelikult.
+Ma joonistasin eile koomiksi! Selles on kolm pilti.
 
-Ta on leidnud Miki Hiire koomiksi ja vaatab seda iga päev. Lugeda ta ei oska, aga pildid meeldivad. Kõige naljakama pildi juures hakkab ta nii kõvasti naerma, et hein lendab.
+Esimesel pildil kõnnib põhjapõder Välk jää peal. Teisel pildil libiseb ta – vuhh! – ja tal on jalad igas suunas. Kolmandat pilti ma veel ei joonistanud, sest ma ei tea, mis edasi juhtub.
 
-Kust ta selle mõtte sai? Kahtlustan, et keegi on talle sinust rääkinud.
+Sina loed ju koomikseid, nii et sa tead: viimane pilt on kõige tähtsam!
 
-Mul on sulle üks mõte: kui tahad, ehita patjadest ja tekkidest kindlus. Anna kindlusele nimi ja mõtle välja salasõna, millega sisse pääseb.
+Näitasin pilte ka Jõuluvanale. Tema arvas, et kolmandal pildil istub Välk lumehanges ja teeb nägu, nagu oleks ta kogu aeg tahtnud just seal istuda. Kass Nurr arvas, et Välk lendab minema. Mina ei tea veel. Praegu tulevad põhjapõdrad mul natuke nagu toolid.
+
+Kui tahad, joonista sina kolmas pilt: mis Välgust sai?
 
 P.S. Täna on pühapäev, nii et sussis on üks komm.
 
 _Kiirelt-kiirelt · Tipp-Topp_
 
-> Valmista ette: komm sussi; ülesandeks tekid ja padjad
+> Valmista ette: komm sussi; paber ja värvipliiatsid
 
 ### 7. detsember 2026
 
 **Kallis Pääru!**
 
-Töökojas on üks tuba, kus hoitakse sädelust. Sinna tohib minna ainult hiilides ja hinge kinni hoides.
+Eile oli nii tugev tuisk, et aknast ei paistnud midagi. Huuuu! tegi tuul.
 
-Mina läksin eile sinna paelu tooma – ja mul hakkas nina sügelema. Aaa… aaa… AATŠIHH!
+Öösel koputas keegi uksele: kopp-kopp. Ukse taga olid seitse lumist jänest! Lasime nad sooja.
 
-Nüüd sädeleb kõik: seinad, laud, kass ja Jõuluvana habe. Jõuluvana vaatas peeglisse ja ütles, et nii pidulik pole ta kunagi olnud.
+Nad sõid ära kõik lumememmede porgandid. Nüüd elavad nad puuriida taga ja ma viin neile igal hommikul kapsalehti.
 
-Täna pühkisime terve päeva. Aga sädelus on selline asi, mis kunagi päris ära ei lähe. Leidsin seda oma taskust, oma mütsist ja isegi pudrukausist. Põhjapõder Välk sädeleb ka. Kui ta pead raputab, sajab tallis väikest kuldset lund. Ta paistab sellega väga rahul olevat.
+Täna hommikul nägin, et kõige väiksem jänesepoeg on julge. Ta tuli minu juurde ja nuusutas mu saabast. Siis sõi ta kapsalehe otse mu käest. Panin talle nimeks Hopsti. Teistele ma veel nime ei pannud, sest nad hüppavad nii kiiresti, et ma ei tea, kes on kes.
 
-Kas oskad ära arvata? Olen ümmargune ja põrkan. Mind visatakse ja lüüakse jalaga. Homme ütlen vastuse.
+Mul on sulle üks mõte: kui tahad, suuna taskulamp seinale ja tee kätega varjuloomi. Kas keegi arvab ära, mis loom see on?
 
 _Tervitustega köögist · Tipp-Topp_
-
-> Vastus: pall
 
 ### 8. detsember 2026
 
@@ -508,11 +506,11 @@ Kõpsu-Mõpsu ütles, et see on väga tähtis, ja korjas tolmu pintsliga purki. 
 
 Pärast seda vaatasin igalt aknalaualt. Tolmu oli ainult köögiaknal, mitte kusagil mujal. Kõpsu-Mõpsu ütles, et keegi on just selle akna juures käinud. Aga uks oli öösel lukus. Kes saab sisse, kui uks on lukus? Ainult keegi, kes oskab lennata. Või väga väike päkapikk. Või mõlemad.
 
-Kui sul täna aega on, vali lemmikmuinasjutt ja mängi see mänguasjadega ette. Lõpp võib olla täiesti uus!
-
-P.S. Eilse mõistatuse vastus: pall.
+Kas oskad ära arvata? Olen ümmargune ja põrkan. Mind visatakse ja lüüakse jalaga. Homme ütlen vastuse.
 
 _Kiirelt-kiirelt · Tipp-Topp_
+
+> Vastus: pall
 
 ### 9. detsember 2026
 
@@ -525,6 +523,8 @@ Mina esitasin talle päris mõistatuse. Sina oled ju mõistatusesõber – see o
 Valge, aga ei ole suhkur. Külm, aga ei ole jäätis. Tuleb taevast ja sulab peos. Mis see on?
 
 Homme ütlen vastuse.
+
+P.S. Eilse mõistatuse vastus: pall.
 
 _Hüpates · Tipp-Topp_
 
@@ -542,13 +542,13 @@ Kes näeb virmalisi esimesena, saab päkapikkude võistlusel auhinnaks kõige pe
 
 Täna õhtul läheme katusele mõlemad. Mina võtan kaks tassi kakaod ja Kõpsu-Mõpsu võtab teki. Ma ütlesin talle, et kui ta jälle magama jääb, äratan ta kohe, kui taevas roheliseks läheb. Kass Nurr tuleb ka. Tema on meie äratuskell.
 
-Mul on sulle üks mõistatus: Käib, aga jalgu ei ole; tiksub, aga südant ei ole. Vastuse kirjutan homme.
+Kui sul täna aega on, tee võileivale nägu kurgi, tomati ja juustu abil. Kes teeb kõige naljakama näo?
 
 P.S. Eilse mõistatuse vastus oli: lumi. Välk arvas, et jäätis.
 
 _Kiirelt-kiirelt · Tipp-Topp_
 
-> Vastus: kell
+> Valmista ette: ülesandeks köögitarbed ja toiduained
 
 ### 11. detsember 2026
 
@@ -562,11 +562,11 @@ Ta magas ahju ääres kuivava kinda sees! Täpselt pöidla kohal. Nii armas, et 
 
 Hommikul ronis Pisi-Pätsi kindast välja ja haigutas nii suurelt, et kõik naersid. Tema ei saanud aru, miks. Nüüd on tal oma kinnas, mis ripub ahju kõrval ja mille sees on pisike padi. Kui kinnas norskab, räägime sosinal.
 
-Üks päkapiku ettepanek: kui tahad, pane silmad kinni ja kuula üks minut. Mitu erinevat häält kuulsid?
-
-P.S. Eilse mõistatuse vastus: kell.
+Mul on sulle üks mõistatus: Käib, aga jalgu ei ole; tiksub, aga südant ei ole. Vastuse kirjutan homme.
 
 _Hüpates · Tipp-Topp_
+
+> Vastus: kell
 
 ### 12. detsember 2026
 
@@ -580,11 +580,11 @@ Mina olen töökoja pudrukeetja. Eile küsis Jõuluvana kolm korda juurde. Nelja
 
 Täna õpetasin pudrukeetmist ka põhjapõder Välgule. Tema ülesanne oli segada. Ta segas sabaga ja puder lendas laeni. Lõpuks sõime kolmekesi: mina, Välk ja kass Nurr. Nurrile meeldis ainult võisilm. Selle ta lakkus ära ja ülejäänu jättis meile.
 
-Kas oskad ära arvata? Kes jätab detsembris aknalaual olevasse sussi kommi? Vastus tuleb homses kirjas.
+Üks päkapiku ettepanek: kui tahad, mängi mängu „Ma näen midagi, mis on…“ ja ütle ainult värv või kuju. Teised arvavad.
+
+P.S. Eilse mõistatuse vastus: kell.
 
 _Sinu sõber · Tipp-Topp_
-
-> Vastus: päkapikk
 
 ### 13. detsember 2026
 
@@ -598,11 +598,13 @@ Helmi oli meie peale pahane. Ma küpsetasin talle vabanduseks koogi. Ta sõi sel
 
 Kogu koduteel oli Kõpsu-Mõpsu vait. Siis ütles ta: „Me arvasime liiga kiiresti.“ Küsisin, mida see tähendab. Ta seletas, et enne, kui kedagi süüdistad, pead kõik vihjed üle vaatama. Hästi, ma vaatan. Aga minu vispel on tagasi. Vähemalt üks asi on leitud!
 
-Mul on sulle üks mõte! Kui õues on lund, ehita lumememm. Kui lund pole, ehita toas patjadest „padjamemm“ ja pane talle müts pähe.
+Kas oskad ära arvata? Kes jätab detsembris aknalaual olevasse sussi kommi? Vastus tuleb homses kirjas.
 
-P.S. Eilse mõistatuse vastus: päkapikk. Täna on pühapäev, nii et sussis on üks komm.
+P.S. Täna on pühapäev, nii et sussis on üks komm.
 
 _Jahusena · Tipp-Topp_
+
+> Vastus: päkapikk
 
 > Valmista ette: komm sussi
 
@@ -610,27 +612,27 @@ _Jahusena · Tipp-Topp_
 
 **Kallis Pääru!**
 
-Eile oli nii tugev tuisk, et aknast ei paistnud midagi. Huuuu! tegi tuul.
+Mul oli eile luksumine! Aga mitte tavaline – iga kord, kui ma luksusin, helisesid töökojas kõik kellukesed: kõlin!
 
-Öösel koputas keegi uksele: kopp-kopp. Ukse taga olid seitse lumist jänest! Lasime nad sooja.
+Proovisin vett juua, hinge kinni hoida ja pea peal seista. Ei aidanud. Kõlin! Kõlin!
 
-Nad sõid ära kõik lumememmede porgandid. Nüüd elavad nad puuriida taga ja ma viin neile igal hommikul kapsalehti.
+Lõpuks hiilis põhjapõder Välk mulle selja taha ja ütles kõrva: „Pöö!“ Ehmusin nii, et luksumine läks ära. Kellukesed on nüüd vaiksed. Peaaegu kahju.
 
-Täna hommikul nägin, et kõige väiksem jänesepoeg on julge. Ta tuli minu juurde ja nuusutas mu saabast. Siis sõi ta kapsalehe otse mu käest. Panin talle nimeks Hopsti. Teistele ma veel nime ei pannud, sest nad hüppavad nii kiiresti, et ma ei tea, kes on kes.
+Õhtul rääkis Jõuluvana, et kui tema oli väike, luksus ta kord terve päeva. Siis helisesid kõik potid ja pannid köögis. Tema vanaema andis talle lusikatäie mett ja luksumine läks üle. Mina proovin järgmine kord ka mett. Kui see ei aita, kutsun Välgu.
 
-Mul on sulle üks mõistatus: Kes tuleb jõuluööl, punane kuub seljas ja valge habe ees? Homme ütlen vastuse.
+Mul on sulle üks mõte: kui tahad, kirjuta või joonista paberile üks asi, mille eest oled täna tänulik, ja pane see purki.
+
+P.S. Eilse mõistatuse vastus: päkapikk.
 
 _Sinu · Tipp-Topp_
 
-> Vastus: Jõuluvana
+> Valmista ette: ülesandeks paber
 
 ### 15. detsember 2026
 
 **Kallis Pääru!**
 
 Päkapikud on kuulnud, et sa oskad hästi õpetada. Õpeta täna Kaile üks uus sõna, salm või mäng.
-
-P.S. Eilse mõistatuse vastus: Jõuluvana.
 
 _Sinu sõber · Tipp-Topp_
 
@@ -646,11 +648,11 @@ Aga täna hommikul oli majal üks nurk puudu. Ja põhjapõder Välk vaatas lakke
 
 Täna tegime uue nurga ja sinna sai väike rõdu. Rõdul istub suhkrust põhjapõder. Välk vaatas seda kaua ja tõi siis maja ette porgandi. Vabanduseks, muidugi. Kõpsu-Mõpsu ütles, et nüüd on meil maailma esimene piparkoogimaja koos porgandiga.
 
-Kui sul täna aega on, aita valmistada pere hommikusöök: kata laud ja pane igale taldrikule väike üllatus.
+Mul on sulle üks mõistatus: Kes tuleb jõuluööl, punane kuub seljas ja valge habe ees? Homme ütlen vastuse.
 
 _Tervitustega köögist · Tipp-Topp_
 
-> Valmista ette: ülesandeks köögitarbed ja toiduained
+> Vastus: Jõuluvana
 
 ### 17. detsember 2026
 
@@ -664,31 +666,31 @@ Kõpsu-Mõpsu vaatas sulgi ja ütles, et nüüd teame, kuhu minna. Mäe taga on 
 
 Õhtul tegin veel ühe plaaditäie küpsiseid, et linnul oleks teel midagi süüa. Kõpsu-Mõpsu pakkis seljakotti laterna, köie ja termose. Mina pakkisin oma sussid. Mitte jalga, vaid kaasa, igaks juhuks. Kui täht on tõesti mäe taga, tahan seda näha esimesena. Või vähemalt teisena.
 
-Kas oskad ära arvata? Mul on neli jalga ja selg, aga ma ei kõnni kunagi. Vastuse kirjutan homme.
+Kui sul täna aega on, üks alustab joonistust, teine jätkab ja kolmas lõpetab. Mis tuli välja? Mõtle pildile pealkiri.
+
+P.S. Eilse mõistatuse vastus: Jõuluvana.
 
 _Sinu sõber · Tipp-Topp_
 
-> Vastus: tool
+> Valmista ette: ülesandeks paber, pliiatsid või värvid
 
 ### 18. detsember 2026
 
 **Kallis Pääru!**
 
-Ma joonistasin eile koomiksi! Selles on kolm pilti.
+Töökojas on üks tuba, kus hoitakse sädelust. Sinna tohib minna ainult hiilides ja hinge kinni hoides.
 
-Esimesel pildil kõnnib põhjapõder Välk jää peal. Teisel pildil libiseb ta – vuhh! – ja tal on jalad igas suunas. Kolmandat pilti ma veel ei joonistanud, sest ma ei tea, mis edasi juhtub.
+Mina läksin eile sinna paelu tooma – ja mul hakkas nina sügelema. Aaa… aaa… AATŠIHH!
 
-Sina loed ju Miki Hiire koomikseid, nii et sa tead: viimane pilt on kõige tähtsam!
+Nüüd sädeleb kõik: seinad, laud, kass ja Jõuluvana habe. Jõuluvana vaatas peeglisse ja ütles, et nii pidulik pole ta kunagi olnud.
 
-Näitasin pilte ka Jõuluvanale. Tema arvas, et kolmandal pildil istub Välk lumehanges ja teeb nägu, nagu oleks ta kogu aeg tahtnud just seal istuda. Kass Nurr arvas, et Välk lendab minema. Mina ei tea veel. Praegu tulevad põhjapõdrad mul natuke nagu toolid.
+Täna pühkisime terve päeva. Aga sädelus on selline asi, mis kunagi päris ära ei lähe. Leidsin seda oma taskust, oma mütsist ja isegi pudrukausist. Põhjapõder Välk sädeleb ka. Kui ta pead raputab, sajab tallis väikest kuldset lund. Ta paistab sellega väga rahul olevat.
 
-Kui tahad, joonista sina kolmas pilt: mis Välgust sai?
-
-P.S. Eilse mõistatuse vastus: tool.
+Kas oskad ära arvata? Mul on neli jalga ja selg, aga ma ei kõnni kunagi. Vastuse kirjutan homme.
 
 _Jahusena · Tipp-Topp_
 
-> Valmista ette: paber ja värvipliiatsid
+> Vastus: tool
 
 ### 19. detsember 2026
 
@@ -702,11 +704,13 @@ Nurr oli karbis magama jäänud ja keegi oli ta kogemata ära pakkinud. Peaaegu 
 
 Pärast seda tegin Nurrile oma karbi. Sees on pehme tekk ja peal silt: „Seda pakki ära saada!“ Nurrile see meeldis. Ta magas seal terve öö ja nurrus nii kõvasti, et karp värises. Hommikul käis ta kõiki pakke nuusutamas. Vist kontrollis, et kuskil poleks veel mõnda kassi.
 
-Üks päkapiku ettepanek: kui tahad, tee võileivale nägu kurgi, tomati ja juustu abil. Kes teeb kõige naljakama näo?
+Üks päkapiku ettepanek: kui tahad, voldi paberlennukid ja vaata, kelle oma lendab kõige kaugemale. Proovi erinevaid voltimisviise!
+
+P.S. Eilse mõistatuse vastus: tool.
 
 _Kiirelt-kiirelt · Tipp-Topp_
 
-> Valmista ette: ülesandeks köögitarbed ja toiduained
+> Valmista ette: ülesandeks paber
 
 ### 20. detsember 2026
 
@@ -732,11 +736,9 @@ Ema-lind oli tähe sinna viinud, sest pojad kartsid pimedat. Me ei saanud tema p
 
 Tagasiteel küsisin: „Mis nüüd saab? Kas me võtame tähe ära?“ Kõpsu-Mõpsu ei vastanud kohe. Siis ütles ta, et tal on üks mõte. Kui ta nii ütleb, tuleb sellest alati midagi head. Lähen nüüd kuuri moosipurke otsima. Ta küsis neid. Milleks, seda ma veel ei tea.
 
-Kui sul täna aega on, lõika vanadest ajakirjadest pilte ja kleebi neist kokku pilt oma unistuste päevast.
+Kui sul täna aega on, loe kokku, mitu punast ehet on kuusel. Aga mitu kuldset? Kumba on rohkem?
 
 _Sinu · Tipp-Topp_
-
-> Valmista ette: ülesandeks paber, käärid, liim
 
 ### 22. detsember 2026
 
@@ -750,27 +752,29 @@ Nüüd on kõigil valge: kuusel, kelgul ja linnupesal. Ja minul on mälestuseks 
 
 Õhtul käisime pesa juures. Latern põles ja linnupojad magasid nagu kolm väikest palli. Ema-lind vaatas meid ja ütles: piiu. Ma arvan, et see tähendas aitäh. Ütlesin vastu: piiu. Nüüd oskan natuke linnukeelt.
 
-Mul on sulle üks mõte: kui tahad, loe kokku, mitu punast ehet on kuusel. Aga mitu kuldset? Kumba on rohkem?
+Mul on sulle üks mõte: kui tahad, vali raamat ja loe koos. Pärast joonista oma lemmikkoht loost.
 
 _Kiirelt-kiirelt · Tipp-Topp_
+
+> Valmista ette: ülesandeks raamatud
 
 ### 23. detsember 2026
 
 **Kallis Pääru!**
 
-Oi-oi! Ma ehitasin eile terve päeva lumememme. Tal oli porgandnina, kaks nööpi ja minu vana müts.
+Mu kelk oli eile kadunud! Ma otsisin seda kuuri tagant ja lume alt.
 
-Õhtul harjutas põhjapõder Välk katusele maandumist. Ta libises katuselt alla – ja maandus otse minu lumememme peale! Põmm!
+Siis nägin: Jõuluvana sõitis minu kelguga mäest alla! Tema on nii suur ja kelk nii väike, et paistsid ainult habe ja saapad.
 
-Nüüd seisab õues lumememm, kellel on sarved. Porgandi sõi Välk ära. Ma arvan, et nad said sõpradeks.
+Ta ütles, et laenas seda ainult üheks korraks. Aga siis tuli Kõpsu-Mõpsu ka ja nad sõitsid üksteist korda. Järgmine kord tahan mina ka kelguga sõita!
 
-Täna hommikul seisid nad õues kahekesi: Välk ja sarvedega lumememm. Välk tõi talle vabanduseks uue porgandi. Siis harjutas Välk veel natuke ja maandus seekord ilusti katusele. Ainult natuke lund kukkus. Ja see kukkus otse minu kraesse. Brr!
+Täna hommikul oli minu kelk kuuri ukse juures tagasi. Selle peal oli väike kiri: „Aitäh laenamast! Jõuluvana.“ Ja kelgunööri külge oli seotud punane lehv. Nüüd on minu kelk kõige pidulikum kelk terves töökojas.
 
-Üks päkapiku ettepanek: kui tahad, joonista kaheksale kaardile neli paari pilte ja mängi nendega mälumängu.
+Üks päkapiku ettepanek: kui tahad, joonista jõulukaart ja kirjuta sinna üks soe soov. Kaardi võib postiga saata või ise üle anda.
 
 _Tervitustega köögist · Tipp-Topp_
 
-> Valmista ette: ülesandeks paber, pliiatsid või värvid, käärid
+> Valmista ette: ülesandeks paber, pliiatsid või värvid
 
 ### 24. detsember 2026
 
@@ -822,7 +826,7 @@ _Sinu pisike sõber · Pisi-Pätsi_
 
 **Kallis Kai!**
 
-Me tegime lumememme. Suur pall, väike pall ja porgandnina. Lumememm naeratab!
+Välk vaatas multikat. Tegelane naeris: hi-hi! Välk naeris ka: hõh-hõh!
 
 _Kalli-kalli · Pisi-Pätsi_
 
@@ -830,7 +834,7 @@ _Kalli-kalli · Pisi-Pätsi_
 
 **Kallis Kai!**
 
-Markus ja Pääru on suured. Ja Kai? Kai on ka juba suur! Nii suur! Täna on pühapäev ja sussis on väike üllatus!
+Ma käisin vannis. Mullid! Puhu mulli: puhh! Mull lendab ära. Täna on pühapäev ja sussis on väike üllatus!
 
 _Sinu pisike sõber · Pisi-Pätsi_
 
@@ -840,7 +844,7 @@ _Sinu pisike sõber · Pisi-Pätsi_
 
 **Kallis Kai!**
 
-Põrsas Peppa armastab lompe. Plärts! Talvel on lombid jääs, siis hüppame hoopis lumme: pläts! Hüppame koos!
+Väljas tuiskab: huuu! Kopp-kopp! Kes tuli? Jänkud tulid! Jänku hüppab: hopp-hopp. Kas sina oskad hüpata nagu jänku?
 
 _Kalli-kalli · Pisi-Pätsi_
 
@@ -848,7 +852,7 @@ _Kalli-kalli · Pisi-Pätsi_
 
 **Kallis Kai!**
 
-Ma käisin vannis. Mullid! Puhu mulli: puhh! Mull lendab ära.
+Põrsas Peppa armastab lompe. Plärts! Talvel on lombid jääs, siis hüppame hoopis lumme: pläts! Hüppame koos!
 
 _Kallistusega · Pisi-Pätsi_
 
@@ -880,7 +884,7 @@ _Kalli-kalli · Pisi-Pätsi_
 
 **Kallis Kai!**
 
-Kus on Markus ja Pääru? Lehvita: tšau-tšau! Markus ja Pääru lehvitavad ka.
+Markus ja Pääru on suured. Ja Kai? Kai on ka juba suur! Nii suur!
 
 _Musi · Pisi-Pätsi_
 
@@ -922,7 +926,7 @@ _Musi · Pisi-Pätsi_
 
 **Kallis Kai!**
 
-Ma kallistasin kaisukaru. Kaisukaru on pehme ja soe. Kallista sina ka oma kaisulooma!
+Kus on Markus ja Pääru? Lehvita: tšau-tšau! Markus ja Pääru lehvitavad ka.
 
 _Kalli-kalli · Pisi-Pätsi_
 
@@ -946,7 +950,7 @@ _Sinu pisike sõber · Pisi-Pätsi_
 
 **Kallis Kai!**
 
-Põhjapõder Välk sööb samblikku. Matsu-matsu. Välgul on suur nina. Näita, kus on sinu nina! Täna on pühapäev ja sussis on väike üllatus!
+Õhtul paistab kuu. Kuu on ümmargune ja kollane. Lehvita kuule: head ööd, kuu! Täna on pühapäev ja sussis on väike üllatus!
 
 _Musi · Pisi-Pätsi_
 
@@ -964,7 +968,7 @@ _Sinu pisike sõber · Pisi-Pätsi_
 
 **Kallis Kai!**
 
-Kui suur on Kai? Nii suur! Sirutame käed üles – kõrgele, kõrgele! Ja nüüd kükki: pisike!
+Ma kallistasin kaisukaru. Kaisukaru on pehme ja soe. Kallista sina ka oma kaisulooma!
 
 _Musi · Pisi-Pätsi_
 
@@ -972,7 +976,7 @@ _Musi · Pisi-Pätsi_
 
 **Kallis Kai!**
 
-Põhjapõder Välk hüppas lumme. Põmm! Ainult sarved paistavad. Välk raputab end: sahh-sahh-sahh! Kas sina oskad ka end raputada?
+Ma küpsetasin piparkoogi. Piparkook on südame kujuga. Süda on sulle! Mõnus-mõnus.
 
 _Kallistusega · Pisi-Pätsi_
 
@@ -997,16 +1001,16 @@ _Musi · Pisi-Pätsi_
 - 1. kirjas tutvustab iga päkapikk ka õdede-vendade päkapikke, viimases kirjas lõpetavad kõik koos.
 - 4. detsember: ühine sündmus „Täht on kadunud“ – Markus, Pääru ja Kai kuulevad sellest igaüks oma päkapiku käest.
 - 5. detsember: Markus → Pääru (sussi abiline). Mõlema kiri teab sellest.
+- 7. detsember: ühine sündmus „Jänesed tuisu eest“ – Pääru ja Kai kuulevad sellest igaüks oma päkapiku käest.
 - 10. detsember: Markus → Kai (ettelugemine). Mõlema kiri teab sellest.
 - 11. detsember: ühine sündmus „Pisike päkapikk kindas“ – Pääru ja Kai kuulevad sellest igaüks oma päkapiku käest.
 - 13. detsember: ühine sündmus „Vale kahtlusalune“ – Markus ja Pääru kuulevad sellest igaüks oma päkapiku käest.
-- 14. detsember: ühine sündmus „Jänesed tuisu eest“ – Markus ja Pääru kuulevad sellest igaüks oma päkapiku käest.
 - 15. detsember: Pääru → Kai (õpetamine). Mõlema kiri teab sellest.
 - 16. detsember: ühine sündmus „Piparkoogimaja katus“ – Markus, Pääru ja Kai kuulevad sellest igaüks oma päkapiku käest.
 - 19. detsember: ühine sündmus „Nurrub pakk“ – Markus, Pääru ja Kai kuulevad sellest igaüks oma päkapiku käest.
 - 20. detsember: Markus → Pääru (koos mängimine). Mõlema kiri teab sellest.
 - 21. detsember: ühine sündmus „Täht on leitud“ – Markus, Pääru ja Kai kuulevad sellest igaüks oma päkapiku käest.
-- 23. detsember: ühine sündmus „Välk harjutab maandumist“ – Pääru ja Kai kuulevad sellest igaüks oma päkapiku käest.
+- 23. detsember: ühine sündmus „Jõuluvana laenab kelku“ – Markus ja Pääru kuulevad sellest igaüks oma päkapiku käest.
 
 ### Markus on salajane abiline
 

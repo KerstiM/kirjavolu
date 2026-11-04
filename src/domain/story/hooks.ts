@@ -1,5 +1,5 @@
 import type { ChildProfile } from '../models'
-import { pickedTopics, TOPICS } from '../../data/topics'
+import { allNoteTexts, pickedTopics, TOPICS } from '../../data/topics'
 import type { HookId } from './types'
 
 /**
@@ -17,12 +17,12 @@ export interface PersonalHook {
   mentions: RegExp
 }
 
-/** Every topic of the list is a hook; food topics are looked for among foods. */
+/** Every topic is a hook; food topics are looked for among foods. */
 export const PERSONAL_HOOKS: PersonalHook[] = TOPICS.map((topic) => ({
   id: topic.id,
   label: topic.label,
   match: topic.match,
-  fields: topic.group === 'food' ? ['foods', 'details'] : ['interests', 'favorites', 'details'],
+  fields: topic.within === 'foods' ? ['foods', 'details'] : ['interests', 'favorites', 'details'],
   mentions: topic.mentions,
 }))
 
@@ -34,16 +34,24 @@ export function getHook(id: HookId): PersonalHook {
 
 /**
  * Hooks supported by the child's profile: the picked topics, and topics found in the
- * free-text fields. Only these may be used in the child's letters.
+ * parent's words under them and in the free-text fields. Only these may be used in the
+ * child's letters.
  */
 export function profileHooks(child: ChildProfile): Set<HookId> {
   const result = new Set<HookId>(pickedTopics(child).map((topic) => topic.id))
+  const notes = allNoteTexts(child)
   for (const hook of PERSONAL_HOOKS) {
     const texts = hook.fields.flatMap((field) => {
       const value = child[field]
       return Array.isArray(value) ? value : [value]
     })
+    texts.push(...notes)
     if (texts.some((text) => hook.match.test(text))) result.add(hook.id)
   }
   return result
+}
+
+/** True when one of the hooks is a narrower topic of this one (Korvpall for Pallimängud). */
+export function narrowedBy(hook: HookId, hooks: ReadonlySet<HookId>): boolean {
+  return TOPICS.some((topic) => topic.within === hook && hooks.has(topic.id))
 }

@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { TOPIC_GROUPS, TOPICS, type TopicId } from '../../data/topics'
+import { LISTED_TOPICS, TOPIC_GROUPS, type Topic, type TopicId, type TopicNotes } from '../../data/topics'
 
-/** Topics from the list, grouped; the letters have real stories for each of them. */
+/**
+ * Broad topics from the list, grouped; the letters have real stories for each of them.
+ * A picked topic opens one optional field for the child's own favourite ("korvpall").
+ */
 const model = defineModel<TopicId[]>({ required: true })
+const notes = defineModel<TopicNotes>('notes', { default: () => ({}) })
 /** Most topics that may be picked, e.g. 3 in the quick profile; the rest are disabled once reached. */
 const props = defineProps<{ max?: number }>()
 
 const groups = TOPIC_GROUPS.map((group) => ({
   ...group,
-  topics: TOPICS.filter((topic) => topic.group === group.id),
+  topics: LISTED_TOPICS.filter((topic) => topic.group === group.id),
 }))
 
 const picked = computed(() => new Set(model.value))
@@ -17,6 +21,14 @@ const full = computed(() => props.max !== undefined && model.value.length >= pro
 
 function toggle(id: TopicId): void {
   model.value = picked.value.has(id) ? model.value.filter((existing) => existing !== id) : [...model.value, id]
+}
+
+function pickedIn(topics: Topic[]): Topic[] {
+  return topics.filter((topic) => picked.value.has(topic.id))
+}
+
+function setNote(id: TopicId, text: string): void {
+  notes.value = { ...notes.value, [id]: text }
 }
 </script>
 
@@ -39,6 +51,20 @@ function toggle(id: TopicId): void {
             @change="toggle(topic.id)"
           />
           <span>{{ topic.label }}</span>
+        </label>
+      </div>
+      <div v-if="pickedIn(group.topics).length" class="topics__notes">
+        <label v-for="topic in pickedIn(group.topics)" :key="topic.id" class="topics__note">
+          <span class="topics__note-label">{{ topic.label }}</span>
+          <input
+            class="input topics__note-input"
+            type="text"
+            autocomplete="off"
+            :aria-label="`${topic.label}: täpsustus (valikuline)`"
+            :placeholder="topic.hint"
+            :value="notes[topic.id] ?? ''"
+            @input="setNote(topic.id, ($event.target as HTMLInputElement).value)"
+          />
         </label>
       </div>
     </fieldset>
@@ -98,6 +124,34 @@ function toggle(id: TopicId): void {
   &:has(input:focus-visible) {
     outline: 3px solid var(--focus);
     outline-offset: 2px;
+  }
+}
+.topics__notes {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
+.topics__note {
+  display: grid;
+  grid-template-columns: fit-content(10rem) minmax(0, 1fr);
+  align-items: center;
+  gap: 0.5rem;
+}
+.topics__note-label {
+  font-size: 0.8rem;
+  color: var(--lavender-ink);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.topics__note-input {
+  padding-block: 0.35rem;
+  font-size: 0.9rem;
+}
+// On a phone a long topic name would squeeze the field: the name goes above it.
+@media (max-width: 480px) {
+  .topics__note {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.2rem;
   }
 }
 </style>

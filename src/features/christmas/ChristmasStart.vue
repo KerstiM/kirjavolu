@@ -6,7 +6,7 @@ import BaseButton from '../../components/ui/BaseButton.vue'
 import TopicPicker from '../children/TopicPicker.vue'
 import ListInput from '../../components/ui/ListInput.vue'
 import { readDecember, writeDecember } from '../pass/passLetters'
-import type { TopicId } from '../../data/topics'
+import type { TopicId, TopicNotes } from '../../data/topics'
 import Mascot from '../../components/brand/Mascot.vue'
 import { CHRISTMAS_ROOT, DESIGN_KEY } from '../../components/brand/design'
 import { emptyChildDraft, useChildrenStore } from '../children/childrenStore'
@@ -85,6 +85,7 @@ const count = computed(() => picked.value.length + filledKids.value.length)
 // free letters; the rest is kept in the profile for the personal letters, which are the ones that use it.
 interface Extra {
   topics: TopicId[]
+  topicNotes: TopicNotes
   family: string[]
   interests: string[]
   december: string
@@ -107,6 +108,7 @@ watch(
     for (const { key, child } of list) {
       extras[key] ??= {
         topics: [...(child?.topics ?? [])],
+        topicNotes: { ...child?.topicNotes },
         family: [...(child?.family ?? [])],
         interests: [...(child?.interests ?? [])],
         december: child ? readDecember(child.id) : '',
@@ -129,7 +131,13 @@ function childrenForLetters(): ChildProfile[] | null {
     const extra = extras[`id:${child.id}`]
     if (!extra) return child
     const { id, createdAt: _created, updatedAt: _updated, ...profile } = child
-    children.update(id, { ...profile, topics: extra.topics, family: extra.family, interests: extra.interests })
+    children.update(id, {
+      ...profile,
+      topics: extra.topics,
+      topicNotes: extra.topicNotes,
+      family: extra.family,
+      interests: extra.interests,
+    })
     writeDecember(id, extra.december)
     return children.byId(id) ?? child
   })
@@ -168,6 +176,7 @@ function addNewKids(): ChildProfile[] | null {
       age: Number(kid.age),
       readingLevel: readingLevelForAge(Number(kid.age)),
       topics: extra?.topics ?? [],
+      topicNotes: extra?.topicNotes ?? {},
       family: extra?.family ?? [],
       interests: extra?.interests ?? [],
     })
@@ -261,8 +270,8 @@ async function start(): Promise<void> {
                   {{ extras[row.key]!.topics.length ? `${extras[row.key]!.topics.length} valitud` : 'valikuline, siis tulevad kirjadesse tema lood' }}
                 </span>
               </summary>
-              <p class="christmas-start__hint">Iga teema kohta on kirjades valmis lood, näiteks päkapikk proovib ise jalgpalli.</p>
-              <TopicPicker v-model="extras[row.key]!.topics" />
+              <p class="christmas-start__hint">Iga teema kohta on kirjades valmis lood. Teema juurde võid kirjutada lapse lemmiku, näiteks korvpall.</p>
+              <TopicPicker v-model="extras[row.key]!.topics" v-model:notes="extras[row.key]!.topicNotes" />
             </details>
             <details class="christmas-start__topics">
               <summary>
