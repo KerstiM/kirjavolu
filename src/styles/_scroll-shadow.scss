@@ -1,0 +1,30 @@
+// A scrolling box (v-scroll-shadow) shows a soft shadow along an edge that has more beyond it.
+// The shadows are sticky pseudo-elements, so they sit over the content and take no room.
+.scroll-shadow {
+  &::before,
+  &::after {
+    content: '';
+    position: sticky;
+    display: block;
+    height: 14px;
+    flex: none;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  &::before {
+    top: var(--scroll-shadow-top, 0);
+    margin-bottom: -14px;
+    background: linear-gradient(to bottom, rgba(42, 36, 51, 0.16), rgba(42, 36, 51, 0));
+  }
+  &::after {
+    bottom: 0;
+    margin-top: -14px;
+    background: linear-gradient(to top, rgba(42, 36, 51, 0.16), rgba(42, 36, 51, 0));
+  }
+  &.has-more-above::before,
+  &.has-more-below::after {
+    opacity: 1;
+  }
+}

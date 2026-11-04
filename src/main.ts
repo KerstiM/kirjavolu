@@ -4,12 +4,14 @@ import App from './app/App.vue'
 import { router } from './app/router'
 import { setupPersistence } from './app/persistence'
 import { setupAnalytics } from './app/analytics'
+import { vScrollShadow } from './directives/scrollShadow'
 import './styles/main.scss'
 
 const app = createApp(App)
 const pinia = createPinia()
 app.use(pinia)
 app.use(router)
+app.directive('scroll-shadow', vScrollShadow)
 setupPersistence()
 // Before mounting, so the first page's events are not lost.
 setupAnalytics(import.meta.env.VITE_UMAMI_WEBSITE_ID, import.meta.env.VITE_UMAMI_DOMAINS)

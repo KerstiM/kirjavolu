@@ -54,7 +54,7 @@ const solved = computed(() => props.content.items.filter((item) => item.answer |
         </thead>
         <tbody>
           <tr v-for="item in solved" :key="item.id">
-            <th scope="row">{{ item.childId && item.forChild ? `${item.forChild} · ${item.label}` : item.label }}</th>
+            <th scope="row">{{ item.childId && item.forChild ? `${item.forChild} · ${item.label}` : item.label || item.heading }}</th>
             <td>{{ item.answer ?? '–' }}</td>
             <td>{{ item.parentNote ?? '' }}</td>
           </tr>

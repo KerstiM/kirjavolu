@@ -297,7 +297,8 @@ export function generateLetters(
         : toddlerBody
     items.push({
       kind: 'letter',
-      label: date || (options.count > 1 ? `${i + 1}. kiri` : occasion.name),
+      // A date, else the number of the letter; a single letter has neither (the occasion is not repeated on it).
+      label: date || (options.count > 1 ? `${i + 1}. kiri` : ''),
       date: isoDate || undefined,
       answer: thread?.answer,
       parentNote: prepNote([

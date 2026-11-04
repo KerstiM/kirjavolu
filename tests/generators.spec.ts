@@ -384,8 +384,8 @@ describe('letters without a date', () => {
     expect(undated.instructions.flatMap((block) => block.steps).join(' ')).toContain('Kirjad on nummerdatud')
   })
 
-  it('labels a single undated letter with its occasion, not a date', async () => {
+  it('gives a single undated letter no label: neither a date nor the occasion', async () => {
     const content = await templateGenerator.generate(makeRequest('letter', { occasionId: 'christmas', options: { count: 1, startDate: '2026-12-01', dated: false } }))
-    expect(content.items[0]).toMatchObject({ label: 'Jõulud', date: undefined })
+    expect(content.items[0]).toMatchObject({ label: '', date: undefined })
   })
 })

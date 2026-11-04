@@ -103,6 +103,7 @@ onBeforeUnmount(() => {
   <div class="backdrop no-print" @click.self="emit('close')">
     <div
       ref="dialog"
+      v-scroll-shadow
       class="dialog"
       role="dialog"
       aria-modal="true"
@@ -110,7 +111,7 @@ onBeforeUnmount(() => {
       @keydown="onKeydown"
     >
       <header class="dialog__head">
-        <h2 id="item-editor-title">Muuda: {{ title }}</h2>
+        <h2 id="item-editor-title">Muuda: {{ title || 'kiri' }}</h2>
         <button type="button" class="dialog__close" aria-label="Sulge" @click="emit('close')"><X :size="18" /></button>
       </header>
       <form class="dialog__form" @submit.prevent="save">
