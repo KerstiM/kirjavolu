@@ -16,8 +16,8 @@ import type { SeasonPass } from './seasonPass'
 
 const CODE = 'KV-7KQM-3FXA'
 const VALID = { code: CODE, generationsLeft: 10, fixesLeft: 30, validUntil: '2027-01-31T21:59:59.000Z' }
-const MIA = { name: 'Mia', age: 4, readingLevel: 'read-aloud', interests: ['hobused'], family: ['vend Ruben', 'kass Miisu'] }
-const RUBEN = { name: 'Ruben', age: 7, readingLevel: 'beginner', interests: ['dinosaurused'] }
+const MIA = { name: 'Mia', age: 4, readingLevel: 'read-aloud', interests: ['hobused'], family: ['vend Markus', 'kass Miisu'] }
+const MARKUS = { name: 'Markus', age: 7, readingLevel: 'beginner', interests: ['dinosaurused'] }
 const STORY = { genre: 'fairytale', theme: 'courage', tone: 'magical', length: 'medium', extraCharacters: ['vanaema'], occasion: 'Jõulud', notes: '' }
 const BODY = { code: CODE, children: [MIA], story: STORY }
 
@@ -84,9 +84,9 @@ describe('POST /api/joulupass/lugu', () => {
   })
 
   it('writes for the least practised reader and hands everything over as data in tags', () => {
-    const prompt = storyPrompt(parseStoryInput({ ...BODY, children: [MIA, RUBEN] })!)
+    const prompt = storyPrompt(parseStoryInput({ ...BODY, children: [MIA, MARKUS] })!)
     expect(prompt).toContain('<laps>\nNimi: Mia\nVanus: 4\nHuvid ja lemmikud: hobused\n')
-    expect(prompt).toContain('Pere ja lemmikloomad: vend Ruben; kass Miisu')
+    expect(prompt).toContain('Pere ja lemmikloomad: vend Markus; kass Miisu')
     expect(prompt).toContain('Žanr: muinasjutt\nToon: maagiline\nÕpetlik teema: julgus')
     expect(prompt).toContain('Leheküljed: täpselt 5. Iga lehekülje pikkus: 50–80 sõna')
   })

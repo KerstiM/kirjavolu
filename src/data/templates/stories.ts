@@ -2,7 +2,7 @@ import type { EducationalTheme, OccasionId, StoryGenre, Tone } from '../../domai
 import type { Say } from './interests'
 
 export interface StoryContext {
-  /** Hero names in nominative: "Ruben ja Jasper". */
+  /** Hero names in nominative: "Markus ja Pääru". */
   heroes: string
   heroesAllative: string
   /** Third-person number: v('läks', 'läksid'). */
@@ -21,7 +21,7 @@ export type StoryLine = (c: StoryContext) => string
  */
 export interface GenreTemplate {
   label: string
-  /** Title object joined after hero names: "Ruben, Jasper ja kuldne võti". */
+  /** Title object joined after hero names: "Markus, Pääru ja kuldne võti". */
   titleThing: StoryLine
   openings: StoryLine[]
   problems: StoryLine[]

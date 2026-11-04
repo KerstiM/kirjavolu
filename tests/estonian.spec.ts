@@ -2,20 +2,20 @@ import { describe, expect, it } from 'vitest'
 import { formatDate, addDays, genitive, joinList, namesInCase, nameCase } from '@/domain/text/estonian'
 import { decodeNumbers, encodeNumbers, isAnagram, scramble, shiftText } from '@/domain/generators/puzzleTools'
 import { createRng } from '@/domain/text/random'
-import { BRITA, JASPER, RUBEN } from './helpers'
+import { KAI, PAARU, MARKUS } from './helpers'
 
 describe('Estonian grammar helpers', () => {
   it('builds genitive forms', () => {
-    expect(genitive('Ruben')).toBe('Rubeni')
-    expect(genitive('Brita')).toBe('Brita')
+    expect(genitive('Karl')).toBe('Karli')
+    expect(genitive('Kai')).toBe('Kai')
     expect(genitive('Mart', 'Mardi')).toBe('Mardi')
   })
 
   it('declines names and lists', () => {
-    expect(nameCase(RUBEN, 'allative')).toBe('Rubenile')
-    expect(namesInCase([RUBEN, JASPER, BRITA], 'allative')).toBe('Rubenile, Jasperile ja Britale')
-    expect(namesInCase([RUBEN, JASPER], 'comitative')).toBe('Rubeni ja Jasperiga')
-    expect(joinList(['Ruben', 'Jasper', 'Brita'])).toBe('Ruben, Jasper ja Brita')
+    expect(nameCase(MARKUS, 'allative')).toBe('Markusele')
+    expect(namesInCase([MARKUS, PAARU, KAI], 'allative')).toBe('Markusele, Päärule ja Kaile')
+    expect(namesInCase([MARKUS, PAARU], 'comitative')).toBe('Markuse ja Pääruga')
+    expect(joinList(['Markus', 'Pääru', 'Kai'])).toBe('Markus, Pääru ja Kai')
   })
 
   it('formats dates', () => {

@@ -13,7 +13,7 @@ Eestikeelne veebirakendus, mis aitab lapsevanematel luua lapsele personaalseid m
 - Kuus sisutüüpi, igaühel oma loomisvoog ja seaded
 - **Kolm ekraani eelvaateni**: „Mida ja mis puhul?“ → „Kellele?“ → eelvaade. Link tüübi ja tähtpäevaga (nt `/loo?tyyp=letter&puhk=christmas`) täidab need ette ning avab kohe „Kellele?“. Lapse saab lisada otse viisardis (nimi, vanus ja kõik sobivad huviteemad; lugemisoskus pakutakse vanuse järgi). „Vaata näidet“ (`/naide`) näitab näidislapse 1. detsembri kirja ilma andmeid sisestamata
 - 11 sündmust (jõulud, lihavõtted, sünnipäev, halloween, mardi- ja kadripäev, vastlapäev, sõbrapäev, kooliaasta algus, suvevaheaeg, piimahammas, tavaline päev)
-- Laste profiilid (lisamine, muutmine, kustutamine); alguses on nimekiri tühi, näidisprofiilid Ruben, Jasper ja Brita saab lisada ühe nupuga
+- Laste profiilid (lisamine, muutmine, kustutamine); alguses on nimekiri tühi, näidisprofiilid Markus, Pääru ja Kai saab lisada ühe nupuga
 - Umbes 40 huviteemat, mille lapsevanem valib loendist; iga teema kohta on kirjades käsitsi kirjutatud lood
 - Ühised elamused õdedele-vendadele: ülesanded jagatakse vanuse järgi
 - **Stsenaariumipõhised jõulukirjad**: 7 või 24 jõulukirja sari kirjutatakse terviklikest, käsitsi kirjutatud lugudest – igal kirjal on üks sündmus algusest lõpuni, mitte juhuslikult kokku pandud lõigud. Kogu sari planeeritakse enne kirjutamist (järjejutu etapid, iseseisvad lood, pere sündmused, ülesanded, isikupärastus) ja kontrollitakse automaatselt (kordused, ajajärjestus, saladused, mõistatuste vastused, kaardi pikkus). Vt [docs/scenario-engine.md](docs/scenario-engine.md)
@@ -127,9 +127,9 @@ src/
 `src/domain/posterLayout.ts` arvutab veerud (kuni 12 osa: 2, rohkem: 4), read ja lehed (2 veergu ja kuni 4 rida lehel). Päev *i* asub veerus `floor(i / read)` ja paarisveergudes ülalt alla, paaritutes alt üles, nii et järjestikused päevad on alati naabrid ja rada ei hüppa. Taust ja rada joonistatakse plakati koordinaatides ning iga leht näitab oma lõiku, nii et kokku pandud lehtedel jätkuvad need katkematult. 7+ kirjaga sarjades jäetakse täitelaused ära, et tekst kaardile mahuks.
 
 ## Kohalik mallipõhine genereerimine
-Sisu ei loo tehisintellekt. `TemplateGenerator` (`src/domain/generators`) paneb tekstid kokku käsitsi kirjutatud eestikeelsetest mallidest ja lapse profiilist. Genereerimine on deterministlik (seemne põhjal), arvestab vanust ja lugemisoskust, väldib korduvaid tekste ning käänab nimesid (nt Rubenile, Rubeni ja Jasperiga).
+Sisu ei loo tehisintellekt. `TemplateGenerator` (`src/domain/generators`) paneb tekstid kokku käsitsi kirjutatud eestikeelsetest mallidest ja lapse profiilist. Genereerimine on deterministlik (seemne põhjal), arvestab vanust ja lugemisoskust, väldib korduvaid tekste ning käänab nimesid (nt Markusele, Markuse ja Pääruga).
 
-Jõulude päevasarjad kirjutab **stsenaariumimootor** (`src/domain/story`, lood kaustas `src/data/scenarios`): kõigepealt planeeritakse kogu sari (`planner.ts`), siis kirjutatakse plaani järgi kirjad (`render.ts`) ja lõpuks kontrollitakse tervikut (`validate.ts`). Näidissarjad Rubenile, Jasperile ja Britale on kaustas [docs/samples](docs/samples); arhitektuur, toimetamise põhimõtted ja juhised uute lugude, järjejuttude, tegelaste ja sündmuste lisamiseks on failis [docs/scenario-engine.md](docs/scenario-engine.md).
+Jõulude päevasarjad kirjutab **stsenaariumimootor** (`src/domain/story`, lood kaustas `src/data/scenarios`): kõigepealt planeeritakse kogu sari (`planner.ts`), siis kirjutatakse plaani järgi kirjad (`render.ts`) ja lõpuks kontrollitakse tervikut (`validate.ts`). Näidissarjad Markusele, Päärule ja Kaile on kaustas [docs/samples](docs/samples); arhitektuur, toimetamise põhimõtted ja juhised uute lugude, järjejuttude, tegelaste ja sündmuste lisamiseks on failis [docs/scenario-engine.md](docs/scenario-engine.md).
 
 ## Tulevane AI-integratsioon
 UI kasutab ainult liidest `ContentGenerator` (`generate`, `regenerateItem`) läbi `useGenerator()`. AI-teenuse lisamiseks tee serveripoolne teenus, mis implementeerib sama liidese. API-võtmeid ei tohi kunagi panna frontendi.

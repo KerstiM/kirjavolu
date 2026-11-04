@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { loadState, migrate, saveState, SCHEMA_VERSION, STORAGE_KEY } from '@/utils/storage'
 import { useChildrenStore, emptyChildDraft } from '@/features/children/childrenStore'
-import { RUBEN } from './helpers'
+import { MARKUS } from './helpers'
 
 describe('storage', () => {
   it('returns an empty state when nothing is stored', () => {
@@ -10,9 +10,9 @@ describe('storage', () => {
   })
 
   it('round-trips state through localStorage', () => {
-    saveState({ schemaVersion: SCHEMA_VERSION, children: [RUBEN], creations: [], demoSeeded: true })
+    saveState({ schemaVersion: SCHEMA_VERSION, children: [MARKUS], creations: [], demoSeeded: true })
     const loaded = loadState()
-    expect(loaded.children[0]?.name).toBe('Ruben')
+    expect(loaded.children[0]?.name).toBe('Markus')
     expect(loaded.demoSeeded).toBe(true)
   })
 
@@ -22,8 +22,8 @@ describe('storage', () => {
   })
 
   it('migrates unversioned data and ignores data from a newer schema', () => {
-    expect(migrate({ children: [RUBEN] }).children).toHaveLength(1)
-    expect(migrate({ schemaVersion: SCHEMA_VERSION + 1, children: [RUBEN] }).children).toHaveLength(0)
+    expect(migrate({ children: [MARKUS] }).children).toHaveLength(1)
+    expect(migrate({ schemaVersion: SCHEMA_VERSION + 1, children: [MARKUS] }).children).toHaveLength(0)
   })
 })
 
@@ -34,12 +34,12 @@ describe('children store', () => {
     const store = useChildrenStore()
     expect(store.children).toHaveLength(0)
     store.restoreDemo()
-    expect(store.children.map((c) => c.name)).toEqual(['Ruben', 'Jasper', 'Brita'])
+    expect(store.children.map((c) => c.name)).toEqual(['Markus', 'Pääru', 'Kai'])
   })
 
   it('keeps saved profiles', () => {
-    saveState({ schemaVersion: SCHEMA_VERSION, children: [RUBEN], creations: [], demoSeeded: true })
-    expect(useChildrenStore().children.map((c) => c.name)).toEqual(['Ruben'])
+    saveState({ schemaVersion: SCHEMA_VERSION, children: [MARKUS], creations: [], demoSeeded: true })
+    expect(useChildrenStore().children.map((c) => c.name)).toEqual(['Markus'])
   })
 
   it('adds, updates and removes profiles with cleaned lists', () => {

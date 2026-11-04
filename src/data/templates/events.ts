@@ -7,7 +7,7 @@ export interface EventContext {
   title: string
   /** Name of the helper writing the letter. */
   helper: string
-  /** Siblings taking part, allative: "Jasperile ja Britale"; empty when alone. */
+  /** Siblings taking part, allative: "Päärule ja Kaile"; empty when alone. */
   othersAllative: string
 }
 

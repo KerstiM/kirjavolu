@@ -9,7 +9,7 @@ import { PASS_KEY } from '@/features/pass/seasonPass'
 import { useCreationsStore } from '@/features/preview/creationsStore'
 import { currentPromo } from '@/features/home/seasonal'
 import { templateGenerator } from '@/domain/generators/templateGenerator'
-import { makeRequest, RUBEN } from './helpers'
+import { makeRequest, MARKUS } from './helpers'
 
 async function open(path: string, before?: () => Promise<void>) {
   const pinia = createPinia()
@@ -91,9 +91,9 @@ describe('the home page', () => {
     const heading = screen.getByRole('heading', { name: 'Vaata, milline võlu välja näeb' })
     expect(heading).toHaveFocus()
     const examples = screen.getByRole('region', { name: 'Vaata, milline võlu välja näeb' })
-    expect(within(examples).getByRole('heading', { name: 'Kallis Jasper!' })).toBeInTheDocument()
+    expect(within(examples).getByRole('heading', { name: 'Kallis Pääru!' })).toBeInTheDocument()
     expect(within(examples).getByRole('heading', { name: 'Kuum jälg!' })).toBeInTheDocument()
-    expect(within(examples).getByRole('heading', { name: 'Jasper ja kadunud täht' })).toBeInTheDocument()
+    expect(within(examples).getByRole('heading', { name: 'Pääru ja kadunud täht' })).toBeInTheDocument()
     expect(within(examples).getByRole('link', { name: /Ava terve näidis/ })).toHaveAttribute('href', '/naide')
   })
 
@@ -114,7 +114,7 @@ describe('the home page', () => {
 
     document.body.innerHTML = ''
     await open('/', async () => {
-      useCreationsStore().add(await templateGenerator.generate(makeRequest('treasure-hunt', { children: [RUBEN] })))
+      useCreationsStore().add(await templateGenerator.generate(makeRequest('treasure-hunt', { children: [MARKUS] })))
     })
     const mine = await screen.findByRole('region', { name: 'Minu loomingud' })
     expect(within(mine).getByRole('link').getAttribute('href')).toMatch(/^\/looming\//)

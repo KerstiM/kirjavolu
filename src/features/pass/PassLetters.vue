@@ -137,7 +137,7 @@ async function write(): Promise<void> {
           </template>
         </FormField>
         <div class="about__grid">
-          <FormField id="about-family" label="Pere ja lemmikloomad" hint="nt ema, isa, vend Jasper, kass Miisu">
+          <FormField id="about-family" label="Pere ja lemmikloomad" hint="nt ema, isa, vend Pääru, kass Miisu">
             <template #default="{ describedBy }">
               <ListInput id="about-family" v-model="about.family" :described-by="describedBy" />
             </template>

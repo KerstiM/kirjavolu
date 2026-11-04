@@ -96,11 +96,11 @@ describe('Christmas letters: who for and the free letters', () => {
     })
     const user = userEvent.setup()
     const kids = await screen.findByRole('group', { name: /Kellele\?/ })
-    expect(within(kids).getByRole('checkbox', { name: /^Ruben/ })).toBeChecked()
+    expect(within(kids).getByRole('checkbox', { name: /^Markus/ })).toBeChecked()
     expect(screen.queryByLabelText('Lapse nimi')).toBeNull()
     await user.click(screen.getByRole('button', { name: /Loo tasuta kirjad/ }))
     await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/joulukirjad\//), { timeout: 5000 })
-    expect(await screen.findByRole('heading', { level: 1, name: 'Rubeni 24 jõulukirja on valmis' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Markuse 24 jõulukirja on valmis' })).toBeInTheDocument()
   })
 
   it('lets a new family type in several children at once', async () => {
@@ -129,7 +129,7 @@ describe('Christmas letters: who for and the free letters', () => {
     const user = userEvent.setup()
     await user.click(within(await screen.findByRole('group', { name: /Kellele\?/ })).getByRole('checkbox', { name: /Uus laps/ }))
     await user.click(screen.getByRole('button', { name: /Lisa veel üks laps/ }))
-    // Ruben is picked; two empty rows do not make it three.
+    // Markus is picked; two empty rows do not make it three.
     expect(screen.getByRole('button', { name: /^Loo tasuta kirjad/ })).toBeInTheDocument()
     await user.type(screen.getByLabelText('1. lapse nimi'), 'Mia')
     expect(screen.getByRole('button', { name: /Loo 2 lapsele tasuta kirjad/ })).toBeInTheDocument()
@@ -137,7 +137,7 @@ describe('Christmas letters: who for and the free letters', () => {
     await user.click(screen.getByRole('button', { name: /Loo 2 lapsele tasuta kirjad/ }))
     // The empty second row is left out, not an error.
     await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/joulukirjad\//), { timeout: 5000 })
-    expect(await screen.findByRole('heading', { level: 1, name: 'Rubeni ja Mia jõulukirjad on valmis' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Markuse ja Mia jõulukirjad on valmis' })).toBeInTheDocument()
   })
 
   it('lets a typed row be taken away again', async () => {
@@ -155,21 +155,21 @@ describe('Christmas letters: who for and the free letters', () => {
     })
     const user = userEvent.setup()
     const kids = await screen.findByRole('group', { name: /Kellele\? võid valida mitu/ })
-    await user.click(within(kids).getByRole('checkbox', { name: /^Jasper/ }))
+    await user.click(within(kids).getByRole('checkbox', { name: /^Pääru/ }))
     expect(screen.getByText(/Õed-vennad saavad seotud kirjad/)).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: /Loo 2 lapsele tasuta kirjad/ }))
     await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/joulukirjad\//), { timeout: 5000 })
-    expect(await screen.findByRole('heading', { level: 1, name: 'Rubeni ja Jasperi jõulukirjad on valmis' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Markuse ja Pääru jõulukirjad on valmis' })).toBeInTheDocument()
     const creation = useCreationsStore(pinia).creations[0]!
-    expect(creation.request.children.map((child) => child.name)).toEqual(['Ruben', 'Jasper'])
+    expect(creation.request.children.map((child) => child.name)).toEqual(['Markus', 'Pääru'])
     expect(creation.items).toHaveLength(48)
 
     // One child at a time: their own letters, and their own personal offer.
     const tabs = screen.getByRole('tablist', { name: 'Kelle kirjad' })
-    await user.click(within(tabs).getByRole('tab', { name: /^Jasper/ }))
+    await user.click(within(tabs).getByRole('tab', { name: /^Pääru/ }))
     expect(document.querySelectorAll('.letters__list .paper')).toHaveLength(3)
-    expect(screen.queryByRole('heading', { level: 3, name: /Ruben/ })).toBeNull()
-    expect(screen.getAllByRole('heading', { level: 3, name: /Jasper/ }).length).toBeGreaterThan(0)
+    expect(screen.queryByRole('heading', { level: 3, name: /Markus/ })).toBeNull()
+    expect(screen.getAllByRole('heading', { level: 3, name: /Pääru/ }).length).toBeGreaterThan(0)
     const offer = screen.getByRole('region', { name: /Muuda kirjad veel isiklikumaks/ })
     expect(within(offer).getByText(/igale lapsele eraldi ja igaüks kasutab Jõulupassist ühe kirjasarja/)).toBeInTheDocument()
   })
@@ -181,23 +181,23 @@ describe('Christmas letters: who for and the free letters', () => {
       useChildrenStore().restoreDemo()
     })
     const user = userEvent.setup()
-    await user.click(within(await screen.findByRole('group', { name: /Kellele\?/ })).getByRole('checkbox', { name: /^Jasper/ }))
+    await user.click(within(await screen.findByRole('group', { name: /Kellele\?/ })).getByRole('checkbox', { name: /^Pääru/ }))
     await user.click(screen.getByRole('button', { name: /Loo 2 lapsele tasuta kirjad/ }))
     await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/joulukirjad\//), { timeout: 5000 })
     const familyId = router.currentRoute.value.path.split('/').pop()!
-    await user.click(within(await screen.findByRole('tablist', { name: 'Kelle kirjad' })).getByRole('tab', { name: /^Jasper/ }))
-    await user.click(screen.getByRole('button', { name: /Kirjuta Jasperile isiklikud kirjad/ }))
+    await user.click(within(await screen.findByRole('tablist', { name: 'Kelle kirjad' })).getByRole('tab', { name: /^Pääru/ }))
+    await user.click(screen.getByRole('button', { name: /Kirjuta Päärule isiklikud kirjad/ }))
 
-    const done = await screen.findByRole('region', { name: 'Jasperi isiklikud kirjad on valmis' }, { timeout: 5000 })
+    const done = await screen.findByRole('region', { name: 'Pääru isiklikud kirjad on valmis' }, { timeout: 5000 })
     const store = useCreationsStore(pinia)
     expect(store.creations).toHaveLength(2)
     expect(store.byId(familyId)?.items).toHaveLength(48)
     const personal = store.creations.find((creation) => creation.id !== familyId)!
-    expect(personal.request.children[0]?.name).toBe('Jasper')
-    expect(within(done).getByRole('link', { name: /Ava Jasperi isiklikud kirjad/ })).toHaveAttribute('href', `/joulukirjad/${personal.id}`)
-    // Ruben can still get his own.
-    await user.click(screen.getByRole('tab', { name: /^Ruben/ }))
-    expect(screen.getByRole('button', { name: /Kirjuta Rubenile isiklikud kirjad/ })).toBeInTheDocument()
+    expect(personal.request.children[0]?.name).toBe('Pääru')
+    expect(within(done).getByRole('link', { name: /Ava Pääru isiklikud kirjad/ })).toHaveAttribute('href', `/joulukirjad/${personal.id}`)
+    // Markus can still get his own.
+    await user.click(screen.getByRole('tab', { name: /^Markus/ }))
+    expect(screen.getByRole('button', { name: /Kirjuta Markusele isiklikud kirjad/ })).toBeInTheDocument()
   })
 
   it('lets a letter be edited right there, and keeps the change', async () => {

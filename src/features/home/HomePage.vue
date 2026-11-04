@@ -25,7 +25,7 @@ provide(DESIGN_KEY, 'new')
 const childrenStore = useChildrenStore()
 const creations = useCreationsStore()
 // The envelope is addressed to the family's own child when there is one.
-const addressee = childrenStore.children[0]?.name ?? 'Jasper'
+const addressee = childrenStore.children[0]?.name ?? 'Pääru'
 
 const WIZARD = '/loo'
 const SAMPLE_PAGE = '/naide'

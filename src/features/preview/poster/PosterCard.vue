@@ -20,7 +20,7 @@ const day = computed(() => (props.item.date ? formatDayMonth(props.item.date) : 
 const weekday = computed(() => (props.item.date ? weekdayName(props.item.date) : ''))
 /** Only the sender's name, like a handwritten signature at the bottom of the card. */
 const signer = computed(() => props.item.signature?.split('\n').at(-1) ?? '')
-// Letters start with the greeting inline, like a handwritten card: "Kallis Ruben! Tere! …"
+// Letters start with the greeting inline, like a handwritten card: "Kallis Markus! Tere! …"
 const paragraphs = computed(() => {
   const list = props.item.body.split(/\n{2,}/).filter((p) => p.trim())
   if (props.item.kind === 'letter' && props.item.heading && list.length > 0) {

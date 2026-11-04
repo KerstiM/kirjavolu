@@ -31,12 +31,12 @@ export interface Cast {
 export interface ScenarioContext {
   /** Child's name, nominative. */
   name: string
-  /** Child's name in another case: n('genitive') → "Rubeni". */
+  /** Child's name in another case: n('genitive') → "Markuse". */
   n: (form: NameCase) => string
   /** The narrator: this child's own helper. */
   helper: string
   cast: Cast
-  /** Brothers and sisters, nominative, joined: "Ruben ja Jasper". Empty when none. */
+  /** Brothers and sisters, nominative, joined: "Markus ja Pääru". Empty when none. */
   siblings: string
   siblingCount: number
   /** True when the plan activated this personalization hook for this letter. */
@@ -59,7 +59,7 @@ export interface FrameContext {
   title: string
   /** Who the helper is, e.g. "Jõuluvana töökoja kõige vanem päkapikk"; may be empty. */
   origin: string
-  /** "Jasperi juures Tipp-Topp Riisiterake ja Brita juures Pisi-Pätsi Roosaninake"; empty without siblings. */
+  /** "Pääru juures Tipp-Topp Riisiterake ja Kai juures Pisi-Pätsi Roosaninake"; empty without siblings. */
   siblingHelpers: string
   /** "Kõpsu-Mõpsu, Tipp-Topp ja Pisi-Pätsi"; empty in a single-child series. */
   allHelpers: string

@@ -489,7 +489,7 @@ export const TODDLER_MISSIONS: string[] = [
   'Täiskasvanu abiga: laulge koos üks lemmiklaul.',
 ]
 
-/** Infinitive phrases for sibling tasks: "Ruben, sinu ülesanne on …". */
+/** Infinitive phrases for sibling tasks: "Markus, sinu ülesanne on …". */
 export const SIBLING_TASKS: Record<'young' | 'older' | 'toddler', string[]> = {
   older: [
     'lugeda see kiri teistele valjusti ette',

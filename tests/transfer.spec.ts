@@ -27,20 +27,20 @@ afterEach(() => {
 
 describe('moving to the new address', () => {
   it('brings only children and creations that are not here yet', async () => {
-    const [ruben, jasper] = DEMO_CHILDREN
+    const [markus, paaru] = DEMO_CHILDREN
     const kept = await creation('c1')
     const incoming = {
       schemaVersion: 1,
-      children: [ruben, jasper, { nonsense: true }],
+      children: [markus, paaru, { nonsense: true }],
       creations: [kept, await creation('c2'), { id: 'broken' }],
       demoSeeded: true,
     }
-    const fresh = newFromTransfer({ children: [ruben!], creations: [kept] }, incoming)
-    expect(fresh.children.map((child) => child.name)).toEqual(['Jasper'])
+    const fresh = newFromTransfer({ children: [markus!], creations: [kept] }, incoming)
+    expect(fresh.children.map((child) => child.name)).toEqual(['Pääru'])
     expect(fresh.creations.map((c) => c.id)).toEqual(['c2'])
     // Anything that is not saved data brings nothing.
     expect(newFromTransfer({ children: [], creations: [] }, 'garbage')).toEqual({ children: [], creations: [] })
-    expect(newFromTransfer({ children: [], creations: [] }, { schemaVersion: 99, children: [ruben] }).children).toEqual([])
+    expect(newFromTransfer({ children: [], creations: [] }, { schemaVersion: 99, children: [markus] }).children).toEqual([])
   })
 
   it('finds every picture a creation uses', async () => {
@@ -92,7 +92,7 @@ describe('moving to the new address', () => {
 
     window.dispatchEvent(new MessageEvent('message', { data, origin: OLD, source: opener as unknown as Window }))
     expect(await screen.findByRole('heading', { name: 'Andmed on üle toodud' })).toBeInTheDocument()
-    expect(useChildrenStore().children.map((child) => child.name)).toEqual(['Ruben', 'Jasper'])
+    expect(useChildrenStore().children.map((child) => child.name)).toEqual(['Markus', 'Pääru'])
     expect(useCreationsStore().creations.map((c) => c.id)).toEqual(['c9'])
     expect(opener.postMessage).toHaveBeenLastCalledWith({ type: 'kirjavolu-done', children: 2, creations: 1 }, OLD)
   })
@@ -131,7 +131,7 @@ describe('moving to the new address', () => {
     const [sent, target] = popup.postMessage.mock.calls[0]!
     expect(target).toBe('https://kirjavolu.ee')
     expect(sent).toMatchObject({ type: 'kirjavolu-data', version: TRANSFER_VERSION, images: [] })
-    expect(sent.state.children.map((child: { name: string }) => child.name)).toEqual(['Ruben', 'Jasper', 'Brita'])
+    expect(sent.state.children.map((child: { name: string }) => child.name)).toEqual(['Markus', 'Pääru', 'Kai'])
 
     window.dispatchEvent(from({ type: 'kirjavolu-done', children: 3, creations: 0 }))
     expect(await screen.findByText(/Valmis! Üle tuli 3 last ja 0 loomingut/)).toBeInTheDocument()

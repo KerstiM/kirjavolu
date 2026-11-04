@@ -95,7 +95,7 @@ function remove(child: ChildProfile): void {
         </li>
       </ul>
       <p v-if="store.children.some((c) => c.id.startsWith('demo-'))" class="demo-note muted">
-        Ruben, Jasper ja Brita on näidisprofiilid. Muuda või kustuta need julgelt.
+        Markus, Pääru ja Kai on näidisprofiilid. Muuda või kustuta need julgelt.
       </p>
     </template>
   </div>

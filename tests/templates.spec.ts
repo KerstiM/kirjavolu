@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { runTemplates } from '@/domain/generators/templateGenerator'
 import { SERIES_CLOSINGS } from '@/data/templates/letters'
 import type { Tone } from '@/domain/models'
-import { BRITA, JASPER, makeRequest, RUBEN } from './helpers'
+import { KAI, PAARU, makeRequest, MARKUS } from './helpers'
 
 const seriesTexts = (tone: Tone, plural: boolean) =>
   SERIES_CLOSINGS[tone].map((line) =>
@@ -28,7 +28,7 @@ describe('letter template quality', () => {
 
   it('consecutive letters never share the opening or closing', () => {
     for (const seed of [1, 7, 42]) {
-      const items = runTemplates(makeRequest('letter', { seed, occasionId: 'christmas', children: [RUBEN, JASPER, BRITA], options: { mode: 'shared' } })).items
+      const items = runTemplates(makeRequest('letter', { seed, occasionId: 'christmas', children: [MARKUS, PAARU, KAI], options: { mode: 'shared' } })).items
       for (let i = 1; i < items.length; i++) {
         const prev = items[i - 1]!.body.split('\n\n')
         const cur = items[i]!.body.split('\n\n')
@@ -45,20 +45,20 @@ describe('letter template quality', () => {
   })
 
   it('occasion letters say why they are written', () => {
-    const tooth = runTemplates(makeRequest('letter', { occasionId: 'lost-tooth', children: [JASPER] })).items[0]!.body
+    const tooth = runTemplates(makeRequest('letter', { occasionId: 'lost-tooth', children: [PAARU] })).items[0]!.body
     expect(tooth).toMatch(/piimahamba|piimahammas/)
     const school = runTemplates(makeRequest('letter', { occasionId: 'school-start' })).items[0]!.body
     expect(school).toMatch(/kooliaasta|tarkusepäev/)
   })
 
   it('toddler letters use the occasion and simple closings', () => {
-    const items = runTemplates(makeRequest('letter', { occasionId: 'easter', children: [BRITA], options: { count: 3 } })).items
+    const items = runTemplates(makeRequest('letter', { occasionId: 'easter', children: [KAI], options: { count: 3 } })).items
     expect(items.some((i) => /muna|jänku|tibu/.test(i.body))).toBe(true)
     expect(items.every((i) => !i.body.includes('sulega, mis helendab'))).toBe(true)
   })
 
   it('a 24-letter series keeps personal lines from dominating', () => {
-    const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [JASPER] })).items
+    const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [PAARU] })).items
     const counts = new Map<string, number>()
     for (const item of items) for (const p of item.body.split('\n\n')) counts.set(p, (counts.get(p) ?? 0) + 1)
     const repeated = [...counts.entries()].filter(([p, n]) => n > 3 && !p.startsWith('Tere! Mina olen'))
@@ -77,7 +77,7 @@ describe('story template quality', () => {
   it('every paragraph starts with a capital letter or a quote', () => {
     for (const genre of ['fairytale', 'adventure', 'detective', 'space', 'animals', 'funny'] as const) {
       const items = runTemplates(
-        makeRequest('story', { children: [RUBEN, JASPER], options: { genre, extraCharacters: ['kass Miisu'] }, general: { length: 'long' } }),
+        makeRequest('story', { children: [MARKUS, PAARU], options: { genre, extraCharacters: ['kass Miisu'] }, general: { length: 'long' } }),
       ).items
       for (const p of items.flatMap((i) => i.body.split('\n\n'))) expect(p).toMatch(/^[„A-ZÕÄÖÜŠŽ]/)
     }
@@ -100,7 +100,7 @@ describe('puzzle and hunt template quality', () => {
     for (let seed = 1; seed < 20; seed++) {
       for (const setting of ['indoor', 'outdoor'] as const) {
         const items = runTemplates(
-          makeRequest('treasure-hunt', { seed, children: [RUBEN, JASPER], options: { setting, clueCount: 8 } }),
+          makeRequest('treasure-hunt', { seed, children: [MARKUS, PAARU], options: { setting, clueCount: 8 } }),
         ).items
         for (const item of items) expect(item.body).not.toMatch(/\b(Otsi|Vaata|Piilu|Kaeva|Kontrolli) /)
       }

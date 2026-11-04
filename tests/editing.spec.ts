@@ -8,9 +8,9 @@ import { routes } from '@/app/router'
 import { templateGenerator } from '@/domain/generators/templateGenerator'
 import { useCreationsStore } from '@/features/preview/creationsStore'
 import type { RequestFor } from '@/domain/models'
-import { BRITA, JASPER, makeRequest, RUBEN } from './helpers'
+import { KAI, PAARU, makeRequest, MARKUS } from './helpers'
 
-async function openPreview(children = [RUBEN]) {
+async function openPreview(children = [MARKUS]) {
   const pinia = createPinia()
   setActivePinia(pinia)
   const request = makeRequest('letter', {
@@ -77,16 +77,16 @@ describe('editing on the puzzle poster', () => {
 
 describe('editing toddler cards in a family series', () => {
   it('toddler cards have edit buttons too and save to the right child', async () => {
-    const { store, id, user } = await openPreview([RUBEN, JASPER, BRITA])
-    await user.click(screen.getByRole('radio', { name: 'Brita' }))
+    const { store, id, user } = await openPreview([MARKUS, PAARU, KAI])
+    await user.click(screen.getByRole('radio', { name: 'Kai' }))
     expect(document.querySelectorAll('.mini')).toHaveLength(24)
     await user.click(screen.getByRole('button', { name: 'Muuda: 5. kaart' }))
-    const dialog = screen.getByRole('dialog', { name: 'Muuda: Brita, 5. detsember' })
+    const dialog = screen.getByRole('dialog', { name: 'Muuda: Kai, 5. detsember' })
     const body = within(dialog).getByLabelText('Tekst')
     await user.clear(body)
-    await user.type(body, 'Anna täna Rubenile ja Jasperile suur kalli!')
+    await user.type(body, 'Anna täna Markusele ja Päärule suur kalli!')
     await user.click(within(dialog).getByRole('button', { name: 'Salvesta' }))
-    const brita = store.byId(id)!.items.filter((item) => item.childId === BRITA.id)
-    expect(brita[4]!.body).toBe('Anna täna Rubenile ja Jasperile suur kalli!')
+    const kai = store.byId(id)!.items.filter((item) => item.childId === KAI.id)
+    expect(kai[4]!.body).toBe('Anna täna Markusele ja Päärule suur kalli!')
   })
 })
