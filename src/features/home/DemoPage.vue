@@ -10,6 +10,7 @@ import { track } from '../../app/analytics'
 import Mascot from '../../components/brand/Mascot.vue'
 import AiSampleLetter from './AiSampleLetter.vue'
 import PassPurchase from '../pass/PassPurchase.vue'
+import { PASS_ENABLED } from '../pass/availability'
 import { CHRISTMAS_ROOT, DESIGN_KEY, type Design } from '../../components/brand/design'
 
 /**
@@ -48,7 +49,7 @@ onMounted(async () => {
     </div>
 
     <AiSampleLetter v-if="design === 'new'" />
-    <PassPurchase v-if="design === 'new'" />
+    <PassPurchase v-if="PASS_ENABLED && design === 'new'" />
 
     <div class="demo__next">
       <Mascot v-if="design === 'new'" mood="wave" :size="84" class="demo__mascot" />

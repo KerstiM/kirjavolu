@@ -28,6 +28,7 @@ import PassOfferCard from '../pass/PassOfferCard.vue'
 import { AI_SERIES_GENERATOR, FIX_ERROR_TEXTS, LettersRequestError, requestLetterFix, requestStoryPageFix } from '../pass/passLetters'
 import AiStoryCard from './AiStoryCard.vue'
 import { loadPass, type SeasonPass } from '../pass/seasonPass'
+import { PASS_ENABLED } from '../pass/availability'
 import { useChildrenStore } from '../children/childrenStore'
 import EnvelopeReveal from './EnvelopeReveal.vue'
 import { track } from '../../app/analytics'
@@ -48,7 +49,7 @@ const children = useChildrenStore()
 const pass = ref(loadPass())
 const passUsable = computed(() => !!pass.value && new Date(pass.value.validUntil) > new Date())
 const aiNote = computed(() => {
-  if (!aiWritten.value) return undefined
+  if (!aiWritten.value || !PASS_ENABLED) return undefined
   if (!passUsable.value) return 'Päkapikult muudatust paludes kulub Jõulupassist üks muudatus. Sisesta selleks oma kood lehel „Jõulupass“.'
   return `Kulub 1 päkapiku muudatus, alles on ${pass.value?.fixesLeft ?? 30}.`
 })
@@ -432,12 +433,12 @@ function exportText(): void {
         </p>
         <CustomizePanel v-else :content="content" :busy="updating" :errors="choiceErrors" @change="applyChoices" />
         <PassOfferCard
-          v-if="!aiWritten && design === 'new' && content.request.contentType === 'letter' && content.request.occasionId === 'christmas'"
+          v-if="PASS_ENABLED && !aiWritten && design === 'new' && content.request.contentType === 'letter' && content.request.occasionId === 'christmas'"
           :content="content"
         />
         <!-- After the choices: they are what the AI story is written from. -->
         <AiStoryCard
-          v-if="!aiWritten && design === 'new' && content.request.contentType === 'story'"
+          v-if="PASS_ENABLED && !aiWritten && design === 'new' && content.request.contentType === 'story'"
           :content="content"
           :pass="pass"
           :busy-elsewhere="updating"
@@ -575,7 +576,7 @@ function exportText(): void {
           :busy="busyItem === editingItem.id"
           :fit-hint="layout === 'poster'"
           :no-variants="aiWritten"
-          :ai-fix="aiWritten && passUsable ? fixWithAi : undefined"
+          :ai-fix="PASS_ENABLED && aiWritten && passUsable ? fixWithAi : undefined"
           :ai-note="aiNote"
           @save="saveFromDialog"
           @regenerate="regenerate(editingIndex)"

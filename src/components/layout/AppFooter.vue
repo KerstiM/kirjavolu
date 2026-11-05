@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { PASS_PAGE } from '../../features/pass/seasonPass'
+import { PASS_ENABLED } from '../../features/pass/availability'
 </script>
 
 <template>
@@ -13,8 +14,11 @@ import { PASS_PAGE } from '../../features/pass/seasonPass'
         valid. Lapsed ja loomingud jäävad sinu seadmesse.
       </p>
       <nav class="app-footer__links" aria-label="Tingimused">
-        <RouterLink :to="PASS_PAGE">Mul on Jõulupassi kood</RouterLink>
-        <RouterLink to="/tingimused">Müügitingimused</RouterLink>
+        <!-- Nothing is sold while the pass is off, so neither link is needed. -->
+        <template v-if="PASS_ENABLED">
+          <RouterLink :to="PASS_PAGE">Mul on Jõulupassi kood</RouterLink>
+          <RouterLink to="/tingimused">Müügitingimused</RouterLink>
+        </template>
         <RouterLink to="/privaatsus">Privaatsus</RouterLink>
       </nav>
     </div>

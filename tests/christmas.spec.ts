@@ -10,6 +10,14 @@ import { useChildrenStore } from '@/features/children/childrenStore'
 import { useCreationsStore } from '@/features/preview/creationsStore'
 import { loadPass, PASS_KEY } from '@/features/pass/seasonPass'
 
+// Most of these tests are about the personal letters, so the pass is on sale unless a test says otherwise.
+const sale = vi.hoisted(() => ({ on: true }))
+vi.mock('@/features/pass/availability', () => ({
+  get PASS_ENABLED() {
+    return sale.on
+  },
+}))
+
 const PASS = { code: 'KV-7KQM-3FXA', generationsLeft: 10, fixesLeft: 30, validUntil: '2027-01-31T21:59:59.000Z' }
 const LETTERS = Array.from({ length: 24 }, (_, i) => ({ heading: 'Kallis Mia!', body: `Isiklik kiri ${i + 1}.`, signature: 'Tuduja' }))
 const PENDING = 'kirjavolu.ud2.pending'
@@ -50,6 +58,7 @@ async function reload(path: string, from: Pinia) {
 }
 
 afterEach(() => {
+  sale.on = true
   vi.unstubAllGlobals()
   resetAnalytics()
   localStorage.removeItem(PASS_KEY)
@@ -229,6 +238,20 @@ describe('Christmas letters: who for and the free letters', () => {
 })
 
 describe('Christmas letters: the optional personal letters', () => {
+  it('is a gray "Varsti" box with only the lead while the pass is not on sale', async () => {
+    sale.on = false
+    await freeLetters()
+    const offer = screen.getByRole('region', { name: /Muuda kirjad veel isiklikumaks/ })
+    expect(offer).toHaveClass('is-soon')
+    expect(offer).toHaveTextContent('Varsti')
+    expect(offer).toHaveTextContent('Lisa lapse päriselu tegemised, pereliikmed ja jõuluplaanid. Nii sünnib kirjasari, mis räägib just Mia maailmast.')
+    expect(within(offer).queryByRole('table')).toBeNull()
+    expect(within(offer).queryByRole('button')).toBeNull()
+    expect(within(offer).queryByRole('textbox')).toBeNull()
+    expect(screen.queryByRole('link', { name: /Tee kirjad isiklikumaks/ })).toBeNull()
+    expect(document.body.textContent).not.toMatch(/Jõulupass/)
+  })
+
   it('shows what free already has, what personal adds, the price and what one purchase covers', async () => {
     await freeLetters()
     const offer = screen.getByRole('region', { name: /Muuda kirjad veel isiklikumaks/ })

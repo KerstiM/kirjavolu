@@ -30,6 +30,7 @@ import { checkPass, formatValidUntil, isActive, loadPass, purchaseStatus, type S
 import { SELLER } from '../legal/seller'
 import { track } from '../../app/analytics'
 import PremiumOffer from './PremiumOffer.vue'
+import { PASS_ENABLED } from '../pass/availability'
 import RecentCreations from '../home/RecentCreations.vue'
 import JourneySteps from './JourneySteps.vue'
 import { finishWriting, startWriting, takePending, takeWriting } from './pending'
@@ -272,7 +273,7 @@ onBeforeUnmount(() => {
           <BaseButton :to="printLink" size="lg">
             <Printer aria-hidden="true" /> Prindi või salvesta PDF
           </BaseButton>
-          <a v-if="!personal && !writing" href="#isiklikumaks" class="letters__more">
+          <a v-if="PASS_ENABLED && !personal && !writing" href="#isiklikumaks" class="letters__more">
             Tee kirjad isiklikumaks <ArrowDown :size="16" aria-hidden="true" />
           </a>
         </div>
@@ -322,7 +323,7 @@ onBeforeUnmount(() => {
         </button>
       </div>
 
-      <p v-if="isFamily && !writing && !personal" class="kids__hint">
+      <p v-if="PASS_ENABLED && isFamily && !writing && !personal" class="kids__hint">
         Isiklikud kirjad kirjutatakse igale lapsele eraldi: vali sakk ja vajuta allpool nuppu. Iga laps kulutab Jõulupassist ühe kirjasarja.
       </p>
       <p v-if="writing" class="letters__status">Allpool on praegused tasuta kirjad. Uued isiklikud kirjad ilmuvad, kui need on valmis.</p>
@@ -376,8 +377,8 @@ onBeforeUnmount(() => {
       :item="editing"
       :title="editing.label"
       no-variants
-      :ai-fix="personal ? fixWithAi : undefined"
-      :ai-note="personal ? aiNote : undefined"
+      :ai-fix="PASS_ENABLED && personal ? fixWithAi : undefined"
+      :ai-note="PASS_ENABLED && personal ? aiNote : undefined"
       @save="saveEdit"
       @close="editing = null"
     />

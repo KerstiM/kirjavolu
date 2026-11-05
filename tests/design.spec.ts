@@ -10,6 +10,9 @@ import { useCreationsStore } from '@/features/preview/creationsStore'
 import { templateGenerator } from '@/domain/generators/templateGenerator'
 import { makeRequest, MARKUS } from './helpers'
 
+// These tests are about the Jõulupass itself, so here it is on sale.
+vi.mock('@/features/pass/availability', () => ({ PASS_ENABLED: true }))
+
 async function open(path: string | ((id: string) => string)) {
   const pinia = createPinia()
   setActivePinia(pinia)

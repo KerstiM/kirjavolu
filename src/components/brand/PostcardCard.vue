@@ -3,6 +3,7 @@ import { computed, type Component } from 'vue'
 import { RouterLink, type RouteLocationRaw } from 'vue-router'
 import { Check } from 'lucide-vue-next'
 import { postcardLook } from './design'
+import { PASS_ENABLED } from '../../features/pass/availability'
 
 /**
  * A choice drawn as a postcard with an airmail edge. With `to` it is a link (home page),
@@ -30,6 +31,8 @@ const props = withDefaults(
 )
 defineEmits<{ select: [] }>()
 
+// While the pass is not on sale, no card mentions it.
+const passMark = computed(() => (PASS_ENABLED ? props.pass : undefined))
 const look = computed(() => postcardLook(props.index))
 const style = computed(() => ({
   '--tilt': `${look.value.tilt}deg`,
@@ -41,18 +44,18 @@ const style = computed(() => ({
 </script>
 
 <template>
-  <div v-if="soon" class="postcard is-soon" :class="{ 'is-pass': pass === 'only' }" :style="style">
+  <div v-if="soon" class="postcard is-soon" :class="{ 'is-pass': passMark === 'only' }" :style="style">
     <span class="postcard__edge" aria-hidden="true" />
     <span class="postcard__body">
       <span class="postcard__text">
-        <span v-if="pass" class="postcard__pass">Jõulupass</span>
+        <span v-if="passMark" class="postcard__pass">Jõulupass</span>
         <span class="postcard__title">{{ title }} <span class="postcard__soon">{{ soon }}</span></span>
         <span v-if="tagline" class="postcard__tagline">{{ tagline }}</span>
       </span>
       <span class="postcard__icon" aria-hidden="true"><component :is="icon" :size="20" :stroke-width="1.8" /></span>
     </span>
     <span v-if="description" class="postcard__desc">{{ description }}</span>
-    <span v-if="pass === 'extra'" class="postcard__extra">Jõulupassiga: isiklik versioon lapse ja pere järgi</span>
+    <span v-if="passMark === 'extra'" class="postcard__extra">Jõulupassiga: isiklik versioon lapse ja pere järgi</span>
   </div>
   <component
     :is="to ? RouterLink : 'button'"
@@ -62,14 +65,14 @@ const style = computed(() => ({
     :role="to ? undefined : 'radio'"
     :aria-checked="to ? undefined : selected"
     class="postcard"
-    :class="{ 'is-selected': selected, 'is-pass': pass === 'only' }"
+    :class="{ 'is-selected': selected, 'is-pass': passMark === 'only' }"
     :style="style"
     @click="!to && $emit('select')"
   >
     <span class="postcard__edge" aria-hidden="true" />
     <span class="postcard__body">
       <span class="postcard__text">
-        <span v-if="pass" class="postcard__pass">Jõulupass</span>
+        <span v-if="passMark" class="postcard__pass">Jõulupass</span>
         <span class="postcard__title">{{ title }}</span>
         <span v-if="tagline" class="postcard__tagline">{{ tagline }}</span>
       </span>
@@ -79,7 +82,7 @@ const style = computed(() => ({
       </span>
     </span>
     <span v-if="description" class="postcard__desc">{{ description }}</span>
-    <span v-if="pass === 'extra'" class="postcard__extra">Jõulupassiga: isiklik versioon lapse ja pere järgi</span>
+    <span v-if="passMark === 'extra'" class="postcard__extra">Jõulupassiga: isiklik versioon lapse ja pere järgi</span>
     <span v-if="badge" class="postcard__badge">{{ badge }}</span>
   </component>
 </template>

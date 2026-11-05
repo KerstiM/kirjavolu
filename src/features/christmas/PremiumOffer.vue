@@ -21,6 +21,7 @@ import {
   type EmbeddedCheckout,
   type SeasonPass,
 } from '../pass/seasonPass'
+import { PASS_ENABLED } from '../pass/availability'
 
 /**
  * "Muuda kirjad veel isiklikumaks": below the free letters, what the personal ones add (only
@@ -28,6 +29,7 @@ import {
  * short fields, and then either the letters are written at once (a pass in this browser) or
  * the Jõulupass is bought right here. After paying, Stripe sends the buyer back to this page,
  * which then writes them. Never in the way: the free letters print without any of this.
+ * While the pass is not on sale (availability.ts) only the heading and the lead show, gray, as "Varsti".
  */
 const props = defineProps<{
   child: ChildProfile
@@ -69,7 +71,7 @@ const ROWS: { label: string; free: string; personal: string }[] = [
 ]
 
 onMounted(() => {
-  if (!active.value) track('paywall_shown', { type: 'letter', items: props.items })
+  if (PASS_ENABLED && !active.value) track('paywall_shown', { type: 'letter', items: props.items })
 })
 
 /** The fields back into the profile and this browser, so they are there after paying too. */
@@ -129,117 +131,121 @@ async function useCode(): Promise<void> {
 </script>
 
 <template>
-  <section id="isiklikumaks" class="premium" aria-labelledby="premium-title">
+  <section id="isiklikumaks" class="premium" :class="{ 'is-soon': !PASS_ENABLED }" aria-labelledby="premium-title">
     <header class="premium__head">
-      <h2 id="premium-title"><Sparkles :size="22" aria-hidden="true" /> Muuda kirjad veel isiklikumaks</h2>
+      <h2 id="premium-title">
+        <Sparkles :size="22" aria-hidden="true" /> Muuda kirjad veel isiklikumaks
+        <span v-if="!PASS_ENABLED" class="premium__soon">Varsti</span>
+      </h2>
       <p>
         Lisa lapse päriselu tegemised, pereliikmed ja jõuluplaanid. Nii sünnib kirjasari, mis räägib just
         {{ whom }} maailmast.
       </p>
     </header>
+    <template v-if="PASS_ENABLED">
+      <p v-if="family" class="premium__family">
+        Isiklikud kirjad kirjutatakse igale lapsele eraldi ja igaüks kasutab Jõulupassist ühe kirjasarja. Õdesid-vendi
+        nimetatakse pere andmete järgi, aga ühised paarisülesanded on ainult tasuta seotud kirjades.
+      </p>
 
-    <p v-if="family" class="premium__family">
-      Isiklikud kirjad kirjutatakse igale lapsele eraldi ja igaüks kasutab Jõulupassist ühe kirjasarja. Õdesid-vendi
-      nimetatakse pere andmete järgi, aga ühised paarisülesanded on ainult tasuta seotud kirjades.
-    </p>
+      <div class="premium__compare">
+        <table>
+          <caption class="visually-hidden">Mis on tasuta kirjades ja mida lisavad isiklikud kirjad</caption>
+          <thead>
+            <tr>
+              <td />
+              <th scope="col">Tasuta kirjad</th>
+              <th scope="col" class="premium__col-pass">Isiklikud kirjad</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in ROWS" :key="row.label">
+              <th scope="row">{{ row.label }}</th>
+              <td :class="{ 'is-none': row.free === '–' }">{{ row.free }}</td>
+              <td>{{ row.personal }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-    <div class="premium__compare">
-      <table>
-        <caption class="visually-hidden">Mis on tasuta kirjades ja mida lisavad isiklikud kirjad</caption>
-        <thead>
-          <tr>
-            <td />
-            <th scope="col">Tasuta kirjad</th>
-            <th scope="col" class="premium__col-pass">Isiklikud kirjad</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="row in ROWS" :key="row.label">
-            <th scope="row">{{ row.label }}</th>
-            <td :class="{ 'is-none': row.free === '–' }">{{ row.free }}</td>
-            <td>{{ row.personal }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <ul class="premium__facts" aria-label="Mida Jõulupass sisaldab">
+        <li><strong>{{ PASS_PRICE }} ühekordne makse.</strong> Püsimakset ega kasutajakontot pole.</li>
+        <li><strong>10 kirjasarja või lugu.</strong> Üks sari on ühe lapse 24 kirja, nii et jätkub ka õdedele-vendadele.</li>
+        <li><strong>Kehtib 31. jaanuarini.</strong> Kirjad jäävad sinu brauserisse: muuda, prindi ja salvesta PDF-ina nagu tasuta kirju.</li>
+      </ul>
 
-    <ul class="premium__facts" aria-label="Mida Jõulupass sisaldab">
-      <li><strong>{{ PASS_PRICE }} ühekordne makse.</strong> Püsimakset ega kasutajakontot pole.</li>
-      <li><strong>10 kirjasarja või lugu.</strong> Üks sari on ühe lapse 24 kirja, nii et jätkub ka õdedele-vendadele.</li>
-      <li><strong>Kehtib 31. jaanuarini.</strong> Kirjad jäävad sinu brauserisse: muuda, prindi ja salvesta PDF-ina nagu tasuta kirju.</li>
-    </ul>
-
-    <div class="premium__fields">
-      <label class="field">
-        <span>Pere ja lemmikloomad</span>
-        <ListInput id="premium-family" v-model="about.family" placeholder="ema, isa, õde Mia, kass Miisu" />
-      </label>
-      <label class="field">
-        <span>Huvid ja lemmikud</span>
-        <ListInput id="premium-interests" v-model="about.interests" placeholder="dinosaurused, Lego, ujumine" />
-      </label>
-      <label class="field field--wide">
-        <span>Selle detsembri plaanid</span>
-        <textarea
-          id="premium-december"
-          v-model="about.december"
-          class="textarea"
-          rows="2"
-          maxlength="1000"
-          placeholder="6.12 vanaema juurde, 13.12 lasteaia jõulupidu, 20.12 piparkoogid"
+      <div class="premium__fields">
+        <label class="field">
+          <span>Pere ja lemmikloomad</span>
+          <ListInput id="premium-family" v-model="about.family" placeholder="ema, isa, õde Mia, kass Miisu" />
+        </label>
+        <label class="field">
+          <span>Huvid ja lemmikud</span>
+          <ListInput id="premium-interests" v-model="about.interests" placeholder="dinosaurused, Lego, ujumine" />
+        </label>
+        <label class="field field--wide">
+          <span>Selle detsembri plaanid</span>
+          <textarea
+            id="premium-december"
+            v-model="about.december"
+            class="textarea"
+            rows="2"
+            maxlength="1000"
+            placeholder="6.12 vanaema juurde, 13.12 lasteaia jõulupidu, 20.12 piparkoogid"
+          />
+        </label>
+        <SegmentedControl
+          v-model="length"
+          class="field--wide"
+          name="premium-length"
+          label="Kirjade pikkus"
+          :options="LETTER_LENGTH_OPTIONS"
+          :hint="lengthHint"
         />
-      </label>
-      <SegmentedControl
-        v-model="length"
-        class="field--wide"
-        name="premium-length"
-        label="Kirjade pikkus"
-        :options="LETTER_LENGTH_OPTIONS"
-        :hint="lengthHint"
-      />
-      <p v-if="thin" class="premium__thin field--wide">Mida rohkem siia kirjutad, seda isiklikumad kirjad tulevad. Tühjade väljadega jäävad kirjad üldisemaks.</p>
-    </div>
+        <p v-if="thin" class="premium__thin field--wide">Mida rohkem siia kirjutad, seda isiklikumad kirjad tulevad. Tühjade väljadega jäävad kirjad üldisemaks.</p>
+      </div>
 
-    <template v-if="active && pass">
-      <BaseButton size="lg" :disabled="busy" @click="write">
-        <Sparkles aria-hidden="true" /> Kirjuta {{ allative }} isiklikud kirjad
-      </BaseButton>
-      <p class="premium__note">
-        Sul on Jõulupass {{ pass.code }}. See kasutab ühe kirjasarja, alles on {{ pass.generationsLeft }}, kehtib kuni
-        {{ formatValidUntil(pass) }}.
-        {{ family ? 'Tasuta pere kirjad jäävad alles.' : 'Isiklikud kirjad tulevad nende mallikirjade asemele.' }}
+      <template v-if="active && pass">
+        <BaseButton size="lg" :disabled="busy" @click="write">
+          <Sparkles aria-hidden="true" /> Kirjuta {{ allative }} isiklikud kirjad
+        </BaseButton>
+        <p class="premium__note">
+          Sul on Jõulupass {{ pass.code }}. See kasutab ühe kirjasarja, alles on {{ pass.generationsLeft }}, kehtib kuni
+          {{ formatValidUntil(pass) }}.
+          {{ family ? 'Tasuta pere kirjad jäävad alles.' : 'Isiklikud kirjad tulevad nende mallikirjade asemele.' }}
+        </p>
+      </template>
+      <template v-else>
+        <label v-if="!buying" class="premium__consent">
+          <input v-model="consent" type="checkbox" @change="buyError = ''" />
+          <span>
+            Nõustun <RouterLink to="/tingimused">müügitingimustega</RouterLink> ja soovin, et Jõulupass hakkaks kohe
+            kehtima. Tean, et sellega kaob 14-päevane taganemisõigus.
+          </span>
+        </label>
+        <BaseButton v-if="!buying" size="lg" @click="buy">
+          <Gift aria-hidden="true" /> Osta Jõulupass {{ PASS_PRICE }} ja kirjuta
+        </BaseButton>
+        <p v-if="buyError" class="premium__error" role="alert">{{ buyError }}</p>
+        <p v-if="buying" class="premium__note">Makse käib Stripe'i turvalises aknas. Pärast makset tuled siia tagasi ja päkapikk hakkab kohe kirjutama.</p>
+        <div v-if="buying" ref="checkoutTarget" class="premium__checkout" />
+        <p class="premium__note">
+          Pole kohustust: tasuta kirjad saad ka ilma passita välja printida.
+          <button v-if="!codeOpen" type="button" class="premium__link" @click="codeOpen = true">Mul on juba kood</button>
+        </p>
+        <form v-if="codeOpen" class="premium__code" @submit.prevent="useCode">
+          <label class="visually-hidden" for="premium-code">Jõulupassi kood</label>
+          <input id="premium-code" v-model="code" class="input" placeholder="KV-7KQM-3FXA" autocomplete="off" autocapitalize="characters" />
+          <BaseButton type="submit" variant="secondary" size="sm">Kasuta koodi</BaseButton>
+          <p v-if="codeError" class="premium__error" role="alert">{{ codeError }}</p>
+        </form>
+      </template>
+      <p class="premium__privacy">
+        Isiklikud kirjad kirjutab päkapikk tehisaru (Anthropic Claude) abil. Selleks saadetakse sinna lapse eesnimi, vanus,
+        lugemisoskus, profiili andmed (mitte märkmed lapsevanemale) ja see, mida siia kirjutasid. Neid ei salvestata.
+        <RouterLink to="/privaatsus">Loe privaatsuse kohta</RouterLink>
       </p>
     </template>
-    <template v-else>
-      <label v-if="!buying" class="premium__consent">
-        <input v-model="consent" type="checkbox" @change="buyError = ''" />
-        <span>
-          Nõustun <RouterLink to="/tingimused">müügitingimustega</RouterLink> ja soovin, et Jõulupass hakkaks kohe
-          kehtima. Tean, et sellega kaob 14-päevane taganemisõigus.
-        </span>
-      </label>
-      <BaseButton v-if="!buying" size="lg" @click="buy">
-        <Gift aria-hidden="true" /> Osta Jõulupass {{ PASS_PRICE }} ja kirjuta
-      </BaseButton>
-      <p v-if="buyError" class="premium__error" role="alert">{{ buyError }}</p>
-      <p v-if="buying" class="premium__note">Makse käib Stripe'i turvalises aknas. Pärast makset tuled siia tagasi ja päkapikk hakkab kohe kirjutama.</p>
-      <div v-if="buying" ref="checkoutTarget" class="premium__checkout" />
-      <p class="premium__note">
-        Pole kohustust: tasuta kirjad saad ka ilma passita välja printida.
-        <button v-if="!codeOpen" type="button" class="premium__link" @click="codeOpen = true">Mul on juba kood</button>
-      </p>
-      <form v-if="codeOpen" class="premium__code" @submit.prevent="useCode">
-        <label class="visually-hidden" for="premium-code">Jõulupassi kood</label>
-        <input id="premium-code" v-model="code" class="input" placeholder="KV-7KQM-3FXA" autocomplete="off" autocapitalize="characters" />
-        <BaseButton type="submit" variant="secondary" size="sm">Kasuta koodi</BaseButton>
-        <p v-if="codeError" class="premium__error" role="alert">{{ codeError }}</p>
-      </form>
-    </template>
-    <p class="premium__privacy">
-      Isiklikud kirjad kirjutab päkapikk tehisaru (Anthropic Claude) abil. Selleks saadetakse sinna lapse eesnimi, vanus,
-      lugemisoskus, profiili andmed (mitte märkmed lapsevanemale) ja see, mida siia kirjutasid. Neid ei salvestata.
-      <RouterLink to="/privaatsus">Loe privaatsuse kohta</RouterLink>
-    </p>
   </section>
 </template>
 
@@ -260,6 +266,23 @@ async function useCode(): Promise<void> {
   p {
     margin: 0;
   }
+}
+.premium.is-soon {
+  border-color: #e6ded3;
+  background: #f6f2ec;
+  .premium__head h2 {
+    color: var(--ink-soft);
+  }
+}
+.premium__soon {
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  background: #e6ded3;
+  color: var(--ink-soft);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 .premium__head {
   h2 {
