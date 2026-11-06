@@ -40,8 +40,11 @@ const BACKDROP_H = 10.6
 const CHAR_EM = 0.47
 const CHAR_EM_UPPER = 0.6
 const LINE = 1.55
-/** Room left for other browsers' line breaks (Safari wraps a little differently). */
-const SAFETY_MM = 4
+/**
+ * Room left for other browsers' line breaks (Safari wraps a little differently). A whole page
+ * keeps more: its letter ends with the signature and the character, which must not be cut.
+ */
+const SAFETY_MM: Record<FitSheet, number> = { half: 4, page: 9, cards: 4 }
 const SIGNATURE_LINE = 1.6
 
 export const MAX_PT = 12
@@ -105,14 +108,14 @@ export function letterHeightMm(item: Letter, pt: number, options: FitOptions): n
 export function printTextPt(item: Letter, options: FitOptions): number {
   const { min } = PT_RANGE[options.sheet]
   const max = options.smaller && options.sheet !== 'cards' ? Math.min(PT_RANGE[options.sheet].max, SMALLER_PT) : PT_RANGE[options.sheet].max
-  const room = SHEET_HEIGHT_MM[options.sheet] - SAFETY_MM
+  const room = SHEET_HEIGHT_MM[options.sheet] - SAFETY_MM[options.sheet]
   for (let pt = max; pt > min; pt -= STEP_PT) if (letterHeightMm(item, pt, options) <= room) return pt
   return min
 }
 
 /** Whether the letter fits its sheet at the sheet's smallest print size. */
 export function fitsSheet(item: Letter, options: FitOptions): boolean {
-  return letterHeightMm(item, PT_RANGE[options.sheet].min, options) <= SHEET_HEIGHT_MM[options.sheet] - SAFETY_MM
+  return letterHeightMm(item, PT_RANGE[options.sheet].min, options) <= SHEET_HEIGHT_MM[options.sheet] - SAFETY_MM[options.sheet]
 }
 
 /**

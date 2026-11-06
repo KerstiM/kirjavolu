@@ -3,6 +3,7 @@ import { CHRISTMAS_LIBRARY } from '@/domain/story/library'
 import { planCollection } from '@/domain/story/planner'
 import { renderPlan } from '@/domain/story/render'
 import { CARD_LIMITS, validateCollection } from '@/domain/story/validate'
+import { letterHeightMm, MIN_PT, printTextPt, SHEET_HEIGHT_MM } from '@/features/preview/printFit'
 import { findVariant, runTemplates } from '@/domain/generators/templateGenerator'
 import type { ChildProfile, RequestFor } from '@/domain/models'
 import { KAI, MARKUS, PAARU, makeRequest } from './helpers'
@@ -118,6 +119,27 @@ describe('what is made by default fits its print format', () => {
         plan.days.forEach((d, k) => {
           if (d.childId === KAI.id) expect(items[k]!.body.length, `${count}/${seed}/${k}`).toBeLessThanOrEqual(CARD_LIMITS.toddler)
         })
+      }
+    }
+  })
+})
+
+describe('a whole-page letter with its character never runs over the page', () => {
+  it('fits 240 mm minus the safety margin at the size it picks, in capitals and on a backdrop too', () => {
+    const request = makeRequest('letter', {
+      seed: 5,
+      occasionId: 'christmas',
+      children: [MARKUS, PAARU],
+      general: { length: 'long' },
+      options: { startDate: '2026-12-01', count: 24 },
+    }) as RequestFor<'letter'>
+    const plan = planCollection(request, library)
+    for (const item of renderPlan(plan, library, request)) {
+      for (const [uppercase, backdrop] of [[false, false], [true, false], [true, true]] as const) {
+        const options = { sheet: 'page' as const, uppercase, backdrop, companion: true }
+        const pt = printTextPt(item, options)
+        const height = letterHeightMm(item, pt, options)
+        expect(pt === MIN_PT || height <= SHEET_HEIGHT_MM.page - 9, `${item.label} ${uppercase} ${backdrop}`).toBe(true)
       }
     }
   })

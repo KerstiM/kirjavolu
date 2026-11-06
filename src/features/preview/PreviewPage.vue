@@ -29,6 +29,7 @@ import { useNoVariants } from './useVariants'
 import { carryEdits } from './carryEdits'
 import ParentSheet from './ParentSheet.vue'
 import CustomizePanel from './CustomizePanel.vue'
+import PersonalSoon from './PersonalSoon.vue'
 import PassOfferCard from '../pass/PassOfferCard.vue'
 import { AI_SERIES_GENERATOR, FIX_ERROR_TEXTS, LettersRequestError, requestLetterFix, requestStoryPageFix } from '../pass/passLetters'
 import AiStoryCard from './AiStoryCard.vue'
@@ -660,6 +661,7 @@ function exportText(): void {
           </details>
           <p class="controls__note">Teksti muutmiseks vajuta kaardil „Muuda“. PDF-i saamiseks vali printimisaknas „Salvesta PDF-ina“.</p>
         </PanelSection>
+        <PersonalSoon v-if="!PASS_ENABLED && !aiWritten && content.request.contentType === 'letter' && content.request.occasionId === 'christmas'" />
       </aside>
 
       <div class="sheets">
@@ -975,6 +977,11 @@ function exportText(): void {
     border-radius: 14px;
     background: #fffdf8;
   }
+  // The "Varsti" section stays gray, like the offer on the finished letters' page.
+  :deep(.panel-section.soon) {
+    border-color: #e6ded3;
+    background: #f6f2ec;
+  }
   .more {
     border-top: 2px dashed #ecd9bf;
   }
@@ -985,18 +992,22 @@ function exportText(): void {
 }
 // On screen the sheets keep the shape they print in (A4 inside the 14mm margins, see the
 // print heights below), so a whole page looks like a whole page; a long text still grows it.
+// The shape is a minimum height, not an aspect ratio: a ratio holds the box to the sheet's
+// shape however narrow the screen is, and a phone cut the text off at the bottom of the card.
 .sheet--page {
   max-width: 720px;
   margin-inline: auto;
+  container-type: inline-size;
   :deep(.paper) {
-    aspect-ratio: 182 / 245;
+    min-height: calc(100cqw * 245 / 182);
   }
 }
 .sheet--half {
   max-width: 720px;
   margin-inline: auto;
+  container-type: inline-size;
   :deep(.paper) {
-    aspect-ratio: 182 / 120;
+    min-height: calc(100cqw * 120 / 182);
   }
 }
 // The letters in date order while reading; the poster sheets are still laid out (out of
