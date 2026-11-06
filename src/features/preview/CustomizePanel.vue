@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import { ChevronDown, SlidersHorizontal } from 'lucide-vue-next'
 import type { ChildProfile, ContentOptionsMap, GeneralOptions, GeneratedContent, LanguageLevel } from '../../domain/models'
 import { getContentType } from '../../domain/contentTypes'
 import { defaultOptions } from '../../domain/defaults'
@@ -9,6 +8,10 @@ import { usesScenarioEngine } from '../../domain/story/scenarioLetters'
 import { PUZZLE_ENABLED } from '../../domain/puzzleAvailability'
 import type { RequestFor } from '../../domain/models'
 import SegmentedControl from '../../components/ui/SegmentedControl.vue'
+import PanelSection from '../../components/ui/PanelSection.vue'
+import ChildContentBlock from './ChildContentBlock.vue'
+import PersonaEditor from '../creation/options/PersonaEditor.vue'
+import { suggestPersonas } from '../../data/templates/personas'
 import { ageBand, languageFor } from '../../domain/generators/audience'
 import {
   DIFFICULTY_OPTIONS,
@@ -80,9 +83,6 @@ function send(): void {
   emit('change', { general: clone(draft.value.general), options: clone(draft.value.options[type.value]) })
 }
 
-// Open beside the preview on a wide screen; on a phone the letters come first.
-const open = ref(typeof window === 'undefined' || !window.matchMedia || window.matchMedia('(min-width: 1024px)').matches)
-
 /**
  * Letters have one warm, playful style: the four tones did not give letters that differed
  * reliably, so they are not offered. Elsewhere the tone still picks openings, endings, wishes.
@@ -106,11 +106,8 @@ function setLanguage(child: ChildProfile, level: LanguageLevel): void {
   draft.value.general.difficulty = 'auto'
 }
 // A toddler's two texts are not the readers' two, so the hint says what they are.
-const toddlerNote = computed(() =>
-  children.value.some((child) => ageBand(child) === 'toddler')
-    ? 'Väikelapsele on lihtne keel väike ettelugemislugu häälitsuste ja liigutustega (lühema kirja puhul ühe rea kaart); rikkalikum keel on samad kirjad, mis 5–7-aastastel.'
-    : '',
-)
+const toddlerNote = (child: ChildProfile) =>
+  ageBand(child) === 'toddler' ? 'Väikelapsele on lihtne keel ettelugemislugu; rikkalikum keel on nagu 5–7-aastastel.' : ''
 const lengthOptions = computed(() =>
   draft.value.general.length === 'medium' ? [...LETTER_LENGTH_OPTIONS, LEGACY_MEDIUM] : LETTER_LENGTH_OPTIONS,
 )
@@ -128,42 +125,100 @@ const generalSummary = computed(() =>
 )
 const lengthHint = computed(() =>
   PUZZLE_ENABLED && draft.value.options.letter.count >= 7
-    ? `${LETTER_LENGTH_HINT} ${draft.value.general.length === 'long' ? 'Pusleplakatil on siis suuremad kaardid.' : 'Lühemad kirjad mahuvad pusleplakati tavalistele kaartidele.'}`
+    ? `${LETTER_LENGTH_HINT} ${draft.value.general.length === 'long' ? 'Pusleplakatil on suuremad kaardid.' : ''}`.trim()
     : LETTER_LENGTH_HINT,
 )
+
+const title = computed(() => (letters.value ? 'Kohanda kirju' : `Kohanda: ${getContentType(type.value).title.toLowerCase()}`))
+
+// Letters: the family's helpers are one per child, so each child gets a block of their own.
+const linked = computed(() => children.value.length > 1 && (draft.value.options.letter.mode ?? 'linked') === 'linked')
+const personas = computed(() => suggestPersonas(children.value, request.value.occasionId, (child) => ageBand(child) === 'toddler'))
+const helperName = (child: ChildProfile) => draft.value.options.letter.personas?.[child.id]?.name ?? personas.value[child.id]?.name
+const childLine = (child: ChildProfile) =>
+  [
+    linked.value ? helperName(child) : '',
+    engine.value ? labelOf(LANGUAGE_OPTIONS, languageOf(child)) : '',
+    labelOf(lengthOptions.value, draft.value.general.length),
+  ]
+    .filter(Boolean)
+    .join(' · ')
+const blocks = computed(() => children.value.length > 1 && (linked.value || engine.value))
+
+const dateLabel = (iso: string) => iso.replace(/^(\d{4})-(\d{2})-(\d{2})$/, (_, y, m, d) => `${Number(d)}.${Number(m)}.${y}`)
+const lettersSummary = computed(() => {
+  const { count, dated, startDate } = draft.value.options.letter
+  return [`${count} ${count === 1 ? 'kiri' : 'kirja'}`, dated === false ? 'ilma kuupäevadeta' : startDate ? dateLabel(startDate) : '']
+    .filter(Boolean)
+    .join(' · ')
+})
+const contentSummary = computed(() => {
+  if (!letters.value) return generalSummary.value
+  const length = labelOf(lengthOptions.value, draft.value.general.length)
+  if (children.value.length === 1) return [engine.value ? labelOf(LANGUAGE_OPTIONS, languageOf(children.value[0]!)) : '', length].filter(Boolean).join(' · ')
+  return `${length} · iga lapse valikud`
+})
 </script>
 
 <template>
   <section class="customize no-print" aria-labelledby="customize-title">
-    <h2 id="customize-title" class="customize__title">
-      <button
-        type="button"
-        class="customize__toggle"
-        :aria-expanded="open"
-        aria-controls="customize-body"
-        @click="open = !open"
-      >
-        <SlidersHorizontal aria-hidden="true" :size="18" />
-        <span>Kohanda: {{ getContentType(type).title.toLowerCase() }}</span>
-        <ChevronDown aria-hidden="true" :size="18" class="customize__chevron" :class="{ 'is-open': open }" />
-      </button>
-    </h2>
+    <h2 id="customize-title" class="customize__title">{{ title }}</h2>
     <p class="customize__status" role="status" aria-live="polite">{{ busy ? 'Uuendan eelvaadet…' : '' }}</p>
+    <p class="customize__lead">Muudatused ilmuvad kohe eelvaates.</p>
+    <div v-if="errors?.length" class="customize__errors" role="alert">
+      <p v-for="error in errors" :key="error">{{ error }}</p>
+    </div>
 
-    <div v-show="open" id="customize-body" class="customize__body">
-      <p class="customize__lead">Valikud on eeltäidetud. Iga muudatus jõuab eelvaatesse kohe.</p>
-      <div v-if="errors?.length" class="customize__errors" role="alert">
-        <p v-for="error in errors" :key="error">{{ error }}</p>
-      </div>
+    <template v-if="letters">
+      <PanelSection title="Kirjad" :summary="lettersSummary" open>
+        <LetterOptionsForm v-model="draft.options.letter" part="letters" :children="children" :occasion-id="request.occasionId" />
+        <p class="customize__kids">
+          <strong>Lapsed:</strong>
+          {{ children.map((child) => `${child.name} (${child.age} a)`).join(', ') }}
+        </p>
+      </PanelSection>
 
-      <LetterOptionsForm
-        v-if="type === 'letter'"
-        v-model="draft.options.letter"
-        :children="children"
-        :occasion-id="request.occasionId"
-      />
+      <PanelSection title="Sisu kohandamine" :summary="contentSummary">
+        <LetterOptionsForm v-model="draft.options.letter" part="content" :children="children" :occasion-id="request.occasionId">
+          <div class="customize__letter">
+            <template v-if="blocks">
+              <ChildContentBlock v-for="child in children" :key="child.id" :name="child.name" :summary="childLine(child)">
+                <PersonaEditor v-if="linked" v-model="draft.options.letter.personas" :children="children" :occasion-id="request.occasionId" :only="child.id" />
+                <SegmentedControl
+                  v-if="engine"
+                  :model-value="languageOf(child)"
+                  :name="`language-${child.id}`"
+                  label="Teksti keerukus"
+                  :options="LANGUAGE_OPTIONS"
+                  :hint="[LANGUAGE_HINT, toddlerNote(child)].filter(Boolean).join(' ')"
+                  @update:model-value="setLanguage(child, $event)"
+                />
+              </ChildContentBlock>
+            </template>
+            <SegmentedControl
+              v-else-if="engine"
+              :model-value="languageOf(children[0]!)"
+              :name="`language-${children[0]!.id}`"
+              label="Teksti keerukus"
+              :options="LANGUAGE_OPTIONS"
+              :hint="[LANGUAGE_HINT, toddlerNote(children[0]!)].filter(Boolean).join(' ')"
+              @update:model-value="setLanguage(children[0]!, $event)"
+            />
+            <SegmentedControl
+              v-model="draft.general.length"
+              name="length"
+              :label="children.length > 1 ? 'Kirja pikkus (kõigile lastele)' : 'Kirja pikkus'"
+              :options="lengthOptions"
+              :hint="lengthHint"
+            />
+          </div>
+        </LetterOptionsForm>
+      </PanelSection>
+    </template>
+
+    <PanelSection v-else title="Sisu kohandamine" :summary="contentSummary" open>
       <TreasureHuntOptionsForm
-        v-else-if="type === 'treasure-hunt'"
+        v-if="type === 'treasure-hunt'"
         v-model="draft.options['treasure-hunt']"
         :multiple-children="children.length > 1"
       />
@@ -172,23 +227,7 @@ const lengthHint = computed(() =>
       <CalendarOptionsForm v-else-if="type === 'calendar'" v-model="draft.options.calendar" />
       <CertificateOptionsForm v-else v-model="draft.options.certificate" :occasion-id="request.occasionId" />
 
-      <section v-if="letters" class="customize__letter" aria-label="Keel ja pikkus">
-        <template v-if="engine">
-          <SegmentedControl
-            v-for="child in children"
-            :key="child.id"
-            :model-value="languageOf(child)"
-            :name="`language-${child.id}`"
-            :label="children.length > 1 ? `Keel: ${child.name}` : 'Kirja keel'"
-            :options="LANGUAGE_OPTIONS"
-            @update:model-value="setLanguage(child, $event)"
-          />
-          <p class="customize__hint">{{ LANGUAGE_HINT }}</p>
-          <p v-if="toddlerNote" class="customize__hint">{{ toddlerNote }}</p>
-        </template>
-        <SegmentedControl v-model="draft.general.length" name="length" label="Pikkus" :options="lengthOptions" :hint="lengthHint" />
-      </section>
-      <details v-else class="customize__general">
+      <details class="customize__general">
         <summary>
           {{ toneMatters ? 'Toon, pikkus ja raskusaste' : 'Pikkus ja raskusaste' }} <span class="customize__now">{{ generalSummary }}</span>
         </summary>
@@ -204,48 +243,21 @@ const lengthHint = computed(() =>
           />
         </div>
       </details>
-    </div>
+    </PanelSection>
   </section>
 </template>
 
 <style scoped lang="scss">
 .customize {
-  padding: 0.5rem 1.25rem;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
+  margin-bottom: 0.75rem;
+  // The panel is narrow beside the preview: one column of options is easier to read.
+  :deep(.options-grid) {
+    grid-template-columns: 1fr;
+  }
 }
 .customize__title {
-  margin: 0;
+  margin: 0 0 0.25rem;
   font-size: 1.1rem;
-}
-.customize__toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
-  min-height: 2.75rem;
-  padding: 0.25rem 0;
-  border: 0;
-  background: none;
-  font: inherit;
-  color: var(--ink);
-  text-align: left;
-  cursor: pointer;
-  span {
-    flex: 1;
-  }
-  &:focus-visible {
-    outline: 3px solid var(--focus);
-    outline-offset: 2px;
-    border-radius: var(--radius-sm);
-  }
-}
-.customize__chevron {
-  transition: transform 0.15s ease;
-  &.is-open {
-    transform: rotate(180deg);
-  }
 }
 .customize__status {
   margin: 0;
@@ -255,15 +267,8 @@ const lengthHint = computed(() =>
     display: none;
   }
 }
-.customize__body {
-  padding-bottom: 0.75rem;
-  // The panel is narrow beside the preview: one column of options is easier to read.
-  :deep(.options-grid) {
-    grid-template-columns: 1fr;
-  }
-}
 .customize__lead {
-  margin: 0.25rem 0 1rem;
+  margin: 0 0 0.75rem;
   font-size: 0.9rem;
   color: var(--ink-soft);
 }
@@ -276,6 +281,11 @@ const lengthHint = computed(() =>
   p {
     margin: 0;
   }
+}
+.customize__kids {
+  margin: 1rem 0 0;
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
 }
 .customize__general {
   margin-top: 1.25rem;
@@ -297,14 +307,6 @@ const lengthHint = computed(() =>
 .customize__letter {
   display: grid;
   gap: 1rem;
-  margin-top: 1.25rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--line);
-}
-.customize__hint {
-  margin: -0.25rem 0 0;
-  font-size: 0.85rem;
-  color: var(--ink-soft);
 }
 .customize__general-body {
   display: grid;

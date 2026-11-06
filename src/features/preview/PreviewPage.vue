@@ -17,6 +17,7 @@ import { formatDayMonth, namesInCase } from '../../domain/text/estonian'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import EmptyState from '../../components/ui/EmptyState.vue'
 import SegmentedControl from '../../components/ui/SegmentedControl.vue'
+import PanelSection from '../../components/ui/PanelSection.vue'
 import { useGenerator } from '../../composables/useGenerator'
 import { GenerationError } from '../../domain/generators/templateGenerator'
 import { contentToPlainText, downloadText, fileNameFor } from '../../utils/exportText'
@@ -496,10 +497,19 @@ async function regenerate(index: number): Promise<void> {
 type PrintMode = 'all' | 'child' | 'parent'
 const printMode = ref<PrintMode>('all')
 const printOptions = computed<{ value: PrintMode; label: string }[]>(() => [
-  { value: 'all', label: 'Kõik' },
+  { value: 'all', label: 'Kõik kirjad' },
   { value: 'child', label: 'Ainult lapsele' },
   ...(hasParentMaterial.value ? [{ value: 'parent' as const, label: 'Lapsevanema leht' }] : []),
 ])
+const printSummary = computed(() =>
+  [
+    printOptions_.value.find((option) => option.value === layout.value)?.label,
+    printMode.value !== 'all' ? printOptions.value.find((option) => option.value === printMode.value)?.label : '',
+    uppercase.value ? 'trükitähed' : '',
+  ]
+    .filter(Boolean)
+    .join(' · '),
+)
 function cleanupPrint(): void {
   document.body.classList.remove('print-all', 'print-child', 'print-parent')
 }
@@ -579,39 +589,6 @@ function exportText(): void {
           @written="storyWritten"
         />
 
-        <section class="print-panel" aria-labelledby="print-title">
-          <h2 id="print-title" class="print-panel__title">Printimine</h2>
-          <SegmentedControl v-model="layout" name="print-preset" label="Kuidas prindid?" :options="printOptions_" :hint="presetHint" />
-          <p v-if="(isPoster || isMini) && overflowCount > 0" class="controls__warn" role="status">
-            {{ overflowCount }} kaardil on tekst liiga pikk{{ isPoster ? ' ka suurel kaardil' : '' }}. Lühenda seda kaardil „Muuda“
-            või vali väiksem tekst.
-          </p>
-          <label v-if="showSmallText" class="check controls__small">
-            <input type="checkbox" :checked="cardFit === 'smaller'" @change="setSmallText(($event.target as HTMLInputElement).checked)" />
-            <span>Väiksem tekst kaartidel</span>
-          </label>
-          <p class="controls__note">Teksti muutmiseks vajuta kaardil „Muuda“. PDF-i saamiseks vali printimisaknas „Salvesta PDF-ina“.</p>
-
-          <details class="more">
-            <summary class="more__summary">Rohkem valikuid <span class="more__what">mida printida, trükitähed</span></summary>
-            <div class="more__body">
-              <div class="controls">
-                <SegmentedControl v-model="printMode" name="print-mode" label="Mida printida" :options="printOptions" />
-                <label class="check controls__upper">
-                  <input type="checkbox" :checked="uppercase" @change="setDecoration({ ...decoration, uppercase: !uppercase })" />
-                  <span>Trükitähed (suured tähed alles lugema õppijale)</span>
-                </label>
-                <p class="controls__note">
-                  <template v-if="isPoster">Pusleplakati kaardid on tükid, mis lõigatakse lahti ja pannakse lõpuks kokku. </template>
-                  <template v-if="isMini">Väikelapse kaarte on 12 lehel, lõika mööda katkendjooni. </template>
-                  {{ content.generator.label }}.
-                </p>
-              </div>
-            </div>
-          </details>
-        </section>
-
-        <!-- Background and own picture are what parents look for, so they are not folded away. -->
         <DecorationPanel
           :decoration="decoration"
           :occasion-id="content.request.occasionId"
@@ -624,6 +601,37 @@ function exportText(): void {
           :child-image-urls="childImageUrls"
           @update="setDecoration"
         />
+
+        <PanelSection title="Printimine" :summary="printSummary">
+          <SegmentedControl v-model="layout" name="print-preset" label="Kuidas prindid?" :options="printOptions_" :hint="presetHint" />
+          <p v-if="(isPoster || isMini) && overflowCount > 0" class="controls__warn" role="status">
+            {{ overflowCount }} kaardil on tekst liiga pikk{{ isPoster ? ' ka suurel kaardil' : '' }}. Lühenda seda kaardil „Muuda“
+            või vali väiksem tekst.
+          </p>
+          <label v-if="showSmallText" class="check controls__small">
+            <input type="checkbox" :checked="cardFit === 'smaller'" @change="setSmallText(($event.target as HTMLInputElement).checked)" />
+            <span>Väiksem tekst kaartidel</span>
+          </label>
+
+          <details class="more">
+            <summary class="more__summary">Printimise lisavalikud <span class="more__what">mida printida, trükitähed</span></summary>
+            <div class="more__body">
+              <div class="controls">
+                <!-- One choice at a time (one print run), so radios. -->
+                <SegmentedControl v-model="printMode" name="print-mode" label="Mida printida?" :options="printOptions" />
+                <label class="check controls__upper">
+                  <input type="checkbox" :checked="uppercase" @change="setDecoration({ ...decoration, uppercase: !uppercase })" />
+                  <span>Trükitähed (suured tähed alles lugema õppijale)</span>
+                </label>
+                <p v-if="isPoster || isMini" class="controls__note">
+                  <template v-if="isPoster">Pusleplakati kaardid on tükid, mis lõigatakse lahti ja pannakse lõpuks kokku.</template>
+                  <template v-else>Väikelapse kaarte on 12 lehel, lõika mööda katkendjooni.</template>
+                </p>
+              </div>
+            </div>
+          </details>
+          <p class="controls__note">Teksti muutmiseks vajuta kaardil „Muuda“. PDF-i saamiseks vali printimisaknas „Salvesta PDF-ina“.</p>
+        </PanelSection>
       </aside>
 
       <div class="sheets">
@@ -844,19 +852,6 @@ function exportText(): void {
   border-radius: var(--radius);
   font-size: 0.92rem;
 }
-.print-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1rem 1.25rem;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-}
-.print-panel__title {
-  font-size: 1.1rem;
-  margin: 0;
-}
 .more {
   border-top: 1px solid var(--line);
   padding-top: 0.5rem;
@@ -945,29 +940,10 @@ function exportText(): void {
     font-weight: 600;
     letter-spacing: -0.015em;
   }
-  .print-panel,
-  :deep(.customize) {
+  :deep(.panel-section) {
     border: 2px solid #f0e2cf;
     border-radius: 14px;
     background: #fffdf8;
-  }
-  .print-panel {
-    position: relative;
-    overflow: hidden;
-    padding-top: 1.4rem;
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0 0 auto;
-      height: 6px;
-      background: repeating-linear-gradient(
-        -45deg,
-        #e8836b 0 10px,
-        #fffdf8 10px 15px,
-        #7c6bb8 15px 25px,
-        #fffdf8 25px 30px
-      );
-    }
   }
   .more {
     border-top: 2px dashed #ecd9bf;

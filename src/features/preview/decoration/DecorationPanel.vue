@@ -6,6 +6,7 @@ import { isSuggestedPattern, PATTERN_LABELS, patternsFor } from '../../../domain
 import { computeGrid } from '../../../domain/puzzleGrid'
 import { PUZZLE_ENABLED } from '../../../domain/puzzleAvailability'
 import { saveImage } from '../../../utils/imageStore'
+import PanelSection from '../../../components/ui/PanelSection.vue'
 import PatternBackground from './PatternBackground.vue'
 import PosterArt from '../poster/PosterArt.vue'
 
@@ -109,6 +110,22 @@ const grid = computed(() =>
   props.decoration.image ? computeGrid(props.itemCount, props.decoration.image.width / props.decoration.image.height) : null,
 )
 
+/** What is chosen, for the closed section: the background (or "differs" for children with their own) and the picture. */
+const summary = computed(() => {
+  const choice = background.value
+  const name = !choice
+    ? 'lastel eri taustad'
+    : choice === 'none'
+      ? 'taust puudub'
+      : choice === 'poster-art'
+        ? 'plakatipilt'
+        : choice.startsWith('image:')
+          ? 'oma pilt'
+          : (PATTERN_LABELS[choice as PatternId] ?? '').toLowerCase()
+  const saver = choice && patterns.value.includes(choice as PatternId) && props.decoration.inkSaver ? 'tindisäästlik' : ''
+  return [name, saver].filter(Boolean).join(' · ')
+})
+
 function update(patch: Partial<Decoration>): void {
   emit('update', { ...props.decoration, ...patch })
 }
@@ -169,11 +186,10 @@ function removeImage(): void {
 </script>
 
 <template>
-  <section class="decor no-print" aria-labelledby="decor-title">
-    <h2 id="decor-title" class="decor__title">Taust ja pilt</h2>
+  <PanelSection title="Välimus" :summary="summary" class="decor">
 
     <fieldset v-if="perChild" class="decor__group">
-      <legend>Kellele</legend>
+      <legend>Milliste laste kirjadel?</legend>
       <div class="kids">
         <button
           v-for="child in kids"
@@ -190,8 +206,8 @@ function removeImage(): void {
       <p class="decor__hint">
         {{
           everyone
-            ? 'Kõigil lastel on ühine taust. Lapsele oma tausta valimiseks jäta valituks ainult tema.'
-            : 'Valitud lapsed saavad oma tausta. Teiste laste taust jääb, nagu on.'
+            ? 'Kõigil on ühine taust. Oma tausta jaoks vali ainult see laps.'
+            : 'Valitud lapsed saavad oma tausta, teiste oma jääb.'
         }}
       </p>
     </fieldset>
@@ -231,7 +247,7 @@ function removeImage(): void {
       </div>
       <label v-if="background && patterns.includes(background as PatternId)" class="check">
         <input type="checkbox" :checked="decoration.inkSaver" @change="update({ inkSaver: !decoration.inkSaver })" />
-        <span>Säästa tinti – muster ainult raamina</span>
+        <span>Tindisäästlik printimine: muster ainult raamina</span>
       </label>
       <label v-if="backgroundImage || childImage" class="range-field">
         <span>Pildi tugevus</span>
@@ -253,13 +269,10 @@ function removeImage(): void {
     <fieldset class="decor__group">
       <legend>Oma pilt</legend>
       <p class="decor__hint">
-        Laadi üles pere foto või lapse joonistus. Pilt jääb ainult sinu seadmesse.
+        Pere foto või lapse joonistus. Pilt jääb ainult sinu seadmesse.
         <template v-if="!everyone">See tuleb valitud laste taustaks.</template>
-        <template v-else-if="PUZZLE_ENABLED && itemCount > 1 && !cardSheets">
-          Seda saab kasutada taustana või lõigata tükkideks, nii et iga osa juures on üks tükk – kui kõik on koos,
-          tuleb välja terve pilt.
-        </template>
-        <template v-else>Seda saab kasutada taustana.</template>
+        <template v-else-if="PUZZLE_ENABLED && itemCount > 1 && !cardSheets">Taustaks või lõigatuna tükkideks.</template>
+        <template v-else>Taustaks.</template>
       </p>
       <div class="upload-row">
         <label class="upload" :class="{ 'is-busy': uploading }">
@@ -293,21 +306,10 @@ function removeImage(): void {
         </p>
       </template>
     </fieldset>
-  </section>
+  </PanelSection>
 </template>
 
 <style scoped lang="scss">
-.decor {
-  margin-bottom: 1.5rem;
-  padding: 1rem 1.25rem;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-}
-.decor__title {
-  font-size: 1.1rem;
-  margin-bottom: 0.75rem;
-}
 .decor__group {
   border: 0;
   padding: 0;
