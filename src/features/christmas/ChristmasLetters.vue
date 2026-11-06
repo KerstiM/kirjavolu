@@ -260,7 +260,7 @@ onBeforeUnmount(() => {
     </div>
 
     <div v-else class="container section letters">
-      <JourneySteps :current="personal ? 3 : 2" />
+      <JourneySteps :current="2" />
       <header class="letters__head">
         <div>
           <h1 v-if="isFamily">{{ familyHeading }}</h1>
