@@ -266,7 +266,12 @@ _Tervitustega köögist · Päkapikk Tuduja_
 
 **Kallis Pääru!**
 
-Täna on jõululaupäev! Töökoda on vaikseks jäänud ja kingid on kelgul. Pärast seda kirja jääb mu kirjakott tühjaks ja ma jään töökotta jõulutööde juurde. Ma pesin viimase pudrupoti puhtaks ja panin mütsi pähe. Ma hakkan sind igatsema! Häid jõule, Pääru!
+Täna on jõululaupäev! Töökoda on vaikseks jäänud ja kingid on kelgul. Pärast seda kirja jääb mu kirjakott tühjaks ja ma jään töökotta jõulutööde juurde. Ma pesin viimase pudrupoti puhtaks ja panin mütsi pähe. Ma hakkan sind igatsema! Töökojas juhtus nii palju, et ma ei jõudnudki kõike rääkida! Aitäh, et sa mu kirju lugesid! Enne kui lähen, kirjutasin sulle ühe väikese salmi:
+
+„Lumehelbed lendavad,
+päkapikud kallistavad.“
+
+Loodan, et kohtume järgmisel detsembril jälle. Häid jõule, Pääru!
 
 _Sinu · Päkapikk Tuduja_
 
