@@ -34,7 +34,7 @@ export const FRAME_SCENARIOS: Scenario[] = [
       ],
       toddler: (c) => [
         c.siblings
-          ? `Tere, väike ${c.name}! Mina olen ${c.helper}${c.frame.origin ? ` – ${c.frame.origin}` : ''}. ${c.siblings} ${c.siblingCount > 1 ? 'saavad' : 'saab'} ka kirju!`
+          ? `Tere, väike ${c.name}! Mina olen ${c.helper}. ${c.siblings} ${c.siblingCount > 1 ? 'saavad' : 'saab'} ka kirju!`
           : `Tere, väike ${c.name}! Mina olen ${c.helper}. Ma olen nii väike, et mahun sinu sussi sisse.`,
       ],
     },
@@ -96,7 +96,7 @@ export const FRAME_SCENARIOS: Scenario[] = [
       toddler: (c) => [`Häid jõule, väike ${c.name}! ${c.helper} kallistab sind. Kalli-kalli!`],
     },
     readAloud: (c) => [
-      `${c.frame.eve ? 'Täna on jõululaupäev!' : 'See on minu viimane kiri.'} Panin oma pisikese mütsi pähe ja Välk ootab juba akna all.`,
+      `${c.frame.eve ? 'Täna on jõululaupäev!' : 'See on minu viimane kiri.'}${c.knows('star-back') ? ' Täht särab jälle kuuse tipus.' : ''} Panin oma pisikese mütsi pähe ja Välk ootab juba akna all.`,
       c.frame.allHelpers
         ? 'Täna toovad kõik päkapikud oma viimase kirja ja lendavad siis koos tagasi töökotta, kus jõulud ootavad.'
         : 'Kui kiri on sussis, lendame Välguga tagasi töökotta, kus jõulud ootavad.',

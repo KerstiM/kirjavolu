@@ -4,6 +4,7 @@ import App from './app/App.vue'
 import { router } from './app/router'
 import { setupPersistence } from './app/persistence'
 import { setupAnalytics } from './app/analytics'
+import { recoverFromChunkErrors } from './app/chunkRecovery'
 import { vScrollShadow } from './directives/scrollShadow'
 import './styles/main.scss'
 
@@ -12,6 +13,7 @@ const pinia = createPinia()
 app.use(pinia)
 app.use(router)
 app.directive('scroll-shadow', vScrollShadow)
+recoverFromChunkErrors(router)
 setupPersistence()
 // Before mounting, so the first page's events are not lost.
 setupAnalytics(import.meta.env.VITE_UMAMI_WEBSITE_ID, import.meta.env.VITE_UMAMI_DOMAINS)

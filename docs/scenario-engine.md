@@ -81,8 +81,9 @@ farewell only mentions the returned star to a child who heard the story.
 
 **Shared world.** A scenario marked `world: true` is a canonical event: it is told
 on one day only, to every child who hears it, each from their own helper's side
-(`worldEvents` in the plan). At most one child per age band tells a scenario,
-because the narrator is often its hero. The siblings' helpers appear by name
+(`worldEvents` in the plan). At most one child per age band tells such a scenario,
+because the narrator is often its hero. Story arc stages are different: every child
+with a text for the stage tells it. The siblings' helpers appear by name
 through `c.cast` (`older`, `young`, `tiny`); a single child meets workshop elves
 instead (`STAND_IN_CAST` in `characters.ts`).
 
@@ -192,7 +193,11 @@ helper.
   sibling name is used only when `genitiveIsSure` (typed in, a vowel ending, Rasmus →
   Rasmuse, or a listed name like Mikk → Miku), otherwise the sentence keeps the
   nominative ("Kirju saab ka Mart: talle kirjutab …").
-- Keep within the card budget (see the lengths above).
+- Keep within the card budget (see the lengths above). A toddler's mini card holds about
+  130 characters including a postscript (measured in the browser); `CARD_LIMITS.toddler`
+  says so, and the renderer leaves a postscript out of a mini card that has no room for it.
+- Every arc has an ending in every band: a toddler's lost star is brought back and the
+  nest gets its lantern (`star-return` has a toddler card and a read-aloud text).
 
 ## How to …
 
@@ -268,13 +273,23 @@ npx vitest run tests/story.spec.ts      # engine, library and collection checks
 npx vitest run -u tests/golden.spec.ts  # regenerate the sample collections
 ```
 
+## Lost tooth
+
+A lost-tooth letter is one whole letter (`toothFairyLetter` in `letterGenerator.ts`, texts in
+`data/templates/toothFairy.ts`): the introduction, one story told from beginning to end and
+the one task that belongs to it. A child's topic is the reason for the event (the stairs of
+the tooth castle are built from blocks); topics without a story are not mentioned. The
+series of 4–24 letters is not offered for it: that needs its own story.
+
 ## Known limitations
 
 - Christmas single letters and series of 7–24 use the engine. Older creations with
   2–6 letters or one shared letter for several children, and other occasions, use the
   older generator (assembled from slots); Christmas no longer offers those choices.
-- Two children in the same age band share one perspective per scenario: the second
-  child gets standalone episodes on stage days and fewer arc letters.
+- Two children in the same age band hear the story arc in the same text (from their own
+  helpers, on the same days), so one child's language choice never takes the arc from a
+  sibling. Shared-world scenarios (`world: true`) are still told by one child per band; the
+  second child gets a standalone episode that day.
 - A parent cannot yet confirm a child's real response; there are no conditional
   “if the child answered” branches. Stories are written to work without replies.
 - Some longer older-reader letters print at 7.5–8 pt on the 24-card poster; the

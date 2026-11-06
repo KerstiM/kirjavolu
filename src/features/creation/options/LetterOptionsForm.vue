@@ -31,6 +31,8 @@ const series = computed(() => model.value.count > 1)
  * not tell a story to its end, so they are not offered.
  */
 const christmas = computed(() => props.occasionId === 'christmas')
+/** A lost tooth gets one whole letter; there is no series for it (an older creation's series stays editable). */
+const oneLetterOnly = computed(() => props.occasionId === 'lost-tooth' && model.value.count === 1)
 const quickCounts = computed<number[]>(() => (christmas.value ? [1, MIN_SERIES, MAX_LETTERS] : [1, 4, 7, 24]))
 const minOther = computed(() => (christmas.value ? MIN_SERIES : 1))
 const maxCount = computed(() => (christmas.value ? christmasLettersUntilEve(model.value.startDate) : MAX_LETTERS))
@@ -109,7 +111,7 @@ const offersSecretHelper = computed(() => linked.value && christmas.value && mod
 
 <template>
   <div class="options-grid">
-    <div v-if="part !== 'content'" class="count">
+    <div v-if="part !== 'content' && !oneLetterOnly" class="count">
       <SegmentedControl v-model="countChoice" name="letter-count" label="Kirjade arv" :options="countOptions" :hint="countHint" />
       <label v-if="otherOpen" class="count__other">
         <span>Mitu kirja?</span>

@@ -34,7 +34,7 @@ export const WORLD_SCENARIOS: Scenario[] = [
         'Välk ronis välja, aga lumememme pähe jäid kaks oksa nagu sarved. Porgandi sõi Välk ära. Nad said sõpradeks.',
       ],
       toddler: () => [
-        'Põhjapõder Välk hüppas lumme. Põmm! Ainult sarved paistavad. Välk raputab end: sahh-sahh-sahh! Kas sina oskad ka end raputada?',
+        'Põhjapõder Välk hüppas lumme: põmm! Ainult sarved paistsid. Välk raputas end: sahh-sahh! Jälle terve! Raputa sina ka end!',
       ],
     },
     readAloud: () => [
@@ -132,7 +132,7 @@ export const WORLD_SCENARIOS: Scenario[] = [
         'Nurr oli karbis magama jäänud ja keegi oli ta kogemata ära pakkinud. Peaaegu oleks ta jõulukingina ühe lapse juurde sõitnud.',
       ],
       toddler: () => [
-        'Kus on kiisu? Kingikotis! Kiisu teeb: nurr-nurr. Kiisu magab. Paitame kiisut: silita-silita.',
+        'Kiisu Nurr oli kadunud! Otsisime, otsisime … Kingikotis! Seal ta magas: nurr-nurr. Paitame kiisut: silita-silita.',
       ],
     },
     readAloud: () => [
@@ -169,7 +169,7 @@ export const WORLD_SCENARIOS: Scenario[] = [
         'Aga täna hommikul oli majal üks nurk puudu. Ja põhjapõder Välk vaatas lakke. Tal oli glasuur nina peal. Hmm… kes küll?',
       ],
       toddler: () => [
-        'Piparkoogimaja! Seinad, aken ja katus. Mmm, kui hästi lõhnab. Nuusuta: nuuh-nuuh!',
+        'Piparkoogimaja katus kukkus: pauh! Panime selle uuesti peale. Nüüd püsib! Mmm, kui hästi lõhnab. Nuusuta: nuuh-nuuh!',
       ],
     },
     readAloud: () => [
@@ -206,7 +206,7 @@ export const WORLD_SCENARIOS: Scenario[] = [
         'Ta magas ahju ääres kuivava kinda sees! Täpselt pöidla kohal. Nii armas, et keegi ei raatsinud teda äratada.',
       ],
       toddler: () => [
-        'Ma pugesin kinda sisse magama. Soe ja pehme! Norr-norr. Kus on sinu pöial? Siin!',
+        'Ma pugesin kinda sisse magama. Norr-norr! Keegi ei leidnud mind. Siis pistsin pöidla välja: kuku! Kus on sinu pöial? Siin!',
       ],
     },
     readAloud: () => [
@@ -272,7 +272,7 @@ export const WORLD_SCENARIOS: Scenario[] = [
         'Nad sõid ära kõik lumememmede porgandid. Nüüd elavad nad puuriida taga ja ma viin neile igal hommikul kapsalehti.',
       ],
       toddler: () => [
-        'Väljas tuiskab: huuu! Kopp-kopp! Kes tuli? Jänkud tulid! Jänku hüppab: hopp-hopp. Teeme jänkukõrvad – käed pea peale!',
+        'Väljas tuiskas: huuu! Kopp-kopp! Jänkud tulid sooja! Nad jäid meile külla. Teeme jänkukõrvad: käed pea peale!',
       ],
     },
     readAloud: () => [

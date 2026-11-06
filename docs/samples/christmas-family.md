@@ -836,11 +836,11 @@ _Sinu pisike sõber · Pisi-Pätsi_
 
 **Kallis Kai!**
 
-Täna hommikul olid aknal jäälilled. Need olid valged ja sätendavad, nagu keegi oleks öösel klaasile joonistanud.
+Täht on jälle kuuse otsas! Ta särab nii eredalt, et kogu töökoda on valge.
 
-Ma vaatasin lähemalt. Üks lill oli nagu sulg, teine nagu kuusk ja kolmas nagu väike täht.
+Linnupojad said endale oma pisikese laterna. See on moosipurgist ja sees on natuke tähe sära, nii et pojad ei pea enam pimedas kartma.
 
-Siis puhusin aknale: hhhh! Klaas läks uduseks ja ma tegin sõrmega naerunäo. Teeme koos? Ring, kaks silma ja suur naeratus.
+Õhtul riputasime laterna pesa kõrvale. Ema-lind ütles: piiu! Ma arvan, et see tähendas aitäh. Kas sina oskad öelda piiu?
 
 _Soojalt · Pisi-Pätsi_
 
@@ -860,7 +860,7 @@ _Kallistusega · Pisi-Pätsi_
 
 **Kallis Kai!**
 
-Täna on jõululaupäev! Panin oma pisikese mütsi pähe ja Välk ootab juba akna all.
+Täna on jõululaupäev! Täht särab jälle kuuse tipus. Panin oma pisikese mütsi pähe ja Välk ootab juba akna all.
 
 Täna toovad kõik päkapikud oma viimase kirja ja lendavad siis koos tagasi töökotta, kus jõulud ootavad.
 
@@ -913,5 +913,5 @@ _Soojalt · Pisi-Pätsi_
 - Loo päevad:
 - Markus: 4. detsember, 6. detsember, 10. detsember, 12. detsember, 15. detsember, 20. detsember, 22. detsember.
 - Pääru: 4. detsember, 8. detsember, 12. detsember, 17. detsember, 20. detsember, 22. detsember.
-- Kai: 4. detsember, 14. detsember, 20. detsember.
+- Kai: 4. detsember, 14. detsember, 20. detsember, 22. detsember.
 - Ükski kiri ei eelda, et laps on vastanud või midagi teinud. Mõistatuste vastused on sellel lehel ja järgmise päeva kirjas (P.S.).
