@@ -104,3 +104,22 @@ export function printTextPt(item: Letter, options: FitOptions): number {
 export function fitsSheet(item: Letter, options: FitOptions): boolean {
   return letterHeightMm(item, PT_RANGE[options.sheet].min, options) <= SHEET_HEIGHT_MM[options.sheet] - SAFETY_MM
 }
+
+/**
+ * How much of the body fits the sheet at its smallest print size: the characters up to the
+ * last whole word that still fits, the body's length when all of it fits. What follows is
+ * the part to shorten (shown red in the editor).
+ */
+export function fittingChars(item: Letter, options: FitOptions): number {
+  if (fitsSheet(item, options)) return item.body.length
+  const ends = [...item.body.matchAll(/\S+/g)].map((match) => match.index + match[0].length)
+  let low = 0
+  let high = ends.length
+  // The longest run of whole words that fits; fitting only gets harder as words are added.
+  while (low < high) {
+    const mid = Math.ceil((low + high) / 2)
+    if (fitsSheet({ ...item, body: item.body.slice(0, ends[mid - 1]) }, options)) low = mid
+    else high = mid - 1
+  }
+  return low === 0 ? 0 : (ends[low - 1] as number)
+}

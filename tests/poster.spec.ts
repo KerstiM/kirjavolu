@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/vue'
 import {
   cellOf,
@@ -15,6 +15,9 @@ import PosterBoard from '@/features/preview/poster/PosterBoard.vue'
 import PosterGuide from '@/features/preview/poster/PosterGuide.vue'
 import type { GeneratedItem } from '@/domain/models'
 import { KAI, PAARU, makeRequest, MARKUS } from './helpers'
+
+// The puzzle is switched off for now (puzzleAvailability.ts); these tests keep it working.
+vi.mock('@/domain/puzzleAvailability', () => ({ PUZZLE_ENABLED: true }))
 
 describe('poster geometry', () => {
   it('24 letters: 4 columns × 6 rows over 2 × 2 sheets', () => {

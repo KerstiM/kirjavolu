@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { ImagePlus, Trash2 } from 'lucide-vue-next'
-import type { Decoration, OccasionId, PatternId } from '../../../domain/models'
+import type { ChildDecoration, Decoration, OccasionId, PatternId, StoredImageRef } from '../../../domain/models'
 import { isSuggestedPattern, PATTERN_LABELS, patternsFor } from '../../../domain/patterns'
 import { computeGrid } from '../../../domain/puzzleGrid'
+import { PUZZLE_ENABLED } from '../../../domain/puzzleAvailability'
 import { saveImage } from '../../../utils/imageStore'
 import PatternBackground from './PatternBackground.vue'
 import PosterArt from '../poster/PosterArt.vue'
@@ -19,19 +20,77 @@ const props = defineProps<{
   mini?: boolean
   /** Some child has an own picture, so the strength slider is needed even without a shared one. */
   childImage?: boolean
+  /** Children with their own sheets (a linked family series): each may get their own background. */
+  children?: { id: string; name: string; mini: boolean }[]
+  /** Loaded own pictures of the children, by image id. */
+  childImageUrls?: Record<string, string>
 }>()
 const emit = defineEmits<{ update: [decoration: Decoration] }>()
 
-type BackgroundChoice = 'none' | 'image' | 'poster-art' | PatternId
+/** A background as a swatch: none, a pattern, the poster landscape or a picture by its id. */
+type BackgroundChoice = 'none' | 'poster-art' | PatternId | `image:${string}`
 
 const uploading = ref(false)
 const error = ref('')
 const patterns = computed(() => patternsFor(props.occasionId))
-const background = computed<BackgroundChoice>(() => {
-  if (props.decoration.imageAsBackground && props.decoration.image) return 'image'
+
+/**
+ * With several children the parent first picks whose background to set: all of them (the
+ * shared background, the default) or some, who then get their own. A child not chosen
+ * keeps what they have, so a child leaving the shared background starts from it.
+ */
+const kids = computed(() => props.children ?? [])
+const perChild = computed(() => kids.value.length > 1)
+const selected = ref<string[]>(kids.value.map((child) => child.id))
+const everyone = computed(() => !perChild.value || kids.value.every((child) => selected.value.includes(child.id)))
+
+function toggleChild(id: string): void {
+  if (!selected.value.includes(id)) selected.value = [...selected.value, id]
+  // Someone is always chosen: the swatches always say whose background they set.
+  else if (selected.value.length > 1) selected.value = selected.value.filter((other) => other !== id)
+}
+
+function own(childId: string): ChildDecoration {
+  return props.decoration.childDecorations?.[childId] ?? { background: 'shared', image: null }
+}
+
+const sharedChoice = computed<BackgroundChoice>(() => {
+  if (props.decoration.imageAsBackground && props.decoration.image) return `image:${props.decoration.image.id}`
   if (props.poster && props.decoration.posterArt) return 'poster-art'
   return props.decoration.pattern ?? 'none'
 })
+
+function choiceOf(childId: string): BackgroundChoice {
+  const mine = own(childId)
+  if (mine.background === 'none') return 'none'
+  if (mine.background === 'image' && mine.image) return `image:${mine.image.id}`
+  if (mine.background === 'pattern' && mine.pattern) return mine.pattern
+  if (mine.background === 'poster-art') return 'poster-art'
+  return sharedChoice.value
+}
+
+/** The swatch shown as chosen: what every chosen child has, or none when they differ. */
+const background = computed<BackgroundChoice | null>(() => {
+  if (!perChild.value) return sharedChoice.value
+  const choices = new Set(selected.value.map(choiceOf))
+  return choices.size === 1 ? [...choices][0]! : null
+})
+const backgroundImage = computed(() => background.value?.startsWith('image:') ?? false)
+
+/** Pictures to pick from: the shared one, and for some children also their own. */
+const pictures = computed(() => {
+  const list: { image: StoredImageRef; url: string }[] = []
+  if (props.decoration.image && props.imageUrl) list.push({ image: props.decoration.image, url: props.imageUrl })
+  if (!everyone.value) {
+    for (const child of kids.value) {
+      const image = own(child.id).image
+      const url = image && props.childImageUrls?.[image.id]
+      if (image && url && !list.some((known) => known.image.id === image.id)) list.push({ image, url })
+    }
+  }
+  return list
+})
+
 // On card sheets the picture is behind the cards, so it can be shown at full strength.
 const cardSheets = computed(() => !!props.poster || !!props.mini)
 const maxOpacity = computed(() => (cardSheets.value ? 1 : 0.6))
@@ -47,10 +106,27 @@ function update(patch: Partial<Decoration>): void {
   emit('update', { ...props.decoration, ...patch })
 }
 
-function chooseBackground(choice: BackgroundChoice): void {
-  if (choice === 'image') update({ imageAsBackground: true, posterArt: false, pattern: null })
-  else if (choice === 'poster-art') update({ imageAsBackground: false, posterArt: true, pattern: null })
-  else update({ imageAsBackground: false, posterArt: false, pattern: choice === 'none' ? null : choice })
+function ownBackground(choice: BackgroundChoice, image: StoredImageRef | null): Omit<ChildDecoration, 'image'> & { image?: StoredImageRef | null } {
+  if (choice === 'none') return { background: 'none' }
+  if (choice === 'poster-art') return { background: 'poster-art' }
+  if (choice.startsWith('image:')) return { background: 'image', image }
+  return { background: 'pattern', pattern: choice as PatternId }
+}
+
+function chooseBackground(choice: BackgroundChoice, image: StoredImageRef | null = null): void {
+  if (everyone.value) {
+    // All children: the shared background, and every child follows it again.
+    const childDecorations = perChild.value
+      ? Object.fromEntries(kids.value.map((child) => [child.id, { ...own(child.id), background: 'shared' as const }]))
+      : props.decoration.childDecorations
+    if (choice.startsWith('image:')) update({ imageAsBackground: true, posterArt: false, pattern: null, childDecorations })
+    else if (choice === 'poster-art') update({ imageAsBackground: false, posterArt: true, pattern: null, childDecorations })
+    else update({ imageAsBackground: false, posterArt: false, pattern: choice === 'none' ? null : (choice as PatternId), childDecorations })
+    return
+  }
+  const childDecorations = { ...props.decoration.childDecorations }
+  for (const id of selected.value) childDecorations[id] = { ...own(id), ...ownBackground(choice, image) }
+  update({ childDecorations })
 }
 
 async function onFile(event: Event): Promise<void> {
@@ -66,9 +142,13 @@ async function onFile(event: Event): Promise<void> {
   error.value = ''
   try {
     const image = await saveImage(file)
+    if (!everyone.value) chooseBackground(`image:${image.id}`, image)
     // On the poster a fresh picture goes behind the cards. Elsewhere cutting it into pieces is
-    // the parent's own choice (a certificate wants the picture whole).
-    update(cardSheets.value ? { image, puzzle: true, imageAsBackground: true, posterArt: false, pattern: null } : { image, puzzle: false })
+    // the parent's own choice (a certificate wants the picture whole); without the puzzle a
+    // picture is the background.
+    else if (!PUZZLE_ENABLED) update({ image, puzzle: false, imageAsBackground: true, posterArt: false, pattern: null })
+    else if (cardSheets.value) update({ image, puzzle: true, imageAsBackground: true, posterArt: false, pattern: null })
+    else update({ image, puzzle: false })
   } catch {
     error.value = 'Pilti ei õnnestunud salvestada. Proovi teist pilti või teist brauserit.'
   } finally {
@@ -84,6 +164,30 @@ function removeImage(): void {
 <template>
   <section class="decor no-print" aria-labelledby="decor-title">
     <h2 id="decor-title" class="decor__title">Taust ja pilt</h2>
+
+    <fieldset v-if="perChild" class="decor__group">
+      <legend>Kellele</legend>
+      <div class="kids">
+        <button
+          v-for="child in kids"
+          :key="child.id"
+          type="button"
+          class="kid"
+          :class="{ 'is-active': selected.includes(child.id) }"
+          :aria-pressed="selected.includes(child.id)"
+          @click="toggleChild(child.id)"
+        >
+          {{ child.name }}
+        </button>
+      </div>
+      <p class="decor__hint">
+        {{
+          everyone
+            ? 'Kõigil lastel on ühine taust. Lapsele oma tausta valimiseks jäta valituks ainult tema.'
+            : 'Valitud lapsed saavad oma tausta. Teiste laste taust jääb, nagu on.'
+        }}
+      </p>
+    </fieldset>
 
     <fieldset class="decor__group">
       <legend>Taust</legend>
@@ -106,17 +210,23 @@ function removeImage(): void {
           </span>
           <span>Plakatipilt</span>
         </label>
-        <label v-if="decoration.image && imageUrl" class="swatch" :class="{ 'is-active': background === 'image' }">
-          <input type="radio" class="visually-hidden" name="bg" :checked="background === 'image'" @change="chooseBackground('image')" />
-          <span class="swatch__preview" aria-hidden="true"><img :src="imageUrl" alt="" /></span>
+        <label v-for="picture in pictures" :key="picture.image.id" class="swatch" :class="{ 'is-active': background === `image:${picture.image.id}` }">
+          <input
+            type="radio"
+            class="visually-hidden"
+            name="bg"
+            :checked="background === `image:${picture.image.id}`"
+            @change="chooseBackground(`image:${picture.image.id}`, picture.image)"
+          />
+          <span class="swatch__preview" aria-hidden="true"><img :src="picture.url" alt="" /></span>
           <span>Oma pilt</span>
         </label>
       </div>
-      <label v-if="decoration.pattern" class="check">
+      <label v-if="background && patterns.includes(background as PatternId)" class="check">
         <input type="checkbox" :checked="decoration.inkSaver" @change="update({ inkSaver: !decoration.inkSaver })" />
         <span>Säästa tinti – muster ainult raamina</span>
       </label>
-      <label v-if="background === 'image' || childImage" class="range-field">
+      <label v-if="backgroundImage || childImage" class="range-field">
         <span>Pildi tugevus</span>
         <span class="range-field__end" aria-hidden="true">hele</span>
         <input
@@ -137,7 +247,8 @@ function removeImage(): void {
       <legend>Oma pilt</legend>
       <p class="decor__hint">
         Laadi üles pere foto või lapse joonistus. Pilt jääb ainult sinu seadmesse.
-        <template v-if="itemCount > 1 && !cardSheets">
+        <template v-if="!everyone">See tuleb valitud laste taustaks.</template>
+        <template v-else-if="PUZZLE_ENABLED && itemCount > 1 && !cardSheets">
           Seda saab kasutada taustana või lõigata tükkideks, nii et iga osa juures on üks tükk – kui kõik on koos,
           tuleb välja terve pilt.
         </template>
@@ -147,18 +258,18 @@ function removeImage(): void {
         <label class="upload" :class="{ 'is-busy': uploading }">
           <input type="file" accept="image/*" class="visually-hidden" :disabled="uploading" @change="onFile" />
           <ImagePlus :size="18" aria-hidden="true" />
-          <span>{{ uploading ? 'Laen…' : decoration.image ? 'Vaheta pilti' : 'Laadi pilt üles' }}</span>
+          <span>{{ uploading ? 'Laen…' : everyone && decoration.image ? 'Vaheta pilti' : 'Laadi pilt üles' }}</span>
         </label>
-        <button v-if="decoration.image" type="button" class="remove" @click="removeImage">
+        <button v-if="everyone && decoration.image" type="button" class="remove" @click="removeImage">
           <Trash2 :size="16" aria-hidden="true" /> Eemalda pilt
         </button>
       </div>
       <p v-if="error" class="decor__error" role="alert">{{ error }}</p>
-      <p v-if="poster && background === 'image'" class="decor__hint" role="status">
+      <p v-if="poster && backgroundImage" class="decor__hint" role="status">
         Pusleplakatil on see pilt kogu plakati taust – kui kõik kaardid on koos, tuleb pilt välja.
       </p>
       <!-- One part is one piece: nothing to cut. -->
-      <template v-if="decoration.image && grid && !cardSheets && itemCount > 1">
+      <template v-if="PUZZLE_ENABLED && everyone && decoration.image && grid && !cardSheets && itemCount > 1">
         <label class="check">
           <input type="checkbox" :checked="decoration.puzzle" @change="update({ puzzle: !decoration.puzzle })" />
           <span>Lõika pilt tükkideks (iga osa juurde üks tükk)</span>
@@ -335,5 +446,29 @@ function removeImage(): void {
 }
 .check {
   align-self: flex-start;
+}
+.kids {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.kid {
+  min-height: 2.75rem;
+  padding: 0.45rem 1rem;
+  border: 2px solid var(--lavender-mid);
+  border-radius: 999px;
+  background: #fff;
+  font: inherit;
+  cursor: pointer;
+  &.is-active {
+    border-color: var(--lavender);
+    background: var(--lavender-soft);
+    color: var(--lavender-ink);
+    font-weight: 600;
+  }
+  &:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
 }
 </style>

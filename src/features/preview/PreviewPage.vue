@@ -5,10 +5,10 @@ import { ArrowLeft, Download, FileQuestion, Printer, Plus, UsersRound } from 'lu
 import type { CardFit, CertificateStyle, ChildProfile, Decoration, GeneralOptions, GeneratedContent, GeneratedItem, GenerationRequest, PrintableLayout } from '../../domain/models'
 import { EMPTY_DECORATION, sheetBackground } from '../../domain/models'
 import { computeGrid } from '../../domain/puzzleGrid'
+import { PUZZLE_ENABLED } from '../../domain/puzzleAvailability'
 import { computePoster, LARGE_CARD_CHARS } from '../../domain/posterLayout'
 import { useStoredImage, useStoredImages } from '../../composables/useStoredImage'
 import DecorationPanel from './decoration/DecorationPanel.vue'
-import ChildBackgrounds from './decoration/ChildBackgrounds.vue'
 import PosterBoard from './poster/PosterBoard.vue'
 import MiniSheet from './mini/MiniSheet.vue'
 import ItemEditorDialog from './ItemEditorDialog.vue'
@@ -23,6 +23,7 @@ import { contentToPlainText, downloadText, fileNameFor } from '../../utils/expor
 import { useCreationsStore } from './creationsStore'
 import PrintableItem from './PrintableItem.vue'
 import { fitsSheet, printTextPt, type FitOptions, type FitSheet } from './printFit'
+import { useNoVariants } from './useVariants'
 import { carryEdits } from './carryEdits'
 import ParentSheet from './ParentSheet.vue'
 import CustomizePanel from './CustomizePanel.vue'
@@ -45,6 +46,7 @@ const generator = useGenerator()
 const content = computed(() => store.byId(props.id))
 // AI letters or stories from the Jõulupass: the template engine must not write over them.
 const aiWritten = computed(() => content.value?.generator.id === AI_SERIES_GENERATOR)
+const { noVariantIds, markNone } = useNoVariants(content, computed(() => !aiWritten.value))
 
 // "Paranda AI-ga" in the editor: with this browser's Jõulupass, one fix per rewritten letter.
 const children = useChildrenStore()
@@ -121,7 +123,7 @@ const allToddlers = computed(() => !!content.value && toddlers.value === content
  * that suits their age, so the label tells what this family will get.
  */
 const cardLabel = computed(() => {
-  if (allToddlers.value) return 'Väikelapse kaardid'
+  if (allToddlers.value || !PUZZLE_ENABLED) return 'Väikelapse kaardid'
   return toddlers.value > 0 ? 'Plakat ja väikelapse kaardid' : 'Pusleplakat'
 })
 /** Long letters go on large poster cards: the poster takes more sheets, the text is never cut. */
@@ -152,28 +154,45 @@ const posterFits = computed(() => {
   })
 })
 /** One choice for how the letters go on paper; the poster only for a series. */
-const printOptions_ = computed<{ value: PrintableLayout; label: string; disabled?: boolean }[]>(() => {
+const printOptions_ = computed<{ value: PrintableLayout; label: string; disabled?: boolean; reason?: string }[]>(() => {
   const current = content.value
   const letters = current?.request.contentType === 'letter'
   const series = (current?.items.length ?? 0) >= 3
   return [
-    { value: 'cards', label: letters ? 'Kaardid sussi sisse' : 'Kaardid', disabled: !cardsFit.value },
-    { value: 'half', label: 'Pool lehte', disabled: !halfFits.value },
+    { value: 'cards', label: letters ? 'Kaardid sussi sisse' : 'Kaardid', disabled: !cardsFit.value, reason: cardsReason.value },
+    { value: 'half', label: 'Pool lehte', disabled: !halfFits.value, reason: halfReason.value },
     { value: 'page', label: 'Terve leht' },
-    ...(series || layout.value === 'poster' ? [{ value: 'poster' as const, label: cardLabel.value, disabled: !posterFits.value }] : []),
+    ...((series || layout.value === 'poster') && (PUZZLE_ENABLED || toddlers.value > 0)
+      ? [{ value: 'poster' as const, label: cardLabel.value, disabled: !posterFits.value, reason: posterReason.value }]
+      : []),
   ]
 })
+const cardsReason = computed(
+  () => 'Neli kaarti A4-l ei mahuta neid kirju loetava suurusega. Vali pool lehte või terve leht – kiri jääb terveks.',
+)
+const halfReason = computed(
+  () =>
+    `${tooLongForHalf.value.length === 1 ? '1 kiri on' : `${tooLongForHalf.value.length} kirja on`} poolele lehele liiga ${tooLongForHalf.value.length === 1 ? 'pikk' : 'pikad'} (${tooLongNames.value}). Vajuta kirja juures „Lühenda“ – üle jääv tekst on punane. Või vali kohandamise all lühem kirjade pikkus.`,
+)
+const posterReason = computed(
+  () => 'Mõni kiri on plakatikaardi jaoks liiga pikk. Lühenda seda nupuga „Muuda“ või vali kohandamise all lühem kirjade pikkus.',
+)
 const presetHint = computed(() => {
   if (layout.value === 'cards') return 'Neli kaarti A4 lehel. Lõika lahti ja pane igal õhtul üks kaart sussi sisse.'
   if (layout.value === 'half') return 'Kaks kirja A4 lehel. Lõika pooleks.'
   if (layout.value === 'poster') {
     if (allToddlers.value) return 'Väikelapse kaardid: 12 kaarti lehel, suur tekst ja loomanägu.'
+    if (!PUZZLE_ENABLED) return 'Väikelapse kaardid: 12 kaarti lehel, suur tekst ja loomanägu. Teiste laste kirjad on igaüks omal lehel.'
     const pages = computePoster(posterCount.value, { large: posterLarge.value }).pages
     return `Kaardid on pusletükid: lõika lahti, anna üks päevas ja lõpuks pane kokku terveks pildiks. Plakat tuleb ${pages} A4 lehele${posterLarge.value ? ', kaardid on suuremad' : ''}.`
   }
   return 'Iga kiri omal lehel – sobib ümbrikusse või voldituna sussi sisse.'
 })
-const rawLayout = computed(() => content.value?.layout ?? 'page')
+// Without the puzzle a creation saved on the poster prints on whole pages (toddlers keep their cards).
+const rawLayout = computed(() => {
+  const saved = content.value?.layout ?? 'page'
+  return saved === 'poster' && !PUZZLE_ENABLED && toddlers.value === 0 ? 'page' : saved
+})
 const layout = computed({
   get: () => (rawLayout.value === 'mini' ? 'poster' : rawLayout.value),
   set: (value: PrintableLayout) => store.setLayout(props.id, value),
@@ -230,7 +249,8 @@ watch(groups, () => {
 function groupLayout(group: ItemGroup): PrintableLayout {
   if (layout.value !== 'poster') return layout.value
   const toddler = group.child ? smallCards(group.child) : allToddlers.value
-  return toddler ? 'mini' : 'poster'
+  if (toddler) return 'mini'
+  return PUZZLE_ENABLED ? 'poster' : 'page'
 }
 const isPoster = computed(() => groups.value.some((group) => groupLayout(group) === 'poster'))
 /**
@@ -302,6 +322,22 @@ const halfFits = computed(() =>
     group.entries.every(({ item }) => item.kind === 'certificate' || fitsSheet(item, fitOptions(group, 'half'))),
   ),
 )
+/** The letters too long for a half page, by name, so the parent knows which to shorten. */
+const tooLongForHalf = computed(() =>
+  groups.value.flatMap((group) =>
+    group.entries
+      .filter(({ item }) => item.kind !== 'certificate' && !fitsSheet(item, fitOptions(group, 'half')))
+      .map(({ item }) => ({ item, group })),
+  ),
+)
+const shortenIds = computed(() => new Set(tooLongForHalf.value.map(({ item }) => item.id)))
+const tooLongNames = computed(() => {
+  const names = tooLongForHalf.value.map(({ item, group }) => {
+    const day = item.date ? formatDayMonth(item.date) : item.label || item.heading
+    return groups.value.length > 1 && group.child ? `${day} (${group.child.name})` : day
+  })
+  return names.length > 6 ? `${names.slice(0, 6).join(', ')} ja veel ${names.length - 6}` : names.join(', ')
+})
 // Letters made long, or decorated, while on the half page move to whole pages.
 watch(
   halfFits,
@@ -350,7 +386,7 @@ const posterLabels = computed(() => {
 // One item (a certificate, say) is never cut: one piece would just be the picture again.
 const puzzle = computed(() => {
   const image = decoration.value.image
-  if (isPoster.value || !decoration.value.puzzle || !image || !imageUrl.value || !content.value) return null
+  if (!PUZZLE_ENABLED || isPoster.value || !decoration.value.puzzle || !image || !imageUrl.value || !content.value) return null
   if (content.value.items.length < 2) return null
   return { imageUrl: imageUrl.value, grid: computeGrid(content.value.items.length, image.width / image.height) }
 })
@@ -419,8 +455,11 @@ const editingTitle = computed(() => {
   const day = item.date ? formatDayMonth(item.date) : item.label
   return item.forChild && item.childId ? `${item.forChild}, ${day}` : day
 })
-function openEditor(itemId: string): void {
+/** Set when the editor was opened to shorten a letter for the half page. */
+const editingFit = ref<FitOptions | null>(null)
+function openEditor(itemId: string, fit: FitOptions | null = null): void {
   editingId.value = itemId
+  editingFit.value = fit
 }
 function saveFromDialog(patch: Pick<GeneratedItem, 'label' | 'heading' | 'body' | 'signature'>): void {
   const item = editingItem.value
@@ -443,6 +482,7 @@ async function regenerate(index: number): Promise<void> {
   try {
     const next = await generator.regenerateItem(current, index)
     if (next.body === item.body) {
+      markNone(item.id)
       announce('Sellele osale teist varianti ei leitud. Muuda teksti käsitsi.')
     } else {
       store.updateItem(props.id, next)
@@ -542,18 +582,6 @@ function exportText(): void {
         <section class="print-panel" aria-labelledby="print-title">
           <h2 id="print-title" class="print-panel__title">Printimine</h2>
           <SegmentedControl v-model="layout" name="print-preset" label="Kuidas prindid?" :options="printOptions_" :hint="presetHint" />
-          <p v-if="!cardsFit" class="controls__note">
-            Kaardid sussi sisse pole praegu valitavad: neli kaarti A4-l ei mahuta neid kirju loetava suurusega. Vali pool
-            lehte või terve leht – kiri jääb terveks.
-          </p>
-          <p v-if="!halfFits" class="controls__note">
-            Pool lehte pole praegu valitav: mõni kiri on poolele lehele liiga pikk. Lühenda seda nupuga „Muuda“ või vali
-            kohandamise all lühem kirjade pikkus.
-          </p>
-          <p v-if="!posterFits && !allToddlers" class="controls__note">
-            Pusleplakat pole praegu valitav: mõni kiri on plakatikaardi jaoks liiga pikk. Lühenda seda nupuga „Muuda“ või vali
-            kohandamise all lühem kirjade pikkus.
-          </p>
           <p v-if="(isPoster || isMini) && overflowCount > 0" class="controls__warn" role="status">
             {{ overflowCount }} kaardil on tekst liiga pikk{{ isPoster ? ' ka suurel kaardil' : '' }}. Lühenda seda kaardil „Muuda“
             või vali väiksem tekst.
@@ -592,13 +620,8 @@ function exportText(): void {
           :poster="isPoster"
           :mini="isMini"
           :child-image="anyChildImage"
-          @update="setDecoration"
-        />
-        <ChildBackgrounds
-          v-if="childRows.length > 1"
           :children="childRows"
-          :decoration="decoration"
-          :image-urls="childImageUrls"
+          :child-image-urls="childImageUrls"
           @update="setDecoration"
         />
       </aside>
@@ -614,7 +637,7 @@ function exportText(): void {
           name="sheet-view"
           label="Eelvaade"
           :options="viewOptions"
-          hint="Prinditakse alati pusletükkidena, nagu „Nagu prinditult“ näitab."
+          :hint="isPoster ? 'Prinditakse alati pusletükkidena, nagu „Nagu prinditult“ näitab.' : 'Prinditakse kaartidena, nagu „Nagu prinditult“ näitab.'"
         />
         <SegmentedControl
           v-if="groups.length > 1"
@@ -643,6 +666,7 @@ function exportText(): void {
               :background-url="null"
               :uppercase="groupUppercase(group)"
               :no-variants="aiWritten"
+              :no-variant="noVariantIds.has(entry.item.id)"
               @edit="openEditor(entry.item.id)"
               @regenerate="regenerate(entry.index)"
             />
@@ -690,7 +714,10 @@ function exportText(): void {
               :uppercase="groupUppercase(group)"
               :piece="puzzle ? { ...puzzle, index: entry.index, maxCm: pieceMaxCm } : null"
               :no-variants="aiWritten"
+              :no-variant="noVariantIds.has(entry.item.id)"
               :print-pt="printPt(group, entry.item)"
+              :shorten="shortenIds.has(entry.item.id)"
+              @shorten="openEditor(entry.item.id, fitOptions(group, 'half'))"
               @edit="openEditor(entry.item.id)"
               @regenerate="regenerate(entry.index)"
             />
@@ -707,6 +734,7 @@ function exportText(): void {
           :no-variants="aiWritten"
           :ai-fix="PASS_ENABLED && aiWritten && passUsable ? fixWithAi : undefined"
           :ai-note="aiNote"
+          :fit="editingFit"
           @save="saveFromDialog"
           @regenerate="regenerate(editingIndex)"
           @close="editingId = null"
