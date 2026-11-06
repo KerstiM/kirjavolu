@@ -293,10 +293,14 @@ function groupUppercase(group: ItemGroup): boolean {
   if (decoration.value.uppercase !== undefined || !group.child) return uppercase.value
   return ageBand(group.child) !== 'older'
 }
+function groupSmaller(group: ItemGroup): boolean {
+  const own = group.child ? decoration.value.childDecorations?.[group.child.id]?.textSize : undefined
+  return (own ?? decoration.value.textSize) === 'smaller'
+}
 function fitOptions(group: ItemGroup, sheet: FitSheet): FitOptions {
   const background = groupBackground(group)
   const backdrop = !!groupImageUrl(group) || (!!background.pattern && !decoration.value.inkSaver)
-  return { sheet, uppercase: groupUppercase(group), backdrop }
+  return { sheet, uppercase: groupUppercase(group), backdrop, smaller: groupSmaller(group) }
 }
 /** Long letters get a smaller print text, so that they fit their half or whole page. */
 function printPt(group: ItemGroup, item: GeneratedItem): number | undefined {
@@ -575,7 +579,16 @@ function exportText(): void {
           </template>
           <template v-else>Need kirjad kirjutas päkapikk Tuduja just {{ namesInCase(content.request.children, 'allative') }}. Iga kirja saad muuta nupuga „Muuda“, seal saab ka päkapikult muudatust paluda.</template>
         </p>
-        <CustomizePanel v-else :key="panelKey" :content="content" :busy="updating" :errors="choiceErrors" @change="applyChoices" />
+        <CustomizePanel
+          v-else
+          :key="panelKey"
+          :content="content"
+          :decoration="decoration"
+          :busy="updating"
+          :errors="choiceErrors"
+          @change="applyChoices"
+          @decoration="setDecoration"
+        />
         <PassOfferCard
           v-if="PASS_ENABLED && !aiWritten && design === 'new' && content.request.contentType === 'letter' && content.request.occasionId === 'christmas'"
           :content="content"
@@ -720,6 +733,7 @@ function exportText(): void {
               :background-url="groupImageUrl(group)"
               :background-opacity="decoration.imageOpacity"
               :uppercase="groupUppercase(group)"
+              :smaller="groupSmaller(group)"
               :piece="puzzle ? { ...puzzle, index: entry.index, maxCm: pieceMaxCm } : null"
               :no-variants="aiWritten"
               :no-variant="noVariantIds.has(entry.item.id)"

@@ -16,6 +16,8 @@ const props = defineProps<{
   backgroundOpacity?: number
   piece?: { imageUrl: string; grid: PuzzleGrid; index: number; maxCm: number } | null
   uppercase?: boolean
+  /** Smaller text (14 px instead of 16 px). */
+  smaller?: boolean
   /** A sample to look at: no editing tools. */
   readonly?: boolean
   /** Written by the AI: it can be edited by hand, but has no template variants. */
@@ -39,6 +41,7 @@ const kindClass = computed(() => [
     'has-backdrop': !!props.backgroundUrl || (!!props.pattern && !props.inkSaver),
     'has-frame': !!props.pattern && props.inkSaver,
     'is-upper': !!props.uppercase,
+    'is-smaller': !!props.smaller,
   },
 ])
 </script>
@@ -179,6 +182,9 @@ const kindClass = computed(() => [
 .paper__body p {
   margin: 0 0 0.75em;
   font-size: 1.02rem;
+  .is-smaller & {
+    font-size: 0.875rem;
+  }
   line-height: 1.65;
   white-space: pre-line;
   overflow-wrap: anywhere;
