@@ -45,7 +45,14 @@ const selected = ref<string[]>(kids.value.map((child) => child.id))
 const everyone = computed(() => !perChild.value || kids.value.every((child) => selected.value.includes(child.id)))
 
 function toggleChild(id: string): void {
-  if (!selected.value.includes(id)) selected.value = [...selected.value, id]
+  if (!selected.value.includes(id)) {
+    const first = selected.value[0]
+    selected.value = [...selected.value, id]
+    // Everyone chosen again: the child chosen first sets the shared background for all.
+    if (first && everyone.value && new Set(kids.value.map((child) => choiceOf(child.id))).size > 1) {
+      chooseBackground(choiceOf(first), own(first).image)
+    }
+  }
   // Someone is always chosen: the swatches always say whose background they set.
   else if (selected.value.length > 1) selected.value = selected.value.filter((other) => other !== id)
 }
@@ -119,7 +126,7 @@ function chooseBackground(choice: BackgroundChoice, image: StoredImageRef | null
     const childDecorations = perChild.value
       ? Object.fromEntries(kids.value.map((child) => [child.id, { ...own(child.id), background: 'shared' as const }]))
       : props.decoration.childDecorations
-    if (choice.startsWith('image:')) update({ imageAsBackground: true, posterArt: false, pattern: null, childDecorations })
+    if (choice.startsWith('image:')) update({ ...(image ? { image } : {}), imageAsBackground: true, posterArt: false, pattern: null, childDecorations })
     else if (choice === 'poster-art') update({ imageAsBackground: false, posterArt: true, pattern: null, childDecorations })
     else update({ imageAsBackground: false, posterArt: false, pattern: choice === 'none' ? null : (choice as PatternId), childDecorations })
     return
