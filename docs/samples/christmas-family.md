@@ -290,7 +290,14 @@ _Nuputades · Kõpsu-Mõpsu_
 
 **Kallis Markus!**
 
-Täna on jõululaupäev! Töökoda on vaikseks jäänud ja kingid on kelgul. Täht särab jälle kuuse tipus. Täna toovad kõik päkapikud – Kõpsu-Mõpsu, Tipp-Topp ja Pisi-Pätsi – oma viimase kirja ja jäävad siis töökotta jõulutööde juurde. Mulle meeldis igal õhtul sulle kirjutada. Panin sulepea karpi ja otsisin kaua oma prille – need olid mul ninal. Häid jõule, Markus!
+Täna on jõululaupäev! Töökoda on vaikseks jäänud ja kingid on kelgul. Täht särab jälle kuuse tipus. Täna toovad kõik päkapikud – Kõpsu-Mõpsu, Tipp-Topp ja Pisi-Pätsi – oma viimase kirja ja jäävad siis töökotta jõulutööde juurde. Mulle meeldis igal õhtul sulle kirjutada. Panin sulepea karpi ja otsisin kaua oma prille – need olid mul ninal.
+
+Kõige rohkem jääb mulle sellest detsembrist meelde päev, mil täht kadus ja me kõik teda otsisime. Aitäh, et sain sulle kirjutada. Enne kui lähen, kirjutasin sulle ühe väikese salmi:
+
+„Jõulud tulid, tuled põlevad,
+päkapikud sind mäletavad.“
+
+Loodan, et kohtume järgmisel detsembril jälle. Häid jõule, Markus!
 
 _Mõtlikult · Kõpsu-Mõpsu_
 
@@ -564,7 +571,14 @@ _Tervitustega köögist · Tipp-Topp_
 
 **Kallis Pääru!**
 
-Täna on jõululaupäev! Töökoda on vaikseks jäänud ja kingid on kelgul. Täht särab jälle kuuse tipus. Täna toovad kõik päkapikud – Kõpsu-Mõpsu, Tipp-Topp ja Pisi-Pätsi – oma viimase kirja ja jäävad siis töökotta jõulutööde juurde. Ma pesin viimase pudrupoti puhtaks ja panin mütsi pähe. Ma hakkan sind igatsema! Häid jõule, Pääru!
+Täna on jõululaupäev! Töökoda on vaikseks jäänud ja kingid on kelgul. Täht särab jälle kuuse tipus. Täna toovad kõik päkapikud – Kõpsu-Mõpsu, Tipp-Topp ja Pisi-Pätsi – oma viimase kirja ja jäävad siis töökotta jõulutööde juurde. Ma pesin viimase pudrupoti puhtaks ja panin mütsi pähe. Ma hakkan sind igatsema! Kõige rohkem meeldis mulle see päev, kui me tähte otsisime! Aitäh, et sa mu kirju lugesid!
+
+Enne kui lähen, kirjutasin sulle ühe väikese salmi:
+
+„Lumehelbed lendavad,
+päkapikud kallistavad.“
+
+Loodan, et kohtume järgmisel detsembril jälle. Häid jõule, Pääru!
 
 _Sinu · Tipp-Topp_
 

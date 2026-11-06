@@ -86,12 +86,14 @@ export const FRAME_SCENARIOS: Scenario[] = [
       older: (c) => [
         eveLine(c.frame.eve, c.knows('star-back')),
         goingHome(c.frame.allHelpers),
-        `Mulle meeldis igal õhtul sulle kirjutada. Panin sulepea karpi ja otsisin kaua oma prille – need olid mul ninal. Häid jõule, ${c.name}!`,
+        `Mulle meeldis igal õhtul sulle kirjutada. Panin sulepea karpi ja otsisin kaua oma prille – need olid mul ninal.${c.length === 'long' ? '' : ` Häid jõule, ${c.name}!`}`,
+        ...(c.length === 'long' ? longFarewell(c.name, olderMemory(c.knows('star-back')), OLDER_VERSE, PROMISE) : []),
       ],
       young: (c) => [
         eveLine(c.frame.eve, c.knows('star-back')),
         goingHome(c.frame.allHelpers),
-        `Ma pesin viimase pudrupoti puhtaks ja panin mütsi pähe. Ma hakkan sind igatsema! Häid jõule, ${c.name}!`,
+        `Ma pesin viimase pudrupoti puhtaks ja panin mütsi pähe. Ma hakkan sind igatsema!${c.length === 'long' ? '' : ` Häid jõule, ${c.name}!`}`,
+        ...(c.length === 'long' ? longFarewell(c.name, youngMemory(c.knows('star-back')), YOUNG_VERSE, PROMISE) : []),
       ],
       toddler: (c) => [`Häid jõule, väike ${c.name}! ${c.helper} kallistab sind. Kalli-kalli!`],
     },
@@ -104,6 +106,26 @@ export const FRAME_SCENARIOS: Scenario[] = [
     ],
   },
 ]
+
+/**
+ * The long farewell letter: a look back at the December, a small verse, a hope to write again and
+ * the greeting last. Short cards have no room for it.
+ */
+const OLDER_VERSE = '„Jõulud tulid, tuled põlevad,\npäkapikud sind mäletavad.“'
+const YOUNG_VERSE = '„Lumehelbed lendavad,\npäkapikud kallistavad.“'
+const PROMISE = 'Loodan, et kohtume järgmisel detsembril jälle.'
+
+function olderMemory(starBack: boolean): string {
+  return `${starBack ? 'Kõige rohkem jääb mulle sellest detsembrist meelde päev, mil täht kadus ja me kõik teda otsisime.' : 'Sel detsembril juhtus töökojas nii palju, et mõni lugu jäi rääkimata.'} Aitäh, et sain sulle kirjutada.`
+}
+
+function youngMemory(starBack: boolean): string {
+  return `${starBack ? 'Kõige rohkem meeldis mulle see päev, kui me tähte otsisime!' : 'Töökojas juhtus nii palju, et ma ei jõudnudki kõike rääkida!'} Aitäh, et sa mu kirju lugesid!`
+}
+
+function longFarewell(name: string, memory: string, verse: string, promise: string): string[] {
+  return [memory, 'Enne kui lähen, kirjutasin sulle ühe väikese salmi:', verse, promise, `Häid jõule, ${name}!`]
+}
 
 function introLine(helper: string, title: string, origin: string, siblingLine: string): string {
   const who = `Tere! Mina olen ${helper}${title ? ` ${title}` : ''}${origin ? ` – ${origin}` : ''}.`
