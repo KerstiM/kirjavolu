@@ -64,7 +64,7 @@ const MAX_REGENERATION_ATTEMPTS = 25
 
 /** Daily series become a puzzle poster; toddler series use simple cards. */
 export function defaultLayoutFor(request: GenerationRequest): PrintableLayout {
-  const toddlersOnly = request.children.every(usesSmallCards)
+  const toddlersOnly = request.children.every((child) => usesSmallCards(child, request))
   // Long letters get the poster's large cards (see PreviewPage), so a series is a poster either way.
   if (request.contentType === 'letter' && request.options.count >= 7) return toddlersOnly ? 'mini' : 'poster'
   if (request.contentType === 'calendar' && request.options.days >= 14) return 'poster'

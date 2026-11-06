@@ -1,8 +1,9 @@
 import type { GeneratedContent } from '../domain/models'
 
 /** Plain-text export: child-facing items first, parent material clearly separated. */
-export function contentToPlainText(content: GeneratedContent, includeParent = true): string {
-  const lines: string[] = [content.title, content.subtitle, '']
+export function contentToPlainText(content: GeneratedContent, includeParent = true, onlyFor?: string): string {
+  // A file of one child's letters says so at the top, so it is not taken for the whole family's.
+  const lines: string[] = [content.title, onlyFor ? `Ainult ühe lapse kirjad: ${onlyFor}` : content.subtitle, '']
   for (const item of content.items) {
     lines.push('────────────────────────')
     if (item.label) lines.push(item.childId && item.forChild ? `${item.forChild} · ${item.label}` : item.label)
@@ -23,7 +24,8 @@ export function contentToPlainText(content: GeneratedContent, includeParent = tr
       lines.push('Vastused ja märkused')
       for (const item of solved) {
         const parts = [item.answer ? `vastus: ${item.answer}` : '', item.parentNote ?? ''].filter(Boolean)
-        lines.push(`  ${item.label}: ${parts.join(' · ')}`)
+        // Siblings' answers on the same day are told apart by name.
+        lines.push(`  ${item.forChild ? `${item.forChild} · ` : ''}${item.label}: ${parts.join(' · ')}`)
       }
     }
   }

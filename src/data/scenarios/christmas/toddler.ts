@@ -54,7 +54,7 @@ export const TODDLER_SCENARIOS: Scenario[] = [
     'snow-crunch',
     'Krõbe lumi',
     ['snow', 'move'],
-    () => ['Lumi on valge. Lumi teeb krõps-krõps. Astume koos: krõps, krõps, krõps!'],
+    () => ['Lumi on valge. Lumi teeb krõps-krõps. Teeme koos: krõps, krõps, krõps!'],
     () => [
       'Öösel sadas palju lund. Hommikul oli õu valge ja pehme nagu suur tekk.',
       'Ma astusin uksest välja ja lumi ütles: krõps! Astusin veel – krõps, krõps! Siis jooksin ja lumi laulis terve laulu: krõps-krõps-krõps-krõps.',
@@ -82,7 +82,7 @@ export const TODDLER_SCENARIOS: Scenario[] = [
     () => [
       'Töökoja kuusel on palju tulesid: punased, kollased ja sinised. Õhtul panin ma need põlema.',
       'Siis tahtsin tulesid üle lugeda: üks, kaks, kolm … Ma ronisin oksalt oksale, aga ühel oksal oli nii soe, et jäin magama.',
-      'Hommikul äratas mind üks punane tuluke. Loe sina ka: mitu tuld teie kodus põleb?',
+      'Hommikul äratas mind üks punane tuluke. Loeme koos: mitu tuld teie kodus põleb?',
     ],
   ),
   card(
@@ -145,25 +145,27 @@ export const TODDLER_SCENARIOS: Scenario[] = [
     'Nii suur!',
     ['move'],
     (c) => [
-      `Kui suur on ${c.name}? Nii suur! Sirutame käed üles – kõrgele, kõrgele! Ja nüüd kükki: pisike!`,
+      `Kui suur on ${c.name}? Nii suur! Sirutame käed üles – kõrgele, kõrgele!`,
     ],
     (c) => [
       'Mina olen väga väike päkapikk. Ma mahun sussi sisse ja tassi sisse. Kui ma teistega räägin, pean tooli peale ronima.',
-      `Aga ${c.name} on suur! Nii suur, et ulatub laua peale vaatama. Nii suur, et oskab ise trepist üles minna.`,
-      'Sirutame käed: kõrgele, kõrgele, veel kõrgemale! Ja nüüd teeme end väikseks nagu mina: kükki!',
+      `Aga ${c.name} on minust palju suurem! Kui me kõrvuti seisaksime, ulataksin sulle vaevalt põlveni.`,
+      'Sirutame käed: kõrgele, kõrgele, veel kõrgemale! Ja nüüd teeme end pisikeseks nagu mina – kägarasse!',
     ],
+    // One "how big you are" letter is enough: it and siblings-big exclude each other.
+    { establishes: ['size-told'], until: 'size-told' },
   ),
   card(
     'peppa-puddle',
     'Peppa ja lombid',
     ['peppa', 'snow', 'move'],
     () => [
-      'Põrsas Peppa armastab lompe. Plärts! Talvel on lombid jääs, siis hüppame hoopis lumme: pläts! Hüppame koos!',
+      'Põrsas Peppa armastab lompe. Plärts! Talvel on lombid jääs, siis kukub Peppa hoopis lumme: pläts! Plaksutame koos: pläts!',
     ],
     () => [
       'Kas sa tead, kes armastab lompe? Põrsas Peppa! Tema hüppab lombis nii, et vesi pritsib: plärts!',
       'Ma tahtsin ka lombis hüpata. Aga talvel on lombid jääs. Ma hüppasin – ja libisesin: vuhh! – otse lumehange.',
-      'Lumi pritsis ka! Pläts! See oli peaaegu sama lõbus kui lomp. Hüppame koos: üks, kaks, kolm – pläts!',
+      'Lumi pritsis ka! Pläts! See oli peaaegu sama lõbus kui lomp. Teeme koos: üks, kaks, kolm – pläts! – ja plaksutame käsi.',
     ],
     { hooks: ['peppa'], onlyWithHook: true },
   ),
@@ -279,25 +281,21 @@ export const TODDLER_SCENARIOS: Scenario[] = [
     ['siblings'],
     (c) => [`${c.siblings} on suured. Ja ${c.name}? ${c.name} on ka juba suur! Nii suur!`],
     (c) => [
-      c.siblingCount > 1
-        ? `${c.siblings} on juba suured. Nad oskavad kiiresti joosta ja kõrgele ronida.`
-        : `${c.siblings} on juba suur. Ta oskab kiiresti joosta ja kõrgele ronida.`,
-      `Aga tead mis? ${c.name} kasvab ka iga päevaga. Mina olen nii pisike, et pean ${c.n('genitive')} vaatamiseks pea kuklasse ajama.`,
-      `Mõõdame: tõuse varvastele ja siruta käed üles – nii suur! Varsti ulatub ${c.name} ise kuuse otsa tähte panema.`,
+      `${c.siblings} ${c.siblingCount > 1 ? 'on juba suured lapsed' : 'on juba suur laps'}. Aga tead mis? ${c.name} kasvab ka iga päevaga.`,
+      'Mina olen nii pisike, et kui ma kellegi kõrval seisan, ulatun talle umbes varbani. Pean pea kuklasse ajama, et näha, kus nina on.',
+      `Mõõdame: sirutame käed üles – nii suur! Varsti ulatub ${c.name} ise kuuse otsa tähte panema.`,
     ],
-    { needsSiblings: true },
+    { needsSiblings: true, establishes: ['size-told'], until: 'size-told' },
   ),
   card(
     'siblings-wave',
     'Lehvita',
     ['siblings'],
+    (c) => [`Kus on ${c.siblings}? Lehvitame neile: tšau-tšau!`],
     (c) => [
-      `Kus on ${c.siblings}? Lehvita: tšau-tšau! ${c.siblings} ${c.siblingCount > 1 ? 'lehvitavad' : 'lehvitab'} ka.`,
-    ],
-    (c) => [
-      `Täna hommikul nägin aknast, kuidas ${c.siblings} õue ${c.siblingCount > 1 ? 'läksid' : 'läks'}. Ma lehvitasin: tšau-tšau!`,
-      'Aga keegi ei märganud mind, sest ma olen nii väike. Ronisin aknalauale ja lehvitasin kahe käega. Ikka ei näinud!',
-      `Lõpuks lehvitas mulle vastu lumememm – või nii mulle tundus. Kui ${c.siblings} täna koju ${c.siblingCount > 1 ? 'tulevad' : 'tuleb'}, lehvita: tšau-tšau!`,
+      'Kui ma täna öösel kirja tõin, magasid kõik. Ma lehvitasin vaikselt igale magajale: tšau-tšau!',
+      'Aga keegi ei näinud, sest kõik magasid ja mina olen nii väike. Ronisin aknalauale ja lehvitasin kahe käega. Ikka ei näinud!',
+      `Lõpuks lehvitas mulle vastu kuu – või nii mulle tundus. Kui ${c.siblings} täna ${c.siblingCount > 1 ? 'ärkavad' : 'ärkab'}, lehvita ${c.siblingCount > 1 ? 'neile' : 'talle'}: tšau-tšau!`,
     ],
     { needsSiblings: true },
   ),
@@ -305,13 +303,11 @@ export const TODDLER_SCENARIOS: Scenario[] = [
     'siblings-face',
     'Naljakas nägu',
     ['siblings'],
+    (c) => [`Päkapikud teevad naljaka näo: põsed paisu! Tee sina ka! Kas ${c.siblings} ${c.siblingCount > 1 ? 'teevad' : 'teeb'} ka? Hi-hi-hii.`],
     (c) => [
-      `${c.siblings} ${c.siblingCount > 1 ? 'teevad' : 'teeb'} naljaka näo. Tee sina ka! Hi-hi-hii.`,
-    ],
-    (c) => [
-      `${c.siblings} ${c.siblingCount > 1 ? 'oskavad' : 'oskab'} teha väga naljakaid nägusid. Ma piilusin ja nägin ise!`,
+      `Töökojas oli eile naljakate nägude võistlus. ${c.cast.young} ja ${c.cast.older} said kõige rohkem naeru.`,
       'Üks nägu oli selline: põsed paisu nagu õhupall. Teine nägu: keel väljas ja silmad kõõrdi. Ma naersin nii, et kukkusin sussist välja.',
-      `Kas ${c.name} oskab ka? Tee kõige naljakam nägu! Ja nüüd kõige rõõmsam nägu. Hi-hi-hii!`,
+      `Tee sina ka kõige naljakam nägu! Ja nüüd kõige rõõmsam nägu. Kas ${c.siblings} ${c.siblingCount > 1 ? 'oskavad' : 'oskab'} ka? Hi-hi-hii!`,
     ],
     { needsSiblings: true },
   ),
@@ -319,11 +315,11 @@ export const TODDLER_SCENARIOS: Scenario[] = [
     'siblings-hide',
     'Peitus',
     ['siblings', 'hide'],
-    (c) => [`Mängime peitust! Silmad kinni: üks, kaks, kolm. Kus on ${c.siblings}? Leidsime!`],
+    (c) => [`Mängime peitust! Käed silmadele: üks, kaks, kolm … kuku! Kas ${c.siblings} ${c.siblingCount > 1 ? 'mängivad' : 'mängib'} ka?`],
     (c) => [
-      'Täna mängisin peitust. Ma peitsin end sussi sisse ja lugesin: üks, kaks, kolm.',
-      `Siis ${c.siblingCount > 1 ? 'tulid' : 'tuli'} ${c.siblings} ja ${c.siblingCount > 1 ? 'otsisid' : 'otsis'}: kapist, voodi alt ja kardina tagant. Aga sussi sisse keegi ei vaadanud!`,
-      'Lõpuks ma aevastasin: atšihh! Ja mind leiti. Mängige täna ka peitust: kes peidab, kes otsib?',
+      'Eile mängisime töökojas peitust. Ma peitsin end ühe sussi sisse ja lugesin: üks, kaks, kolm.',
+      `Siis tulid ${c.cast.young} ja ${c.cast.older} ja otsisid: kapist, laua alt ja kardina tagant. Aga sussi sisse keegi ei vaadanud!`,
+      `Lõpuks ma aevastasin: atšihh! Ja mind leiti. Mängige täna ka peitust – sina ja ${c.siblings}. Kes peidab, kes otsib?`,
     ],
     { needsSiblings: true },
   ),

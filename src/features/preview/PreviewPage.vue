@@ -12,7 +12,7 @@ import ChildBackgrounds from './decoration/ChildBackgrounds.vue'
 import PosterBoard from './poster/PosterBoard.vue'
 import MiniSheet from './mini/MiniSheet.vue'
 import ItemEditorDialog from './ItemEditorDialog.vue'
-import { ageBand, buildAudience, usesSmallCards } from '../../domain/generators/audience'
+import { ageBand, buildAudience, languageFor, textLevel, usesSmallCards } from '../../domain/generators/audience'
 import { formatDayMonth, namesInCase } from '../../domain/text/estonian'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import EmptyState from '../../components/ui/EmptyState.vue'
@@ -22,6 +22,8 @@ import { GenerationError } from '../../domain/generators/templateGenerator'
 import { contentToPlainText, downloadText, fileNameFor } from '../../utils/exportText'
 import { useCreationsStore } from './creationsStore'
 import PrintableItem from './PrintableItem.vue'
+import { fitsSheet, printTextPt, type FitOptions, type FitSheet } from './printFit'
+import { carryEdits } from './carryEdits'
 import ParentSheet from './ParentSheet.vue'
 import CustomizePanel from './CustomizePanel.vue'
 import PassOfferCard from '../pass/PassOfferCard.vue'
@@ -111,7 +113,8 @@ function announce(message: string): void {
   statusTimer = setTimeout(() => (status.value = ''), 3500)
 }
 
-const toddlers = computed(() => content.value?.request.children.filter(usesSmallCards).length ?? 0)
+const smallCards = (child: ChildProfile) => !!content.value && usesSmallCards(child, content.value.request)
+const toddlers = computed(() => content.value?.request.children.filter(smallCards).length ?? 0)
 const allToddlers = computed(() => !!content.value && toddlers.value === content.value.request.children.length)
 /**
  * Puzzle poster and toddler cards are one choice: everyone gets the card layout
@@ -136,10 +139,16 @@ const posterFits = computed(() => {
   if (!current) return true
   const childOf = (item: GeneratedItem) =>
     current.request.children.find((child) => child.id === item.childId) ?? current.request.children[0]
+  const request = current.request
   return current.items.every((item) => {
     const child = childOf(item)
-    if (!child || usesSmallCards(child)) return true
-    return item.body.length <= LARGE_CARD_CHARS[ageBand(child) === 'older' ? 'older' : 'young']
+    if (!child || smallCards(child)) return true
+    // The letter's own text decides the card: a six-year-old's rich letters are the older readers' text.
+    const band =
+      request.contentType === 'letter'
+        ? textLevel(child, languageFor(child, request.options, request.general.difficulty), request.general.length).band
+        : ageBand(child)
+    return item.body.length <= LARGE_CARD_CHARS[band === 'older' ? 'older' : 'young']
   })
 })
 /** One choice for how the letters go on paper; the poster only for a series. */
@@ -148,8 +157,8 @@ const printOptions_ = computed<{ value: PrintableLayout; label: string; disabled
   const letters = current?.request.contentType === 'letter'
   const series = (current?.items.length ?? 0) >= 3
   return [
-    { value: 'cards', label: letters ? 'Kaardid sussi sisse' : 'Kaardid' },
-    { value: 'half', label: 'Pool lehte' },
+    { value: 'cards', label: letters ? 'Kaardid sussi sisse' : 'Kaardid', disabled: !cardsFit.value },
+    { value: 'half', label: 'Pool lehte', disabled: !halfFits.value },
     { value: 'page', label: 'Terve leht' },
     ...(series || layout.value === 'poster' ? [{ value: 'poster' as const, label: cardLabel.value, disabled: !posterFits.value }] : []),
   ]
@@ -169,9 +178,9 @@ const layout = computed({
   get: () => (rawLayout.value === 'mini' ? 'poster' : rawLayout.value),
   set: (value: PrintableLayout) => store.setLayout(props.id, value),
 })
-// Letters made long while on the poster move to the slipper cards.
+// Letters made long while on the poster move to the largest layout they fit: cards, half or whole page.
 watch(posterFits, (fits) => {
-  if (!fits && layout.value === 'poster') layout.value = 'cards'
+  if (!fits && layout.value === 'poster') layout.value = cardsFit.value ? 'cards' : halfFits.value ? 'half' : 'page'
 })
 const certificateStyle = computed<CertificateStyle | undefined>(() =>
   content.value?.request.contentType === 'certificate' ? content.value.request.options.style : undefined,
@@ -206,17 +215,36 @@ const filterOptions = computed(() => [
   { value: 'all', label: 'Kõik lapsed' },
   ...groups.value.flatMap((group) => (group.child ? [{ value: group.key, label: group.child.name }] : [])),
 ])
-const visibleGroups = computed(() =>
-  childFilter.value === 'all' ? groups.value : groups.value.filter((group) => group.key === childFilter.value),
+/** The chosen child, while their own letters are shown; null when everybody's are. */
+const filteredGroup = computed(() =>
+  childFilter.value === 'all' ? null : (groups.value.find((group) => group.key === childFilter.value) ?? null),
 )
+// One shared letter (or another child list) has no group for the chosen child: show everybody's
+// letters again rather than none.
+const visibleGroups = computed(() => (filteredGroup.value ? [filteredGroup.value] : groups.value))
+watch(groups, () => {
+  if (childFilter.value !== 'all' && !filteredGroup.value) childFilter.value = 'all'
+})
 
 /** Each child gets the card layout that suits them: little ones simple cards, others the poster. */
 function groupLayout(group: ItemGroup): PrintableLayout {
   if (layout.value !== 'poster') return layout.value
-  const toddler = group.child ? usesSmallCards(group.child) : allToddlers.value
+  const toddler = group.child ? smallCards(group.child) : allToddlers.value
   return toddler ? 'mini' : 'poster'
 }
 const isPoster = computed(() => groups.value.some((group) => groupLayout(group) === 'poster'))
+/**
+ * The poster and the toddler cards are laid out as puzzle pieces, in the order they are cut.
+ * To read the letters they are shown one after another by date; the sheets as they print are
+ * one click away, and are what the printer gets either way.
+ */
+type View = 'read' | 'print'
+const view = ref<View>('read')
+const viewOptions: { value: View; label: string }[] = [
+  { value: 'read', label: 'Kirjad järjest' },
+  { value: 'print', label: 'Nagu prinditult' },
+]
+const boardLayout = (group: ItemGroup) => ['poster', 'mini'].includes(groupLayout(group))
 const isMini = computed(() => groups.value.some((group) => groupLayout(group) === 'mini'))
 /** Each child's sheets may have their own picture or no background at all. */
 function groupBackground(group: ItemGroup) {
@@ -244,6 +272,44 @@ function groupUppercase(group: ItemGroup): boolean {
   if (decoration.value.uppercase !== undefined || !group.child) return uppercase.value
   return ageBand(group.child) !== 'older'
 }
+function fitOptions(group: ItemGroup, sheet: FitSheet): FitOptions {
+  const background = groupBackground(group)
+  const backdrop = !!groupImageUrl(group) || (!!background.pattern && !decoration.value.inkSaver)
+  return { sheet, uppercase: groupUppercase(group), backdrop }
+}
+/** Long letters get a smaller print text, so that they fit their half or whole page. */
+function printPt(group: ItemGroup, item: GeneratedItem): number | undefined {
+  const sheet = groupLayout(group)
+  if ((sheet !== 'half' && sheet !== 'page') || item.kind === 'certificate') return undefined
+  return printTextPt(item, fitOptions(group, sheet))
+}
+/** Four cards on a sheet only while every letter fits a card at its normal size (11 pt). */
+const cardsFit = computed(() =>
+  groups.value.every((group) =>
+    group.entries.every(({ item }) => item.kind !== 'letter' || fitsSheet(item, fitOptions(group, 'cards'))),
+  ),
+)
+watch(
+  cardsFit,
+  (fits) => {
+    if (!fits && layout.value === 'cards') layout.value = halfFits.value ? 'half' : 'page'
+  },
+  { immediate: true },
+)
+/** The half page is only offered while every letter fits it at a readable size. */
+const halfFits = computed(() =>
+  groups.value.every((group) =>
+    group.entries.every(({ item }) => item.kind === 'certificate' || fitsSheet(item, fitOptions(group, 'half'))),
+  ),
+)
+// Letters made long, or decorated, while on the half page move to whole pages.
+watch(
+  halfFits,
+  (fits) => {
+    if (!fits && layout.value === 'half') layout.value = 'page'
+  },
+  { immediate: true },
+)
 function groupTitle(group: ItemGroup): string {
   return group.child && content.value ? `${group.child.name} · ${content.value.title}` : posterTitle.value
 }
@@ -295,7 +361,10 @@ const hasParentMaterial = computed(
 )
 
 // New choices from the panel beside the preview: the texts are written again with the same seed.
+// Letters edited by hand stay; before any would be lost the parent is asked, and a "no" puts
+// the panel's choices back.
 const updating = ref(false)
+const panelKey = ref(0)
 const choiceErrors = ref<string[]>([])
 let latestChange = 0
 async function applyChoices(choices: { general: GeneralOptions; options: GeneratedContent['request']['options'] }): Promise<void> {
@@ -308,9 +377,25 @@ async function applyChoices(choices: { general: GeneralOptions; options: Generat
     const next = await generator.generate(request)
     // A newer change is already on its way.
     if (ticket !== latestChange) return
-    store.applyChoices(props.id, next)
+    const { items, kept, lost } = carryEdits(current.items, next.items)
+    if (
+      lost.length > 0 &&
+      !window.confirm(
+        lost.length === 1
+          ? 'Üks käsitsi muudetud kiri ei mahu uute valikutega sarja ja kaob. Jätkan?'
+          : `${lost.length} käsitsi muudetud kirja ei mahu uute valikutega sarja ja kaovad. Jätkan?`,
+      )
+    ) {
+      panelKey.value++
+      return
+    }
+    store.applyChoices(props.id, { ...next, items })
     choiceErrors.value = []
-    announce('Eelvaade uuendatud.')
+    announce(
+      kept > 0
+        ? `Eelvaade uuendatud. ${kept === 1 ? 'Käsitsi muudetud kiri jäi alles' : `${kept} käsitsi muudetud kirja jäid alles`} – vaata, kas see sobib uue looga.`
+        : 'Eelvaade uuendatud.',
+    )
   } catch (error) {
     if (ticket === latestChange) {
       choiceErrors.value = error instanceof GenerationError ? error.errors : ['Midagi läks valesti. Proovi uuesti.']
@@ -390,9 +475,18 @@ onBeforeUnmount(() => {
   clearTimeout(statusTimer)
 })
 
+/** The text file holds what is shown: one child's letters while the filter shows one child. */
+const exportLabel = computed(() => (filteredGroup.value?.child ? `Tekstifail: ${filteredGroup.value.child.name}` : 'Tekstifail'))
 function exportText(): void {
-  if (!content.value) return
-  downloadText(contentToPlainText(content.value), fileNameFor(content.value.title))
+  const current = content.value
+  if (!current) return
+  const child = filteredGroup.value?.child
+  if (!child) {
+    downloadText(contentToPlainText(current), fileNameFor(current.title))
+    return
+  }
+  const own = { ...current, items: current.items.filter((item) => item.childId === child.id) }
+  downloadText(contentToPlainText(own, true, child.name), fileNameFor(`${child.name} ${current.title}`))
 }
 </script>
 
@@ -417,7 +511,7 @@ function exportText(): void {
         </div>
         <div class="toolbar__actions">
           <BaseButton :to="{ path: designPath(design, '/loo'), query: { muuda: content.id } }" variant="secondary" size="sm"><UsersRound aria-hidden="true" /> <span class="toolbar__label">Lapsed ja tüüp</span></BaseButton>
-          <BaseButton variant="secondary" size="sm" @click="exportText"><Download aria-hidden="true" /> <span class="toolbar__label">Tekstifail</span></BaseButton>
+          <BaseButton variant="secondary" size="sm" :aria-label="exportLabel" @click="exportText"><Download aria-hidden="true" /> <span class="toolbar__label">{{ exportLabel }}</span></BaseButton>
           <BaseButton size="sm" @click="print(printOptions.some((o) => o.value === printMode) ? printMode : 'all')"><Printer aria-hidden="true" /> Prindi / PDF</BaseButton>
         </div>
       </div>
@@ -431,7 +525,7 @@ function exportText(): void {
           </template>
           <template v-else>Need kirjad kirjutas päkapikk Tuduja just {{ namesInCase(content.request.children, 'allative') }}. Iga kirja saad muuta nupuga „Muuda“, seal saab ka päkapikult muudatust paluda.</template>
         </p>
-        <CustomizePanel v-else :content="content" :busy="updating" :errors="choiceErrors" @change="applyChoices" />
+        <CustomizePanel v-else :key="panelKey" :content="content" :busy="updating" :errors="choiceErrors" @change="applyChoices" />
         <PassOfferCard
           v-if="PASS_ENABLED && !aiWritten && design === 'new' && content.request.contentType === 'letter' && content.request.occasionId === 'christmas'"
           :content="content"
@@ -448,6 +542,14 @@ function exportText(): void {
         <section class="print-panel" aria-labelledby="print-title">
           <h2 id="print-title" class="print-panel__title">Printimine</h2>
           <SegmentedControl v-model="layout" name="print-preset" label="Kuidas prindid?" :options="printOptions_" :hint="presetHint" />
+          <p v-if="!cardsFit" class="controls__note">
+            Kaardid sussi sisse pole praegu valitavad: neli kaarti A4-l ei mahuta neid kirju loetava suurusega. Vali pool
+            lehte või terve leht – kiri jääb terveks.
+          </p>
+          <p v-if="!halfFits" class="controls__note">
+            Pool lehte pole praegu valitav: mõni kiri on poolele lehele liiga pikk. Lühenda seda nupuga „Muuda“ või vali
+            kohandamise all lühem kirjade pikkus.
+          </p>
           <p v-if="!posterFits && !allToddlers" class="controls__note">
             Pusleplakat pole praegu valitav: mõni kiri on plakatikaardi jaoks liiga pikk. Lühenda seda nupuga „Muuda“ või vali
             kohandamise all lühem kirjade pikkus.
@@ -506,6 +608,15 @@ function exportText(): void {
         <p v-if="status" class="toast no-print" aria-hidden="true">{{ status }}</p>
 
         <SegmentedControl
+          v-if="isPoster || isMini"
+          v-model="view"
+          class="child-filter no-print"
+          name="sheet-view"
+          label="Eelvaade"
+          :options="viewOptions"
+          hint="Prinditakse alati pusletükkidena, nagu „Nagu prinditult“ näitab."
+        />
+        <SegmentedControl
           v-if="groups.length > 1"
           v-model="childFilter"
           class="child-filter no-print"
@@ -521,6 +632,22 @@ function exportText(): void {
           :class="[`sheet--${groupLayout(group)}`, { 'child-group--next': g > 0 }]"
         >
           <h2 v-if="group.child" class="child-group__title no-print">{{ group.child.name }}</h2>
+          <div v-if="boardLayout(group) && view === 'read'" class="read-list no-print">
+            <PrintableItem
+              v-for="entry in group.entries"
+              :key="entry.item.id"
+              :item="entry.item"
+              :busy="busyItem === entry.item.id"
+              :pattern="null"
+              :ink-saver="true"
+              :background-url="null"
+              :uppercase="groupUppercase(group)"
+              :no-variants="aiWritten"
+              @edit="openEditor(entry.item.id)"
+              @regenerate="regenerate(entry.index)"
+            />
+          </div>
+          <div v-if="boardLayout(group)" :class="{ 'board-offscreen': view === 'read' }" :aria-hidden="view === 'read' || undefined" :inert="view === 'read' || undefined">
           <PosterBoard
             v-if="groupLayout(group) === 'poster'"
             :items="group.entries.map((entry) => entry.item)"
@@ -548,6 +675,7 @@ function exportText(): void {
             @overflow-count="(count) => setOverflow(group.key, count)"
             @edit="openEditor"
           />
+          </div>
           <template v-else>
             <PrintableItem
               v-for="entry in group.entries"
@@ -562,6 +690,7 @@ function exportText(): void {
               :uppercase="groupUppercase(group)"
               :piece="puzzle ? { ...puzzle, index: entry.index, maxCm: pieceMaxCm } : null"
               :no-variants="aiWritten"
+              :print-pt="printPt(group, entry.item)"
               @edit="openEditor(entry.item.id)"
               @regenerate="regenerate(entry.index)"
             />
@@ -826,7 +955,7 @@ function exportText(): void {
   max-width: 720px;
   margin-inline: auto;
   :deep(.paper) {
-    aspect-ratio: 182 / 255;
+    aspect-ratio: 182 / 245;
   }
 }
 .sheet--half {
@@ -836,6 +965,21 @@ function exportText(): void {
     aspect-ratio: 182 / 120;
   }
 }
+// The letters in date order while reading; the poster sheets are still laid out (out of
+// sight) so that their text-fit checks run, and they are what prints.
+.read-list {
+  display: grid;
+  gap: 1rem;
+  max-width: 720px;
+  margin-inline: auto;
+}
+.board-offscreen {
+  position: absolute;
+  left: -10000px;
+  top: 0;
+  width: 1100px;
+  visibility: hidden;
+}
 .sheet--cards {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   @media (max-width: 680px) {
@@ -844,6 +988,11 @@ function exportText(): void {
 }
 
 @media print {
+  .board-offscreen {
+    position: static;
+    width: auto;
+    visibility: visible;
+  }
   .preview__body {
     display: block;
   }
@@ -859,8 +1008,13 @@ function exportText(): void {
     display: block;
     max-width: none;
   }
+  // The print heights replace the screen's aspect ratio, which would hold a long text to
+  // the ratio's height; the text size is fitted to these heights (printFit.ts). They stay
+  // under the ~251 mm Safari prints on an A4 page (Chrome: 269 mm inside the 14 mm margins):
+  // a sheet any taller adds an empty page after every letter.
   .sheet--page :deep(.paper) {
-    min-height: 255mm;
+    aspect-ratio: auto;
+    min-height: 245mm;
     break-after: page;
     page-break-after: always;
   }
@@ -869,8 +1023,11 @@ function exportText(): void {
     page-break-after: auto;
   }
   .sheet--half :deep(.paper) {
+    aspect-ratio: auto;
     min-height: 120mm;
-    margin-bottom: 8mm;
+    margin-bottom: 6mm;
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
   .sheet--cards {
     display: grid;
@@ -879,6 +1036,8 @@ function exportText(): void {
     :deep(.paper) {
       min-height: 118mm;
       font-size: 11pt;
+      break-inside: avoid;
+      page-break-inside: avoid;
     }
     :deep(.paper__body p) {
       font-size: 11pt;

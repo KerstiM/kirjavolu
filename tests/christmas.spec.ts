@@ -42,7 +42,7 @@ async function freeLetters(start = '/joulukirjad') {
   await user.type(screen.getByLabelText('Vanus'), '5')
   await user.click(screen.getByRole('button', { name: /Loo tasuta kirjad/ }))
   await vi.waitFor(() => expect(opened.router.currentRoute.value.path).toMatch(/^\/joulukirjad\/./), { timeout: 5000 })
-  await screen.findByRole('heading', { level: 1, name: 'Mia 24 jõulukirja on valmis' })
+  await screen.findByRole('heading', { level: 1, name: 'Mia saab 24 jõulukirja' })
   return { ...opened, user, path: opened.router.currentRoute.value.path }
 }
 
@@ -80,7 +80,7 @@ describe('Christmas letters: who for and the free letters', () => {
     await user.click(screen.getByRole('button', { name: /Loo tasuta kirjad/ }))
 
     await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/joulukirjad\//), { timeout: 5000 })
-    expect(await screen.findByRole('heading', { level: 1, name: 'Mia 24 jõulukirja on valmis' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Mia saab 24 jõulukirja' })).toBeInTheDocument()
     expect(useChildrenStore(pinia).children[0]).toMatchObject({ name: 'Mia', age: 5, topics: ['dinosaurs'] })
     const creation = useCreationsStore(pinia).creations[0]!
     expect(creation.items).toHaveLength(24)
@@ -109,7 +109,7 @@ describe('Christmas letters: who for and the free letters', () => {
     expect(screen.queryByLabelText('Lapse nimi')).toBeNull()
     await user.click(screen.getByRole('button', { name: /Loo tasuta kirjad/ }))
     await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/joulukirjad\//), { timeout: 5000 })
-    expect(await screen.findByRole('heading', { level: 1, name: 'Markuse 24 jõulukirja on valmis' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Markus saab 24 jõulukirja' })).toBeInTheDocument()
   })
 
   it('lets a new family type in several children at once', async () => {
@@ -126,7 +126,7 @@ describe('Christmas letters: who for and the free letters', () => {
     await user.type(screen.getAllByLabelText('Vanus')[1]!, '9')
     await user.click(screen.getByRole('button', { name: /Loo 2 lapsele tasuta kirjad/ }))
     await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/joulukirjad\//), { timeout: 5000 })
-    expect(await screen.findByRole('heading', { level: 1, name: 'Mia ja Oskari jõulukirjad on valmis' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Jõulukirjad on valmis: Mia ja Oskar' })).toBeInTheDocument()
     expect(useChildrenStore(pinia).children.map((child) => child.name).sort()).toEqual(['Mia', 'Oskar'])
     expect(useCreationsStore(pinia).creations[0]?.request.children.map((child) => child.name)).toEqual(['Mia', 'Oskar'])
   })
@@ -146,7 +146,7 @@ describe('Christmas letters: who for and the free letters', () => {
     await user.click(screen.getByRole('button', { name: /Loo 2 lapsele tasuta kirjad/ }))
     // The empty second row is left out, not an error.
     await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/joulukirjad\//), { timeout: 5000 })
-    expect(await screen.findByRole('heading', { level: 1, name: 'Markuse ja Mia jõulukirjad on valmis' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Jõulukirjad on valmis: Markus ja Mia' })).toBeInTheDocument()
   })
 
   it('lets a typed row be taken away again', async () => {
@@ -168,7 +168,7 @@ describe('Christmas letters: who for and the free letters', () => {
     expect(screen.getByText(/Õed-vennad saavad seotud kirjad/)).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: /Loo 2 lapsele tasuta kirjad/ }))
     await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/joulukirjad\//), { timeout: 5000 })
-    expect(await screen.findByRole('heading', { level: 1, name: 'Markuse ja Pääru jõulukirjad on valmis' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Jõulukirjad on valmis: Markus ja Pääru' })).toBeInTheDocument()
     const creation = useCreationsStore(pinia).creations[0]!
     expect(creation.request.children.map((child) => child.name)).toEqual(['Markus', 'Pääru'])
     expect(creation.items).toHaveLength(48)
@@ -381,7 +381,7 @@ describe('Christmas letters: the optional personal letters', () => {
     const alert = await screen.findByText(/Päkapikk on praegu väga hõivatud/)
     expect(alert).toHaveTextContent('Loomiskord jäi alles')
     expect(screen.getByRole('button', { name: /Proovi uuesti/ })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { level: 1, name: 'Mia 24 jõulukirja on valmis' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Mia saab 24 jõulukirja' })).toBeInTheDocument()
   })
 
   it('tells the truth when the request broke on the way but the series was used', async () => {
@@ -438,7 +438,7 @@ describe('Christmas letters: after paying', () => {
     expect(await screen.findByText(/Makse jäi pooleli ja raha ei võetud/)).toBeInTheDocument()
     expect(loadPass()).toBeNull()
     expect(fetch).toHaveBeenCalledTimes(1)
-    expect(screen.getByRole('heading', { level: 1, name: 'Mia 24 jõulukirja on valmis' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: 'Mia saab 24 jõulukirja' })).toBeInTheDocument()
   })
 
   it('keeps a pass that is already paid after a reload, without asking Stripe again', async () => {

@@ -28,9 +28,12 @@ describe('child challenges', () => {
     expect(on(items, PAARU.id, 13)).toContain('Hurraa, Pääru! Tugevate hammaste päevad on läbi')
   })
 
-  it('asks the oldest sibling to support in secret on the same day', () => {
-    expect(challengeSupporter(request, sweetsBreak)?.id).toBe(MARKUS.id)
-    expect(on(items, MARKUS.id, 11)).toContain('Salajane palve: täna alustab Pääru kommideta päevi.')
+  it('gives no sibling a secret part in the challenge unless the parent chose the secret helper', () => {
+    expect(challengeSupporter(request, sweetsBreak)).toBeUndefined()
+    expect(on(items, MARKUS.id, 11)).not.toContain('Salajane palve')
+    const helper = family({ challenges: [sweetsBreak], sundaySweets: true, secretHelper: true })
+    expect(challengeSupporter(helper, sweetsBreak)?.id).toBe(MARKUS.id)
+    expect(on(runTemplates(helper).items, MARKUS.id, 11)).toContain('Salajane palve: täna alustab Pääru kommideta päevi.')
     expect(on(items, KAI.id, 11)).not.toContain('kommideta')
   })
 
@@ -50,9 +53,13 @@ describe('child challenges', () => {
     expect(challengeFor(toddler, KAI.id, 10)).toBeUndefined()
   })
 
-  it('parent sheet lists the challenge and the supporter', () => {
+  it('parent sheet lists the challenge, and the supporter when there is one', () => {
     const steps = familyInstructions(request).find((i) => i.title === 'Väljakutsed')!.steps
-    expect(steps[0]).toBe('Pääru: kommideta päevad, 11. detsember – 13. detsember. Markus saab salajase palve teda toetada.')
+    expect(steps[0]).toBe('Pääru: kommideta päevad, 11. detsember – 13. detsember.')
+    const helper = family({ challenges: [sweetsBreak], secretHelper: true })
+    expect(familyInstructions(helper).find((i) => i.title === 'Väljakutsed')!.steps[0]).toBe(
+      'Pääru: kommideta päevad, 11. detsember – 13. detsember. Markus saab salajase palve teda toetada.',
+    )
   })
 })
 

@@ -6,7 +6,7 @@ import FamilyEventsEditor from './FamilyEventsEditor.vue'
 import ChallengesEditor from './ChallengesEditor.vue'
 import FormField from '../../../components/ui/FormField.vue'
 import SegmentedControl from '../../../components/ui/SegmentedControl.vue'
-import { MAX_LETTERS } from '../../../domain/validation'
+import { christmasLettersUntilEve, MAX_LETTERS, MIN_SERIES } from '../../../domain/validation'
 import DateInput from '../../../components/ui/DateInput.vue'
 
 const props = defineProps<{ children: ChildProfile[]; occasionId: OccasionId }>()
@@ -17,12 +17,20 @@ const linked = computed(() => family.value && (model.value.mode ?? 'linked') ===
 const series = computed(() => model.value.count > 1)
 
 /**
- * The usual counts as short buttons (the legend says what they count), and "Muu" for any
- * other number up to 24 – so the choice fits one row even in the narrow preview panel.
+ * The usual counts as short buttons (the legend says what they count), and "Muu" for another
+ * number – so the choice fits one row even in the narrow preview panel. Christmas letters are
+ * one letter or a whole story of 7 to 24 days that ends by Christmas Eve: shorter series could
+ * not tell a story to its end, so they are not offered.
  */
-const QUICK_COUNTS = [1, 4, 7, 24] as const
-const countOptions = [...QUICK_COUNTS.map((value) => ({ value, label: String(value) })), { value: 'other' as const, label: 'Muu' }]
-const otherOpen = ref(!(QUICK_COUNTS as readonly number[]).includes(model.value.count))
+const christmas = computed(() => props.occasionId === 'christmas')
+const quickCounts = computed<number[]>(() => (christmas.value ? [1, MIN_SERIES, MAX_LETTERS] : [1, 4, 7, 24]))
+const minOther = computed(() => (christmas.value ? MIN_SERIES : 1))
+const maxCount = computed(() => (christmas.value ? christmasLettersUntilEve(model.value.startDate) : MAX_LETTERS))
+const countOptions = computed(() => [
+  ...quickCounts.value.map((value) => ({ value, label: String(value), disabled: value > 1 && value > maxCount.value })),
+  { value: 'other' as const, label: 'Muu', disabled: christmas.value && maxCount.value < MIN_SERIES },
+])
+const otherOpen = ref(!quickCounts.value.includes(model.value.count))
 const countChoice = computed<number | 'other'>({
   get: () => (otherOpen.value ? 'other' : model.value.count),
   set: (value) => {
@@ -32,8 +40,14 @@ const countChoice = computed<number | 'other'>({
 })
 function setOtherCount(event: Event): void {
   const value = Math.round(Number((event.target as HTMLInputElement).value))
-  if (Number.isFinite(value)) model.value.count = Math.min(MAX_LETTERS, Math.max(1, value))
+  if (Number.isFinite(value)) model.value.count = Math.min(maxCount.value, Math.max(minOther.value, value))
 }
+const countHint = computed(() => {
+  if (!christmas.value) return ''
+  if (maxCount.value < MIN_SERIES) return 'Jõululaupäevani on sarja jaoks liiga vähe päevi: saad teha ühe kirja.'
+  if (maxCount.value < MAX_LETTERS) return `Kirjad lõpevad jõululaupäeval: sellest kuupäevast mahub kuni ${maxCount.value} kirja.`
+  return 'Üks kiri või terve lugu 7–24 päevaks.'
+})
 
 /**
  * One choice for how the letters belong together. A linked family series always
@@ -47,11 +61,11 @@ const shapeOptions = computed<{ value: Shape; label: string }[]>(() => {
       { value: 'single-story', label: 'Järjejutt' },
     ]
   }
-  const options: { value: Shape; label: string }[] = [
-    { value: 'linked', label: 'Igaühele oma, omavahel seotud' },
-    { value: 'shared', label: 'Üks ühine kiri kõigile' },
-  ]
-  if (series.value) options.push({ value: 'shared-story', label: 'Ühine järjejutt' })
+  const options: { value: Shape; label: string }[] = [{ value: 'linked', label: 'Igaühele oma, omavahel seotud' }]
+  // One letter for all children is put together from short parts, so Christmas letters offer it
+  // no more; a creation made with it keeps the choice until it is changed.
+  if (!christmas.value || !linked.value) options.push({ value: 'shared', label: 'Üks ühine kiri kõigile' })
+  if (series.value && (!christmas.value || shape.value === 'shared-story')) options.push({ value: 'shared-story', label: 'Ühine järjejutt' })
   return options
 })
 const shape = computed<Shape>({
@@ -67,26 +81,32 @@ const shape = computed<Shape>({
 })
 const shapeHint = computed(() => {
   if (shape.value === 'linked') {
-    return 'Iga laps saab oma kirjad samast päkapikumaailmast: abilised tunnevad üksteist, ühised sündmused juhtuvad kõigi kirjades samal päeval ja vanem laps teeb aeg-ajalt midagi nooremale. Järjejutus kadunud tähest kuuleb iga laps lugu oma päkapiku käest.'
+    return 'Iga laps saab oma kirjad samast päkapikumaailmast: abilised tunnevad üksteist, ühised sündmused juhtuvad kõigi kirjades samal päeval ja mõnel päeval kutsutakse õdesid-vendi midagi koos tegema. Järjejutus kadunud tähest kuuleb iga laps lugu oma päkapiku käest.'
   }
   if (shape.value.endsWith('-story')) return 'Järjejutus otsitakse kirjast kirja kadunud tähte. Vahepeal on ka iseseisvaid lugusid.'
   return ''
 })
-const showShape = computed(() => family.value || series.value)
+const showShape = computed(() => shapeOptions.value.length > 1 && (family.value || series.value))
 
 const extrasInUse = computed(
-  () => (model.value.events?.length ?? 0) > 0 || (model.value.challenges?.length ?? 0) > 0 || !!model.value.sundaySweets,
+  () =>
+    (model.value.events?.length ?? 0) > 0 ||
+    (model.value.challenges?.length ?? 0) > 0 ||
+    !!model.value.sundaySweets ||
+    !!model.value.secretHelper,
 )
+/** The secret helper needs a younger sibling and a series long enough for a second storyline. */
+const offersSecretHelper = computed(() => linked.value && christmas.value && model.value.count >= 12)
 </script>
 
 <template>
   <div class="options-grid">
     <div class="count">
-      <SegmentedControl v-model="countChoice" name="letter-count" label="Kirjade arv" :options="countOptions" />
+      <SegmentedControl v-model="countChoice" name="letter-count" label="Kirjade arv" :options="countOptions" :hint="countHint" />
       <label v-if="otherOpen" class="count__other">
         <span>Mitu kirja?</span>
-        <input class="input" type="number" min="1" :max="MAX_LETTERS" inputmode="numeric" :value="model.count" @change="setOtherCount" />
-        <span class="count__range">1–{{ MAX_LETTERS }}</span>
+        <input class="input" type="number" :min="minOther" :max="maxCount" inputmode="numeric" :value="model.count" @change="setOtherCount" />
+        <span class="count__range">{{ minOther }}–{{ maxCount }}</span>
       </label>
     </div>
     <FormField id="letter-date" label="Esimese kirja kuupäev" hint="Sarja puhul saab iga järgmine kiri järgmise päeva kuupäeva.">
@@ -123,6 +143,13 @@ const extrasInUse = computed(
           :count="model.count"
         />
         <ChallengesEditor v-model="model.challenges" :children="children" :start-date="model.startDate" :count="model.count" />
+        <label v-if="offersSecretHelper" class="dated">
+          <input type="checkbox" :checked="!!model.secretHelper" @change="model.secretHelper = ($event.target as HTMLInputElement).checked || undefined" />
+          <span>
+            Vanim laps on päkapikkude salajane abiline: mõnes kirjas on talle salamissioon nooremate heaks. Vali see ainult siis,
+            kui tead, et lapsele meeldib saladust hoida.
+          </span>
+        </label>
       </div>
     </details>
   </div>

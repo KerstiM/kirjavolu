@@ -7,8 +7,8 @@ export interface EventContext {
   title: string
   /** Name of the helper writing the letter. */
   helper: string
-  /** Siblings taking part, allative: "Päärule ja Kaile"; empty when alone. */
-  othersAllative: string
+  /** Brothers or sisters take part too ("Näita jälgi ka teistele"). */
+  others: boolean
 }
 
 export type EventText = (c: EventContext) => string
@@ -36,7 +36,7 @@ export const EVENT_TEMPLATES: Record<EventKind, EventTemplate> = {
     label: 'Metsaretk',
     placeholder: 'nt Kõrvemaale (kuhu?)',
     older: (c) =>
-      `Kuulsin, et ${c.v('teie pere läheb', 'te lähete')} täna metsa${c.title ? ` – ${c.title}` : ''}. Mets on päkapikkude suvekodu, seal on palju vaadata. ${c.v('Sinu', 'Teie')} ülesanne on olla jäljedetektiiv: ${c.v('otsi', 'otsige')} loomajälgi ja ${c.v('proovi', 'proovige')} ära arvata, kelle omad need on – jänes, rebane, orav või põder?${c.othersAllative ? ` Näita jälgi ka ${c.othersAllative}.` : ''}`,
+      `Kuulsin, et ${c.v('teie pere läheb', 'te lähete')} täna metsa${c.title ? ` – ${c.title}` : ''}. Mets on päkapikkude suvekodu, seal on palju vaadata. ${c.v('Sinu', 'Teie')} ülesanne on olla jäljedetektiiv: ${c.v('otsi', 'otsige')} loomajälgi ja ${c.v('proovi', 'proovige')} ära arvata, kelle omad need on – jänes, rebane, orav või põder?${c.others ? ' Näita jälgi ka teistele.' : ''}`,
     young: (c) =>
       `Kas ${c.v('teadsid', 'teadsite')}, et päkapikud elavad suviti metsas? Kui te täna metsa lähete${c.title ? ` – ${c.title}` : ''}, ${c.v('vaata', 'vaadake')} hoolega ringi. ${c.v('Too', 'Tooge')} mulle metsast üks käbi ja ${c.v('pane', 'pange')} see sussi kõrvale – mul on tarvis just ühte käbi, et oma tuba kaunistada.`,
     toddler: (c) => `Täna lähme metsa${c.title ? ` – ${c.title}` : ''}! Puud on suured ja kõrged. Kuula: kes seal laulab? Tsiu-tsiu!`,
@@ -46,7 +46,7 @@ export const EVENT_TEMPLATES: Record<EventKind, EventTemplate> = {
     label: 'Suusatamine',
     placeholder: 'nt Otepääle (kuhu?)',
     older: (c) =>
-      `Kuulsin, et ${c.v('teie pere läheb', 'te lähete')} täna suusatama${c.title ? ` – ${c.title}` : ''}. Viimati, kui mina suusatasin, jäin mäe all hange kinni nii, et ainult müts paistis välja.${c.othersAllative ? ` Kui lähete, ${c.v('aita', 'aidake')} ${c.othersAllative} suusad alla panna ja ${c.v('näita', 'näidake')}, kuidas mäest üles käiakse.` : ''}`,
+      `Kuulsin, et ${c.v('teie pere läheb', 'te lähete')} täna suusatama${c.title ? ` – ${c.title}` : ''}. Viimati, kui mina suusatasin, jäin mäe all hange kinni nii, et ainult müts paistis välja.${c.others ? ` Kui lähete, ${c.v('aita', 'aidake')} teistel suusad alla panna ja ${c.v('näita', 'näidake')}, kuidas mäest üles käiakse.` : ''}`,
     young: (c) =>
       `Täna on suusapäev${c.title ? ` – ${c.title}` : ''}! Kui ${c.v('sõidad', 'sõidate')} mäest alla, ${c.v('hõiska', 'hõisake')} kõvasti „${c.helper}!“ – ma kuulen seda kindlasti.`,
     toddler: (c) => `Täna läheme lume peale${c.title ? ` – ${c.title}` : ''}. Lumi teeb krõps-krõps! Vuhh – mäest alla!`,
@@ -55,10 +55,10 @@ export const EVENT_TEMPLATES: Record<EventKind, EventTemplate> = {
     label: 'Külaskäik',
     placeholder: 'nt vanaema juurde Valka (kuhu?)',
     older: (c) =>
-      `Kuulsin, et täna sõidate külla${c.title ? ` – ${c.title}` : ''}. Ma tulen salaja kaasa: ronin ${c.v('sinu', 'teie')} kingikotti! Kui olete kohal, ${c.v('küsi', 'küsige')} vanematelt inimestelt, millised olid jõulud siis, kui nemad olid ${c.v('sinuvanused', 'teievanused')}, ja ${c.v('kirjuta', 'kirjutage')} üks huvitav detail üles.`,
+      `Kuulsin, et täna sõidate külla${c.title ? ` – ${c.title}` : ''}. Päkapikkude meelest on külaskäigud jõuluaja kõige parem osa. Kui olete kohal, ${c.v('küsi', 'küsige')} vanematelt inimestelt, millised olid jõulud siis, kui nemad olid ${c.v('sinuvanused', 'teievanused')}, ja ${c.v('kirjuta', 'kirjutage')} üks huvitav detail üles.`,
     young: (c) =>
-      `Kuulsin, et täna lähete külla${c.title ? ` – ${c.title}` : ''}. Ma tulen salaja kaasa: ronin ${c.v('sinu', 'teie')} taskusse! ${c.v('Näita', 'Näidake')} seal kellelegi, mida ${c.v('sa oskad', 'te oskate')}, ja ${c.v('räägi', 'rääkige')} mulle õhtul, kuidas läks.`,
-    toddler: (c) => `Täna läheme külla${c.title ? ` – ${c.title}` : ''}. Kopp-kopp! Kes seal on? Ütle kõigile tere!`,
+      `Kuulsin, et täna lähete külla${c.title ? ` – ${c.title}` : ''}. Mul on ${c.v('sulle', 'teile')} üks ettepanek: ${c.v('näita', 'näidake')} seal kellelegi, mida ${c.v('sa oskad', 'te oskate')} – kasvõi ühte naljakat nägu või tantsusammu.`,
+    toddler: (c) => `Täna läheme külla${c.title ? ` – ${c.title}` : ''}. Kopp-kopp! Kes seal on? Lehvita kõigile: tere!`,
   },
   performance: {
     label: 'Esinemine',
@@ -95,7 +95,7 @@ export const EVENT_TEMPLATES: Record<EventKind, EventTemplate> = {
       `Täna on ${c.title || 'pidu'}!${congratulate(c.title)} ${c.v('Mõtle', 'Mõelge')} välja üks hea soov ja ${c.v('ütle', 'öelge')} see peol valjult välja. Päkapikud teavad, et head soovid täituvad kõige sagedamini.`,
     young: (c) =>
       `Täna on ${c.title || 'pidu'}!${congratulate(c.title)} ${c.v('Tantsi', 'Tantsige')} peol vähemalt ühe tantsu ka minu eest – mina tantsin samal ajal töökojas.`,
-    toddler: (c) => `Täna on ${c.title || 'pidu'}!${congratulate(c.title)} Tantsime koos: keerutame ja hüppame!`,
+    toddler: (c) => `Täna on ${c.title || 'pidu'}!${congratulate(c.title)} Tantsime koos: kõigume ja plaksutame!`,
   },
   custom: {
     label: 'Muu sündmus',

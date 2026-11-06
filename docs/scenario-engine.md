@@ -1,7 +1,7 @@
 # Scenario engine
 
-Kirjavõlu writes Christmas daily letter series (7 or 24 letters, one child or a
-linked family series) with a scenario engine. Everything runs locally from
+Kirjavõlu writes Christmas letters – a single letter, or a daily series of 7–24 letters
+that ends by Christmas Eve, for one child or as a linked family series – with a scenario engine. Everything runs locally from
 hand-written Estonian texts; there is no AI or external service at runtime, and
 the same request and seed always give the same letters.
 
@@ -41,9 +41,11 @@ before any text is written, in this order:
    when 24 December falls inside a longer series.
 2. Real family plans: family events and challenges (`familyEvents.ts`) take the
    whole letter of their day.
-3. Paired sibling days (`familyPlan` in `linkedLetters.ts`): one plan row → both
-   children's letters.
-4. Secret helper (oldest reader with younger siblings, 12+ letters).
+3. Paired sibling days (`familyPlan` in `linkedLetters.ts`): one plan row → an
+   invitation to do one thing together ("Sina ja Kai võite täna …") added to both
+   children's stories that day (step 7b). Nobody promises anything for the other.
+4. Secret helper (oldest reader with younger siblings, 12+ letters) – only when the
+   parent chose it (`options.secretHelper`); off by default.
 5. Story arc stages. Shared stages (star lost, wrong suspect, star found) happen on
    one day for every child; the others go to the band that tells them. A short
    series keeps only the required stages, spread evenly. A child whose days are
@@ -52,8 +54,16 @@ before any text is written, in this order:
    family with a seeded score: personal hook wanted and allowed, tone, no repeated
    motif on neighbouring days, shared-world bonus, family duplicates last.
 7. Activities and postscripts in day order: optional activities about every third
-   letter (`length` "short" = none, "long" = every other), the answer of yesterday's
-   puzzle as a P.S., the Sunday sweet and the house rule.
+   letter ("short" = only those the story needs), the answer of yesterday's puzzle as
+   a P.S., the Sunday sweet and the house rule. 8. Long letters get a riddle from the
+   bank on about every third free day, answered in tomorrow's P.S.
+
+A single letter (`count` 1) is planned apart (`planSingleLetter`): a greeting, one
+whole standalone episode and a closing (`SINGLE_LETTER` in `frame.ts`).
+
+**The world's frame.** Every helper lives and works in Jõuluvana's workshop, writes in
+the evening and brings the letter to the slipper at night (Välk carries them). Stories
+happen in the workshop; no helper moves in with the child.
 
 The plan is plain data (`PlannedDay[]`): scenario id, arc stage, personalization
 ids, activity flag, postscripts, parent preparation, facts the child already knows.
@@ -87,8 +97,14 @@ voice and holds their sign-offs.
 | toddler (≈1–2, read aloud) | tiniest elf (Pisi-Pätsi) | one sound, movement or thing to look at, ≤150 characters, one paragraph |
 | toddler, age 3+ (`readAloud`) | tiniest elf | the same episode as a little story: what happened, how it turned out, something to do together; 2–3 paragraphs, fits the reader poster |
 
-The band comes from age and reading level (`ageBand`) and the difficulty setting
-(`adjustBand`), so a strong six-year-old reader can get the older letters.
+The band comes from the parent's language choice per child (`options.language`,
+"Lihtne keel" / "Rikkalikum keel"): `languageLevels` offers two texts one step apart for
+the child's age – 10-year-old: young / older; 6-year-old: young / older; toddler: the
+little read-aloud story (a one-line card when letters are short) / young. Missing, the
+suggestion by age and reading ability is used, and an older creation's "Lihtsam" /
+"Keerulisem" maps to the same texts it had. Two siblings with the same band share its
+shared events; when the second runs out of stories, a day borrows one from the other
+readers' band (`PlannedDay.band`).
 
 **Personalization** (`hooks.ts`, `data/topics.ts`). The parent picks broad topics for
 the child from a list of 28 (`LISTED_TOPICS`, in six groups: games and toys, animals
@@ -172,7 +188,10 @@ helper.
   over: a short story in 2–3 paragraphs (at most 380 characters) ending with
   something to do together. Their letters go on the poster, not the small cards.
 - Helper names are only used in the nominative (subject); declining hyphenated
-  names reads badly. Child names use `c.n('genitive')` etc.
+  names reads badly. Child names stay in the nominative where possible; a declined
+  sibling name is used only when `genitiveIsSure` (typed in, a vowel ending, Rasmus →
+  Rasmuse, or a listed name like Mikk → Miku), otherwise the sentence keeps the
+  nominative ("Kirju saab ka Mart: talle kirjutab …").
 - Keep within the card budget (see the lengths above).
 
 ## How to …
@@ -251,10 +270,9 @@ npx vitest run -u tests/golden.spec.ts  # regenerate the sample collections
 
 ## Known limitations
 
-- Only Christmas daily series (7 or 24 letters) use the engine. Single letters,
-  3-letter series, one shared letter for several children and other occasions use
-  the older generator (its reply-assuming texts were fixed, but its letters are
-  still assembled from slots).
+- Christmas single letters and series of 7–24 use the engine. Older creations with
+  2–6 letters or one shared letter for several children, and other occasions, use the
+  older generator (assembled from slots); Christmas no longer offers those choices.
 - Two children in the same age band share one perspective per scenario: the second
   child gets standalone episodes on stage days and fewer arc letters.
 - A parent cannot yet confirm a child's real response; there are no conditional

@@ -1,6 +1,13 @@
+import type { Band, ScenarioContext } from '../../../domain/story/types'
 import type { Scenario } from '../../../domain/story/types'
 
-/** First and last letters of a series, plus Christmas Eve when it is not the last letter. */
+/**
+ * The frame of the world, kept the same in every letter: the helper lives and works in
+ * Jõuluvana's workshop far in the north, writes in the evening and brings the letter to the
+ * child's slipper at night (reindeer Välk carries them), back in the workshop by morning.
+ * So the stories happen in the workshop, and no helper ever moves in with the child.
+ */
+
 export const FRAME_SCENARIOS: Scenario[] = [
   {
     id: 'introduction',
@@ -13,17 +20,17 @@ export const FRAME_SCENARIOS: Scenario[] = [
         'Enne kui alustame, pean sind ühest asjast hoiatama. Töökojas juhtub detsembris rohkem kui kogu ülejäänud aasta jooksul. Kelgud vajavad õlitamist, kirjad sorteerimist ja põhjapõder Välk pidevat valvamist. Mina olen siin selleks, et sulle kõigest ausalt kirjutada. Isegi siis, kui Välk palub mul midagi mitte rääkida.',
       ],
       young: () => [
-        'Mul on seljakotis kõik vajalik: lusikas, villased sokid ja väike taskulamp, et öösel sinu sussi üles leida. Teekond põhjast oli pikk ja lumine. Põhjapõder Välk tõi mind poole maa peale, edasi kõndisin ise. Nüüd olen kohal ja mul on nii hea meel! Homme hommikul kirjutan, mis töökojas uut on.',
+        'Mul on seljakotis kõik vajalik: lusikas, villased sokid ja väike taskulamp, et öösel sinu sussi üles leida. Põhjapõder Välk toob mind igal ööl sinu akna taha ja ootab, kuni kirja sussi sisse panen. Siis lendame tagasi töökotta, enne kui keegi ärkab. Homme kirjutan, mis töökojas uut on.',
       ],
     },
     variants: {
       older: (c) => [
-        introLine(c.helper, c.frame.title, c.frame.origin, c.frame.siblingHelpers),
-        'Igal hommikul leiad siit kirja. Mõnikord on mul uudiseid töökojast, mõnikord mõni mõistatus ja mõnikord ainult see, et põhjapõder Välk sõi jälle mu kindad ära.',
+        introLine(c.helper, c.frame.title, c.frame.origin, c.frame.siblingLine),
+        'Igal õhtul, kui töökojas tuled kustuvad, kirjutan sulle ja öösel toon kirja sinu sussi sisse. Mõnikord on mul uudiseid töökojast, mõnikord mõni mõistatus ja mõnikord ainult see, et põhjapõder Välk sõi jälle mu kindad ära.',
       ],
       young: (c) => [
-        introLine(c.helper, c.frame.title, c.frame.origin, c.frame.siblingHelpers),
-        'Ma tulin otse töökoja köögist – kui kiri lõhnab kaneeli järele, siis ongi nii. Igal hommikul kirjutan sulle, mis meil juhtus. Meil juhtub palju!',
+        introLine(c.helper, c.frame.title, c.frame.origin, c.frame.siblingLine),
+        'Ma kirjutan otse töökoja köögist – kui kiri lõhnab kaneeli järele, siis ongi nii. Igal õhtul kirjutan sulle, mis meil juhtus. Meil juhtub palju!',
       ],
       toddler: (c) => [
         c.siblings
@@ -35,7 +42,7 @@ export const FRAME_SCENARIOS: Scenario[] = [
       `Tere, ${c.name}! Mina olen ${c.helper}${c.frame.origin ? ` – ${c.frame.origin}` : ', Jõuluvana töökoja kõige pisem päkapikk. Ma olen nii väike, et mahun sinu sussi sisse'}.`,
       c.siblings &&
         `${c.siblings} ${c.siblingCount > 1 ? 'saavad' : 'saab'} ka kirju oma päkapikkudelt. Me oleme kõik head sõbrad.`,
-      'Ma tulin pikalt teelt põhjast, kus on palju lund ja põhjapõtru. Nüüd elan ma sinu juures jõuludeni ja igal hommikul räägin, mis minuga juhtus. Musi!',
+      'Ma elan kaugel põhjas, kus on palju lund ja põhjapõtru. Igal õhtul kirjutan sulle töökojas kirja ja öösel toon selle sinu sussi sisse. Hommikul saad kuulda, mis minuga juhtus. Musi!',
     ],
   },
   {
@@ -55,11 +62,11 @@ export const FRAME_SCENARIOS: Scenario[] = [
     variants: {
       older: (c) => [
         `Täna on jõululaupäev! Töökoda on vaikseks jäänud ja kingid on kelgul.${c.knows('star-back') ? ' Täht särab kuuse tipus ja Jõuluvana leiab täna öösel tee.' : ''}`,
-        'Mina jään sinu juurde veel mõneks päevaks – keegi peab ju vaatama, et jõulurahu ka pärast jõule kestaks.',
+        'Mina jään täna öösel töökotta valvama, et keegi kingipakkide vahele magama ei jääks. Seda juhtub igal aastal ja tavaliselt on see Välk.',
       ],
       young: (c) => [
         `Täna on jõululaupäev! Kingid on kelgul ja põhjapõdrad on kellad kaela saanud.${c.knows('star-back') ? ' Täht särab kuuse otsas!' : ''}`,
-        'Ma jään sinu juurde veel natukeseks. Jõulude ajal on päkapikkudel ka puhkus.',
+        'Mina jään täna töökotta ja silitan põhjapõtru, et nad enne lendu rahulikud oleksid. Kõige rohkem tahan näha, kuidas kelk õhku tõuseb!',
       ],
       toddler: (c) => [`Täna on jõululaupäev! Kuusel on tuled. Häid jõule, väike ${c.name}!`],
     },
@@ -79,7 +86,7 @@ export const FRAME_SCENARIOS: Scenario[] = [
       older: (c) => [
         eveLine(c.frame.eve, c.knows('star-back')),
         goingHome(c.frame.allHelpers),
-        `Mul oli sinu juures hea. Pakkisin tööriistad kotti ja otsisin kaua oma prille – need olid mul ninal. Häid jõule, ${c.name}!`,
+        `Mulle meeldis igal õhtul sulle kirjutada. Panin sulepea karpi ja otsisin kaua oma prille – need olid mul ninal. Häid jõule, ${c.name}!`,
       ],
       young: (c) => [
         eveLine(c.frame.eve, c.knows('star-back')),
@@ -89,31 +96,61 @@ export const FRAME_SCENARIOS: Scenario[] = [
       toddler: (c) => [`Häid jõule, väike ${c.name}! ${c.helper} kallistab sind. Musi-musi!`],
     },
     readAloud: (c) => [
-      `${c.frame.eve ? 'Täna on jõululaupäev!' : 'See on minu viimane kiri.'} Panin oma pisikese mütsi pähe ja paki selga.`,
+      `${c.frame.eve ? 'Täna on jõululaupäev!' : 'See on minu viimane kiri.'} Panin oma pisikese mütsi pähe ja Välk ootab juba akna all.`,
       c.frame.allHelpers
-        ? 'Täna lähevad kõik päkapikud koos tagasi põhja, Jõuluvana töökotta.'
-        : 'Nüüd lähen ma tagasi põhja, Jõuluvana töökotta.',
-      `Mul oli sinu juures väga hea. Jätan sulle ühe suure kalli ja hästi palju musisid. Häid jõule, ${c.name}!`,
+        ? 'Täna toovad kõik päkapikud oma viimase kirja ja lendavad siis koos tagasi töökotta, kus jõulud ootavad.'
+        : 'Kui kiri on sussis, lendame Välguga tagasi töökotta, kus jõulud ootavad.',
+      `Mulle meeldis sulle kirjutada. Jätan sulle ühe suure kalli ja hästi palju musisid. Häid jõule, ${c.name}!`,
     ],
   },
 ]
 
-function introLine(helper: string, title: string, origin: string, siblingHelpers: string): string {
+function introLine(helper: string, title: string, origin: string, siblingLine: string): string {
   const who = `Tere! Mina olen ${helper}${title ? ` ${title}` : ''}${origin ? ` – ${origin}` : ''}.`
-  return siblingHelpers
-    ? `${who} Sel detsembril käib ${siblingHelpers}. Me oleme kõik head sõbrad ja räägime üksteisele kõigest.`
-    : `${who} Tulin põhjast, Jõuluvana töökojast, ja jään sinu juurde jõuludeni.`
+  return siblingLine
+    ? `${who} ${siblingLine} Me oleme kõik head sõbrad ja räägime üksteisele kõigest.`
+    : `${who} Elan Jõuluvana töökojas kaugel põhjas ja sel detsembril kirjutan sulle.`
 }
 
 function eveLine(eve: boolean, starBack: boolean): string {
   const opening = eve
     ? 'Täna on jõululaupäev! Töökoda on vaikseks jäänud ja kingid on kelgul.'
-    : 'See on minu viimane kiri. Töökojas pakitakse viimaseid kinke.'
+    : 'See on minu viimane kiri sel aastal. Töökojas pakitakse viimaseid kinke.'
   return starBack ? `${opening} Täht särab jälle kuuse tipus.` : opening
 }
 
 function goingHome(allHelpers: string): string {
   return allHelpers
-    ? `Täna lõpetavad kõik päkapikud – ${allHelpers} – oma töö ja lähevad koos põhja tagasi.`
-    : 'Minu töö siin on tehtud ja täna õhtul lähen põhja tagasi.'
+    ? `Täna toovad kõik päkapikud – ${allHelpers} – oma viimase kirja ja jäävad siis töökotta jõulutööde juurde.`
+    : 'Pärast seda kirja jääb mu kirjakott tühjaks ja ma jään töökotta jõulutööde juurde.'
+}
+
+/**
+ * A single letter: who writes, one whole episode from the workshop (planned like any other
+ * day's story), and a closing. Toddler cards keep it all in one paragraph.
+ */
+export const SINGLE_LETTER: Record<Band | 'readAloud', { open: (c: ScenarioContext) => string; close: (c: ScenarioContext) => string }> = {
+  older: {
+    open: (c) =>
+      `${greeting(c)} Kirjutan sulle Jõuluvana töökojast kaugel põhjas, sest siin juhtus midagi, mida tahan sulle rääkida.${c.frame.siblingLine ? ` ${c.frame.siblingLine}` : ''}`,
+    close: (c) => `Nüüd pean minema – töökojas ootab veel palju tööd. Häid jõulupühi, ${c.name}!`,
+  },
+  young: {
+    open: (c) =>
+      `${greeting(c)} Kirjutan sulle otse Jõuluvana töökoja köögist – kui kiri lõhnab kaneeli järele, siis ongi nii. Pean sulle rääkima, mis meil juhtus!${c.frame.siblingLine ? ` ${c.frame.siblingLine}` : ''}`,
+    close: (c) => `Nüüd jooksen tagasi kööki, puder hakkab keema. Häid jõule, ${c.name}!`,
+  },
+  toddler: {
+    open: (c) => `Tere, väike ${c.name}! Mina olen ${c.helper}, kõige pisem päkapikk.`,
+    close: () => 'Häid jõule!',
+  },
+  readAloud: {
+    open: (c) =>
+      `Tere, ${c.name}! Mina olen ${c.helper}, Jõuluvana töökoja kõige pisem päkapikk. Ma tahan sulle rääkida, mis minuga juhtus.`,
+    close: (c) => `Häid jõule, ${c.name}! Musi!`,
+  },
+}
+
+function greeting(c: ScenarioContext): string {
+  return `Tere! Mina olen ${c.helper}${c.frame.title ? ` ${c.frame.title}` : ''}${c.frame.origin ? ` – ${c.frame.origin}` : ''}.`
 }

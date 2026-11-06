@@ -10,7 +10,7 @@ import { useCreationsStore } from '../preview/creationsStore'
 import PrintableItem from '../preview/PrintableItem.vue'
 import ItemEditorDialog from '../preview/ItemEditorDialog.vue'
 import SegmentedControl from '../../components/ui/SegmentedControl.vue'
-import { nameCase, namesInCase } from '../../domain/text/estonian'
+import { joinList, nameCase } from '../../domain/text/estonian'
 import type { GeneratedItem } from '../../domain/models'
 import {
   AI_SERIES_GENERATOR,
@@ -74,6 +74,12 @@ function personalFor(id: string) {
   )
 }
 const printLink = computed(() => `/looming/${props.id}`)
+// The names stay in the nominative: a guessed genitive ("Marti kirjad") would be wrong.
+const familyHeading = computed(() => `Jõulukirjad on valmis: ${joinList(family.value.map((member) => member.name))}`)
+const childHeading = computed(() => {
+  const count = ownItems.value.length
+  return count > 1 ? `${child.value?.name} saab ${count} jõulukirja` : `${child.value?.name} saab jõulukirja`
+})
 // Stripe comes back to the page the purchase started on (this one, or the earlier /ud2 path).
 const returnTo = computed(() => route.path)
 
@@ -257,14 +263,14 @@ onBeforeUnmount(() => {
       <JourneySteps :current="personal ? 3 : 2" />
       <header class="letters__head">
         <div>
-          <h1 v-if="isFamily">{{ namesInCase(family, 'genitive') }} jõulukirjad on valmis</h1>
-          <h1 v-else-if="child">{{ personal ? `${nameCase(child, 'genitive')} isiklikud kirjad on valmis` : `${nameCase(child, 'genitive')} 24 jõulukirja on valmis` }}</h1>
+          <h1 v-if="isFamily">{{ familyHeading }}</h1>
+          <h1 v-else-if="child">{{ personal ? `${nameCase(child, 'genitive')} isiklikud kirjad on valmis` : childHeading }}</h1>
           <p class="letters__lead">
             {{
               personal
                 ? 'Päkapikk kirjutas need just tema jaoks. Iga kirja saad enne printimist muuta.'
                 : isFamily
-                  ? 'Seotud kirjad: sama päkapikumaailm, igal lapsel oma 24 kirja ja vahel ühine ülesanne. Tasuta.'
+                  ? 'Seotud kirjad: sama päkapikumaailm, igal lapsel oma kirjad ja vahel kutse midagi koos teha. Tasuta.'
                   : 'Need on sinu omad ja tasuta: loe läbi, muuda ja prindi. Kirjad jäävad sinu brauserisse.'
             }}
           </p>

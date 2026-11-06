@@ -23,13 +23,10 @@ export interface PairedDay {
 }
 
 export const PAIR_LABELS: Record<string, string> = {
-  read: 'ettelugemine',
-  teach: 'õpetamine',
-  play: 'koos mängimine',
-  drawing: 'joonistus kingiks',
-  'secret-letter': 'salajane kiri päkapiku nimel',
-  slipper: 'sussi abiline',
-  kindness: 'salajane heategu',
+  read: 'pildiraamat koos',
+  play: 'ühine mäng',
+  drawing: 'ühine joonistus',
+  dance: 'päkapikutants koos',
 }
 
 const isToddler = (child: ChildProfile) => ageBand(child) === 'toddler'
@@ -210,14 +207,12 @@ export function pairContext(
   giver: ChildProfile,
   receiver: ChildProfile,
   personas: Record<string, ElfPersona>,
+  receiverLittle = isToddler(receiver),
 ): PairContext {
   return {
     giver: giver.name,
-    giverGenitive: nameCase(giver, 'genitive'),
     receiver: receiver.name,
-    receiverGenitive: nameCase(receiver, 'genitive'),
-    receiverAllative: nameCase(receiver, 'allative'),
-    receiverComitative: nameCase(receiver, 'comitative'),
+    receiverLittle,
     receiverHelper: (personas[receiver.id] as ElfPersona).name,
   }
 }
@@ -326,7 +321,7 @@ function linkedInstructions(
       ...plan.map((day) => {
         const giver = byId.get(day.giverId)?.name ?? ''
         const receiver = byId.get(day.receiverId)?.name ?? ''
-        return `${dayLabel(day.index)}: ${giver} → ${receiver} (${PAIR_LABELS[day.template.id] ?? day.template.id}). Mõlema kiri teab sellest.`
+        return `${dayLabel(day.index)}: ${giver} ja ${receiver} (${PAIR_LABELS[day.template.id] ?? day.template.id}). Mõlema kirjas on kutse seda koos teha.`
       }),
     ],
   }

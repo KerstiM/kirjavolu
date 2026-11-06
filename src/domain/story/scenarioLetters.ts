@@ -8,11 +8,15 @@ import { libraryFor, scenarioIn, type ScenarioLibrary } from './library'
 import { planCollection, type CollectionPlan } from './planner'
 import { renderPlan } from './render'
 
-/** Daily series that the scenario engine writes; everything else uses the older letter generator. */
+/**
+ * Letters the scenario engine writes: a single letter or a daily series of 7 or more, for one
+ * child or each child of a family. Everything else (2–6 letters from older creations, one
+ * shared letter for several children, other occasions) uses the older letter generator.
+ */
 export function usesScenarioEngine(request: RequestFor<'letter'>): boolean {
   const { options, children } = request
   const linkedOrSingle = children.length === 1 || options.mode === 'linked'
-  return !!libraryFor(request.occasionId) && options.count >= 7 && linkedOrSingle
+  return !!libraryFor(request.occasionId) && (options.count === 1 || options.count >= 7) && linkedOrSingle
 }
 
 export function generateScenarioLetters(
@@ -26,7 +30,7 @@ export function generateScenarioLetters(
   const names = joinList(request.children.map((child) => child.name))
   const count = request.options.count
   return {
-    title: plan.linked ? `${count} kirja igale lapsele` : `${count} maagilist kirja`,
+    title: count === 1 ? (plan.linked ? 'Kiri igale lapsele' : 'Maagiline kiri') : plan.linked ? `${count} kirja igale lapsele` : `${count} maagilist kirja`,
     subtitle: plan.linked
       ? `${occasion.name} · ${names} · seotud sarjad`
       : `${occasion.name} · ${names} · saatja ${plan.children[0]?.helper ?? ''}`,
@@ -56,17 +60,10 @@ function instructionsFor(
       steps: [
         '1. kirjas tutvustab iga päkapikk ka õdede-vendade päkapikke, viimases kirjas lõpetavad kõik koos.',
         ...[
-          ...plan.pairs
-            .filter((pair) =>
-              plan.days.some(
-                (d) =>
-                  d.childId === pair.giverId && d.index === pair.index && d.content.kind === 'pair',
-              ),
-            )
-            .map((pair) => ({
-              index: pair.index,
-              text: `${dayLabel(pair.index)}: ${nameOf(pair.giverId)} → ${nameOf(pair.receiverId)} (${PAIR_LABELS[pair.template.id] ?? pair.template.id}). Mõlema kiri teab sellest.`,
-            })),
+          ...plan.pairs.map((pair) => ({
+            index: pair.index,
+            text: `${dayLabel(pair.index)}: ${nameOf(pair.giverId)} ja ${nameOf(pair.receiverId)} (${PAIR_LABELS[pair.template.id] ?? pair.template.id}). Mõlema kirjas on kutse seda koos teha; kui ei jõua, ei juhtu midagi.`,
+          })),
           ...plan.worldEvents
             .filter((event) => event.childIds.length > 1)
             .map((event) => ({

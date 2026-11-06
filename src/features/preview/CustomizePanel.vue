@@ -1,14 +1,24 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { ChevronDown, SlidersHorizontal } from 'lucide-vue-next'
-import type { ContentOptionsMap, GeneralOptions, GeneratedContent } from '../../domain/models'
+import type { ChildProfile, ContentOptionsMap, GeneralOptions, GeneratedContent, LanguageLevel } from '../../domain/models'
 import { getContentType } from '../../domain/contentTypes'
 import { defaultOptions } from '../../domain/defaults'
 import { clone } from '../../utils/clone'
 import { usesScenarioEngine } from '../../domain/story/scenarioLetters'
 import type { RequestFor } from '../../domain/models'
 import SegmentedControl from '../../components/ui/SegmentedControl.vue'
-import { DIFFICULTY_OPTIONS, LENGTH_OPTIONS, TONE_OPTIONS } from '../creation/labels'
+import { ageBand, languageFor } from '../../domain/generators/audience'
+import {
+  DIFFICULTY_OPTIONS,
+  LANGUAGE_HINT,
+  LANGUAGE_OPTIONS,
+  LEGACY_MEDIUM,
+  LENGTH_OPTIONS,
+  LETTER_LENGTH_HINT,
+  LETTER_LENGTH_OPTIONS,
+  TONE_OPTIONS,
+} from '../creation/labels'
 import LetterOptionsForm from '../creation/options/LetterOptionsForm.vue'
 import TreasureHuntOptionsForm from '../creation/options/TreasureHuntOptionsForm.vue'
 import StoryOptionsForm from '../creation/options/StoryOptionsForm.vue'
@@ -53,8 +63,6 @@ watch(request, () => {
 })
 
 let timer: ReturnType<typeof setTimeout> | undefined
-// Once the parent agrees to lose hand-made changes, the next changes do not ask again.
-let confirmed = false
 watch(
   draft,
   () => {
@@ -65,16 +73,9 @@ watch(
 )
 onBeforeUnmount(() => clearTimeout(timer))
 
+// Letters edited by hand are kept by the preview (PreviewPage asks before any would be lost).
 function send(): void {
   if (unchanged()) return
-  const ownChanges = props.content.items.some((item) => item.edited || item.variant > 0)
-  if (ownChanges && !confirmed) {
-    confirmed = window.confirm('Oled tekste käsitsi muutnud või valinud uue variandi. Uued valikud loovad tekstid uuesti ja need muudatused kaovad. Jätkan?')
-    if (!confirmed) {
-      draft.value = choicesOf(props.content)
-      return
-    }
-  }
   emit('change', { general: clone(draft.value.general), options: clone(draft.value.options[type.value]) })
 }
 
@@ -82,13 +83,35 @@ function send(): void {
 const open = ref(typeof window === 'undefined' || !window.matchMedia || window.matchMedia('(min-width: 1024px)').matches)
 
 /**
- * A Christmas series of 7+ letters uses nearly every story for the child's age anyway, so the
- * tone only reorders them: it is not offered there. Elsewhere it picks openings, endings, wishes.
+ * Letters have one warm, playful style: the four tones did not give letters that differed
+ * reliably, so they are not offered. Elsewhere the tone still picks openings, endings, wishes.
  */
-const toneMatters = computed(
-  () =>
-    type.value !== 'letter' ||
-    !usesScenarioEngine({ ...props.content.request, options: draft.value.options.letter } as RequestFor<'letter'>),
+const toneMatters = computed(() => type.value !== 'letter')
+const letters = computed(() => type.value === 'letter')
+const engine = computed(
+  () => letters.value && usesScenarioEngine({ ...props.content.request, options: draft.value.options.letter } as RequestFor<'letter'>),
+)
+
+/**
+ * Each child's language, as the letters were written. Choosing one keeps every other child's
+ * as it is: an older creation's "Lihtsam" / "Keerulisem" is written out per child first.
+ */
+function languageOf(child: ChildProfile): LanguageLevel {
+  return languageFor(child, draft.value.options.letter, draft.value.general.difficulty)
+}
+function setLanguage(child: ChildProfile, level: LanguageLevel): void {
+  const language = Object.fromEntries(children.value.map((other) => [other.id, languageOf(other)]))
+  draft.value.options.letter.language = { ...language, [child.id]: level }
+  draft.value.general.difficulty = 'auto'
+}
+// A toddler's two texts are not the readers' two, so the hint says what they are.
+const toddlerNote = computed(() =>
+  children.value.some((child) => ageBand(child) === 'toddler')
+    ? 'Väikelapsele on lihtne keel väike ettelugemislugu häälitsuste ja liigutustega (lühema kirja puhul ühe rea kaart); rikkalikum keel on samad kirjad, mis 5–7-aastastel.'
+    : '',
+)
+const lengthOptions = computed(() =>
+  draft.value.general.length === 'medium' ? [...LETTER_LENGTH_OPTIONS, LEGACY_MEDIUM] : LETTER_LENGTH_OPTIONS,
 )
 
 const labelOf = <T,>(list: { value: T; label: string }[], value: T) => list.find((o) => o.value === value)?.label ?? ''
@@ -102,13 +125,10 @@ const generalSummary = computed(() =>
     .join(' · ')
     .toLowerCase(),
 )
-// Long letters add a riddle or a task, and go on the poster's large cards.
 const lengthHint = computed(() =>
-  type.value === 'letter' && draft.value.options.letter.count >= 7
-    ? draft.value.general.length === 'long'
-      ? 'Pikkades kirjades jätkub lugu ja lisaks on mõistatus või päkapiku ülesanne. Pusleplakatil on siis suuremad kaardid.'
-      : 'Lühikesed ja keskmised kirjad mahuvad pusleplakati tavalistele kaartidele.'
-    : '',
+  draft.value.options.letter.count >= 7
+    ? `${LETTER_LENGTH_HINT} ${draft.value.general.length === 'long' ? 'Pusleplakatil on siis suuremad kaardid.' : 'Lühemad kirjad mahuvad pusleplakati tavalistele kaartidele.'}`
+    : LETTER_LENGTH_HINT,
 )
 </script>
 
@@ -151,19 +171,29 @@ const lengthHint = computed(() =>
       <CalendarOptionsForm v-else-if="type === 'calendar'" v-model="draft.options.calendar" />
       <CertificateOptionsForm v-else v-model="draft.options.certificate" :occasion-id="request.occasionId" />
 
-      <details class="customize__general">
+      <section v-if="letters" class="customize__letter" aria-label="Keel ja pikkus">
+        <template v-if="engine">
+          <SegmentedControl
+            v-for="child in children"
+            :key="child.id"
+            :model-value="languageOf(child)"
+            :name="`language-${child.id}`"
+            :label="children.length > 1 ? `Keel: ${child.name}` : 'Kirja keel'"
+            :options="LANGUAGE_OPTIONS"
+            @update:model-value="setLanguage(child, $event)"
+          />
+          <p class="customize__hint">{{ LANGUAGE_HINT }}</p>
+          <p v-if="toddlerNote" class="customize__hint">{{ toddlerNote }}</p>
+        </template>
+        <SegmentedControl v-model="draft.general.length" name="length" label="Pikkus" :options="lengthOptions" :hint="lengthHint" />
+      </section>
+      <details v-else class="customize__general">
         <summary>
           {{ toneMatters ? 'Toon, pikkus ja raskusaste' : 'Pikkus ja raskusaste' }} <span class="customize__now">{{ generalSummary }}</span>
         </summary>
         <div class="customize__general-body">
           <SegmentedControl v-if="toneMatters" v-model="draft.general.tone" name="tone" label="Toon" :options="TONE_OPTIONS" />
-          <SegmentedControl
-            v-model="draft.general.length"
-            name="length"
-            label="Pikkus"
-            :options="LENGTH_OPTIONS"
-            :hint="lengthHint"
-          />
+          <SegmentedControl v-model="draft.general.length" name="length" label="Pikkus" :options="LENGTH_OPTIONS" />
           <SegmentedControl
             v-model="draft.general.difficulty"
             name="difficulty"
@@ -260,6 +290,18 @@ const lengthHint = computed(() =>
 }
 .customize__now {
   font-weight: 400;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+.customize__letter {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+.customize__hint {
+  margin: -0.25rem 0 0;
   font-size: 0.85rem;
   color: var(--ink-soft);
 }

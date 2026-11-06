@@ -12,7 +12,6 @@ import {
   addDays,
   formatDayMonth,
   joinList,
-  namesInCase,
   untilDate,
   weekdayName,
 } from '../text/estonian'
@@ -32,11 +31,15 @@ export function eventIndex(event: FamilyEvent, startDate: string, count: number)
   return dayIndex(event.date, startDate, count)
 }
 
-/** Oldest reader other than the challenger; they are asked to support in secret. */
+/**
+ * Oldest reader other than the challenger, asked to support in secret – only when the parent
+ * chose the secret helper; otherwise no sibling is given a part in another's challenge.
+ */
 export function challengeSupporter(
   request: RequestFor<'letter'>,
   challenge: ChildChallenge,
 ): ChildProfile | undefined {
+  if (!request.options.secretHelper) return undefined
   return request.children
     .filter(
       (child) => child.id !== challenge.childId && ageBand(child) !== 'toddler' && child.age >= 5,
@@ -137,7 +140,7 @@ export function familyExtras(
             v,
             title: event.title.trim(),
             helper,
-            othersAllative: others.length > 0 ? namesInCase(others, 'allative') : '',
+            others: others.length > 0,
           })
         })
         .join(' ')

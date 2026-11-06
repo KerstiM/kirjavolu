@@ -33,7 +33,7 @@ export const RIDDLES: Riddle[] = [
   { question: 'Kes jätab detsembris aknalaual olevasse sussi kommi?', answer: 'päkapikk', level: 'young', occasions: ['christmas'] },
   { question: 'Olen roheline ja okkaline, jõuludel ehitakse mind tuledega.', answer: 'kuusk', level: 'young', occasions: ['christmas'] },
   { question: 'Olen pruun ja lõhnan kaneeli järele. Mind lõigatakse vormiga ja küpsetatakse ahjus.', answer: 'piparkook', level: 'older', occasions: ['christmas'] },
-  { question: 'Kukun taevast, olen valge ja iga mina on teistest erinev.', answer: 'lumehelves', level: 'older', occasions: ['christmas', 'vastlapaev'] },
+  { question: 'Kukun taevast ja olen valge. Ükski mu kaaslane pole täpselt minu moodi.', answer: 'lumehelves', level: 'older', occasions: ['christmas', 'vastlapaev'] },
   { question: 'Valge või pruun kest, sees kollane süda.', answer: 'muna', level: 'young', occasions: ['easter'] },
   { question: 'Olen pehme ja kollane, koorun munast ja ütlen „piiks“.', answer: 'tibu', level: 'young', occasions: ['easter'] },
   { question: 'Kevadel on mu oksad täis pehmeid halle kassikesi.', answer: 'paju', level: 'older', occasions: ['easter'] },

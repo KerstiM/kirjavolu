@@ -1,5 +1,5 @@
 import type { DraftItem } from '../generators/context'
-import { ageBand } from '../generators/audience'
+import { languageLevels } from '../generators/audience'
 import { getHook, PERSONAL_HOOKS, profileHooks } from './hooks'
 import { scenarioIn, type ScenarioLibrary } from './library'
 import type { CollectionPlan, PlannedChild, PlannedDay } from './planner'
@@ -218,7 +218,7 @@ export function validateCollection(
             message: `${p.child.name}, ${d.index + 1}. kiri: „${s.title}“ ei sobi pärast sündmust „${s.until}“.`,
           })
         // 9. Puzzles have valid answers.
-        const activity = s.activities?.[p.band]
+        const activity = s.activities?.[d.band ?? p.band]
         if (d.content.activity && activity) {
           if (activity.check && !activity.check())
             add({
@@ -332,13 +332,14 @@ export function validateCollection(
         })
     }
 
-    // 10b. Scenario variants match the child's band (a reader never gets a toddler card).
-    if (ageBand(p.child) === 'toddler' && p.band !== 'toddler')
+    // 10b. Scenario variants match the child's band: one of the two texts offered for their age.
+    const offered = [...Object.values(languageLevels(p.child, 'short')), ...Object.values(languageLevels(p.child, 'long'))]
+    if (!offered.some((level) => level.band === p.band && level.readAloud === p.readAloud))
       add({
         code: 'age-inappropriate',
         severity: 'error',
         childId: id,
-        message: `${p.child.name}: väikelaps sai lugeja kirjad.`,
+        message: `${p.child.name}: kirjad ei sobi lapse vanusele.`,
       })
 
     // 11b. Milestones: introduction, Christmas Eve, farewell.

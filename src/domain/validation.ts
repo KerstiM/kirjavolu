@@ -28,6 +28,22 @@ export function isValidChildProfile(draft: ChildProfileDraft): boolean {
 }
 
 export const MAX_LETTERS = 24
+/** The shortest Christmas series that tells a whole story; fewer days give one letter. */
+export const MIN_SERIES = 7
+
+/**
+ * How many daily Christmas letters fit from the start date to Christmas Eve, at most 24. The
+ * letters end on 24 December at the latest: after it, "the presents are on the sleigh" would
+ * no longer be true. A start before December gives the full 24 (the series ends earlier).
+ */
+export function christmasLettersUntilEve(startDate: string): number {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(startDate)
+  if (!match) return MAX_LETTERS
+  const start = Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]))
+  const eve = Date.UTC(Number(match[1]), 11, 24)
+  if (start > eve) return 1
+  return Math.min(MAX_LETTERS, Math.round((eve - start) / 86_400_000) + 1)
+}
 
 export function validateGenerationRequest(request: GenerationRequest): string[] {
   const errors: string[] = []
@@ -44,6 +60,16 @@ export function validateGenerationRequest(request: GenerationRequest): string[] 
       if (!Number.isInteger(count) || count < 1 || count > MAX_LETTERS) errors.push(`Kirjade arv peab olema 1–${MAX_LETTERS}.`)
       if (request.options.startDate && !/^\d{4}-\d{2}-\d{2}$/.test(request.options.startDate)) {
         errors.push('Kuupäev on vigane.')
+      }
+      if (request.occasionId === 'christmas' && count > 1) {
+        const fits = christmasLettersUntilEve(request.options.startDate)
+        if (count > fits) {
+          errors.push(
+            fits >= MIN_SERIES
+              ? `Jõulukirjad lõpevad jõululaupäeval: selle alguskuupäevaga mahub sarja kuni ${fits} kirja.`
+              : 'Jõulukirjad lõpevad jõululaupäeval: selle alguskuupäevaga jõuab teha ühe kirja.',
+          )
+        }
       }
       break
     case 'treasure-hunt':

@@ -8,11 +8,11 @@ _Jõulud · Pääru · saatja Päkapikk Tuduja_
 
 **Kallis Pääru!**
 
-Tere! Mina olen Päkapikk Tuduja. Tulin põhjast, Jõuluvana töökojast, ja jään sinu juurde jõuludeni.
+Tere! Mina olen Päkapikk Tuduja. Elan Jõuluvana töökojas kaugel põhjas ja sel detsembril kirjutan sulle.
 
-Ma tulin otse töökoja köögist – kui kiri lõhnab kaneeli järele, siis ongi nii. Igal hommikul kirjutan sulle, mis meil juhtus. Meil juhtub palju!
+Ma kirjutan otse töökoja köögist – kui kiri lõhnab kaneeli järele, siis ongi nii. Igal õhtul kirjutan sulle, mis meil juhtus. Meil juhtub palju!
 
-Mul on seljakotis kõik vajalik: lusikas, villased sokid ja väike taskulamp, et öösel sinu sussi üles leida. Teekond põhjast oli pikk ja lumine. Põhjapõder Välk tõi mind poole maa peale, edasi kõndisin ise. Nüüd olen kohal ja mul on nii hea meel! Homme hommikul kirjutan, mis töökojas uut on.
+Mul on seljakotis kõik vajalik: lusikas, villased sokid ja väike taskulamp, et öösel sinu sussi üles leida. Põhjapõder Välk toob mind igal ööl sinu akna taha ja ootab, kuni kirja sussi sisse panen. Siis lendame tagasi töökotta, enne kui keegi ärkab. Homme kirjutan, mis töökojas uut on.
 
 _Kiirelt-kiirelt · Päkapikk Tuduja_
 
@@ -42,15 +42,11 @@ Eile oli töökojas vaba õhtu ja ma mõtlesin sinu peale.
 
 Kirjutasin ise ühe mõistatuse: „Mis on valge ja külm ning kaob, kui seda soojas käes hoida?“ Lugesin selle töökojas ette ja kõik päkapikud hüüdsid kohe: „Lumi!“ Järgmine tuleb raskem.
 
-Nüüd saan aru, mis selles nii toredat on. Homme proovin uuesti!
-
-Üks päkapiku ettepanek: kui tahad, lõika vanadest ajakirjadest pilte ja kleebi neist kokku pilt oma unistuste päevast.
+Nii tore! Järgmisel vabal õhtul proovin jälle.
 
 P.S. Eilse mõistatuse vastus: karu.
 
 _Kiirelt-kiirelt · Päkapikk Tuduja_
-
-> Valmista ette: ülesandeks paber, käärid, liim
 
 ### 4. detsember 2026
 
@@ -64,11 +60,7 @@ Nüüd sädeleb kõik: seinad, laud, kass ja Jõuluvana habe. Jõuluvana vaatas 
 
 Täna pühkisime terve päeva. Aga sädelus on selline asi, mis kunagi päris ära ei lähe. Leidsin seda oma taskust, oma mütsist ja isegi pudrukausist. Põhjapõder Välk sädeleb ka. Kui ta pead raputab, sajab tallis väikest kuldset lund. Ta paistab sellega väga rahul olevat.
 
-Mul on sulle üks mõistatus: Mul on paber ümber ja pael peal, sees on üllatus. Vastus tuleb homses kirjas.
-
 _Tervitustega köögist · Päkapikk Tuduja_
-
-> Vastus: kingitus
 
 ### 5. detsember 2026
 
@@ -80,13 +72,11 @@ Ta on leidnud töökoja raamaturiiulilt koomiksi ja vaatab seda iga päev. Luged
 
 Kust ta selle mõtte sai? Kahtlustan, et keegi on talle sinust rääkinud.
 
-Mul on sulle üks mõte: kui tahad, tee võileivale nägu kurgi, tomati ja juustu abil. Kes teeb kõige naljakama näo?
-
-P.S. Eilse mõistatuse vastus: kingitus.
+Põhjapõder Välk tõi mulle täna ühe mõistatuse. Mul on paber ümber ja pael peal, sees on üllatus. Homme ütlen vastuse.
 
 _Sinu sõber · Päkapikk Tuduja_
 
-> Valmista ette: ülesandeks köögitarbed ja toiduained
+> Vastus: kingitus
 
 ### 6. detsember 2026
 
@@ -98,13 +88,11 @@ Kõige naljakam oli see, et Kribu-Krabu istus terve õhtu katusel ja ootas neid.
 
 Kes näeb virmalisi esimesena, saab päkapikkude võistlusel auhinnaks kõige pehmema pingi. Selle sain mina! Aga ma hoian sõbrale ka kohta.
 
-Täna õhtul läheme katusele mõlemad. Mina võtan kaks tassi kakaod ja Kribu-Krabu võtab teki. Ma ütlesin talle, et kui ta jälle magama jääb, äratan ta kohe, kui taevas roheliseks läheb. Kass Nurr tuleb ka. Tema on meie äratuskell.
+Täna õhtul läheme katusele mõlemad. Mina võtan kaks tassi kakaod. Kribu-Krabu jätab teki seekord maha, et mitte magama jääda. Ma ütlesin talle, et kui ta jälle magama jääb, äratan ta kohe, kui taevas roheliseks läheb. Kass Nurr tuleb ka. Tema on meie äratuskell.
 
-Kas oskad ära arvata? Olen ümmargune ja põrkan. Mind visatakse ja lüüakse jalaga. Homme ütlen vastuse.
+P.S. Eilse mõistatuse vastus: kingitus.
 
 _Kiirelt-kiirelt · Päkapikk Tuduja_
-
-> Vastus: pall
 
 ### 7. detsember 2026
 
@@ -118,13 +106,7 @@ Lõpuks hiilis põhjapõder Välk mulle selja taha ja ütles kõrva: „Pöö!�
 
 Õhtul rääkis Jõuluvana, et kui tema oli väike, luksus ta kord terve päeva. Siis helisesid kõik potid ja pannid köögis. Tema vanaema andis talle lusikatäie mett ja luksumine läks üle. Mina proovin järgmine kord ka mett. Kui see ei aita, kutsun Välgu.
 
-Kui sul täna aega on, voldi paber kolmnurgaks, lõika servadesse mustreid ja ava – iga lumehelves tuleb ainulaadne!
-
-P.S. Eilse mõistatuse vastus: pall.
-
 _Tervitustega köögist · Päkapikk Tuduja_
-
-> Valmista ette: ülesandeks paber, käärid
 
 ### 8. detsember 2026
 
@@ -138,11 +120,11 @@ Kribu-Krabu tuli viimasena. Ta ütles, et valis ilusama tee. Mina hoidsin talle 
 
 Täna hommikul läksin ka ise seda ilusat teed vaatama. Seal on külmunud oja, mis klõbiseb, ja vana kuusk, mille all on nii vaikne, et kuuled oma südant. Nüüd tean, et Kribu-Krabu rääkis tõtt: see tee on ilus. Järgmisel aastal sõidame koos. Mina kiiresti, tema aeglaselt, ja kohtume kakao juures.
 
-Mul on sulle üks mõistatus: Käib, aga jalgu ei ole; tiksub, aga südant ei ole. Vastuse kirjutan homme.
+Mul on sulle üks mõistatus. Olen ümmargune ja põrkan. Mind visatakse ja lüüakse jalaga. Vastus tuleb homses kirjas.
 
 _Kiirelt-kiirelt · Päkapikk Tuduja_
 
-> Vastus: kell
+> Vastus: pall
 
 ### 9. detsember 2026
 
@@ -156,13 +138,9 @@ Mina olen töökoja pudrukeetja. Eile küsis Jõuluvana kolm korda juurde. Nelja
 
 Täna õpetasin pudrukeetmist ka põhjapõder Välgule. Tema ülesanne oli segada. Ta segas sabaga ja puder lendas laeni. Lõpuks sõime kolmekesi: mina, Välk ja kass Nurr. Nurrile meeldis ainult võisilm. Selle ta lakkus ära ja ülejäänu jättis meile.
 
-Üks päkapiku ettepanek: kui tahad, üks alustab joonistust, teine jätkab ja kolmas lõpetab. Mis tuli välja? Mõtle pildile pealkiri.
-
-P.S. Eilse mõistatuse vastus: kell.
+P.S. Eilse mõistatuse vastus: pall.
 
 _Hüpates · Päkapikk Tuduja_
-
-> Valmista ette: ülesandeks paber, pliiatsid või värvid
 
 ### 10. detsember 2026
 
@@ -176,11 +154,7 @@ Ta magas ahju ääres kuivava kinda sees! Täpselt pöidla kohal. Nii armas, et 
 
 Hommikul ronis Tillu kindast välja ja haigutas nii suurelt, et kõik naersid. Tema ei saanud aru, miks. Nüüd on tal oma kinnas, mis ripub ahju kõrval ja mille sees on pisike padi. Kui kinnas norskab, räägime sosinal.
 
-Kas oskad ära arvata? Kes jätab detsembris aknalaual olevasse sussi kommi? Vastus tuleb homses kirjas.
-
 _Kiirelt-kiirelt · Päkapikk Tuduja_
-
-> Vastus: päkapikk
 
 ### 11. detsember 2026
 
@@ -193,8 +167,6 @@ Panin kaks jääkuubikut taldrikule ja puistasin ühele soola. Siis vaatasin. Ja
 Aga enne, kui ma tulemust nägin, sõi Välk mõlemad ära. Nüüd pead sina mind aitama.
 
 Palu täiskasvanult kaks jääkuubikut ja puista ühele soola. Kumb sulab enne?
-
-P.S. Eilse mõistatuse vastus: päkapikk.
 
 _Hüpates · Päkapikk Tuduja_
 
@@ -214,13 +186,9 @@ Leidsime ta lõunasöögi ajal Jõuluvana supikausist. Jõuluvana ütles, et sup
 
 Pärast seda proovisin vurrkanni, trummi ja pehmet karu. Vurrkann vurises, trumm põrises ja karu lihtsalt kallistas. Karu sai ka viie. Õhtuks olid kõik mänguasjad ilusas reas kelgu kõrval ootamas. Konn istub ikka veel eraldi. Igaks juhuks. Ja supikaussidel on nüüd kaaned.
 
-Mul on sulle üks mõte: kui tahad, kirjuta või joonista paberile üks asi, mille eest oled täna tänulik, ja pane see purki.
-
 P.S. Eilse katse vastus: soolaga jää sulab kiiremini. Seepärast puistatakse talvel teedele soola. Kelgujalased on nüüd jälle libedad.
 
 _Sinu sõber · Päkapikk Tuduja_
-
-> Valmista ette: ülesandeks paber
 
 ### 13. detsember 2026
 
@@ -234,11 +202,11 @@ Sina loed ju koomikseid, nii et sa tead: viimane pilt on kõige tähtsam!
 
 Näitasin pilte ka Jõuluvanale. Tema arvas, et kolmandal pildil istub Välk lumehanges ja teeb nägu, nagu oleks ta kogu aeg tahtnud just seal istuda. Kass Nurr arvas, et Välk lendab minema. Mina ei tea veel. Praegu tulevad põhjapõdrad mul natuke nagu toolid.
 
-Kui tahad, joonista sina kolmas pilt: mis Välgust sai?
+Nuputa natuke. Käib, aga jalgu ei ole; tiksub, aga südant ei ole. Vastuse kirjutan homme.
 
 _Jahusena · Päkapikk Tuduja_
 
-> Valmista ette: paber ja värvipliiatsid
+> Vastus: kell
 
 ### 14. detsember 2026
 
@@ -252,11 +220,9 @@ Kribu-Krabu ütles, et see nupp oli „ainult katsetamiseks“. Nüüd on meil l
 
 Täna ehitasime lumepallidest kindluse. Sellel on torn, aken ja väike uks, kust mahub läbi ainult päkapikk. Põhjapõder Välk proovis ka sisse tulla, jäi ukse vahele kinni ja kindlus kukkus talle selga. Ta ei pahandanud, tema arvates oli see mäng. Homme ehitame uue, natuke suurema uksega.
 
-Mul on sulle üks mõistatus: Kes tuleb jõuluööl, punane kuub seljas ja valge habe ees? Homme ütlen vastuse.
+P.S. Eilse mõistatuse vastus: kell.
 
 _Sinu · Päkapikk Tuduja_
-
-> Vastus: Jõuluvana
 
 ### 15. detsember 2026
 
@@ -269,8 +235,6 @@ Mina esitasin talle päris mõistatuse. Sina oled ju mõistatusesõber – see o
 Valge, aga ei ole suhkur. Külm, aga ei ole jäätis. Tuleb taevast ja sulab peos. Mis see on?
 
 Homme ütlen vastuse.
-
-P.S. Eilse mõistatuse vastus: Jõuluvana.
 
 _Sinu sõber · Päkapikk Tuduja_
 
@@ -288,8 +252,6 @@ Nad sõid ära kõik lumememmede porgandid. Nüüd elavad nad puuriida taga ja m
 
 Täna hommikul nägin, et kõige väiksem jänesepoeg on julge. Ta tuli minu juurde ja nuusutas mu saabast. Siis sõi ta kapsalehe otse mu käest. Panin talle nimeks Hopsti. Teistele ma veel nime ei pannud, sest nad hüppavad nii kiiresti, et ma ei tea, kes on kes.
 
-Mul on sulle üks mõte! Täiskasvanu süütab küünla. Räägi kordamööda, mis oli sel aastal kõige toredam hetk.
-
 P.S. Eilse mõistatuse vastus oli: lumi. Välk arvas, et jäätis.
 
 _Tervitustega köögist · Päkapikk Tuduja_
@@ -306,11 +268,11 @@ Las nad peavad selle. Mina saan uue soki.
 
 Hiljem käisin neid lähemalt vaatamas. Üks tihane piilus sokist välja ja vaatas mind nii, nagu oleksin mina tema majja külla tulnud. Ütlesin talle tere ja panin ukse ette veel peotäie seemneid. Nüüd oleme sõbrad. Vähemalt mina arvan nii.
 
-Kui tahad, pane koos täiskasvanuga aknalauale paar seemet.
+Kas oskad ära arvata? Kes jätab detsembris aknalaual olevasse sussi kommi? Homme ütlen vastuse.
 
 _Sinu sõber · Päkapikk Tuduja_
 
-> Valmista ette: peotäis päevalilleseemneid lindudele (valikuline)
+> Vastus: päkapikk
 
 ### 18. detsember 2026
 
@@ -324,11 +286,9 @@ Ta ütles, et laenas seda ainult üheks korraks. Aga siis tuli Kribu-Krabu ka ja
 
 Täna hommikul oli minu kelk kuuri ukse juures tagasi. Selle peal oli väike kiri: „Aitäh laenamast! Jõuluvana.“ Ja kelgunööri külge oli seotud punane lehv. Nüüd on minu kelk kõige pidulikum kelk terves töökojas.
 
-Kas oskad ära arvata? Mul on neli jalga ja selg, aga ma ei kõnni kunagi. Vastuse kirjutan homme.
+P.S. Eilse mõistatuse vastus: päkapikk.
 
 _Jahusena · Päkapikk Tuduja_
-
-> Vastus: tool
 
 ### 19. detsember 2026
 
@@ -341,8 +301,6 @@ Siis tuli põhjapõder Välk ja sõi ära kolm. Siis tuli kass Nurr ja nuusutas 
 Kas sa oskad välja arvutada?
 
 Mitu piparkooki jäi plaadile?
-
-P.S. Eilse mõistatuse vastus: tool.
 
 _Kiirelt-kiirelt · Päkapikk Tuduja_
 
@@ -358,15 +316,11 @@ Siis kuulsin, et üks kingipakk teeb: nurr-nurr-nurr. Pakid ju ei nurru! Tegin p
 
 Nurr oli karbis magama jäänud ja keegi oli ta kogemata ära pakkinud. Peaaegu oleks ta jõulukingina ühe lapse juurde sõitnud.
 
-Pärast seda tegin Nurrile oma karbi. Sees on pehme tekk ja peal silt: „Seda pakki ära saada!“ Nurrile see meeldis. Ta magas seal terve öö ja nurrus nii kõvasti, et karp värises. Hommikul käis ta kõiki pakke nuusutamas. Vist kontrollis, et kuskil poleks veel mõnda kassi.
-
-Üks päkapiku ettepanek: kui tahad, aita valmistada pere hommikusöök: kata laud ja pane igale taldrikule väike üllatus.
+Pärast seda tegin Nurrile oma karbi. Sees on pehme tekk ja peal silt, mille kirjutas Kribu-Krabu: „Mitte saata“. Nurrile see meeldis. Ta magas seal terve öö ja nurrus nii kõvasti, et karp värises. Hommikul käis ta kõiki pakke nuusutamas. Vist kontrollis, et kuskil poleks veel mõnda kassi.
 
 P.S. Eilse piparkoogiülesande vastus: 16. Nurri nuusutatud piparkook on ka alles.
 
 _Hüpates · Päkapikk Tuduja_
-
-> Valmista ette: ülesandeks köögitarbed ja toiduained
 
 ### 21. detsember 2026
 
@@ -380,11 +334,11 @@ Otsisin terve päeva. Kapist, voodi alt, pesukorvist. Ei kusagil!
 
 Nüüd kannan ühte punast ja ühte rohelist sokki. Jõuluvana ütles, et see on väga moodne. Täna hommikul nägin, et ka kass Nurr on endale soki leidnud. Ta magab selle sees nagu väikeses magamiskotis. Pesupäevast jäi järele ainult üks küsimus: kes järgmisena soki võtab?
 
-Mul on sulle üks mõistatus: Talvel ja suvel ühte karva. Vastus tuleb homses kirjas.
+Põhjapõder Välk tõi mulle täna ühe mõistatuse. Kes tuleb jõuluööl, punane kuub seljas ja valge habe ees? Vastus tuleb homses kirjas.
 
 _Sinu · Päkapikk Tuduja_
 
-> Vastus: kuusk
+> Vastus: Jõuluvana
 
 ### 22. detsember 2026
 
@@ -398,13 +352,9 @@ Ta on seal siiani. Jõuluvana ütles, et las jääb, see on nüüd töökoja kuu
 
 Kass Nurr istub iga õhtu laua peal ja vaatab üles. Ta ootab, et kuu alla kukuks. Põhjapõder Välk ootab ka, aga tema tahaks selle ära süüa. Täna küpsetasin veel pannkooke, aga keerasin neid ainult natukene. Kõik jäid pannile. Sõime need moosiga ära ja kuu jäi lakke.
 
-Mul on sulle üks mõte: kui tahad, voldi paberlennukid ja vaata, kelle oma lendab kõige kaugemale. Proovi erinevaid voltimisviise!
-
-P.S. Eilse mõistatuse vastus: kuusk.
+P.S. Eilse mõistatuse vastus: Jõuluvana.
 
 _Kiirelt-kiirelt · Päkapikk Tuduja_
-
-> Valmista ette: ülesandeks paber
 
 ### 23. detsember 2026
 
@@ -412,13 +362,11 @@ _Kiirelt-kiirelt · Päkapikk Tuduja_
 
 Oi-oi! Ma ehitasin eile terve päeva lumememme. Tal oli porgandnina, kaks nööpi ja minu vana müts.
 
-Õhtul harjutas põhjapõder Välk katusele maandumist. Ta libises katuselt alla – ja maandus otse minu lumememme peale! Põmm!
+Õhtul harjutas põhjapõder Välk katusele maandumist. Ta libises katuselt alla – otse mu lumememme peale ukse ees! Põmm!
 
-Nüüd seisab õues lumememm, kellel on sarved. Porgandi sõi Välk ära. Ma arvan, et nad said sõpradeks.
+Välk ronis välja, aga lumememme pähe jäid kaks oksa nagu sarved. Porgandi sõi Välk ära. Nad said sõpradeks.
 
 Täna hommikul seisid nad õues kahekesi: Välk ja sarvedega lumememm. Välk tõi talle vabanduseks uue porgandi. Siis harjutas Välk veel natuke ja maandus seekord ilusti katusele. Ainult natuke lund kukkus. Ja see kukkus otse minu kraesse. Brr!
-
-Üks päkapiku ettepanek: kui tahad, loe kokku, mitu punast ehet on kuusel. Aga mitu kuldset? Kumba on rohkem?
 
 _Tervitustega köögist · Päkapikk Tuduja_
 
@@ -428,7 +376,7 @@ _Tervitustega köögist · Päkapikk Tuduja_
 
 Täna on jõululaupäev! Töökoda on vaikseks jäänud ja kingid on kelgul.
 
-Minu töö siin on tehtud ja täna õhtul lähen põhja tagasi.
+Pärast seda kirja jääb mu kirjakott tühjaks ja ma jään töökotta jõulutööde juurde.
 
 Ma pesin viimase pudrupoti puhtaks ja panin mütsi pähe. Ma hakkan sind igatsema! Häid jõule, Pääru!
 
