@@ -9,7 +9,15 @@ import SegmentedControl from '../../../components/ui/SegmentedControl.vue'
 import { christmasLettersUntilEve, MAX_LETTERS, MIN_SERIES } from '../../../domain/validation'
 import DateInput from '../../../components/ui/DateInput.vue'
 
-const props = defineProps<{ children: ChildProfile[]; occasionId: OccasionId }>()
+const props = withDefaults(
+  defineProps<{
+    children: ChildProfile[]
+    occasionId: OccasionId
+    /** The wizard shows everything; the preview panel shows the letters and their content as two sections. */
+    part?: 'all' | 'letters' | 'content'
+  }>(),
+  { part: 'all' },
+)
 const model = defineModel<LetterOptions>({ required: true })
 
 const family = computed(() => props.children.length > 1)
@@ -81,7 +89,7 @@ const shape = computed<Shape>({
 })
 const shapeHint = computed(() => {
   if (shape.value === 'linked') {
-    return 'Iga laps saab oma kirjad samast päkapikumaailmast: abilised tunnevad üksteist, ühised sündmused juhtuvad kõigi kirjades samal päeval ja mõnel päeval kutsutakse õdesid-vendi midagi koos tegema. Järjejutus kadunud tähest kuuleb iga laps lugu oma päkapiku käest.'
+    return 'Päkapikud tunnevad üksteist ja ühised sündmused juhtuvad kõigi kirjades samal päeval.'
   }
   if (shape.value.endsWith('-story')) return 'Järjejutus otsitakse kirjast kirja kadunud tähte. Vahepeal on ka iseseisvaid lugusid.'
   return ''
@@ -101,7 +109,7 @@ const offersSecretHelper = computed(() => linked.value && christmas.value && mod
 
 <template>
   <div class="options-grid">
-    <div class="count">
+    <div v-if="part !== 'content'" class="count">
       <SegmentedControl v-model="countChoice" name="letter-count" label="Kirjade arv" :options="countOptions" :hint="countHint" />
       <label v-if="otherOpen" class="count__other">
         <span>Mitu kirja?</span>
@@ -109,30 +117,33 @@ const offersSecretHelper = computed(() => linked.value && christmas.value && mod
         <span class="count__range">{{ minOther }}–{{ maxCount }}</span>
       </label>
     </div>
-    <FormField id="letter-date" label="Esimese kirja kuupäev" hint="Sarja puhul saab iga järgmine kiri järgmise päeva kuupäeva.">
+    <FormField v-if="part !== 'content'" id="letter-date" label="Esimese kirja kuupäev" hint="Sarja puhul saab iga järgmine kiri järgmise päeva kuupäeva.">
       <template #default="{ describedBy }">
         <DateInput id="letter-date" v-model="model.startDate" :described-by="describedBy" label="Esimese kirja kuupäev" />
         <label class="dated">
           <input type="checkbox" :checked="model.dated === false" @change="model.dated = ($event.target as HTMLInputElement).checked ? false : undefined" />
-          <span>Ilma kuupäevata – kirjad on lihtsalt nummerdatud</span>
+          <span>Ilma kuupäevadeta (kirjad on nummerdatud)</span>
         </label>
       </template>
     </FormField>
-    <div v-if="showShape" class="options-grid__wide">
+    <div v-if="showShape && part !== 'letters'" class="options-grid__wide">
       <SegmentedControl v-model="shape" name="letter-shape" label="Kirjade seos" :options="shapeOptions" :hint="shapeHint" />
     </div>
-    <div v-if="linked" class="options-grid__wide">
+    <div v-if="part === 'all' && linked" class="options-grid__wide">
       <PersonaEditor v-model="model.personas" :children="children" :occasion-id="occasionId" />
     </div>
-    <FormField v-else id="letter-sender" label="Saatja nimi" hint="Näiteks Päkapikk Tuduja või Hambahaldjas Helk.">
+    <FormField v-else-if="part !== 'letters' && !linked" id="letter-sender" label="Saatja nimi" hint="Näiteks Päkapikk Tuduja või Hambahaldjas Helk.">
       <template #default="{ describedBy }">
         <input id="letter-sender" v-model="model.sender" class="input" type="text" :aria-describedby="describedBy" />
       </template>
     </FormField>
 
-    <details v-if="series" class="extras options-grid__wide" :open="extrasInUse">
+    <!-- The panel shows each child's helper and language in its own block, in the slot. -->
+    <div v-if="part === 'content'" class="options-grid__wide"><slot /></div>
+
+    <details v-if="series && part !== 'letters'" class="extras options-grid__wide" :open="extrasInUse">
       <summary class="extras__summary">
-        Lisavõimalused <span class="extras__what">pere sündmused, pühapäeva komm, lapse väljakutsed</span>
+        Lisavõimalused <span class="extras__what">pere sündmused, pühapäevased maiustused, väljakutsed</span>
       </summary>
       <div class="extras__body">
         <FamilyEventsEditor

@@ -252,7 +252,8 @@ describe('preview with choices beside it', () => {
     )
     // A change that keeps every spot asks nothing and keeps the edited letter as it is.
     confirm.mockClear()
-    await user.click(within(screen.getByRole('group', { name: 'Pikkus' })).getByRole('radio', { name: 'Lühem kiri' }))
+    await user.click(screen.getByRole('button', { name: /Sisu kohandamine/ }))
+    await user.click(within(screen.getByRole('group', { name: 'Kirja pikkus' })).getByRole('radio', { name: 'Lühem kiri' }))
     await vi.waitFor(() => expect(store.creations[0]?.request.general.length).toBe('short'))
     expect(confirm).not.toHaveBeenCalled()
     expect(store.creations[0]?.items[0]).toMatchObject({ body: 'Minu oma tekst', edited: true })
@@ -278,26 +279,28 @@ describe('preview with choices beside it', () => {
 
   it('has one choice for how to print, with large poster cards for long letters', async () => {
     const { user, store } = await letterPreview()
+    await user.click(screen.getByRole('button', { name: /Printimine/ }))
     const presets = screen.getByRole('group', { name: 'Kuidas prindid?' })
     const labels = within(presets).getAllByRole('radio').map((radio) => radio.closest('label')?.textContent?.trim())
     expect(labels).toEqual(['Kaardid sussi sisse', 'Pool lehte', 'Terve leht', 'Pusleplakat'])
     expect(within(presets).getByRole('radio', { name: 'Pusleplakat' })).toBeEnabled()
     // Long letters (the default): the poster takes 6 sheets with large cards.
     expect(presets).toHaveTextContent('Plakat tuleb 6 A4 lehele, kaardid on suuremad.')
-    // The layout is no longer chosen twice: "Rohkem valikuid" keeps only what to print and capitals.
+    // The layout is no longer chosen twice: "Printimise lisavalikud" keeps only what to print and capitals.
     expect(screen.queryByRole('group', { name: 'Prindi paigutus' })).toBeNull()
-    // Long letters do not fit half a page at a readable print size: it is shown, but off.
-    expect(within(presets).getByRole('radio', { name: 'Pool lehte' })).toBeDisabled()
-    expect(screen.getByText(/poolele lehele liiga pik/)).toBeInTheDocument()
+    // Letters written in fuller paragraphs take less room: half a page now holds them. A letter
+    // too long for it is covered by printFit.spec.
+    expect(within(presets).getByRole('radio', { name: 'Pool lehte' })).toBeEnabled()
     await user.click(within(presets).getByRole('radio', { name: 'Terve leht' }))
     expect(store.creations[0]?.layout).toBe('page')
-    expect(screen.getByText('Rohkem valikuid').closest('details')).not.toHaveAttribute('open')
+    expect(screen.getByText('Printimise lisavalikud').closest('details')).not.toHaveAttribute('open')
   })
 
   it('keeps the poster in sight but off, with the reason, when a letter is too long even for a large card', async () => {
-    const { store } = await letterPreview()
+    const { user, store } = await letterPreview()
     const { id, items } = store.creations[0]!
     store.editItem(id, items[0]!.id, { body: 'Väga pikk kiri. '.repeat(90) })
+    await user.click(screen.getByRole('button', { name: /Printimine/ }))
     const presets = screen.getByRole('group', { name: 'Kuidas prindid?' })
     await vi.waitFor(() => expect(within(presets).getByRole('radio', { name: 'Pusleplakat' })).toBeDisabled())
     expect(screen.getByText(/Mõni kiri on plakatikaardi jaoks liiga pikk/)).toBeInTheDocument()
@@ -341,6 +344,7 @@ describe('own background per child', () => {
   it('sets the shared background while every child is chosen, and an own one for the chosen children', async () => {
     const user = userEvent.setup()
     const { emitted, rerender } = render(DecorationPanel, { props: props({ ...EMPTY_DECORATION, pattern: 'snow' }) })
+    await user.click(screen.getByRole('button', { name: /Välimus/ }))
     expect(screen.queryByRole('checkbox', { name: /ühine taust/ })).toBeNull()
     const paaru = screen.getByRole('button', { name: 'Pääru' })
     const kai = screen.getByRole('button', { name: 'Kai' })
@@ -373,11 +377,12 @@ describe('own background per child', () => {
   it('keeps someone chosen, and has no children to choose for one child', async () => {
     const user = userEvent.setup()
     const { unmount } = render(DecorationPanel, { props: props(EMPTY_DECORATION) })
+    await user.click(screen.getByRole('button', { name: /Välimus/ }))
     await user.click(screen.getByRole('button', { name: 'Pääru' }))
     await user.click(screen.getByRole('button', { name: 'Kai' }))
     expect(screen.getByRole('button', { name: 'Kai' })).toHaveAttribute('aria-pressed', 'true')
     unmount()
     render(DecorationPanel, { props: { ...props(EMPTY_DECORATION), children: kids.slice(0, 1) } })
-    expect(screen.queryByRole('group', { name: 'Kellele' })).toBeNull()
+    expect(screen.queryByRole('group', { name: 'Milliste laste kirjadel?' })).toBeNull()
   })
 })

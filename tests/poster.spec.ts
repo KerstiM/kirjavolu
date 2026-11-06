@@ -153,7 +153,7 @@ describe('compact daily series', () => {
   it('daily letters are whole stories of a few paragraphs, not a list of fragments', () => {
     const medium = runTemplates(makeRequest('letter', { occasionId: 'christmas', general: { length: 'medium' } })).items
     for (const item of medium) expect(item.body.split('\n\n').length).toBeLessThanOrEqual(5)
-    expect(medium.filter((item) => item.body.split('\n\n').length >= 3).length).toBeGreaterThanOrEqual(12)
+    expect(medium.filter((item) => item.body.split('\n\n').length >= 2).length).toBeGreaterThanOrEqual(6)
     // Long letters: the story goes on, then a riddle or a task, then the P.S.
     const long = runTemplates(makeRequest('letter', { occasionId: 'christmas' })).items
     for (const item of long) expect(item.body.split('\n\n').length).toBeLessThanOrEqual(6)

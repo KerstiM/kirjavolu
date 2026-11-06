@@ -34,6 +34,27 @@ export function renderPlan(
   })
 }
 
+/** Scenario texts are written a few sentences at a time; on the page they read better as fuller paragraphs. */
+const MERGED_PARAGRAPH_CHARS = 450
+
+/**
+ * Joins neighbouring paragraphs while the result stays within `MERGED_PARAGRAPH_CHARS`. A line of
+ * dialogue (starting with a quotation mark) keeps its own paragraph, and so does what follows it.
+ */
+export function mergeParagraphs(paragraphs: string[]): string[] {
+  const merged: string[] = []
+  let lastWasDialogue = false
+  for (const paragraph of paragraphs) {
+    const dialogue = paragraph.startsWith('„')
+    const previous = merged.at(-1)
+    if (previous !== undefined && !dialogue && !lastWasDialogue && previous.length + 1 + paragraph.length <= MERGED_PARAGRAPH_CHARS) {
+      merged[merged.length - 1] = `${previous} ${paragraph}`
+    } else merged.push(paragraph)
+    lastWasDialogue = dialogue
+  }
+  return merged
+}
+
 function renderDay(
   plan: CollectionPlan,
   library: ScenarioLibrary,
@@ -65,6 +86,7 @@ function renderDay(
   let paragraphs = body.filter((part): part is string => Boolean(part && part.trim()))
   // A toddler's card is one paragraph: an invitation or a greeting joins it.
   if (p.band === 'toddler' && !p.readAloud) paragraphs = [paragraphs.join(' ')]
+  else if (p.band !== 'toddler') paragraphs = mergeParagraphs(paragraphs)
   if (postscripts.length > 0) {
     if (p.band === 'toddler') {
       // Toddler cards hold one paragraph: the postscript joins it.

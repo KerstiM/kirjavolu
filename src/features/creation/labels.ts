@@ -35,14 +35,14 @@ export const LETTER_LENGTH_OPTIONS: Options<Length> = [
 ]
 export const LEGACY_MEDIUM = { value: 'medium' as const, label: 'Keskmine (varasem)' }
 export const LETTER_LENGTH_HINT =
-  'Lühem kiri on kompaktne, kuid terviklik väike lugu. Pikem kiri jutustab rohkem: sündmust, kirjeldust ja dialoogi, vahel on lõpus mõistatus.'
+  'Lühem kiri on kompaktne, kuid terviklik lugu. Pikem kiri jutustab rohkem.'
 
 export const LANGUAGE_OPTIONS: Options<LanguageLevel> = [
   { value: 'simple', label: 'Lihtne keel' },
   { value: 'rich', label: 'Rikkalikum keel' },
 ]
 export const LANGUAGE_HINT =
-  'Lihtne keel: lühemad ja selgemad laused, tuttavad sõnad. Rikkalikum keel: mitmekesisem sõnavara, kirjeldused, dialoog ja nüansirikkam huumor – sobib ettelugemiseks või ladusale lugejale. Mõlemat varianti võib lapsele ette lugeda.'
+  'Lihtne keel: lühikesed laused ja tuttavad sõnad. Rikkalikum keel: rohkem kirjeldusi ja dialoogi.'
 
 export const DIFFICULTY_OPTIONS: Options<Difficulty> = [
   { value: 'easier', label: 'Lihtsam' },

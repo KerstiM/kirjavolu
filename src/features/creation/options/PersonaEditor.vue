@@ -8,11 +8,18 @@ import { ageBand } from '../../../domain/generators/audience'
  * Helper character per child in a linked series. Suggestions come from the
  * child's interests; the parent can rename them freely.
  */
-const props = defineProps<{ children: ChildProfile[]; occasionId: OccasionId }>()
+const props = defineProps<{
+  children: ChildProfile[]
+  occasionId: OccasionId
+  /** One child's fields only (the preview panel's child block), without the heading and the hint. */
+  only?: string
+}>()
 const model = defineModel<Record<string, ElfPersona> | undefined>({ required: true })
 
 const suggested = computed(() => suggestPersonas(props.children, props.occasionId, (c) => ageBand(c) === 'toddler'))
+const shown = computed(() => (props.only ? props.children.filter((child) => child.id === props.only) : props.children))
 const word = computed(() => (props.occasionId === 'christmas' ? 'päkapikk' : 'abiline'))
+const capitalised = computed(() => (props.occasionId === 'christmas' ? 'Päkapiku' : 'Abilise'))
 
 function value(childId: string): ElfPersona {
   return { ...(suggested.value[childId] as ElfPersona), ...model.value?.[childId] }
@@ -25,19 +32,21 @@ function update(childId: string, field: keyof ElfPersona, text: string): void {
 
 <template>
   <fieldset class="personas">
-    <legend>Iga lapse {{ word }}</legend>
-    <p class="personas__hint">
+    <legend v-if="!only">Iga lapse {{ word }}</legend>
+    <p v-if="!only" class="personas__hint">
       Nimed ja tiitlid on pakutud lapse huvide järgi. Abilised tunnevad üksteist ja mainivad õdede-vendade abilisi.
     </p>
-    <div v-for="child in children" :key="child.id" class="persona">
-      <span class="persona__child">{{ child.name }}</span>
-      <label class="persona__field">
-        <span class="visually-hidden">{{ child.name }}: nimi</span>
-        <input class="input" type="text" :value="value(child.id).name" placeholder="Nimi" @input="update(child.id, 'name', ($event.target as HTMLInputElement).value)" />
+    <div v-for="child in shown" :key="child.id" class="persona" :class="{ 'persona--only': only }">
+      <span v-if="!only" class="persona__child">{{ child.name }}</span>
+      <label class="persona__field" :class="{ 'persona__field--labelled': only }">
+        <span v-if="only" class="persona__label">{{ capitalised }} nimi</span>
+        <span v-else class="visually-hidden">{{ child.name }}: nimi</span>
+        <input class="input" type="text" :value="value(child.id).name" :placeholder="only ? `${capitalised} nimi` : 'Nimi'" @input="update(child.id, 'name', ($event.target as HTMLInputElement).value)" />
       </label>
-      <label class="persona__field">
-        <span class="visually-hidden">{{ child.name }}: tiitel</span>
-        <input class="input" type="text" :value="value(child.id).title" placeholder="Tiitel" @input="update(child.id, 'title', ($event.target as HTMLInputElement).value)" />
+      <label class="persona__field" :class="{ 'persona__field--labelled': only }">
+        <span v-if="only" class="persona__label">Hüüdnimi või tiitel</span>
+        <span v-else class="visually-hidden">{{ child.name }}: tiitel</span>
+        <input class="input" type="text" :value="value(child.id).title" :placeholder="only ? 'Hüüdnimi või tiitel' : 'Tiitel'" @input="update(child.id, 'title', ($event.target as HTMLInputElement).value)" />
       </label>
       <p class="persona__origin">{{ value(child.id).origin }}</p>
     </div>
@@ -79,6 +88,21 @@ function update(childId: string, field: keyof ElfPersona, text: string): void {
   margin: 0;
   font-size: 0.8rem;
   color: var(--ink-soft);
+}
+.persona__field--labelled {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.persona__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.persona--only {
+  grid-template-columns: 1fr 1fr;
+  .persona__origin {
+    grid-column: 1 / -1;
+  }
 }
 @container personas (max-width: 560px) {
   .persona {

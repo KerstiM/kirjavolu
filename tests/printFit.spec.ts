@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+import userEvent from '@testing-library/user-event'
 import { render, screen } from '@testing-library/vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { createMemoryHistory, createRouter } from 'vue-router'
@@ -94,6 +95,7 @@ describe('half page in the preview', () => {
 
   it('is off while a letter is too long for it, and back once the letter is shorter', async () => {
     const { store, content } = await openPreview()
+    await userEvent.setup().click(screen.getByRole('button', { name: /Printimine/ }))
     const half = () => screen.getByRole('radio', { name: 'Pool lehte' })
     expect(half()).toBeEnabled()
     expect(store.byId(content.id)!.layout).toBe('half')
