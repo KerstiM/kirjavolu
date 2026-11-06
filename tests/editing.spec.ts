@@ -10,6 +10,9 @@ import { useCreationsStore } from '@/features/preview/creationsStore'
 import type { RequestFor } from '@/domain/models'
 import { KAI, PAARU, makeRequest, MARKUS } from './helpers'
 
+// The puzzle is switched off for now (puzzleAvailability.ts); these tests keep it working.
+vi.mock('@/domain/puzzleAvailability', () => ({ PUZZLE_ENABLED: true }))
+
 async function openPreview(children = [MARKUS]) {
   const pinia = createPinia()
   setActivePinia(pinia)

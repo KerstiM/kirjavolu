@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/vue'
 import userEvent from '@testing-library/user-event'
 import { createPinia, setActivePinia } from 'pinia'
@@ -10,6 +10,9 @@ import { familyPlan, pairedDayIndexes, personasFor, siblingPairs } from '@/domai
 import { useCreationsStore } from '@/features/preview/creationsStore'
 import type { GeneratedItem, RequestFor } from '@/domain/models'
 import { KAI, PAARU, makeRequest, MARKUS } from './helpers'
+
+// The puzzle is switched off for now (puzzleAvailability.ts); these tests keep it working.
+vi.mock('@/domain/puzzleAvailability', () => ({ PUZZLE_ENABLED: true }))
 
 const family = (extra: Partial<RequestFor<'letter'>['options']> = {}) =>
   makeRequest('letter', { occasionId: 'christmas', children: [MARKUS, PAARU, KAI], options: { startDate: '2026-12-01', ...extra } })

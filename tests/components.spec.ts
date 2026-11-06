@@ -7,10 +7,14 @@ import App from '@/app/App.vue'
 import { routes } from '@/app/router'
 import ChildForm from '@/features/children/ChildForm.vue'
 import PrintableItem from '@/features/preview/PrintableItem.vue'
+import DecorationPanel from '@/features/preview/decoration/DecorationPanel.vue'
 import { emptyChildDraft, useChildrenStore } from '@/features/children/childrenStore'
 import { useCreationsStore } from '@/features/preview/creationsStore'
-import { EMPTY_DECORATION, type GeneratedItem } from '@/domain/models'
+import { EMPTY_DECORATION, type Decoration, type GeneratedItem } from '@/domain/models'
 import { defaultLayoutFor } from '@/domain/generators/templateGenerator'
+
+// The puzzle is switched off for now (puzzleAvailability.ts); these tests keep it working.
+vi.mock('@/domain/puzzleAvailability', () => ({ PUZZLE_ENABLED: true }))
 
 // These tests walk the wizard with kinds that are switched off for now (readiness.ts); the
 // wizard itself works the same, so here every kind counts as ready.
@@ -284,7 +288,7 @@ describe('preview with choices beside it', () => {
     expect(screen.queryByRole('group', { name: 'Prindi paigutus' })).toBeNull()
     // Long letters do not fit half a page at a readable print size: it is shown, but off.
     expect(within(presets).getByRole('radio', { name: 'Pool lehte' })).toBeDisabled()
-    expect(screen.getByText(/Pool lehte pole praegu valitav: mõni kiri on poolele lehele liiga pikk/)).toBeInTheDocument()
+    expect(screen.getByText(/poolele lehele liiga pik/)).toBeInTheDocument()
     await user.click(within(presets).getByRole('radio', { name: 'Terve leht' }))
     expect(store.creations[0]?.layout).toBe('page')
     expect(screen.getByText('Rohkem valikuid').closest('details')).not.toHaveAttribute('open')
@@ -296,7 +300,7 @@ describe('preview with choices beside it', () => {
     store.editItem(id, items[0]!.id, { body: 'Väga pikk kiri. '.repeat(90) })
     const presets = screen.getByRole('group', { name: 'Kuidas prindid?' })
     await vi.waitFor(() => expect(within(presets).getByRole('radio', { name: 'Pusleplakat' })).toBeDisabled())
-    expect(screen.getByText(/Pusleplakat pole praegu valitav: mõni kiri on plakatikaardi jaoks liiga pikk/)).toBeInTheDocument()
+    expect(screen.getByText(/Mõni kiri on plakatikaardi jaoks liiga pikk/)).toBeInTheDocument()
     // It was the layout, so the letters move to the largest layout they fit: too long for the
     // slipper cards and half a page, they go on whole pages rather than being cut or shrunk.
     await vi.waitFor(() => expect(store.creations[0]?.layout).toBe('page'))
@@ -316,5 +320,64 @@ describe('sample letter', () => {
     expect(useChildrenStore().children).toHaveLength(0)
     await user.click(screen.getByRole('link', { name: /Loo oma lapsele 24 kirja/ }))
     await vi.waitFor(() => expect(router.currentRoute.value.path).toBe('/joulukirjad'))
+  })
+})
+
+describe('own background per child', () => {
+  const kids = [
+    { id: 'a', name: 'Pääru', mini: false },
+    { id: 'b', name: 'Kai', mini: true },
+  ]
+  const props = (decoration: Decoration) => ({
+    decoration,
+    occasionId: 'christmas' as const,
+    itemCount: 48,
+    imageUrl: null,
+    children: kids,
+    childImageUrls: {},
+  })
+  const last = (emitted: Record<string, unknown[]>) => (emitted.update?.at(-1) as [Decoration])[0]
+
+  it('sets the shared background while every child is chosen, and an own one for the chosen children', async () => {
+    const user = userEvent.setup()
+    const { emitted, rerender } = render(DecorationPanel, { props: props({ ...EMPTY_DECORATION, pattern: 'snow' }) })
+    expect(screen.queryByRole('checkbox', { name: /ühine taust/ })).toBeNull()
+    const paaru = screen.getByRole('button', { name: 'Pääru' })
+    const kai = screen.getByRole('button', { name: 'Kai' })
+    expect(paaru).toHaveAttribute('aria-pressed', 'true')
+    expect(kai).toHaveAttribute('aria-pressed', 'true')
+
+    await user.click(screen.getByLabelText(/Tähed/))
+    const shared = last(emitted())
+    expect(shared.pattern).toBe('stars')
+    expect(Object.values(shared.childDecorations ?? {}).every((own) => own.background === 'shared')).toBe(true)
+
+    // Only Kai: she starts from the shared background and gets her own.
+    await rerender(props(shared))
+    await user.click(paaru)
+    expect(paaru).toHaveAttribute('aria-pressed', 'false')
+    expect(screen.getByLabelText(/Tähed/)).toBeChecked()
+    await user.click(screen.getByLabelText(/Südamed/))
+    const own = last(emitted())
+    expect(own.pattern).toBe('stars')
+    expect(own.childDecorations?.b).toMatchObject({ background: 'pattern', pattern: 'hearts' })
+    expect(own.childDecorations?.a?.background).toBe('shared')
+
+    // Both chosen again: their backgrounds differ, so no swatch is shown as chosen.
+    await rerender(props(own))
+    await user.click(paaru)
+    expect(screen.getByLabelText(/Tähed/)).not.toBeChecked()
+    expect(screen.getByLabelText(/Südamed/)).not.toBeChecked()
+  })
+
+  it('keeps someone chosen, and has no children to choose for one child', async () => {
+    const user = userEvent.setup()
+    const { unmount } = render(DecorationPanel, { props: props(EMPTY_DECORATION) })
+    await user.click(screen.getByRole('button', { name: 'Pääru' }))
+    await user.click(screen.getByRole('button', { name: 'Kai' }))
+    expect(screen.getByRole('button', { name: 'Kai' })).toHaveAttribute('aria-pressed', 'true')
+    unmount()
+    render(DecorationPanel, { props: { ...props(EMPTY_DECORATION), children: kids.slice(0, 1) } })
+    expect(screen.queryByRole('group', { name: 'Kellele' })).toBeNull()
   })
 })

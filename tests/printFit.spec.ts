@@ -8,7 +8,7 @@ import { useCreationsStore } from '@/features/preview/creationsStore'
 import type { RequestFor } from '@/domain/models'
 import { templateGenerator } from '@/domain/generators/templateGenerator'
 import { DEFAULT_GENERAL, defaultOptions } from '@/domain/defaults'
-import { fitsSheet, letterHeightMm, MAX_PT, MIN_PT, printTextPt, SHEET_HEIGHT_MM } from '@/features/preview/printFit'
+import { fitsSheet, fittingChars, letterHeightMm, MAX_PT, MIN_PT, printTextPt, SHEET_HEIGHT_MM } from '@/features/preview/printFit'
 import { KAI, makeRequest, MARKUS, PAARU } from './helpers'
 
 const paragraph = 'Ma tulin otse töökoja köögist – kui kiri lõhnab kaneeli järele, siis ongi nii.'
@@ -101,13 +101,13 @@ describe('half page in the preview', () => {
     const first = content.items[0]!
     store.editItem(content.id, first.id, { body: letter(12).body })
     await vi.waitFor(() => expect(half()).toBeDisabled())
-    expect(screen.getByText(/Pool lehte pole praegu valitav/)).toBeInTheDocument()
+    expect(screen.getByText(/poolele lehele liiga pik/)).toBeInTheDocument()
     // The letters move to whole pages rather than being cut.
     expect(store.byId(content.id)!.layout).toBe('page')
 
     store.editItem(content.id, first.id, { body: letter(2).body })
     await vi.waitFor(() => expect(half()).toBeEnabled())
-    expect(screen.queryByText(/Pool lehte pole praegu valitav/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/poolele lehele liiga pik/)).not.toBeInTheDocument()
   })
 
   it('gives a long letter a smaller print size', async () => {
@@ -120,5 +120,23 @@ describe('half page in the preview', () => {
     expect(papers[0]!.style.getPropertyValue('--print-pt')).toMatch(/^\d+(\.5)?pt$/)
     expect(parseFloat(papers[0]!.style.getPropertyValue('--print-pt'))).toBeLessThan(MAX_PT)
     expect(papers[1]!.style.getPropertyValue('--print-pt')).toBe(`${MAX_PT}pt`)
+  })
+})
+
+describe('what to shorten', () => {
+  const letter = { label: '1. detsember', heading: 'Kallis Mia!', body: 'Sõna '.repeat(400).trim(), signature: 'Sinu Tipp-Topp' }
+
+  it('finds where the letter stops fitting the half page, on a word boundary', () => {
+    const cut = fittingChars(letter, { sheet: 'half' })
+    expect(cut).toBeGreaterThan(0)
+    expect(cut).toBeLessThan(letter.body.length)
+    expect(letter.body[cut]).toBe(' ')
+    expect(fitsSheet({ ...letter, body: letter.body.slice(0, cut) }, { sheet: 'half' })).toBe(true)
+    expect(fitsSheet({ ...letter, body: letter.body.slice(0, cut + 5) }, { sheet: 'half' })).toBe(false)
+  })
+
+  it('is the whole body when the letter fits', () => {
+    const short = { ...letter, body: 'Tere!' }
+    expect(fittingChars(short, { sheet: 'half' })).toBe(5)
   })
 })

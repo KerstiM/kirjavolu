@@ -5,7 +5,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import App from '@/app/App.vue'
 import { routes } from '@/app/router'
-import { runTemplates, templateGenerator } from '@/domain/generators/templateGenerator'
+import { defaultLayoutFor, runTemplates, templateGenerator } from '@/domain/generators/templateGenerator'
 import { useCreationsStore } from '@/features/preview/creationsStore'
 import { carryEdits } from '@/features/preview/carryEdits'
 import { genitive, genitiveIsSure, nameCase, namesInCase } from '@/domain/text/estonian'
@@ -353,5 +353,16 @@ describe('preview', () => {
     expect(within(within(panel).getByRole('group', { name: 'Keel: Markus' })).getByRole('radio', { name: 'Rikkalikum keel' })).toBeChecked()
     expect(within(within(panel).getByRole('group', { name: 'Keel: Pääru' })).getByRole('radio', { name: 'Lihtne keel' })).toBeChecked()
     expect(within(panel).getByText(/Mõlemat varianti võib lapsele ette lugeda\./)).toBeInTheDocument()
+  })
+})
+
+describe('puzzle switched off', () => {
+  it('prints a series one letter to a page, and keeps the toddler cards in a family', () => {
+    const series = (children: ChildProfile[], length: 'short' | 'long' = 'long') =>
+      makeRequest('letter', { children, occasionId: 'christmas', general: { length }, options: { count: 24, mode: 'linked' } })
+    expect(defaultLayoutFor(series([MARKUS]))).toBe('page')
+    // A toddler's long letter is the little story read aloud, on a page like the others.
+    expect(defaultLayoutFor(series([MARKUS, KAI]))).toBe('page')
+    expect(defaultLayoutFor(series([MARKUS, KAI], 'short'))).toBe('poster')
   })
 })

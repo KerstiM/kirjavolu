@@ -133,6 +133,18 @@ describe('sheet background per child', () => {
     expect(sheetBackground(decoration, 'paaru').image).toBe(image)
   })
 
+  it('gives a child their own pattern or the poster landscape', () => {
+    const decoration = {
+      ...shared,
+      childDecorations: {
+        mia: { background: 'pattern' as const, image: null, pattern: 'hearts' as const },
+        kai: { background: 'poster-art' as const, image: null },
+      },
+    }
+    expect(sheetBackground(decoration, 'mia')).toEqual({ image: null, pattern: 'hearts', posterArt: false })
+    expect(sheetBackground(decoration, 'kai')).toEqual({ image: null, pattern: null, posterArt: true })
+  })
+
   it('falls back to the shared background while an own picture is not uploaded yet', () => {
     const decoration = { ...shared, childDecorations: { mia: { background: 'image' as const, image: null } } }
     expect(sheetBackground(decoration, 'mia').image).toBe(image)

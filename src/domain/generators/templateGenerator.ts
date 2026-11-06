@@ -1,5 +1,6 @@
 import type { GeneratedContent, GeneratedItem, GenerationRequest, PrintableLayout, RequestFor } from '../models'
 import { usesSmallCards } from './audience'
+import { PUZZLE_ENABLED } from '../puzzleAvailability'
 import { getContentType } from '../contentTypes'
 import { validateGenerationRequest } from '../validation'
 import { createId } from '../../utils/id'
@@ -62,12 +63,40 @@ function undated(result: TypeResult, request: RequestFor<'letter'>): TypeResult 
 
 const MAX_REGENERATION_ATTEMPTS = 25
 
-/** Daily series become a puzzle poster; toddler series use simple cards. */
+/**
+ * The next variant of one item: the first of the following variant numbers whose text differs
+ * from it and from every other item; null when there is none.
+ */
+export function findVariant(content: Pick<GeneratedContent, 'request' | 'items'>, itemIndex: number): GeneratedItem | null {
+  const current = content.items[itemIndex]
+  if (!current) throw new Error(`Item ${itemIndex} does not exist`)
+  const variants = content.items.map((item) => item.variant)
+  const others = new Set(content.items.filter((_, i) => i !== itemIndex).map((item) => item.body))
+  for (let attempt = 1; attempt <= MAX_REGENERATION_ATTEMPTS; attempt++) {
+    const variant = current.variant + attempt
+    variants[itemIndex] = variant
+    const candidate = runTemplates(content.request, variants).items[itemIndex]
+    if (candidate && candidate.body !== current.body && !others.has(candidate.body)) {
+      return { ...candidate, id: current.id, variant, edited: false }
+    }
+  }
+  return null
+}
+
+/**
+ * Daily series become a puzzle poster; toddler series use simple cards. Without the puzzle a
+ * series is one letter to a page, and a family with a toddler keeps the card choice (the
+ * toddler's cards, a page for each other child's letter).
+ */
 export function defaultLayoutFor(request: GenerationRequest): PrintableLayout {
   const toddlersOnly = request.children.every((child) => usesSmallCards(child, request))
+  const someToddler = request.children.some((child) => usesSmallCards(child, request))
   // Long letters get the poster's large cards (see PreviewPage), so a series is a poster either way.
-  if (request.contentType === 'letter' && request.options.count >= 7) return toddlersOnly ? 'mini' : 'poster'
-  if (request.contentType === 'calendar' && request.options.days >= 14) return 'poster'
+  if (request.contentType === 'letter' && request.options.count >= 7) {
+    if (toddlersOnly) return 'mini'
+    return PUZZLE_ENABLED || someToddler ? 'poster' : 'page'
+  }
+  if (PUZZLE_ENABLED && request.contentType === 'calendar' && request.options.days >= 14) return 'poster'
   return getContentType(request.contentType).defaultLayout
 }
 
@@ -97,19 +126,7 @@ export class TemplateGenerator implements ContentGenerator {
   }
 
   async regenerateItem(content: GeneratedContent, itemIndex: number): Promise<GeneratedItem> {
-    const current = content.items[itemIndex]
-    if (!current) throw new Error(`Item ${itemIndex} does not exist`)
-    const variants = content.items.map((item) => item.variant)
-    const others = new Set(content.items.filter((_, i) => i !== itemIndex).map((item) => item.body))
-    for (let attempt = 1; attempt <= MAX_REGENERATION_ATTEMPTS; attempt++) {
-      const variant = current.variant + attempt
-      variants[itemIndex] = variant
-      const candidate = runTemplates(content.request, variants).items[itemIndex]
-      if (candidate && candidate.body !== current.body && !others.has(candidate.body)) {
-        return { ...candidate, id: current.id, variant, edited: false }
-      }
-    }
-    return current
+    return findVariant(content, itemIndex) ?? (content.items[itemIndex] as GeneratedItem)
   }
 }
 

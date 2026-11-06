@@ -33,12 +33,16 @@ export interface Decoration {
   childDecorations?: Record<string, ChildDecoration>
 }
 
-/** `shared` follows the common background; `none` and `image` override it for one child. */
-export type ChildBackground = 'shared' | 'none' | 'image'
+/**
+ * `shared` follows the common background; the others give one child their own: none, a
+ * picture, a pattern or the drawn poster landscape.
+ */
+export type ChildBackground = 'shared' | 'none' | 'image' | 'pattern' | 'poster-art'
 
 export interface ChildDecoration {
   background: ChildBackground
   image: StoredImageRef | null
+  pattern?: PatternId | null
 }
 
 /** What is behind one child's sheets: at most one of picture, pattern or drawn landscape. */
@@ -52,6 +56,8 @@ export function sheetBackground(decoration: Decoration, childId?: string): Sheet
   const own = childId ? decoration.childDecorations?.[childId] : undefined
   if (own?.background === 'none') return { image: null, pattern: null, posterArt: false }
   if (own?.background === 'image' && own.image) return { image: own.image, pattern: null, posterArt: false }
+  if (own?.background === 'pattern' && own.pattern) return { image: null, pattern: own.pattern, posterArt: false }
+  if (own?.background === 'poster-art') return { image: null, pattern: null, posterArt: true }
   return {
     image: decoration.imageAsBackground ? decoration.image : null,
     pattern: decoration.pattern,

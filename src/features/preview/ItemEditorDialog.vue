@@ -2,6 +2,7 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { RefreshCw, Sparkles, X } from 'lucide-vue-next'
 import type { GeneratedItem } from '../../domain/models'
+import { fittingChars, type FitOptions } from './printFit'
 
 type Text = Pick<GeneratedItem, 'heading' | 'body' | 'signature'>
 
@@ -20,6 +21,8 @@ const props = defineProps<{
   aiFix?: (wish: string) => Promise<Text>
   /** Under the AI field, e.g. how many fixes are left, or why there are none. */
   aiNote?: string
+  /** Opened to shorten the letter for this sheet: the text that does not fit is shown red. */
+  fit?: FitOptions | null
 }>()
 const emit = defineEmits<{
   save: [patch: Pick<GeneratedItem, 'label' | 'heading' | 'body' | 'signature'>]
@@ -38,6 +41,19 @@ const dialog = ref<HTMLElement | null>(null)
 const rows = computed(() => Math.min(16, Math.max(5, Math.ceil(draft.body.length / 55) + draft.body.split('\n').length)))
 const words = computed(() => draft.body.trim().split(/\s+/).filter(Boolean).length)
 let previousFocus: Element | null = null
+
+/** Where the text stops fitting the sheet, as the parent types; the body's length when it fits. */
+const cut = computed(() =>
+  props.fit
+    ? fittingChars({ label: draft.label, heading: draft.heading, body: draft.body, signature: draft.signature || undefined }, props.fit)
+    : draft.body.length,
+)
+const overWords = computed(() => draft.body.slice(cut.value).trim().split(/\s+/).filter(Boolean).length)
+const sheetName = computed(() => (props.fit?.sheet === 'cards' ? 'kaardile' : props.fit?.sheet === 'page' ? 'lehele' : 'poolele lehele'))
+const mirror = ref<HTMLElement | null>(null)
+function syncScroll(): void {
+  if (mirror.value && bodyField.value) mirror.value.scrollTop = bodyField.value.scrollTop
+}
 
 const wish = ref('')
 const fixing = ref(false)
@@ -123,7 +139,28 @@ onBeforeUnmount(() => {
         <label class="dialog__label" for="item-editor-heading">Pöördumine või pealkiri</label>
         <input id="item-editor-heading" v-model="draft.heading" class="input" type="text" />
         <label class="dialog__label" for="item-editor-body">Tekst</label>
-        <textarea id="item-editor-body" ref="bodyField" v-model="draft.body" class="textarea" :rows="rows" />
+        <div v-if="fit" class="fit-field">
+          <!-- The same text behind the field, with what does not fit marked red. -->
+          <div ref="mirror" class="textarea fit-field__mirror" aria-hidden="true">{{ draft.body.slice(0, cut) }}<mark class="fit-field__over">{{ draft.body.slice(cut) }}</mark>{{ '\n' }}</div>
+          <textarea
+            id="item-editor-body"
+            ref="bodyField"
+            v-model="draft.body"
+            class="textarea fit-field__input"
+            :rows="rows"
+            aria-describedby="item-editor-fit"
+            @scroll="syncScroll"
+            @input="syncScroll"
+          />
+        </div>
+        <textarea v-else id="item-editor-body" ref="bodyField" v-model="draft.body" class="textarea" :rows="rows" />
+        <p v-if="fit" id="item-editor-fit" class="fit-status" :class="{ 'is-over': overWords > 0 }" role="status">
+          <template v-if="overWords > 0">
+            {{ sheetName[0]!.toUpperCase() + sheetName.slice(1) }} ei mahu veel umbes {{ overWords }} sõna.
+            Punane osa jääb üle – lühenda, kuni punast enam pole.
+          </template>
+          <template v-else>Kiri mahub nüüd {{ sheetName }}.</template>
+        </p>
         <p class="dialog__hint">
           Tühi rida alustab uut lõiku.<template v-if="fitHint">{{ ' ' }}{{ words }} sõna – kaardile mahub mugavalt umbes 70–100 sõna.</template>
         </p>
@@ -231,6 +268,46 @@ onBeforeUnmount(() => {
   margin: 0;
   font-size: 0.8rem;
   color: var(--ink-soft);
+}
+.fit-field {
+  position: relative;
+}
+.fit-field__mirror,
+.fit-field__input {
+  scrollbar-gutter: stable;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  font: inherit;
+  line-height: 1.5;
+}
+.fit-field__mirror {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  min-height: 0;
+  color: var(--ink);
+  border-color: transparent;
+}
+.fit-field__input {
+  position: relative;
+  display: block;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--ink);
+}
+.fit-field__over {
+  padding: 0;
+  background: #fde2e1;
+  color: var(--danger);
+}
+.fit-status {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--success, #2f6b3a);
+  &.is-over {
+    color: var(--danger);
+  }
 }
 .ai-fix {
   display: flex;

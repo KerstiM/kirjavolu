@@ -6,6 +6,7 @@ import { getContentType } from '../../domain/contentTypes'
 import { defaultOptions } from '../../domain/defaults'
 import { clone } from '../../utils/clone'
 import { usesScenarioEngine } from '../../domain/story/scenarioLetters'
+import { PUZZLE_ENABLED } from '../../domain/puzzleAvailability'
 import type { RequestFor } from '../../domain/models'
 import SegmentedControl from '../../components/ui/SegmentedControl.vue'
 import { ageBand, languageFor } from '../../domain/generators/audience'
@@ -126,7 +127,7 @@ const generalSummary = computed(() =>
     .toLowerCase(),
 )
 const lengthHint = computed(() =>
-  draft.value.options.letter.count >= 7
+  PUZZLE_ENABLED && draft.value.options.letter.count >= 7
     ? `${LETTER_LENGTH_HINT} ${draft.value.general.length === 'long' ? 'Pusleplakatil on siis suuremad kaardid.' : 'Lühemad kirjad mahuvad pusleplakati tavalistele kaartidele.'}`
     : LETTER_LENGTH_HINT,
 )

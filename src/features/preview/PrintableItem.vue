@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Pencil, RefreshCw } from 'lucide-vue-next'
+import { Pencil, RefreshCw, Scissors } from 'lucide-vue-next'
 import type { CertificateStyle, GeneratedItem, PatternId } from '../../domain/models'
 import type { PuzzleGrid } from '../../domain/puzzleGrid'
 import PatternBackground from './decoration/PatternBackground.vue'
@@ -22,8 +22,12 @@ const props = defineProps<{
   noVariants?: boolean
   /** Printed text size (pt), so the letter fits its sheet; see printFit.ts. */
   printPt?: number
+  /** No other variant of this text exists: "Uus variant" stays in sight, but off. */
+  noVariant?: boolean
+  /** Too long for a half page: a "Lühenda" button opens the editor with the extra text marked. */
+  shorten?: boolean
 }>()
-const emit = defineEmits<{ edit: []; regenerate: [] }>()
+const emit = defineEmits<{ edit: []; regenerate: []; shorten: [] }>()
 
 // A letter on its own has no label, so the tools name it by its greeting.
 const name = computed(() => props.item.label || props.item.heading || 'kiri')
@@ -54,8 +58,19 @@ const kindClass = computed(() => [
       <button type="button" class="tool" :aria-label="`Muuda: ${name}`" @click="emit('edit')">
         <Pencil :size="15" aria-hidden="true" /><span>Muuda</span>
       </button>
-      <button v-if="!noVariants" type="button" class="tool" :disabled="busy" :aria-label="`Uus variant: ${name}`" @click="emit('regenerate')">
+      <button
+        v-if="!noVariants"
+        type="button"
+        class="tool"
+        :disabled="busy || noVariant"
+        :title="noVariant ? 'Sellel kirjal teist varianti pole. Muuda teksti nupuga „Muuda“.' : undefined"
+        :aria-label="noVariant ? `Uus variant: ${name} – teist varianti pole` : `Uus variant: ${name}`"
+        @click="emit('regenerate')"
+      >
         <RefreshCw :size="15" aria-hidden="true" :class="{ spin: busy }" /><span>Uus variant</span>
+      </button>
+      <button v-if="shorten" type="button" class="tool tool--shorten" :aria-label="`Lühenda: ${name}`" @click="emit('shorten')">
+        <Scissors :size="15" aria-hidden="true" /><span>Lühenda</span>
       </button>
     </div>
 
@@ -120,7 +135,11 @@ const kindClass = computed(() => [
   }
   &:disabled {
     opacity: 0.6;
-    cursor: wait;
+    cursor: not-allowed;
+  }
+  &--shorten {
+    border-color: rgba(179, 38, 30, 0.35);
+    color: var(--danger);
   }
 }
 .edited-badge {
