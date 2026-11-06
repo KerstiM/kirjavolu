@@ -1,3 +1,5 @@
+/** The characters that can sit under a long letter. */
+export type CompanionId = 'pakapikk' | 'umbrik' | 'janes'
 export type PatternId = 'stars' | 'snow' | 'eggs' | 'confetti' | 'hearts' | 'leaves' | 'moons' | 'dots'
 
 /** Metadata of an uploaded picture; the pixels live in IndexedDB under `id`. */
@@ -34,6 +36,11 @@ export interface Decoration {
   cardFit?: CardFit
   /** Text size of letters on pages (all children without their own); unset = normal. */
   textSize?: TextSize
+  /**
+   * The character drawn under long letters, bottom right, with a short exclamation. Its pose
+   * follows from the letter, not from a choice; unset = none.
+   */
+  companion?: CompanionId | null
   /** Per child (by id): an own picture, or no background, on that child's sheets. */
   childDecorations?: Record<string, ChildDecoration>
 }

@@ -57,7 +57,11 @@ export interface FitOptions {
   backdrop?: boolean
   /** Smaller text (14 px): pages start from `SMALLER_PT` instead of their usual largest size. */
   smaller?: boolean
+  /** A character with its exclamation sits under the signature. */
+  companion?: boolean
 }
+/** Room the companion takes under the signature: its height (25 mm) and the gap above it. */
+export const COMPANION_MM = 30
 /** 14 px. */
 export const SMALLER_PT = 10.5
 
@@ -93,6 +97,7 @@ export function letterHeightMm(item: Letter, pt: number, options: FitOptions): n
     const rows = item.signature.split('\n').reduce((sum, row) => sum + lines(row, width, pt, charEm), 0)
     height += 3.2 - 0.75 * pt * MM_PER_PT + rows * SIGNATURE_LINE * pt * MM_PER_PT
   }
+  if (options.companion) height += COMPANION_MM
   return height
 }
 

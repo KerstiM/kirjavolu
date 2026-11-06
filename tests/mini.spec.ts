@@ -77,6 +77,6 @@ describe('toddler cards do not repeat', () => {
 describe('toddler finale', () => {
   it('ends the series with a wish for the big day', () => {
     const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [KAI], general: { length: 'short' } })).items
-    expect(items[23]!.body).toBe('Häid jõule, väike Kai! Päkapikk Tuduja kallistab sind. Musi-musi!')
+    expect(items[23]!.body).toBe('Häid jõule, väike Kai! Päkapikk Tuduja kallistab sind. Kalli-kalli!')
   })
 })

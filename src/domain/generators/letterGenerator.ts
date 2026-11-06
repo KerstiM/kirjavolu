@@ -273,7 +273,7 @@ export function generateLetters(
         ? `Tere, ${audience.v('väike', 'väikesed')} ${audience.names}! Mina olen ${sender}. Ma olen nii väike, et mahun ${audience.v('sinu', 'teie')} sussi sisse.`
         : `Tere, ${audience.v('väike', 'väikesed')} ${audience.names}! Mina olen ${sender}. Ma tulin ${audience.v('sulle', 'teile')} külla!`)
     // The last card is a warm wish for the big day, like "Häid jõule, väike Kai!".
-    const toddlerFinale = `${occasion.vocabulary.greeting}, ${audience.v('väike', 'väikesed')} ${audience.names}! ${sender} kallistab ${audience.v('sind', 'teid')}. Musi-musi!`
+    const toddlerFinale = `${occasion.vocabulary.greeting}, ${audience.v('väike', 'väikesed')} ${audience.names}! ${sender} kallistab ${audience.v('sind', 'teid')}. Kalli-kalli!`
     const toddlerBody = toddlerCard
       ? i === 0
         ? toddlerIntro

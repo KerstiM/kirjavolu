@@ -5,6 +5,8 @@ import type { CertificateStyle, GeneratedItem, PatternId } from '../../domain/mo
 import type { PuzzleGrid } from '../../domain/puzzleGrid'
 import PatternBackground from './decoration/PatternBackground.vue'
 import PuzzlePiece from './decoration/PuzzlePiece.vue'
+import CompanionFigure from '../../components/brand/companion/CompanionFigure.vue'
+import type { CompanionId } from '../../domain/models'
 
 const props = defineProps<{
   item: GeneratedItem
@@ -28,6 +30,8 @@ const props = defineProps<{
   noVariant?: boolean
   /** Too long for a half page: a "Lühenda" button opens the editor with the extra text marked. */
   shorten?: boolean
+  /** A character under the letter, bottom right, with its exclamation. */
+  companion?: { id: CompanionId; pose: number; line: string } | null
 }>()
 const emit = defineEmits<{ edit: []; regenerate: []; shorten: [] }>()
 
@@ -42,6 +46,7 @@ const kindClass = computed(() => [
     'has-frame': !!props.pattern && props.inkSaver,
     'is-upper': !!props.uppercase,
     'is-smaller': !!props.smaller,
+    'has-companion': !!props.companion,
   },
 ])
 </script>
@@ -84,6 +89,10 @@ const kindClass = computed(() => [
         <p v-for="(paragraph, index) in paragraphs" :key="index">{{ paragraph }}</p>
       </div>
       <p v-if="item.signature" class="paper__signature">{{ item.signature }}</p>
+      <div v-if="companion" class="paper__companion">
+        <p class="paper__bubble">{{ companion.line }}</p>
+        <CompanionFigure :id="companion.id" :pose="companion.pose" :size="76" />
+      </div>
     </div>
     <PuzzlePiece v-if="piece" v-bind="piece" class="paper__piece" />
   </article>
@@ -194,6 +203,36 @@ const kindClass = computed(() => [
   text-align: right;
   white-space: pre-line;
   font-weight: 500;
+}
+// The companion sits at the foot of the sheet, bottom right, not right after the text.
+.has-companion .paper__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.paper__companion {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+.paper__bubble {
+  position: relative;
+  max-width: 15rem;
+  margin: 0 0.4rem 1.6rem 0;
+  padding: 0.5rem 0.85rem;
+  border: 1.5px solid var(--lavender-mid, #afa9ec);
+  border-radius: 14px 14px 4px 14px;
+  background: var(--lavender-soft, #eeedfe);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--lavender-ink, #3c3489);
 }
 // Decoration layers: content sits above the background on a soft white panel.
 .paper__bg-image {
@@ -336,6 +375,13 @@ const kindClass = computed(() => [
   }
   .paper__heading {
     font-size: calc(var(--print-pt, 12pt) * 1.5);
+  }
+  .paper__companion {
+    padding-top: 2mm;
+  }
+  .paper__bubble {
+    font-size: 9.5pt;
+    margin-bottom: 7mm;
   }
   .paper__label {
     font-size: 8.5pt;

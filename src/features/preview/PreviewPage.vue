@@ -23,6 +23,7 @@ import { GenerationError } from '../../domain/generators/templateGenerator'
 import { contentToPlainText, downloadText, fileNameFor } from '../../utils/exportText'
 import { useCreationsStore } from './creationsStore'
 import PrintableItem from './PrintableItem.vue'
+import { companionFor, companionLine, type CompanionId } from '../../components/brand/companion/companions'
 import { fitsSheet, printTextPt, type FitOptions, type FitSheet } from './printFit'
 import { useNoVariants } from './useVariants'
 import { carryEdits } from './carryEdits'
@@ -297,10 +298,24 @@ function groupSmaller(group: ItemGroup): boolean {
   const own = group.child ? decoration.value.childDecorations?.[group.child.id]?.textSize : undefined
   return (own ?? decoration.value.textSize) === 'smaller'
 }
+/** The chosen character, while the letters are long ones: a short letter has no room for it. */
+const companionId = computed<CompanionId | null>(() => {
+  const request = content.value?.request
+  return request?.contentType === 'letter' && request.general.length === 'long' ? (decoration.value.companion ?? null) : null
+})
+/** What sits under one letter: its own pose and exclamation, greeting the child by name. */
+function companionOf(group: ItemGroup, entry: { item: GeneratedItem; index: number }) {
+  const sheet = groupLayout(group)
+  const request = content.value?.request
+  if (!companionId.value || !request || entry.item.kind !== 'letter' || (sheet !== 'half' && sheet !== 'page')) return null
+  const child = group.child ?? request.children.find((c) => c.id === entry.item.childId) ?? (request.children.length === 1 ? request.children[0] : undefined)
+  const { pose, line } = companionFor(content.value!.id, entry.index)
+  return { id: companionId.value, pose, line: companionLine(companionId.value, pose, line, child?.name) }
+}
 function fitOptions(group: ItemGroup, sheet: FitSheet): FitOptions {
   const background = groupBackground(group)
   const backdrop = !!groupImageUrl(group) || (!!background.pattern && !decoration.value.inkSaver)
-  return { sheet, uppercase: groupUppercase(group), backdrop, smaller: groupSmaller(group) }
+  return { sheet, uppercase: groupUppercase(group), backdrop, smaller: groupSmaller(group), companion: !!companionId.value && sheet !== 'cards' }
 }
 /** Long letters get a smaller print text, so that they fit their half or whole page. */
 function printPt(group: ItemGroup, item: GeneratedItem): number | undefined {
@@ -739,6 +754,7 @@ function exportText(): void {
               :no-variant="noVariantIds.has(entry.item.id)"
               :print-pt="printPt(group, entry.item)"
               :shorten="shortenIds.has(entry.item.id)"
+              :companion="companionOf(group, entry)"
               @shorten="openEditor(entry.item.id, fitOptions(group, 'half'))"
               @edit="openEditor(entry.item.id)"
               @regenerate="regenerate(entry.index)"
