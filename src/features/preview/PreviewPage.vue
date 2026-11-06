@@ -29,6 +29,7 @@ import { useNoVariants } from './useVariants'
 import { carryEdits } from './carryEdits'
 import ParentSheet from './ParentSheet.vue'
 import CustomizePanel from './CustomizePanel.vue'
+import PersonalSoon from './PersonalSoon.vue'
 import PassOfferCard from '../pass/PassOfferCard.vue'
 import { AI_SERIES_GENERATOR, FIX_ERROR_TEXTS, LettersRequestError, requestLetterFix, requestStoryPageFix } from '../pass/passLetters'
 import AiStoryCard from './AiStoryCard.vue'
@@ -660,6 +661,7 @@ function exportText(): void {
           </details>
           <p class="controls__note">Teksti muutmiseks vajuta kaardil „Muuda“. PDF-i saamiseks vali printimisaknas „Salvesta PDF-ina“.</p>
         </PanelSection>
+        <PersonalSoon v-if="!PASS_ENABLED && !aiWritten && content.request.contentType === 'letter' && content.request.occasionId === 'christmas'" />
       </aside>
 
       <div class="sheets">
@@ -974,6 +976,11 @@ function exportText(): void {
     border: 2px solid #f0e2cf;
     border-radius: 14px;
     background: #fffdf8;
+  }
+  // The "Varsti" section stays gray, like the offer on the finished letters' page.
+  :deep(.panel-section.soon) {
+    border-color: #e6ded3;
+    background: #f6f2ec;
   }
   .more {
     border-top: 2px dashed #ecd9bf;
