@@ -578,7 +578,7 @@ Tere, Kai! Mina olen Pisi-Pätsi – kõige pisem päkapikk, kes mahub sussi sis
 
 Markus ja Pääru saavad ka kirju oma päkapikkudelt. Me oleme kõik head sõbrad.
 
-Ma elan kaugel põhjas, kus on palju lund ja põhjapõtru. Igal õhtul kirjutan sulle töökojas kirja ja öösel toon selle sinu sussi sisse. Hommikul saad kuulda, mis minuga juhtus. Musi!
+Ma elan kaugel põhjas, kus on palju lund ja põhjapõtru. Igal õhtul kirjutan sulle töökojas kirja ja öösel toon selle sinu sussi sisse. Hommikul saad kuulda, mis minuga juhtus. Kalli-kalli!
 
 _Sinu pisike sõber · Pisi-Pätsi_
 
@@ -604,7 +604,7 @@ Keegi ütles: mää! See oli lammas. Keegi ütles: muu! See oli lehm. Ja siis ü
 
 „Põrsas Peppa?“ küsisin ma. Aga ei – see oli põhjapõder Välk, kes oli õppinud põrsast mängima. Kes ütleb mjäu? Mängi sina ka!
 
-_Musi · Pisi-Pätsi_
+_Soojalt · Pisi-Pätsi_
 
 ### 4. detsember 2026
 
@@ -678,7 +678,7 @@ Täna hommikul vajus müts mulle silmadele ja kõik läks pimedaks. Kus on kuusk
 
 Siis lükkasin mütsi üles – kuku! Kuusk oli alles ja mina ka. Pane sina ka käed silmadele … ja kuku!
 
-_Musi · Pisi-Pätsi_
+_Soojalt · Pisi-Pätsi_
 
 ### 10. detsember 2026
 
@@ -716,7 +716,7 @@ Siis koorisin ma seda. Koor tuli maha ja terve tuba hakkas lõhnama. Nuusuta ka:
 
 Sees olid väikesed viilud nagu päikese kiired. Ühe viilu andsin põhjapõder Välgule. Tema sõi selle koos koorega ära!
 
-_Musi · Pisi-Pätsi_
+_Soojalt · Pisi-Pätsi_
 
 ### 13. detsember 2026
 
@@ -768,7 +768,7 @@ Siis koputas keegi uksele: kopp-kopp-kopp. Tegin ukse lahti ja seal olid jänkud
 
 Me lasime nad sooja. Nad sõid porgandeid ja magasid ahju ääres. Hommikul hüppasid nad õue: hopp, hopp, hopp! Kuidas jänku kõrvad liiguvad? Näita kätega!
 
-_Musi · Pisi-Pätsi_
+_Soojalt · Pisi-Pätsi_
 
 ### 17. detsember 2026
 
@@ -792,7 +792,7 @@ Täna pidin kellukesi puhastama. Ma hõõrusin, kuni nad läikisid nagu päike. 
 
 Põhjapõdrad arvasid, et on aeg sõitma minna, ja jooksid ukse taha. Raputa käsi – kas sinu kellukesed kõlisevad ka?
 
-_Musi · Pisi-Pätsi_
+_Soojalt · Pisi-Pätsi_
 
 ### 19. detsember 2026
 
@@ -816,7 +816,7 @@ Pesas magasid kolm pisikest linnupoega. Täht oli pesa keskel ja helendas nagu v
 
 Keegi ei olnud pahane. Olime vaikselt-vaikselt, et pojad ei ärkaks. Ssss … Kuidas sina oled hästi vaikselt? Täna on pühapäev ja sussis on väike üllatus!
 
-_Musi · Pisi-Pätsi_
+_Soojalt · Pisi-Pätsi_
 
 > Valmista ette: komm sussi
 
@@ -842,7 +842,7 @@ Ma vaatasin lähemalt. Üks lill oli nagu sulg, teine nagu kuusk ja kolmas nagu 
 
 Siis puhusin aknale: hhhh! Klaas läks uduseks ja ma tegin sõrmega naerunäo. Teeme koos? Ring, kaks silma ja suur naeratus.
 
-_Musi · Pisi-Pätsi_
+_Soojalt · Pisi-Pätsi_
 
 ### 23. detsember 2026
 
@@ -864,9 +864,9 @@ Täna on jõululaupäev! Panin oma pisikese mütsi pähe ja Välk ootab juba akn
 
 Täna toovad kõik päkapikud oma viimase kirja ja lendavad siis koos tagasi töökotta, kus jõulud ootavad.
 
-Mulle meeldis sulle kirjutada. Jätan sulle ühe suure kalli ja hästi palju musisid. Häid jõule, Kai!
+Mulle meeldis sulle kirjutada. Jätan sulle ühe suure kalli ja hästi palju sooje mõtteid. Häid jõule, Kai!
 
-_Musi · Pisi-Pätsi_
+_Soojalt · Pisi-Pätsi_
 
 ## Lapsevanemale
 

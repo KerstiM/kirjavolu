@@ -48,7 +48,7 @@ export const VOICES: Record<Band, Voice> = {
     label: 'Kõige pisem päkapikk (nt Pisi-Pätsi Roosaninake)',
     personality:
       'Pisike, hell ja mänguline. Tunneb rõõmu igapäevastest avastustest, kasutab häälitsusi ja kordusi. Kirjad on lühikesed ja mõeldud ette lugemiseks.',
-    signOffs: ['Kalli-kalli', 'Musi', 'Sinu pisike sõber', 'Kallistusega'],
+    signOffs: ['Kalli-kalli', 'Soojalt', 'Sinu pisike sõber', 'Kallistusega'],
   },
 }
 

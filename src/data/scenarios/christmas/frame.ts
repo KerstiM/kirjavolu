@@ -42,7 +42,7 @@ export const FRAME_SCENARIOS: Scenario[] = [
       `Tere, ${c.name}! Mina olen ${c.helper}${c.frame.origin ? ` – ${c.frame.origin}` : ', Jõuluvana töökoja kõige pisem päkapikk. Ma olen nii väike, et mahun sinu sussi sisse'}.`,
       c.siblings &&
         `${c.siblings} ${c.siblingCount > 1 ? 'saavad' : 'saab'} ka kirju oma päkapikkudelt. Me oleme kõik head sõbrad.`,
-      'Ma elan kaugel põhjas, kus on palju lund ja põhjapõtru. Igal õhtul kirjutan sulle töökojas kirja ja öösel toon selle sinu sussi sisse. Hommikul saad kuulda, mis minuga juhtus. Musi!',
+      'Ma elan kaugel põhjas, kus on palju lund ja põhjapõtru. Igal õhtul kirjutan sulle töökojas kirja ja öösel toon selle sinu sussi sisse. Hommikul saad kuulda, mis minuga juhtus. Kalli-kalli!',
     ],
   },
   {
@@ -93,14 +93,14 @@ export const FRAME_SCENARIOS: Scenario[] = [
         goingHome(c.frame.allHelpers),
         `Ma pesin viimase pudrupoti puhtaks ja panin mütsi pähe. Ma hakkan sind igatsema! Häid jõule, ${c.name}!`,
       ],
-      toddler: (c) => [`Häid jõule, väike ${c.name}! ${c.helper} kallistab sind. Musi-musi!`],
+      toddler: (c) => [`Häid jõule, väike ${c.name}! ${c.helper} kallistab sind. Kalli-kalli!`],
     },
     readAloud: (c) => [
       `${c.frame.eve ? 'Täna on jõululaupäev!' : 'See on minu viimane kiri.'} Panin oma pisikese mütsi pähe ja Välk ootab juba akna all.`,
       c.frame.allHelpers
         ? 'Täna toovad kõik päkapikud oma viimase kirja ja lendavad siis koos tagasi töökotta, kus jõulud ootavad.'
         : 'Kui kiri on sussis, lendame Välguga tagasi töökotta, kus jõulud ootavad.',
-      `Mulle meeldis sulle kirjutada. Jätan sulle ühe suure kalli ja hästi palju musisid. Häid jõule, ${c.name}!`,
+      `Mulle meeldis sulle kirjutada. Jätan sulle ühe suure kalli ja hästi palju sooje mõtteid. Häid jõule, ${c.name}!`,
     ],
   },
 ]
@@ -147,7 +147,7 @@ export const SINGLE_LETTER: Record<Band | 'readAloud', { open: (c: ScenarioConte
   readAloud: {
     open: (c) =>
       `Tere, ${c.name}! Mina olen ${c.helper}, Jõuluvana töökoja kõige pisem päkapikk. Ma tahan sulle rääkida, mis minuga juhtus.`,
-    close: (c) => `Häid jõule, ${c.name}! Musi!`,
+    close: (c) => `Häid jõule, ${c.name}! Kalli-kalli!`,
   },
 }
 

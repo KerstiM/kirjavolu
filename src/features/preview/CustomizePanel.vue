@@ -10,6 +10,8 @@ import type { RequestFor } from '../../domain/models'
 import SegmentedControl from '../../components/ui/SegmentedControl.vue'
 import PanelSection from '../../components/ui/PanelSection.vue'
 import ChildContentBlock from './ChildContentBlock.vue'
+import CompanionPicker from './CompanionPicker.vue'
+import type { CompanionId } from '../../domain/models'
 import PersonaEditor from '../creation/options/PersonaEditor.vue'
 import { suggestPersonas } from '../../data/templates/personas'
 import { ageBand, languageFor } from '../../domain/generators/audience'
@@ -133,6 +135,12 @@ function setTextSize(value: TextSize, child?: ChildProfile): void {
   emit('decoration', { ...props.decoration, childDecorations: { ...props.decoration.childDecorations, [child.id]: { ...own, textSize: value } } })
 }
 
+/** The character under long letters: only offered for the long letter, where there is room. */
+const companionOn = computed(() => letters.value && draft.value.general.length === 'long')
+function setCompanion(value: CompanionId | null): void {
+  emit('decoration', { ...props.decoration, companion: value })
+}
+
 const labelOf = <T,>(list: { value: T; label: string }[], value: T) => list.find((o) => o.value === value)?.label ?? ''
 const generalSummary = computed(() =>
   [
@@ -248,6 +256,7 @@ const contentSummary = computed(() => {
               :options="lengthOptions"
               :hint="lengthHint"
             />
+            <CompanionPicker v-if="companionOn" :model-value="decoration.companion ?? null" name="companion" @update:model-value="setCompanion" />
           </div>
         </LetterOptionsForm>
       </PanelSection>

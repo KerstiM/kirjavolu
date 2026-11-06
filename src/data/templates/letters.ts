@@ -169,7 +169,7 @@ export const TODDLER_OPENINGS: Line[] = [
 
 export const TODDLER_CLOSINGS: Line[] = [
   () => `Kalli-kalli!`,
-  () => `Musi põsele!`,
+  () => `Suur kalli sulle!`,
   () => `Ole rõõmus ja naera palju!`,
   () => `Saadan sulle päikest!`,
   () => `Head ööd, väike sõber!`,

@@ -44,7 +44,7 @@ Ma tahtsin ka lombis hüpata. Aga talvel on lombid jääs. Ma hüppasin – ja l
 
 Lumi pritsis ka! Pläts! See oli peaaegu sama lõbus kui lomp. Teeme koos: üks, kaks, kolm – pläts! – ja plaksutame käsi.
 
-Häid jõule, Kai! Musi!
+Häid jõule, Kai! Kalli-kalli!
 
 _Sinu pisike sõber · Pisi-Pätsi_
 
