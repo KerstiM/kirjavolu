@@ -204,18 +204,14 @@ const kindClass = computed(() => [
   white-space: pre-line;
   font-weight: 500;
 }
-// The companion sits at the foot of the sheet, bottom right, not right after the text.
-.has-companion .paper__content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
+// The companion sits right under the signature, bottom right of the text. At the foot of the
+// sheet it was the first thing cut when a browser broke the lines a little differently.
 .paper__companion {
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
   gap: 0.6rem;
-  margin-top: auto;
+  margin-top: 0.5rem;
   padding-top: 0.75rem;
   break-inside: avoid;
   page-break-inside: avoid;

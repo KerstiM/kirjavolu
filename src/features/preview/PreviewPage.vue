@@ -992,18 +992,22 @@ function exportText(): void {
 }
 // On screen the sheets keep the shape they print in (A4 inside the 14mm margins, see the
 // print heights below), so a whole page looks like a whole page; a long text still grows it.
+// The shape is a minimum height, not an aspect ratio: a ratio holds the box to the sheet's
+// shape however narrow the screen is, and a phone cut the text off at the bottom of the card.
 .sheet--page {
   max-width: 720px;
   margin-inline: auto;
+  container-type: inline-size;
   :deep(.paper) {
-    aspect-ratio: 182 / 245;
+    min-height: calc(100cqw * 245 / 182);
   }
 }
 .sheet--half {
   max-width: 720px;
   margin-inline: auto;
+  container-type: inline-size;
   :deep(.paper) {
-    aspect-ratio: 182 / 120;
+    min-height: calc(100cqw * 120 / 182);
   }
 }
 // The letters in date order while reading; the poster sheets are still laid out (out of
