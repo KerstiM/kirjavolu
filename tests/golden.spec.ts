@@ -21,6 +21,27 @@ describe('golden collections', () => {
     )
   })
 
+  it('variants: single letters, and the family in short letters with the other language', async () => {
+    const singles = makeRequest('letter', {
+      occasionId: 'christmas',
+      children: [MARKUS, PAARU, KAI],
+      options: { startDate: '2026-12-01', count: 1 },
+    }) as RequestFor<'letter'>
+    const switched = makeRequest('letter', {
+      occasionId: 'christmas',
+      children: [MARKUS, PAARU, KAI],
+      general: { length: 'short' },
+      options: {
+        startDate: '2026-12-01',
+        count: 7,
+        language: { [MARKUS.id]: 'simple', [PAARU.id]: 'rich', [KAI.id]: 'rich' },
+      },
+    }) as RequestFor<'letter'>
+    await expect(
+      `${formatCollection(runTemplates(singles))}\n\n${formatCollection(runTemplates(switched))}`,
+    ).toMatchFileSnapshot('../docs/samples/christmas-variants.md')
+  })
+
   it('Pääru alone, without the story arc', async () => {
     const request = makeRequest('letter', {
       occasionId: 'christmas',

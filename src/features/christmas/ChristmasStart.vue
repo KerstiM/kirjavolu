@@ -122,6 +122,15 @@ const aboutCount = (extra: Extra) =>
 
 onMounted(() => track('christmas_start', {}))
 
+// From 1 December 24 letters; a later start has the letters until Christmas Eve.
+const letterOptions = defaultOptions('christmas').letter
+const heading =
+  letterOptions.count > 1 ? `Päkapikk kirjutab sinu lapsele ${letterOptions.count} jõulukirja` : 'Päkapikk kirjutab sinu lapsele jõulukirja'
+const lead =
+  letterOptions.count > 1
+    ? `Üks kiri igaks hommikuks kuni jõululaupäevani. Prindi välja ja peida sussi sisse. Tasuta.`
+    : 'Prindi välja ja peida sussi sisse. Tasuta.'
+
 function childrenForLetters(): ChildProfile[] | null {
   if (!count.value && !adding.value) {
     error.value = 'Vali, kellele kirjad on.'
@@ -198,7 +207,7 @@ async function start(): Promise<void> {
       occasionId: 'christmas',
       general: { ...DEFAULT_GENERAL },
       seed: Date.now() % 2147483647,
-      options: defaultOptions('christmas').letter,
+      options: { ...letterOptions },
     })
     creations.add(content)
     track('free_generated', { type: 'letter', occasion: 'christmas', items: content.items.length })
@@ -215,8 +224,8 @@ async function start(): Promise<void> {
   <div class="design-new christmas">
     <section class="container section christmas-start" aria-labelledby="christmas-title">
       <Mascot mood="wave" :size="88" />
-      <h1 id="christmas-title">Päkapikk kirjutab sinu lapsele 24 jõulukirja</h1>
-      <p class="christmas-start__lead">Üks kiri igaks hommikuks 1.–24. detsembrini. Prindi välja ja peida sussi sisse. Tasuta.</p>
+      <h1 id="christmas-title">{{ heading }}</h1>
+      <p class="christmas-start__lead">{{ lead }}</p>
       <JourneySteps :current="1" />
 
       <form class="christmas-start__form" novalidate @submit.prevent="start">
@@ -232,7 +241,7 @@ async function start(): Promise<void> {
           </label>
         </fieldset>
         <p v-if="count > 1" class="christmas-start__family">
-          Õed-vennad saavad seotud kirjad: sama päkapikumaailm, igaühele oma abiline ja vahel ühine ülesanne.
+          Õed-vennad saavad seotud kirjad: sama päkapikumaailm, igaühele oma abiline ja vahel kutse midagi koos teha.
         </p>
         <p v-else class="christmas-start__who">Kellele?</p>
 

@@ -119,7 +119,8 @@ export const OLDER_SCENARIOS: Scenario[] = [
     variants: {
       older: (c) => [
         'Täna hommikul leidsin oma tööpingilt kokkumurtud sedeli. Allkirja polnud, ainult viis rida:',
-        NOTE_LINES.join(' / '),
+        // The lines are the puzzle: each on its own line, so their first letters stand in a column.
+        NOTE_LINES.join('\n'),
         c.uses('codes')
           ? 'Esmapilgul tundub see lihtsalt kehv luuletus. Salakoodimeister aga teab, et nii kehv luuletus ei saa olla juhuslik. Mina taipasin alles kolmanda tassi tee juures, kust otsida.'
           : 'Esmapilgul tundub see lihtsalt kehv luuletus. Aga nii kehv luuletus ei saa olla juhuslik. Mina taipasin alles kolmanda tassi tee juures, kust otsida.',

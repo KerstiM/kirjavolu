@@ -167,5 +167,11 @@ const solved = computed(() => props.content.items.filter((item) => item.answer |
     background: #fff;
     font-size: 11pt;
   }
+  // A heading stays with what it heads.
+  h2,
+  h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
 }
 </style>

@@ -20,6 +20,8 @@ const props = defineProps<{
   readonly?: boolean
   /** Written by the AI: it can be edited by hand, but has no template variants. */
   noVariants?: boolean
+  /** Printed text size (pt), so the letter fits its sheet; see printFit.ts. */
+  printPt?: number
 }>()
 const emit = defineEmits<{ edit: []; regenerate: [] }>()
 
@@ -38,7 +40,7 @@ const kindClass = computed(() => [
 </script>
 
 <template>
-  <article class="paper" :class="kindClass">
+  <article class="paper" :class="kindClass" :style="printPt ? { '--print-pt': `${printPt}pt` } : undefined">
     <img
       v-if="backgroundUrl"
       :src="backgroundUrl"
@@ -198,7 +200,8 @@ const kindClass = computed(() => [
   padding: 2.8rem;
 }
 .paper {
-  overflow: hidden;
+  // Clip, not hidden: a clipped box still grows with its text, a scroll box would cut it.
+  overflow: clip;
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
 }
@@ -287,18 +290,27 @@ const kindClass = computed(() => [
 }
 
 @media print {
+  // A signature never starts a page of its own.
+  .paper__signature {
+    break-before: avoid;
+    page-break-before: avoid;
+  }
+  .paper__body p:last-child {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
   .paper {
     box-shadow: none;
     border-radius: 0;
     padding: 9mm 10mm 8mm;
-    font-size: 12pt;
+    font-size: var(--print-pt, 12pt);
   }
   .paper__body p {
-    font-size: 12pt;
+    font-size: var(--print-pt, 12pt);
     line-height: 1.55;
   }
   .paper__heading {
-    font-size: 18pt;
+    font-size: calc(var(--print-pt, 12pt) * 1.5);
   }
   .paper__label {
     font-size: 8.5pt;

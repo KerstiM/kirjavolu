@@ -59,7 +59,7 @@ describe('linked letters', () => {
     expect(markus).toContain('Mina olen Kõpsu-Mõpsu Kuubikuvõlur')
     expect(markus).toContain('Pääru juures Tipp-Topp Riisiterake')
     expect(markus).toContain('Kai juures Pisi-Pätsi')
-    expect(byChild(items, KAI.id)[0]!.body).toContain('Markus ja Pääru saavad ka kirju!')
+    expect(byChild(items, KAI.id)[0]!.body).toContain('Markus ja Pääru saavad ka kirju')
   })
 
   it('both letters of a paired day tell the same thing from both sides', () => {
@@ -69,18 +69,23 @@ describe('linked letters', () => {
       const receiverName = [MARKUS, PAARU, KAI].find((c) => c.id === day.receiverId)!
       const giverName = [MARKUS, PAARU, KAI].find((c) => c.id === day.giverId)!.name
       expect(giver).toMatch(new RegExp(receiverName.name.slice(0, 4)))
-      if (day.template.id !== 'secret-letter' && day.template.id !== 'kindness') expect(receiver).toContain(giverName)
+      expect(receiver).toContain(giverName)
     }
   })
 
-  it('a letter left by a slipper is found the next morning, not the same day', async () => {
+  it('paired days invite both children to the same thing, with the names in the nominative', async () => {
     const { PAIR_TEMPLATES } = await import('@/data/templates/pairs')
-    const template = PAIR_TEMPLATES.find((t) => t.id === 'secret-letter')!
-    const ctx = { giver: 'Markus', giverGenitive: 'Markuse', receiver: 'Pääru', receiverGenitive: 'Pääru', receiverAllative: 'Päärule', receiverComitative: 'Pääruga', receiverHelper: 'Tipp-Topp' }
-    expect(template.giver(ctx)).toMatch(/õhtul/)
-    expect(template.giver(ctx)).toMatch(/homme hommikul/)
-    expect(template.receiverReader!(ctx)).toMatch(/homme hommikul/)
-    expect(template.receiverReader!(ctx)).not.toMatch(/\bTäna\b/)
+    for (const template of PAIR_TEMPLATES) {
+      for (const receiverLittle of [false, true]) {
+        const ctx = { giver: 'Mart', receiver: 'Mikk', receiverLittle, receiverHelper: 'Tipp-Topp' }
+        const texts = [template.giver(ctx), template.receiverReader?.(ctx), template.receiverToddler?.(ctx)].filter(Boolean) as string[]
+        for (const text of texts) {
+          // An invitation, not a promise for the other child or a task for an elf's helper.
+          expect(text, template.id).toMatch(/võite/)
+          expect(text, template.id).not.toMatch(/Marti|Mikki|Martile|Mikkile|Martiga|Mikkiga|salaja|lubas/)
+        }
+      }
+    }
   })
 
   it('siblings never get the same story part', async () => {
@@ -102,7 +107,7 @@ describe('linked letters', () => {
 
   it('the last letter is a shared farewell for the readers', () => {
     expect(byChild(items, MARKUS.id)[23]!.body).toContain('Kõpsu-Mõpsu, Tipp-Topp ja Pisi-Pätsi')
-    expect(byChild(items, KAI.id)[23]!.body).toContain('Häid jõule, väike Kai!')
+    expect(byChild(items, KAI.id)[23]!.body).toContain('Häid jõule, Kai!')
   })
 
   it('shared mode still makes one letter for all', () => {
@@ -114,7 +119,7 @@ describe('linked letters', () => {
   it('parent sheet lists helpers and paired days', () => {
     const instructions = runTemplates(family()).instructions
     expect(instructions[0]!.title).toBe('Pere päkapikud')
-    expect(instructions[1]!.steps.some((s) => /^5\. detsember: Markus → /.test(s))).toBe(true)
+    expect(instructions[1]!.steps.some((s) => /^\d+\. detsember: Markus ja (Pääru|Kai) \(.+\)\. Mõlema kirjas on kutse/.test(s))).toBe(true)
   })
 })
 

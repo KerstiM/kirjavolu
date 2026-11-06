@@ -30,8 +30,8 @@ export const WORLD_SCENARIOS: Scenario[] = [
       ],
       young: () => [
         'Oi-oi! Ma ehitasin eile terve päeva lumememme. Tal oli porgandnina, kaks nööpi ja minu vana müts.',
-        'Õhtul harjutas põhjapõder Välk katusele maandumist. Ta libises katuselt alla – ja maandus otse minu lumememme peale! Põmm!',
-        'Nüüd seisab õues lumememm, kellel on sarved. Porgandi sõi Välk ära. Ma arvan, et nad said sõpradeks.',
+        'Õhtul harjutas põhjapõder Välk katusele maandumist. Ta libises katuselt alla – otse mu lumememme peale ukse ees! Põmm!',
+        'Välk ronis välja, aga lumememme pähe jäid kaks oksa nagu sarved. Porgandi sõi Välk ära. Nad said sõpradeks.',
       ],
       toddler: () => [
         'Põhjapõder Välk hüppas lumme. Põmm! Ainult sarved paistavad. Välk raputab end: sahh-sahh-sahh! Kas sina oskad ka end raputada?',
@@ -88,7 +88,7 @@ export const WORLD_SCENARIOS: Scenario[] = [
         `Täna õhtul lähen uuesti katusele, seekord ilma tekita, et mitte magama jääda. ${c.cast.young} lubas tulla kahe tassi kakaoga. Virmalisi ei pruugi tulla, aga see ei olegi kõige tähtsam. Ma ei mäleta, millal ma viimati lihtsalt taevast vaatasin koos kellegagi, kes ei kiirusta.`,
       ],
       young: (c) => [
-        `Täna õhtul läheme katusele mõlemad. Mina võtan kaks tassi kakaod ja ${c.cast.older} võtab teki. Ma ütlesin talle, et kui ta jälle magama jääb, äratan ta kohe, kui taevas roheliseks läheb. Kass Nurr tuleb ka. Tema on meie äratuskell.`,
+        `Täna õhtul läheme katusele mõlemad. Mina võtan kaks tassi kakaod. ${c.cast.older} jätab teki seekord maha, et mitte magama jääda. Ma ütlesin talle, et kui ta jälle magama jääb, äratan ta kohe, kui taevas roheliseks läheb. Kass Nurr tuleb ka. Tema on meie äratuskell.`,
       ],
     },
     variants: {
@@ -113,11 +113,11 @@ export const WORLD_SCENARIOS: Scenario[] = [
     tags: ['cat', 'gifts'],
     tones: ['humorous'],
     more: {
-      older: () => [
-        'Täna hommikul leidsin Nurri jälle kingikottide juurest. Seekord istus ta karbi kõrval ja vaatas mind väga tähtsalt, nagu ootaks oma paberit ja paela. Tegin talle ahju juurde oma karbi, vana tekiga ja sildiga „Mitte saata“. Ta magab seal juba kolm tundi.',
+      older: (c) => [
+        `Täna hommikul leidsin Nurri jälle kingikottide juurest. Seekord istus ta karbi kõrval ja vaatas mind väga tähtsalt, nagu ootaks oma paberit ja paela. Siis tegi ${c.cast.young} talle ahju juurde oma karbi, vana tekiga, ja mina kirjutasin sildi: „Mitte saata“. Nurr magab seal juba kolm tundi.`,
       ],
-      young: () => [
-        'Pärast seda tegin Nurrile oma karbi. Sees on pehme tekk ja peal silt: „Seda pakki ära saada!“ Nurrile see meeldis. Ta magas seal terve öö ja nurrus nii kõvasti, et karp värises. Hommikul käis ta kõiki pakke nuusutamas. Vist kontrollis, et kuskil poleks veel mõnda kassi.',
+      young: (c) => [
+        `Pärast seda tegin Nurrile oma karbi. Sees on pehme tekk ja peal silt, mille kirjutas ${c.cast.older}: „Mitte saata“. Nurrile see meeldis. Ta magas seal terve öö ja nurrus nii kõvasti, et karp värises. Hommikul käis ta kõiki pakke nuusutamas. Vist kontrollis, et kuskil poleks veel mõnda kassi.`,
       ],
     },
     variants: {
@@ -272,13 +272,13 @@ export const WORLD_SCENARIOS: Scenario[] = [
         'Nad sõid ära kõik lumememmede porgandid. Nüüd elavad nad puuriida taga ja ma viin neile igal hommikul kapsalehti.',
       ],
       toddler: () => [
-        'Väljas tuiskab: huuu! Kopp-kopp! Kes tuli? Jänkud tulid! Jänku hüppab: hopp-hopp. Kas sina oskad hüpata nagu jänku?',
+        'Väljas tuiskab: huuu! Kopp-kopp! Kes tuli? Jänkud tulid! Jänku hüppab: hopp-hopp. Teeme jänkukõrvad – käed pea peale!',
       ],
     },
     readAloud: () => [
       'Eile õhtul tuli tuisk. Tuul puhus: huuu-huuu! Aknast ei paistnud midagi, ainult valge.',
       'Siis koputas keegi uksele: kopp-kopp-kopp. Tegin ukse lahti ja seal olid jänkud – ema, isa ja pisikesed jänkupojad, kõik lumised.',
-      'Me lasime nad sooja. Nad sõid porgandeid ja magasid ahju ääres. Hommikul hüppasid nad õue: hopp, hopp, hopp! Kuidas sina hüppad?',
+      'Me lasime nad sooja. Nad sõid porgandeid ja magasid ahju ääres. Hommikul hüppasid nad õue: hopp, hopp, hopp! Kuidas jänku kõrvad liiguvad? Näita kätega!',
     ],
   },
   {

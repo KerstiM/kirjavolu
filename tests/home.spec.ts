@@ -6,6 +6,14 @@ import { createMemoryHistory, createRouter } from 'vue-router'
 import App from '@/app/App.vue'
 import { routes } from '@/app/router'
 import { PASS_KEY } from '@/features/pass/seasonPass'
+
+// The pass is off as it is now; a test that needs it on sale turns it on.
+const sale = vi.hoisted(() => ({ on: false }))
+vi.mock('@/features/pass/availability', () => ({
+  get PASS_ENABLED() {
+    return sale.on
+  },
+}))
 import { useCreationsStore } from '@/features/preview/creationsStore'
 import { currentPromo } from '@/features/home/seasonal'
 import { templateGenerator } from '@/domain/generators/templateGenerator'
@@ -30,6 +38,7 @@ beforeEach(() => {
   inSeason()
 })
 afterEach(() => {
+  sale.on = false
   vi.useRealTimers()
   localStorage.removeItem(PASS_KEY)
 })
@@ -47,16 +56,48 @@ describe('the home page', () => {
     expect(document.querySelector('.home')!.textContent).not.toMatch(/tehisaru|\bAI\b/)
   })
 
-  it('lists the six kinds right after the hero; only the letter and the certificate open the wizard for now', async () => {
+  it('shows what can be made now and the gift coming next; the rest opens under "Vaata veel"', async () => {
     await open('/')
+    const user = userEvent.setup()
     const types = await screen.findByRole('region', { name: 'Mida soovid luua?' })
     const links = within(types).getAllByRole('link')
     expect(links.map((link) => link.getAttribute('href'))).toEqual([
       '/loo?tyyp=letter',
       '/loo?tyyp=certificate',
     ])
-    expect(within(types).getByText('Salamissioon').closest('.postcard')).toHaveTextContent('Töös')
-    expect(within(types).getByRole('link', { name: /Diplom ja õnnitluskaart/ })).toBeInTheDocument()
+    expect(within(types).getByText('Kingitus emale või isale').closest('.postcard')).toHaveTextContent('Varsti')
+    expect(within(types).queryByText('Salamissioon')).not.toBeVisible()
+    expect(within(types).queryByText('Jõuluvana tervitus')).not.toBeVisible()
+
+    const more = within(types).getByRole('button', { name: 'Vaata veel (5)' })
+    expect(more).toHaveAttribute('aria-expanded', 'false')
+    await user.click(more)
+    expect(more).toHaveAttribute('aria-expanded', 'true')
+    const later = within(types).getByRole('list', { name: 'Tulekul' })
+    expect(later).toBeVisible()
+    expect(within(later).getAllByRole('listitem').map((item) => item.querySelector('.postcard__title')?.firstChild?.textContent?.trim())).toEqual([
+      'Aardejaht',
+      'Personaalne lugu',
+      'Salamissioon',
+      'Tegevuskalender',
+      'Jõuluvana tervitus',
+    ])
+    expect(within(later).getByText('Salamissioon').closest('.postcard')).toHaveTextContent('Töös')
+    expect(within(later).queryByRole('link')).toBeNull()
+  })
+
+  it('does not mention the Jõulupass anywhere while it is not on sale, even with a pass in this browser', async () => {
+    localStorage.setItem(PASS_KEY, JSON.stringify({ code: 'KV-7KQM-3FXA', generationsLeft: 7, validUntil: '2099-01-31T21:59:59.000Z' }))
+    await open('/')
+    await screen.findByRole('region', { name: 'Mida soovid luua?' })
+    await userEvent.setup().click(screen.getByRole('button', { name: /Vaata veel/ }))
+    expect(document.body.textContent).not.toMatch(/Jõulupass/)
+    expect(screen.queryByRole('link', { name: /Müügitingimused/ })).toBeNull()
+  })
+
+  it('leads /joulupass home while the pass is not on sale', async () => {
+    const { router } = await open('/joulupass')
+    expect(router.currentRoute.value.path).toBe('/')
   })
 
   it('offers the Christmas letters in season, leading to /joulukirjad', async () => {
@@ -78,6 +119,7 @@ describe('the home page', () => {
   })
 
   it('shows the pass balance as small secondary information', async () => {
+    sale.on = true
     localStorage.setItem(PASS_KEY, JSON.stringify({ code: 'KV-7KQM-3FXA', generationsLeft: 7, validUntil: '2099-01-31T21:59:59.000Z' }))
     await open('/')
     const season = await screen.findByRole('region', { name: /24 hommikut täis üllatusi/ })

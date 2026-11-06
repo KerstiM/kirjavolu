@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import HomePage from '../features/home/HomePage.vue'
+import { PASS_ENABLED } from '../features/pass/availability'
 
 /**
  * Two main journeys: the home page ("/") with every kind of creation, and the Christmas
@@ -18,6 +19,8 @@ const Privacy = () => import('../features/legal/PrivacyPage.vue')
 const ChristmasStart = () => import('../features/christmas/ChristmasStart.vue')
 const ChristmasLetters = () => import('../features/christmas/ChristmasLetters.vue')
 const LegacyHome = () => import('../features/home/new/HomeNewPage.vue')
+// While the Jõulupass is not on sale its page leads home.
+const passOnly = () => PASS_ENABLED || '/'
 
 export const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: HomePage, meta: { title: 'Kirjavõlu' } },
@@ -29,7 +32,7 @@ export const routes: RouteRecordRaw[] = [
   { path: '/lapsed', name: 'children', component: Children, meta: { title: 'Lapsed' } },
   { path: '/naide', name: 'sample', component: Sample, meta: { title: 'Näide' } },
   // Jõulupass: the code, what is left, and typing a code in on another device.
-  { path: '/joulupass', name: 'season-pass', component: Pass, meta: { title: 'Jõulupass' } },
+  { path: '/joulupass', name: 'season-pass', component: Pass, beforeEnter: passOnly, meta: { title: 'Jõulupass' } },
   { path: '/tingimused', name: 'terms', component: Terms, meta: { title: 'Müügitingimused' } },
   { path: '/privaatsus', name: 'privacy', component: Privacy, meta: { title: 'Privaatsus' } },
   {
@@ -50,7 +53,7 @@ export const routes: RouteRecordRaw[] = [
   { path: '/uus-disain/looming/:id', name: 'preview-new', component: Preview, props: true, meta: { title: 'Eelvaade' } },
   { path: '/uus-disain/lapsed', name: 'children-new', component: Children, meta: { title: 'Lapsed' } },
   { path: '/uus-disain/naide', name: 'sample-new', component: Sample, meta: { title: 'Näide' } },
-  { path: '/uus-disain/joulupass', name: 'season-pass-new', component: Pass, meta: { title: 'Jõulupass' } },
+  { path: '/uus-disain/joulupass', name: 'season-pass-new', component: Pass, beforeEnter: passOnly, meta: { title: 'Jõulupass' } },
   { path: '/uus-disain/tingimused', name: 'terms-new', component: Terms, meta: { title: 'Müügitingimused' } },
   { path: '/uus-disain/privaatsus', name: 'privacy-new', component: Privacy, meta: { title: 'Privaatsus' } },
   { path: '/ud2/alusta', name: 'ud2-start', component: ChristmasStart, meta: { title: 'Jõulukirjad' } },

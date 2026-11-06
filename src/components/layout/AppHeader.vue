@@ -8,6 +8,7 @@ import { newCreationRequests } from '../../features/creation/newCreation'
 import { useCreationsStore } from '../../features/preview/creationsStore'
 import { currentPromo } from '../../features/home/seasonal'
 import { isActive, loadPass, PASS_CHANGED, PASS_PAGE } from '../../features/pass/seasonPass'
+import { PASS_ENABLED } from '../../features/pass/availability'
 
 const route = useRoute()
 // Everything already made stays one click away, whichever page the parent is on.
@@ -15,7 +16,7 @@ const creations = useCreationsStore()
 // In season the menu has a short way to the seasonal journey (now the Christmas letters).
 const promo = currentPromo()
 // A family with a Jõulupass sees what is left; without one the link would only be an ad.
-const pass = ref(loadPass())
+const pass = ref(PASS_ENABLED ? loadPass() : null)
 const refreshPass = () => (pass.value = loadPass())
 onMounted(() => window.addEventListener(PASS_CHANGED, refreshPass))
 onBeforeUnmount(() => window.removeEventListener(PASS_CHANGED, refreshPass))

@@ -1,12 +1,11 @@
 import type { ChildProfile, ElfPersona, RequestFor } from '../models'
 import { addDays, joinList, nameCase, namesInCase } from '../text/estonian'
 import { createRng, hashSeed } from '../text/random'
-import { adjustBand, ageBand, listensToLongerStories } from '../generators/audience'
+import { ageBand, languageFor, textLevel } from '../generators/audience'
 import { familyExtras } from '../generators/familyEvents'
 import { familyPlan, pairContext, personasFor, type PairedDay } from '../generators/linkedLetters'
 import { HELPER_INVITE, HELPER_MISSIONS, type HelperContext } from '../../data/templates/helper'
 import { RIDDLES } from '../../data/templates/riddles'
-import { ACTIVITIES, MATERIAL_LABELS } from '../../data/templates/activities'
 import { STAND_IN_CAST } from './characters'
 import { narrowedBy, PERSONAL_HOOKS, profileHooks } from './hooks'
 import { effectiveHooks } from './sample'
@@ -30,8 +29,8 @@ export const PERSONALIZATION = {
   perHookPer24: 2,
 }
 
-/** Days between optional activities by letter length; "short" letters get none. */
-const ACTIVITY_GAP: Record<'medium' | 'long', number> = { medium: 3, long: 2 }
+/** Days between optional activities; "short" letters get none ("medium" is from older creations). */
+const ACTIVITY_GAP: Record<'medium' | 'long', number> = { medium: 3, long: 3 }
 
 export interface PlannedChild {
   child: ChildProfile
@@ -46,7 +45,14 @@ export interface PlannedChild {
 }
 
 export type DayContent =
-  | { kind: 'scenario'; scenarioId: string; stageId?: string; activity: boolean }
+  | {
+      kind: 'scenario'
+      scenarioId: string
+      stageId?: string
+      activity: boolean
+      /** A single letter (count 1): the episode told after the greeting, see `planSingleLetter`. */
+      story?: string
+    }
   | { kind: 'event' | 'challenge' | 'pair' | 'secret'; text: string }
 
 export interface PlannedDay {
@@ -64,6 +70,11 @@ export interface PlannedDay {
   /** Facts this child has been told before this letter. */
   known: string[]
   variant: number
+  /**
+   * The text band of this day, when it is not the child's own: two siblings with the same band
+   * share its shared events, so the second may run out of stories and borrow one step over.
+   */
+  band?: Band
 }
 
 /** One canonical record per shared-world event: when it happened and who hears about it. */
@@ -118,9 +129,7 @@ export function planCollection(
           { name: options.sender.trim() || 'Päkapikk', title: '', origin: '' },
         ]),
       )
-  const planned = children.map((child) =>
-    plannedChild(child, children, personas, request.general.difficulty),
-  )
+  const planned = children.map((child) => plannedChild(child, children, personas, request))
   const dateOf = (index: number) =>
     options.startDate ? addDays(options.startDate, index) : undefined
   const variantOf = (c: number, index: number) => variants[c * count + index] ?? 0
@@ -210,6 +219,24 @@ export function planCollection(
     if (eveIndex > 0 && eveIndex < last) assign(p, eveIndex, scenario('christmas-eve'))
   }
 
+  // A single letter is a greeting and one whole episode; no series is planned around it.
+  if (count === 1) {
+    planSingleLetter(request, library, planned, slotOf, canPersonalize, markPersonal)
+    return {
+      occasionId: request.occasionId,
+      count,
+      startDate: options.startDate,
+      connected: false,
+      linked,
+      children: planned,
+      days: planned.flatMap((p) => slotOf(p).filter((d): d is PlannedDay => !!d)),
+      worldEvents: [],
+      facts,
+      pairs: [],
+      long: request.general.length === 'long',
+    }
+  }
+
   // 2. Real family plans: events and challenges take the whole letter of that day.
   const extrasOf = new Map(
     planned.map((p) => [p.child.id, familyExtras(request, [p.child], p.helper)]),
@@ -235,30 +262,17 @@ export function planCollection(
     }
   }
 
-  // 3. Paired sibling days (older reader does something for a younger sibling).
+  // 3. Paired sibling days are invitations added to that day's stories (step 6b), so the
+  // days stay free for the stories here.
   const pairs = linked ? familyPlan(request) : []
   const byId = new Map(planned.map((p) => [p.child.id, p]))
-  for (const pair of pairs) {
-    const giver = byId.get(pair.giverId) as PlannedChild
-    const receiver = byId.get(pair.receiverId) as PlannedChild
-    if (slotOf(giver)[pair.index] || slotOf(receiver)[pair.index]) continue
-    const ctx = pairContext(giver.child, receiver.child, personas)
-    const receiverText =
-      receiver.band === 'toddler'
-        ? pair.template.receiverToddler?.(ctx)
-        : pair.template.receiverReader?.(ctx)
-    const giverDay = day(giver, pair.index, { kind: 'pair', text: pair.template.giver(ctx) })
-    const prep = pair.template.prep?.(ctx)
-    if (prep) giverDay.prep.push(prep)
-    slotOf(giver)[pair.index] = giverDay
-    if (receiverText)
-      slotOf(receiver)[pair.index] = day(receiver, pair.index, { kind: 'pair', text: receiverText })
-  }
 
   // 4. Secret helper: the oldest reader helps the elves with the younger ones, in secret.
-  // A short series has no room for a second storyline next to the main one.
+  // Only when the parent chose it; a short series has no room for a second storyline.
   const secret =
-    linked && count >= 12 ? planSecretHelper(request, planned, slotOf, free, day, pairs) : undefined
+    linked && count >= 12 && options.secretHelper
+      ? planSecretHelper(request, planned, slotOf, free, day, pairs)
+      : undefined
 
   // 5. The story arc, stage by stage. Shared stages happen on one day for everybody.
   if (connected) {
@@ -348,7 +362,19 @@ export function planCollection(
         .filter((s) => eligible(s, p, index))
         .map((s) => ({ s, score: score(s, p, index) + rng.next() }))
         .sort((a, b) => b.score - a.score)
-      if (candidates.length === 0) continue
+      if (candidates.length === 0) {
+        // Last resort, so that no day is left without a letter: a story of the other readers' band.
+        if (p.band === 'toddler') continue
+        const other: PlannedChild = { ...p, band: p.band === 'older' ? 'young' : 'older' }
+        const borrowed = standalone
+          .filter((s) => !s.world && !s.onlyWithHook && eligible(s, other, index))
+          .map((s) => ({ s, score: score(s, other, index) + rng.next() }))
+          .sort((a, b) => b.score - a.score)[0]?.s
+        if (!borrowed) continue
+        assign(other, index, borrowed)
+        ;(slotOf(p)[index] as PlannedDay).band = other.band
+        continue
+      }
       const choice = candidates[variantOf(c, index) % candidates.length]?.s as Scenario
       assign(p, index, choice)
       if (choice.world) {
@@ -371,6 +397,20 @@ export function planCollection(
         if (!s.variants[child.band] || !s.occasions.includes(request.occasionId)) return false
         if (usedBy.get(child.child.id)?.has(s.id)) return false
         if (s.world && worldEvents.some((event) => event.scenarioId === s.id)) return false
+        // A shared event is told on one day only: a sibling who could tell it but is busy today
+        // would never hear it, and would run short of stories later.
+        if (
+          s.world &&
+          planned.some(
+            (o) =>
+              o !== child &&
+              o.band !== child.band &&
+              s.variants[o.band] &&
+              !usedBy.get(o.child.id)?.has(s.id) &&
+              !free(o, i),
+          )
+        )
+          return false
         if (s.needsSiblings && children.length < 2) return false
         if (s.earliest !== undefined && i < s.earliest) return false
         if ((s.requires ?? []).some((fact) => !((facts.get(fact) ?? Infinity) < i))) return false
@@ -419,7 +459,7 @@ export function planCollection(
       }
       if (entry.content.kind !== 'scenario') return
       const s = scenario(entry.content.scenarioId)
-      const activity = s.activities?.[p.band]
+      const activity = s.activities?.[entry.band ?? p.band]
       const length = request.general.length
       const room = length !== 'short' && index - lastActivity >= ACTIVITY_GAP[length]
       // A puzzle's answer goes into the next letter; the farewell has no room for it.
@@ -433,14 +473,41 @@ export function planCollection(
     })
   }
 
-  // 8. "Pikk": the days without an activity get a riddle (answered in tomorrow's P.S.) or a task.
+  // 7b. Paired days: both siblings' letters invite them to do one thing together. Nobody
+  // promises anything for the other, and the next day does not depend on it.
+  const invitations: PairedDay[] = []
+  for (const pair of pairs) {
+    const giver = byId.get(pair.giverId) as PlannedChild
+    const receiver = byId.get(pair.receiverId) as PlannedChild
+    const giverDay = slotOf(giver)[pair.index]
+    const receiverDay = slotOf(receiver)[pair.index]
+    // A day with an activity, or yesterday's answer to read, has enough in it already.
+    const together = (d: PlannedDay | undefined, yesterday: PlannedDay | undefined) =>
+      d?.content.kind === 'scenario' &&
+      !d.content.activity &&
+      d.addenda.length === 0 &&
+      !(yesterday?.content.kind === 'scenario' && yesterday.content.activity)
+    if (!giverDay || !receiverDay) continue
+    if (!together(giverDay, slotOf(giver)[pair.index - 1]) || !together(receiverDay, slotOf(receiver)[pair.index - 1])) continue
+    const ctx = pairContext(giver.child, receiver.child, personas, receiver.band === 'toddler')
+    const receiverText =
+      receiver.band === 'toddler' ? pair.template.receiverToddler?.(ctx) : pair.template.receiverReader?.(ctx)
+    if (!receiverText) continue
+    giverDay.addenda.push(pair.template.giver(ctx))
+    receiverDay.addenda.push(receiverText)
+    const prep = pair.template.prep?.(ctx)
+    if (prep) giverDay.prep.push(prep)
+    invitations.push(pair)
+  }
+
+  // 8. "Pikk": now and then a day without an activity gets a riddle, answered in tomorrow's P.S.
   const long = request.general.length === 'long'
-  // Siblings compare letters, so no riddle or task is given twice in one family.
+  // Siblings compare letters, so no riddle is given twice in one family.
   // The stories' own puzzles count too: their answers are not asked again.
   const usedExtras = new Set<string>(
     planned.flatMap((p) => slotOf(p).flatMap((d) => (d?.answer ? [`answer:${d.answer}`] : []))),
   )
-  if (long) for (const p of planned) addLongExtras(p, slotOf(p), last, request, usedExtras)
+  if (long) for (const p of planned) addRiddles(p, slotOf(p), last, request, usedExtras)
 
   return {
     occasionId: request.occasionId,
@@ -452,21 +519,23 @@ export function planCollection(
     days: planned.flatMap((p) => slotOf(p).filter((d): d is PlannedDay => !!d)),
     worldEvents,
     facts,
-    pairs,
+    pairs: invitations,
     secret,
     long,
   }
 }
 
+// Whole sentences: the riddle follows as a sentence of its own.
 const RIDDLE_OPENINGS = {
-  young: ['Kas oskad ära arvata?', 'Põhjapõder Välk tõi mulle täna ühe mõistatuse:', 'Nuputa natuke:', 'Mul on sulle üks mõistatus:'],
-  older: ['Üks mõistatus ka:', 'Selle mõistatuse leidsin töökoja vanast raamatust:', 'Nuputa natuke:', 'Täna on mul sulle üks mõistatus:'],
+  young: ['Kas oskad ära arvata?', 'Põhjapõder Välk tõi mulle täna ühe mõistatuse.', 'Nuputa natuke.', 'Mul on sulle üks mõistatus.'],
+  older: ['Lõpetuseks üks mõistatus.', 'Selle mõistatuse leidsin töökoja vanast raamatust.', 'Nuputa natuke.', 'Täna on mul sulle üks mõistatus.'],
 } as const
 const RIDDLE_CLOSINGS = ['Vastuse kirjutan homme.', 'Vastus tuleb homses kirjas.', 'Homme ütlen vastuse.'] as const
-const TASK_OPENINGS = ['Mul on sulle üks mõte: kui tahad, ', 'Kui sul täna aega on, ', 'Üks päkapiku ettepanek: kui tahad, '] as const
+/** A riddle on about every third free day: a riddle in every letter would make them a form. */
+const RIDDLE_GAP = 3
 
-/** Christmas riddles and tasks from the hand-written banks, in a seeded order without repeats. */
-function addLongExtras(
+/** Christmas riddles from the hand-written bank, in a seeded order without repeats. */
+function addRiddles(
   p: PlannedChild,
   days: (PlannedDay | undefined)[],
   last: number,
@@ -476,7 +545,7 @@ function addLongExtras(
   if (p.band === 'toddler') return
   const rng = createRng(hashSeed(request.seed, 'long', p.child.id))
   const fitsSeason = (occasions?: readonly string[]) => !occasions || occasions.includes(request.occasionId)
-  // A task about singing or football would claim an interest the child may not have.
+  // A riddle about singing or football would claim an interest the child may not have.
   const noTopic = (text: string) => !PERSONAL_HOOKS.some((hook) => hook.mentions.test(text))
   const riddles = rng.shuffle(
     RIDDLES.filter((r) => (r.level === 'any' || r.level === p.band) && fitsSeason(r.occasions) && noTopic(r.question)),
@@ -486,45 +555,81 @@ function addLongExtras(
     const at = riddles.findIndex((r) => !used.has(`answer:${r.answer}`))
     return at < 0 ? undefined : riddles.splice(at, 1)[0]
   }
-  // 24 letters with the same opening would read like a form; the helper says it differently.
+  // The helper says it differently each time.
   const say = <T,>(options: readonly T[]) => options[turn % options.length] as T
   const riddleOpenings = rng.shuffle(RIDDLE_OPENINGS[p.band === 'older' ? 'older' : 'young'])
   const riddleClosings = rng.shuffle(RIDDLE_CLOSINGS)
-  const taskOpenings = rng.shuffle(TASK_OPENINGS)
-  const tasks = rng.shuffle(
-    ACTIVITIES.filter(
-      (a) =>
-        a.minAge <= p.child.age &&
-        a.setting !== 'outdoor' &&
-        fitsSeason(a.occasions) &&
-        noTopic(a.text((singular) => singular)) &&
-        !used.has(a.id),
-    ),
-  )
   let turn = 0
+  let lastExtra = -Infinity
   // The first and the last letter belong to greeting and farewell.
   for (let index = 1; index < last; index++) {
     const entry = days[index]
-    if (!entry || entry.content.kind !== 'scenario' || entry.content.activity) continue
+    if (!entry || entry.content.kind !== 'scenario' || entry.content.activity || entry.addenda.length > 0) continue
+    // Yesterday's or tomorrow's activity is enough to think about.
+    const near = [days[index - 1], days[index + 1]].some((d) => d?.content.kind === 'scenario' && d.content.activity)
+    if (near || index - lastExtra < RIDDLE_GAP) continue
     const next = days[index + 1]
     // A riddle needs tomorrow's letter for its answer, and not the farewell.
-    const riddle = turn % 2 === 0 && next && index + 1 < last ? nextRiddle() : undefined
-    if (riddle && next) {
-      entry.addenda.push(`${say(riddleOpenings)} ${riddle.question} ${say(riddleClosings)}`)
-      entry.answer = riddle.answer
-      next.postscripts.unshift(`Eilse mõistatuse vastus: ${riddle.answer}.`)
-      used.add(`answer:${riddle.answer}`)
-    } else {
-      const task = tasks.shift()
-      if (!task) continue
-      used.add(task.id)
-      const text = task.text((singular) => singular)
-      // A suggestion, never a duty: "kui tahad, voldi …". Texts that already set the scene stay whole.
-      const whole = /^(Täiskasvanu|Kui )/.test(text)
-      entry.addenda.push(whole ? `Mul on sulle üks mõte! ${text}` : `${say(taskOpenings)}${text.charAt(0).toLowerCase()}${text.slice(1)}`)
-      if (task.materials.length) entry.prep.push(`ülesandeks ${task.materials.map((m) => MATERIAL_LABELS[m]).join(', ')}`)
-    }
+    if (!next || index + 1 >= last) continue
+    const riddle = nextRiddle()
+    if (!riddle) return
+    entry.addenda.push(`${say(riddleOpenings)} ${riddle.question} ${say(riddleClosings)}`)
+    entry.answer = riddle.answer
+    next.postscripts.unshift(`Eilse mõistatuse vastus: ${riddle.answer}.`)
+    used.add(`answer:${riddle.answer}`)
+    lastExtra = index
     turn++
+  }
+}
+
+/**
+ * The episode of a single letter, for each child: a standalone story that needs nothing told
+ * before it and asks nothing of a tomorrow. Siblings get different stories, and a personal
+ * one when the child's topics allow it.
+ */
+function planSingleLetter(
+  request: RequestFor<'letter'>,
+  library: ScenarioLibrary,
+  planned: PlannedChild[],
+  slotOf: (p: PlannedChild) => (PlannedDay | undefined)[],
+  canPersonalize: (p: PlannedChild, s: Scenario, index: number) => HookId[],
+  markPersonal: (p: PlannedChild, index: number, hooks: HookId[]) => void,
+): void {
+  const used = new Set<string>()
+  for (const p of planned) {
+    const entry = slotOf(p)[0]
+    if (!entry || entry.content.kind !== 'scenario') continue
+    const fits = (s: Scenario) =>
+      s.role === 'standalone' &&
+      // The topic stories are told in a series, between other letters; alone they say too little.
+      !s.topicSlot &&
+      !!s.variants[p.band] &&
+      s.occasions.includes(request.occasionId) &&
+      !(s.requires?.length) &&
+      !(s.needsSiblings && planned.length < 2) &&
+      !(s.onlyWithHook && canPersonalize(p, s, 0).length === 0) &&
+      !s.activities?.[p.band]?.reveal
+    const rng = createRng(hashSeed(request.seed, 'single', p.child.id, entry.variant))
+    const candidates = library.scenarios
+      .filter(fits)
+      .map((s) => ({
+        s,
+        score: (canPersonalize(p, s, 0).length > 0 ? 1.5 : 0) - (used.has(s.id) ? 5 : 0) + rng.next(),
+      }))
+      .sort((a, b) => b.score - a.score)
+    const story = candidates[entry.variant % Math.max(1, candidates.length)]?.s
+    if (!story) continue
+    used.add(story.id)
+    entry.content.story = story.id
+    const hooks = canPersonalize(p, story, 0)
+    entry.personalizationIds = story.topicSlot ? hooks.slice(0, 1) : hooks
+    markPersonal(p, 0, entry.personalizationIds)
+    const activity = story.activities?.[p.band]
+    if (activity && (activity.essential || request.general.length !== 'short')) {
+      entry.content.activity = true
+      if (activity.answer) entry.answer = activity.answer
+      if (activity.prep) entry.prep.push(activity.prep)
+    }
   }
 }
 
@@ -532,9 +637,13 @@ function plannedChild(
   child: ChildProfile,
   all: ChildProfile[],
   personas: Record<string, ElfPersona>,
-  difficulty: RequestFor<'letter'>['general']['difficulty'],
+  request: RequestFor<'letter'>,
 ): PlannedChild {
-  const band = adjustBand(ageBand(child), difficulty)
+  const { band, readAloud } = textLevel(
+    child,
+    languageFor(child, request.options, request.general.difficulty),
+    request.general.length,
+  )
   const persona = personas[child.id] as ElfPersona
   const others = all.filter((other) => other.id !== child.id)
   const helperOf = (target: Band) => {
@@ -544,7 +653,7 @@ function plannedChild(
   return {
     child,
     band,
-    readAloud: band === 'toddler' && listensToLongerStories(child),
+    readAloud,
     helper: persona.name,
     title: persona.title,
     origin: persona.origin,

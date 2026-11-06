@@ -8,11 +8,12 @@ import ParentSheet from '@/features/preview/ParentSheet.vue'
 import type { GeneratedContent, GeneratedItem, RequestFor } from '@/domain/models'
 import { KAI, PAARU, makeRequest, MARKUS } from './helpers'
 
+// The secret helper is the parent's own choice; these tests are about it, so it is on.
 const family = (extra: Partial<RequestFor<'letter'>['options']> = {}) =>
   makeRequest('letter', {
     occasionId: 'christmas',
     children: [MARKUS, PAARU, KAI],
-    options: { startDate: '2026-12-01', ...extra },
+    options: { startDate: '2026-12-01', secretHelper: true, ...extra },
   }) as RequestFor<'letter'>
 
 type Item = Omit<GeneratedItem, 'id' | 'variant' | 'edited'>
@@ -90,8 +91,9 @@ describe('secret helper', () => {
     expect(plans(family({ count: 7 }))).toBeUndefined()
     const onlyMarkus = makeRequest('letter', { occasionId: 'christmas', children: [MARKUS] }) as RequestFor<'letter'>
     expect(plans(onlyMarkus)).toBeUndefined()
-    const pair = makeRequest('letter', { occasionId: 'christmas', children: [PAARU, KAI], options: { startDate: '2026-12-01' } }) as RequestFor<'letter'>
+    const pair = makeRequest('letter', { occasionId: 'christmas', children: [PAARU, KAI], options: { startDate: '2026-12-01', secretHelper: true } }) as RequestFor<'letter'>
     expect(plans(pair)?.childId).toBe(PAARU.id)
+    expect(plans(family({ secretHelper: undefined }))).toBeUndefined()
   })
 
   it('avoids the oldest child’s family events', () => {

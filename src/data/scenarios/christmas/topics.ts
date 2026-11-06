@@ -27,21 +27,21 @@ export const TOPIC_SCENARIOS: Scenario[] = [
     earliest: 2,
     variants: {
       older: (c) => [
-        'Eile oli töökojas vaba õhtu ja ma mõtlesin sinu peale.',
+        'Eile oli töökojas haruldane asi: vaba õhtu. Teised mängisid kaarte, aga mina mõtlesin sinu peale.',
         topicOf(c).tryout,
-        'Nüüd saan aru, mis selles nii toredat on. Homme proovin uuesti – ja seekord paremini.',
+        'Nüüd saan natuke aru, mis selles nii toredat on. Järgmisel vabal õhtul proovin uuesti – ja seekord paremini.',
       ],
       young: (c) => [
         'Eile oli töökojas vaba õhtu ja ma mõtlesin sinu peale.',
         topicOf(c).tryout,
-        'Nüüd saan aru, mis selles nii toredat on. Homme proovin uuesti!',
+        'Nii tore! Järgmisel vabal õhtul proovin jälle.',
       ],
       toddler: (c) => [topicOf(c).toddlerTryout],
     },
     readAloud: (c) => [
       'Eile oli töökojas vaba õhtu ja ma mõtlesin sinu peale.',
       topicOf(c).tryout,
-      'Nüüd saan aru, mis selles nii toredat on!',
+      'See oli nii tore! Järgmisel vabal õhtul proovin jälle.',
     ],
   },
   {

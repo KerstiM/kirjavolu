@@ -1,32 +1,31 @@
 import type { OccasionId } from '../../domain/models'
 
-/** Names and helpers for one paired day: an older child does something for a younger one. */
+/** Names for one paired day. Names stay in the nominative, so no guessed case form is needed. */
 export interface PairContext {
   giver: string
-  giverGenitive: string
   receiver: string
-  receiverGenitive: string
-  receiverAllative: string
-  receiverComitative: string
-  /** Name of the receiver's own helper, e.g. "Pisi-Pätsi". Only for the giver's letter: in the receiver's letter that helper is the narrator ("mina"). */
+  /** The younger one gets the toddler texts: a game with sounds and pointing, no reading. */
+  receiverLittle: boolean
+  /** Name of the receiver's own helper, e.g. "Pisi-Pätsi". */
   receiverHelper: string
 }
 
 /**
- * Paired task templates. Both letters on the same day are written from the same
- * template, so they always match: "loe Kaile ette" ↔ "Täna loeb Pääru sulle".
- * Letters are read in the morning, so anything the giver leaves by a slipper
- * is found by the receiver the next morning, never the same day.
+ * Paired days: both siblings' letters on the same day invite them to do one thing together,
+ * from the same template, so the two letters always match. Neither letter promises anything
+ * for the other child ("Õde joonistab sulle pildi"), nor makes the older one the elves'
+ * helper; if nothing comes of it, no later letter depends on it.
  */
 export interface PairTemplate {
   id: string
+  /** In the older child's letter. */
   giver: (c: PairContext) => string
-  /** Receiver who reads on their own. Omit when the task only suits toddlers. */
+  /** Younger child who reads, or is read to, the reader texts. Omit when it suits toddlers only. */
   receiverReader?: (c: PairContext) => string
-  /** Toddler receiver: short, read aloud by an adult. Omit when unsuitable. */
+  /** Toddler: read aloud by an adult; pointing, a sound or a movement with the adult. */
   receiverToddler?: (c: PairContext) => string
   occasions?: OccasionId[]
-  /** What the parent prepares for the giver, e.g. a book to read aloud. */
+  /** What the parent prepares, e.g. a picture book. */
   prep?: (c: PairContext) => string
 }
 
@@ -34,54 +33,43 @@ export const PAIR_TEMPLATES: PairTemplate[] = [
   {
     id: 'read',
     giver: (c) =>
-      `Täna on sul tähtis ülesanne: loe ${c.receiverAllative} ette üks raamat või vaadake koos pilte. ${c.receiverHelper} istub sel ajal riiuli peal ja kuulab ka.`,
-    receiverReader: (c) => `Täna loeb ${c.giver} sulle ühe loo ette. Mina tulen ka kuulama!`,
-    receiverToddler: (c) => `Täna loeb ${c.giver} sulle raamatut. Mina kuulan ka. Kuula hästi!`,
-    prep: (c) => `raamat, mida ${c.receiverAllative} ette lugeda`,
-  },
-  {
-    id: 'teach',
-    giver: (c) =>
-      `Päkapikud on kuulnud, et sa oskad hästi õpetada. Õpeta täna ${c.receiverAllative} üks uus sõna, salm või mäng.`,
-    receiverReader: (c) => `${c.giver} õpetab sulle täna ühe uue mängu. Ole tähelepanelik õpilane!`,
-    receiverToddler: (c) => `${c.giver} õpetab sulle täna midagi uut. Proovi järele teha!`,
+      c.receiverLittle
+        ? `Sina ja ${c.receiver} võite täna koos ühe pildiraamatu läbi vaadata: sina räägid, mis pildil toimub, ja ${c.receiver} näitab näpuga.`
+        : `Mul on teile ettepanek: sina ja ${c.receiver} võite täna koos ühe raamatu läbi vaadata ja arutada, kes pildil kõige naljakam on.`,
+    receiverReader: (c) =>
+      `Mul on teile ettepanek: sina ja ${c.giver} võite täna koos ühe raamatu läbi vaadata ja arutada, kes pildil kõige naljakam on.`,
+    receiverToddler: (c) => `Sina ja ${c.giver} võite täna koos pilte vaadata. Näita näpuga!`,
+    prep: () => 'pildiraamat, mida koos vaadata',
   },
   {
     id: 'play',
     giver: (c) =>
-      `Tee täna ${c.receiverComitative} midagi toredat: mängige koos või ajage teineteist naerma. ${c.receiverHelper} arvab, et ${c.receiverAllative} meeldiks see väga.`,
-    receiverReader: (c) => `Täna on ${c.giverGenitive} kord sinuga mängida. Vali sina, mida te mängite!`,
-    receiverToddler: (c) => `${c.giver} mängib täna sinuga. Mina vaatan ka!`,
+      c.receiverLittle
+        ? `Sina ja ${c.receiver} võite täna kukkumängu mängida: nägu käte taha ja siis – kukku! Pisikesed naeravad selle peale alati.`
+        : `Päkapikud mängivad talvel kõige meelsamini mängu „Kes ma olen?“: üks näitab ilma sõnadeta mõnda looma ja teine arvab. Sina ja ${c.receiver} võite seda täna proovida.`,
+    receiverReader: (c) =>
+      `Päkapikud mängivad talvel kõige meelsamini mängu „Kes ma olen?“: üks näitab ilma sõnadeta mõnda looma ja teine arvab. Sina ja ${c.giver} võite seda täna proovida.`,
+    receiverToddler: (c) => `Sina ja ${c.giver} võite täna kukkumängu mängida: kukku!`,
   },
   {
     id: 'drawing',
     giver: (c) =>
-      `Joonista täna ${c.receiverAllative} pilt ja anna see talle üle. Päkapikud armastavad kingitusi, mis on tehtud oma kätega.`,
-    receiverReader: (c) => `${c.giver} teeb sulle täna ühe üllatuse. Ära piilu enne õhtut!`,
-    receiverToddler: (c) => `${c.giver} joonistab sulle täna pildi. Mis seal peal on? Näita näpuga!`,
+      c.receiverLittle
+        ? `Sina ja ${c.receiver} võite täna koos ühe pildi teha: sina joonistad ja ${c.receiver} kritseldab kaasa.`
+        : `Sina ja ${c.receiver} võite täna koos ühe pildi joonistada: üks joonistab päkapiku, teine tema maja.`,
+    receiverReader: (c) =>
+      `Sina ja ${c.giver} võite täna koos ühe pildi joonistada: üks joonistab päkapiku, teine tema maja.`,
+    receiverToddler: (c) => `Sina ja ${c.giver} võite täna koos ühe pildi teha.`,
     prep: () => 'paber ja värvipliiatsid',
   },
   {
-    id: 'secret-letter',
+    id: 'dance',
     giver: (c) =>
-      `${c.receiverHelper} on homme nii hõivatud, et ei jõua ${c.receiverAllative} kirja kirjutada. Kirjuta sina täna õhtul üks lühike kiri ja allkirjasta see „${c.receiverHelper}“. Enne magamaminekut pane see salaja ${c.receiverGenitive} sussi juurde, et ${c.receiver} leiaks selle homme hommikul – keegi ei tohi sind näha!`,
-    receiverReader: () => `Homme on töökojas nii palju tegemist, et ma ei pruugi jõuda pikalt kirjutada. Aga vaata homme hommikul hoolega oma sussi juurde – võib-olla on seal üks kiri kelleltki teiselt?`,
-    occasions: ['christmas'],
-    prep: () => 'paber ja pliiats salajase kirja jaoks (laps paneb selle õhtul sussi juurde)',
-  },
-  {
-    id: 'slipper',
-    giver: (c) =>
-      `Täna on abilise ülesanne: vaata õhtul, et ka ${c.receiverGenitive} suss oleks aknalaual. ${c.receiverHelper} ei taha seda kuidagi maha magada!`,
-    receiverReader: (c) => `${c.giver} lubas täna õhtul vaadata, et ka sinu suss oleks kindlasti aknalaual. Ma ei taha sinu sussi kuidagi maha magada!`,
-    receiverToddler: (c) => `${c.giver} aitab täna su sussi aknale panna. Aitäh, ${c.giver}!`,
-    occasions: ['christmas'],
-  },
-  {
-    id: 'kindness',
-    giver: (c) =>
-      `Täna on heategude päev. Tee ${c.receiverAllative} üks salajane heategu: korista tema mänguasjad ära või jäta talle üllatus. Ära ütle, et see olid sina!`,
-    receiverReader: () => `Täna võib sinuga juhtuda midagi toredat. Vaata hoolikalt ringi – keegi teeb sulle salaja head.`,
-    receiverToddler: (c) => `Täna teeb keegi sulle midagi head. Kas see oli ${c.giver}? Kalli talle!`,
+      c.receiverLittle
+        ? `Sina ja ${c.receiver} võite täna päkapikutantsu proovida: kõiguge ja plaksutage. Pisem võib tantsida kellegi süles.`
+        : `Töökojas tantsitakse õhtuti päkapikutantsu: kükk, keerutus ja kolm plaksu. Sina ja ${c.receiver} võite selle täna koos järele proovida.`,
+    receiverReader: (c) =>
+      `Töökojas tantsitakse õhtuti päkapikutantsu: kükk, keerutus ja kolm plaksu. Sina ja ${c.giver} võite selle täna koos järele proovida.`,
+    receiverToddler: (c) => `Sina ja ${c.giver} võite täna koos tantsida: plaks-plaks!`,
   },
 ]

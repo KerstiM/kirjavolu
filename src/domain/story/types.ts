@@ -59,12 +59,18 @@ export interface FrameContext {
   title: string
   /** Who the helper is, e.g. "Jõuluvana töökoja kõige vanem päkapikk"; may be empty. */
   origin: string
-  /** "Pääru juures Tipp-Topp Riisiterake ja Kai juures Pisi-Pätsi Roosaninake"; empty without siblings. */
-  siblingHelpers: string
+  /**
+   * Who writes to the brothers and sisters, a whole sentence: "Sel detsembril käib Pääru juures
+   * Tipp-Topp Riisiterake ja Kai juures Pisi-Pätsi." Names whose case form is not certain keep
+   * the nominative: "Kirju saab ka Mart: talle kirjutab Tipp-Topp." Empty without siblings.
+   */
+  siblingLine: string
   /** "Kõpsu-Mõpsu, Tipp-Topp ja Pisi-Pätsi"; empty in a single-child series. */
   allHelpers: string
   /** The letter is dated 24 December. */
   eve: boolean
+  /** The only letter: no series, nothing promised for tomorrow. */
+  single: boolean
 }
 
 export type Paragraph = string | false | null | undefined

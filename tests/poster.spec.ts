@@ -87,7 +87,9 @@ describe('dates and default layout', () => {
   it('long and medium letter series default to the poster, toddler series to simple cards', () => {
     expect(defaultLayoutFor(makeRequest('letter', { occasionId: 'christmas', children: [MARKUS] }))).toBe('poster')
     expect(defaultLayoutFor(makeRequest('letter', { occasionId: 'christmas', children: [MARKUS], general: { length: 'medium' } }))).toBe('poster')
-    expect(defaultLayoutFor(makeRequest('letter', { occasionId: 'christmas', children: [KAI] }))).toBe('mini')
+    // A one-year-old's longer letters are little stories for the poster; the shorter ones are the small cards.
+    expect(defaultLayoutFor(makeRequest('letter', { occasionId: 'christmas', children: [KAI] }))).toBe('poster')
+    expect(defaultLayoutFor(makeRequest('letter', { occasionId: 'christmas', children: [KAI], general: { length: 'short' } }))).toBe('mini')
     expect(defaultLayoutFor(makeRequest('letter', { options: { count: 1 } }))).toBe('page')
   })
 })

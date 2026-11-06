@@ -20,17 +20,19 @@ export const PASS_MARK: Partial<Record<ContentTypeId, 'only' | 'extra'>> = { let
 
 /**
  * Coming later: shown as gray cards on the home page, not in the wizard. `pass: 'only'` marks
- * one that comes with the Jõulupass.
+ * one that comes with the Jõulupass. `featured` ones sit with the ready kinds; the rest wait
+ * behind "Vaata veel" with the kinds still being made.
  */
 export const COMING_SOON = [
   {
     id: 'santa-greeting',
     title: 'Jõuluvana tervitus',
-    tagline: 'Isiklik tervitus jõuluvanalt, Jõulupassiga',
+    tagline: 'Isiklik tervitus otse jõuluvanalt',
     description: 'Jõuluvana pöördub lapse poole nimepidi ja teab, mida ta sel aastal õppis ja tegi.',
     icon: 'Gift',
     label: 'Varsti',
     pass: 'only',
+    featured: false,
   },
   {
     id: 'parent-gift',
@@ -40,5 +42,6 @@ export const COMING_SOON = [
     icon: 'HeartHandshake',
     label: 'Varsti',
     pass: undefined,
+    featured: true,
   },
 ] as const

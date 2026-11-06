@@ -34,7 +34,7 @@ describe('toddler card layout', () => {
 })
 
 describe('toddler daily letters', () => {
-  const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [KAI], options: { startDate: '2026-12-01' } })).items
+  const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [KAI], general: { length: 'short' }, options: { startDate: '2026-12-01' } })).items
 
   it('hold one small thing per day', () => {
     for (const item of items.slice(1)) expect(item.body.split('\n\n')).toHaveLength(1)
@@ -76,7 +76,7 @@ describe('toddler cards do not repeat', () => {
 
 describe('toddler finale', () => {
   it('ends the series with a wish for the big day', () => {
-    const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [KAI] })).items
+    const items = runTemplates(makeRequest('letter', { occasionId: 'christmas', children: [KAI], general: { length: 'short' } })).items
     expect(items[23]!.body).toBe('Häid jõule, väike Kai! Päkapikk Tuduja kallistab sind. Musi-musi!')
   })
 })

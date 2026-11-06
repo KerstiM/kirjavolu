@@ -40,7 +40,7 @@ describe('events in linked letters', () => {
 
   it('every participant’s letter talks about the event in an age-appropriate way', () => {
     expect(on(items, MARKUS.id, 12)).toContain('jäljedetektiiv')
-    expect(on(items, MARKUS.id, 12)).toContain('Näita jälgi ka Päärule ja Kaile.')
+    expect(on(items, MARKUS.id, 12)).toContain('Näita jälgi ka teistele.')
     expect(on(items, PAARU.id, 12)).toContain('käbi')
     expect(on(items, KAI.id, 12)).toContain('Täna lähme metsa!')
   })

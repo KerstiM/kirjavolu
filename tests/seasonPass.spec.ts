@@ -11,6 +11,9 @@ import { useCreationsStore } from '@/features/preview/creationsStore'
 import { templateGenerator } from '@/domain/generators/templateGenerator'
 import { DEFAULT_GENERAL, defaultOptions } from '@/domain/defaults'
 
+// These tests are about the Jõulupass itself, so here it is on sale.
+vi.mock('@/features/pass/availability', () => ({ PASS_ENABLED: true }))
+
 const PASS = { code: 'KV-7KQM-3FXA', generationsLeft: 10, validUntil: '2027-01-31T21:59:59.000Z' }
 
 async function open(path: string) {

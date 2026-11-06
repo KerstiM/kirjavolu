@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { nextTick, provide, ref } from 'vue'
+import { computed, nextTick, provide, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { ArrowRight, Eye, Gift, Lock } from 'lucide-vue-next'
+import { ArrowRight, ChevronDown, Eye, Gift, Lock } from 'lucide-vue-next'
 import Mascot from '../../components/brand/Mascot.vue'
 import PostcardCard from '../../components/brand/PostcardCard.vue'
 import { DESIGN_KEY } from '../../components/brand/design'
@@ -11,13 +11,14 @@ import { useChildrenStore } from '../children/childrenStore'
 import { useCreationsStore } from '../preview/creationsStore'
 import PrintableItem from '../preview/PrintableItem.vue'
 import { isActive, loadPass } from '../pass/seasonPass'
+import { PASS_ENABLED } from '../pass/availability'
 import RecentCreations from './RecentCreations.vue'
 import { COMING_SOON, isReady, NOT_READY_LABEL } from './new/readiness'
 import { EXAMPLES, EXAMPLES_SECTION, HERO, PRIVACY, STEPS_SECTION, TYPE_CARDS, TYPES_SECTION } from './content'
 import { currentPromo } from './seasonal'
 
 /**
- * The home page: what Kirjavõlu is, the six kinds (and the gray ones coming later) right under a compact hero, the season's
+ * The home page: what Kirjavõlu is, the kinds ready now (the rest behind "Vaata veel") right under a compact hero, the season's
  * journey (Christmas letters now), real-looking samples, three steps, the family's own
  * creations and how the child's data is kept. Grew out of the /ud3 test version.
  */
@@ -32,10 +33,19 @@ const SAMPLE_PAGE = '/naide'
 const promo = currentPromo()
 
 // The Jõulupass is product state, not marketing: shown small, only when this browser has one.
-const pass = loadPass()
+const pass = PASS_ENABLED ? loadPass() : null
 const passLeft = pass && isActive(pass) ? pass.generationsLeft : null
 
 const cards = TYPE_CARDS.map((card) => ({ ...card, icon: iconFor(getContentType(card.id).icon) }))
+
+// What can be made now comes first, with the one gray card coming next; everything else still
+// being made opens under "Vaata veel", so the first choice is between real options.
+const readyCards = cards.filter((card) => isReady(card.id))
+const featuredSoon = COMING_SOON.filter((item) => item.featured)
+const laterCards = cards.filter((card) => !isReady(card.id))
+const laterSoon = COMING_SOON.filter((item) => !item.featured)
+const showLater = ref(false)
+const laterCount = computed(() => laterCards.length + laterSoon.length)
 
 // "Vaata näidist" brings the samples into view and moves focus there, without leaving the page.
 const examplesTitle = ref<HTMLElement | null>(null)
@@ -93,7 +103,7 @@ async function showExamples(): Promise<void> {
       </div>
     </section>
 
-    <!-- The six kinds, right under the hero -->
+    <!-- The kinds, right under the hero -->
     <section class="section types" aria-labelledby="home-types">
       <div class="container">
         <header class="home-head">
@@ -101,10 +111,9 @@ async function showExamples(): Promise<void> {
           <p>{{ TYPES_SECTION.lead }}</p>
         </header>
         <ul class="types__grid" role="list">
-          <li v-for="(card, index) in cards" :key="card.id">
+          <li v-for="(card, index) in readyCards" :key="card.id">
             <PostcardCard
-              :to="isReady(card.id) ? { path: WIZARD, query: { tyyp: card.id } } : undefined"
-              :soon="isReady(card.id) ? '' : NOT_READY_LABEL"
+              :to="{ path: WIZARD, query: { tyyp: card.id } }"
               :title="card.title"
               :tagline="card.subtitle"
               :description="card.description"
@@ -113,18 +122,55 @@ async function showExamples(): Promise<void> {
             />
           </li>
           <!-- Coming later: gray, not links -->
-          <li v-for="(item, index) in COMING_SOON" :key="item.id">
+          <li v-for="(item, index) in featuredSoon" :key="item.id">
             <PostcardCard
               :title="item.title"
               :tagline="item.tagline"
               :description="item.description"
               :icon="iconFor(item.icon)"
-              :index="cards.length + index"
+              :index="readyCards.length + index"
               :soon="item.label"
               :pass="item.pass"
             />
           </li>
         </ul>
+        <button
+          v-if="laterCount"
+          type="button"
+          class="types__more"
+          :aria-expanded="showLater"
+          aria-controls="home-types-later"
+          @click="showLater = !showLater"
+        >
+          {{ showLater ? 'Peida' : `Vaata veel (${laterCount})` }}
+          <ChevronDown :size="18" aria-hidden="true" class="types__chevron" :class="{ 'is-open': showLater }" />
+        </button>
+        <div v-show="showLater" id="home-types-later" class="types__later">
+          <p class="types__later-lead">Need on veel töös ja tulevad peagi.</p>
+          <ul class="types__grid" role="list" aria-label="Tulekul">
+            <li v-for="(card, index) in laterCards" :key="card.id">
+              <PostcardCard
+                :soon="NOT_READY_LABEL"
+                :title="card.title"
+                :tagline="card.subtitle"
+                :description="card.description"
+                :icon="card.icon"
+                :index="readyCards.length + featuredSoon.length + index"
+              />
+            </li>
+            <li v-for="(item, index) in laterSoon" :key="item.id">
+              <PostcardCard
+                :title="item.title"
+                :tagline="item.tagline"
+                :description="item.description"
+                :icon="iconFor(item.icon)"
+                :index="readyCards.length + featuredSoon.length + laterCards.length + index"
+                :soon="item.label"
+                :pass="item.pass"
+              />
+            </li>
+          </ul>
+        </div>
       </div>
     </section>
 
@@ -390,6 +436,42 @@ h2 {
   li {
     display: flex;
   }
+}
+
+// The rest of the kinds, behind "Vaata veel".
+.types__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 1.1rem;
+  padding: 0.55rem 1.1rem;
+  border: 2px solid var(--lavender-mid);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--lavender-ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  &:hover {
+    border-color: var(--lavender);
+  }
+  &:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+  }
+}
+.types__chevron {
+  transition: transform 0.2s ease;
+  &.is-open {
+    transform: rotate(180deg);
+  }
+}
+.types__later {
+  margin-top: 1.1rem;
+}
+.types__later-lead {
+  margin: 0 0 0.9rem;
+  color: var(--ink-soft);
 }
 
 // --- season ---------------------------------------------------------------------

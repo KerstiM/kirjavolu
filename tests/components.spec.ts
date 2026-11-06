@@ -211,12 +211,13 @@ describe('preview with choices beside it', () => {
     store.setDecoration(id, { ...EMPTY_DECORATION, pattern: 'stars', inkSaver: true })
     const panel = screen.getByRole('region', { name: /Kohanda/ })
     const counts = within(panel).getByRole('group', { name: 'Kirjade arv' })
-    expect(within(counts).getAllByRole('radio').map((radio) => radio.closest('label')?.textContent?.trim())).toEqual(['1', '4', '7', '24', 'Muu'])
-    await user.click(within(counts).getByRole('radio', { name: '4' }))
-    await vi.waitFor(() => expect(store.creations[0]?.items).toHaveLength(4))
+    // Christmas letters: one letter or a whole story of 7–24 days; 2–6 could not finish a story.
+    expect(within(counts).getAllByRole('radio').map((radio) => radio.closest('label')?.textContent?.trim())).toEqual(['1', '7', '24', 'Muu'])
+    await user.click(within(counts).getByRole('radio', { name: '7' }))
+    await vi.waitFor(() => expect(store.creations[0]?.items).toHaveLength(7))
     // Still the same creation; the default layout follows the shorter series.
     expect(store.creations).toHaveLength(1)
-    expect(store.creations[0]?.request.options).toMatchObject({ count: 4 })
+    expect(store.creations[0]?.request.options).toMatchObject({ count: 7 })
     expect(store.creations[0]?.layout).toBe(defaultLayoutFor(store.creations[0]!.request))
     expect(store.creations[0]?.id).toBe(id)
     expect(store.creations[0]?.decoration).toMatchObject({ pattern: 'stars', inkSaver: true })
@@ -230,15 +231,28 @@ describe('preview with choices beside it', () => {
     expect(store.creations[0]?.layout).toBe('page')
   })
 
-  it('asks before replacing hand-made changes and keeps them when the parent says no', async () => {
+  it('keeps letters edited by hand when the choices change, and asks before any would be lost', async () => {
     const { user, store } = await letterPreview()
-    store.editItem(store.creations[0]!.id, store.creations[0]!.items[0]!.id, { body: 'Minu oma tekst' })
+    const id = store.creations[0]!.id
+    store.editItem(id, store.creations[0]!.items[0]!.id, { body: 'Minu oma tekst' })
+    store.editItem(id, store.creations[0]!.items[20]!.id, { body: 'Minu 21. kiri' })
     const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false)
     const panel = screen.getByRole('region', { name: /Kohanda/ })
+    // The shorter series has no 21st letter: the parent is asked, and "no" keeps everything.
     await user.click(within(within(panel).getByRole('group', { name: 'Kirjade arv' })).getByRole('radio', { name: '7' }))
     await vi.waitFor(() => expect(confirm).toHaveBeenCalled())
-    expect(store.creations[0]?.items[0]?.body).toBe('Minu oma tekst')
-    expect(within(within(panel).getByRole('group', { name: 'Kirjade arv' })).getByRole('radio', { name: '24' })).toBeChecked()
+    expect(store.creations[0]?.items).toHaveLength(24)
+    expect(store.creations[0]?.items[20]?.body).toBe('Minu 21. kiri')
+    await vi.waitFor(() =>
+      expect(within(within(screen.getByRole('region', { name: /Kohanda/ })).getByRole('group', { name: 'Kirjade arv' })).getByRole('radio', { name: '24' })).toBeChecked(),
+    )
+    // A change that keeps every spot asks nothing and keeps the edited letter as it is.
+    confirm.mockClear()
+    await user.click(within(screen.getByRole('group', { name: 'Pikkus' })).getByRole('radio', { name: 'Lühem kiri' }))
+    await vi.waitFor(() => expect(store.creations[0]?.request.general.length).toBe('short'))
+    expect(confirm).not.toHaveBeenCalled()
+    expect(store.creations[0]?.items[0]).toMatchObject({ body: 'Minu oma tekst', edited: true })
+    expect(store.creations[0]?.items[20]).toMatchObject({ body: 'Minu 21. kiri', edited: true })
     confirm.mockRestore()
   })
 
@@ -268,8 +282,11 @@ describe('preview with choices beside it', () => {
     expect(presets).toHaveTextContent('Plakat tuleb 6 A4 lehele, kaardid on suuremad.')
     // The layout is no longer chosen twice: "Rohkem valikuid" keeps only what to print and capitals.
     expect(screen.queryByRole('group', { name: 'Prindi paigutus' })).toBeNull()
-    await user.click(within(presets).getByRole('radio', { name: 'Pool lehte' }))
-    expect(store.creations[0]?.layout).toBe('half')
+    // Long letters do not fit half a page at a readable print size: it is shown, but off.
+    expect(within(presets).getByRole('radio', { name: 'Pool lehte' })).toBeDisabled()
+    expect(screen.getByText(/Pool lehte pole praegu valitav: mõni kiri on poolele lehele liiga pikk/)).toBeInTheDocument()
+    await user.click(within(presets).getByRole('radio', { name: 'Terve leht' }))
+    expect(store.creations[0]?.layout).toBe('page')
     expect(screen.getByText('Rohkem valikuid').closest('details')).not.toHaveAttribute('open')
   })
 
@@ -280,8 +297,9 @@ describe('preview with choices beside it', () => {
     const presets = screen.getByRole('group', { name: 'Kuidas prindid?' })
     await vi.waitFor(() => expect(within(presets).getByRole('radio', { name: 'Pusleplakat' })).toBeDisabled())
     expect(screen.getByText(/Pusleplakat pole praegu valitav: mõni kiri on plakatikaardi jaoks liiga pikk/)).toBeInTheDocument()
-    // It was the layout, so the letters move to the slipper cards.
-    await vi.waitFor(() => expect(store.creations[0]?.layout).toBe('cards'))
+    // It was the layout, so the letters move to the largest layout they fit: too long for the
+    // slipper cards and half a page, they go on whole pages rather than being cut or shrunk.
+    await vi.waitFor(() => expect(store.creations[0]?.layout).toBe('page'))
   })
 })
 

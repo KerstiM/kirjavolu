@@ -2,6 +2,7 @@ import type { ContentOptionsMap, GeneralOptions, OccasionId, StoryGenre } from '
 import type { MaterialId } from '../data/templates/activities'
 import { getOccasion } from './occasions/occasions'
 import { todayIso } from './text/estonian'
+import { christmasLettersUntilEve, MIN_SERIES } from './validation'
 
 export const DEFAULT_GENERAL: GeneralOptions = {
   tone: 'magical',
@@ -29,11 +30,14 @@ function upcomingDate(occasion: OccasionId, today = new Date()): string {
 export function defaultOptions(occasionId: OccasionId): ContentOptionsMap {
   const occasion = getOccasion(occasionId)
   const christmas = occasionId === 'christmas'
+  const startDate = upcomingDate(occasionId)
+  // One letter a day until Christmas Eve; too few days left for a whole story give one letter.
+  const untilEve = christmasLettersUntilEve(startDate)
   return {
     letter: {
       sender: occasion.vocabulary.sender,
-      startDate: upcomingDate(occasionId),
-      count: christmas ? 24 : 1,
+      startDate,
+      count: christmas ? (untilEve >= MIN_SERIES ? untilEve : 1) : 1,
       connected: christmas,
       mode: 'linked',
     },

@@ -1,4 +1,4 @@
-import type { AgeBand, ChildProfile, Difficulty, ReadingLevel } from '../models'
+import type { AgeBand, ChildProfile, Difficulty, GenerationRequest, LanguageLevel, Length, LetterOptions, ReadingLevel } from '../models'
 import { joinList, nameCase, namesInCase } from '../text/estonian'
 import { findInterestHooks, type InterestHook } from '../../data/templates/interests'
 import { interestTexts } from '../../data/topics'
@@ -45,8 +45,67 @@ export function listensToLongerStories(child: Pick<ChildProfile, 'age' | 'readin
 }
 
 /** Toddlers who get the small one-line cards (12 per page) instead of the poster. */
-export function usesSmallCards(child: Pick<ChildProfile, 'age' | 'readingLevel'>): boolean {
+export function usesSmallCards(child: ChildProfile, request?: GenerationRequest): boolean {
+  if (request?.contentType === 'letter') {
+    const level = textLevel(child, languageFor(child, request.options, request.general.difficulty), request.general.length)
+    return level.band === 'toddler' && !level.readAloud
+  }
   return ageBand(child) === 'toddler' && !listensToLongerStories(child)
+}
+
+/** The text a letter uses: a band's own text, and for a toddler the card or the read-aloud story. */
+export interface TextLevel {
+  band: AgeBand
+  readAloud: boolean
+}
+
+/**
+ * The two texts offered to a child, one step apart. Age and reading ability decide where the
+ * child stands (`ageBand`), so a 10-year-old's simple letter is the younger readers' text and a
+ * 6-year-old's rich one is the older readers'. A toddler's simple text is the little read-aloud
+ * story (for the youngest, a one-line card when the letters are shorter); the rich one is the
+ * younger readers' letters, read aloud by an adult.
+ */
+export function languageLevels(
+  child: Pick<ChildProfile, 'age' | 'readingLevel'>,
+  length: Length = 'long',
+): Record<LanguageLevel, TextLevel> {
+  const band = ageBand(child)
+  if (band === 'toddler') {
+    // "Keskmine" from older creations kept the cards too.
+    const card = length !== 'long' && !listensToLongerStories(child)
+    return { simple: { band: 'toddler', readAloud: !card }, rich: { band: 'young', readAloud: false } }
+  }
+  return { simple: { band: 'young', readAloud: false }, rich: { band: 'older', readAloud: false } }
+}
+
+/** The language suggested by age and reading ability: what the letters were before the choice. */
+export function suggestedLanguage(child: Pick<ChildProfile, 'age' | 'readingLevel'>): LanguageLevel {
+  return ageBand(child) === 'older' ? 'rich' : 'simple'
+}
+
+/**
+ * The child's language in a letter request: the parent's choice, else what an older creation's
+ * "Lihtsam" / "Keerulisem" gave (so its letters read the same), else the suggestion.
+ */
+export function languageFor(
+  child: ChildProfile,
+  options: Pick<LetterOptions, 'language'>,
+  difficulty: Difficulty = 'auto',
+): LanguageLevel {
+  const chosen = options.language?.[child.id]
+  if (chosen) return chosen
+  const band = ageBand(child)
+  if (difficulty === 'auto' || band === 'toddler') return suggestedLanguage(child)
+  return adjustBand(band, difficulty) === 'older' ? 'rich' : 'simple'
+}
+
+export function textLevel(
+  child: Pick<ChildProfile, 'age' | 'readingLevel'>,
+  language: LanguageLevel,
+  length: Length = 'long',
+): TextLevel {
+  return languageLevels(child, length)[language]
 }
 
 /** Applies the difficulty setting on top of the age band (never below toddler / above older). */

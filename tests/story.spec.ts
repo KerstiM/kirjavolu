@@ -104,7 +104,7 @@ describe('collection validation', () => {
   })
 
   it('detects a repeated scenario, a leaked secret and an assumed reply', () => {
-    const request = christmas([MARKUS, PAARU, KAI])
+    const request = christmas([MARKUS, PAARU, KAI], { secretHelper: true })
     const { plan, items } = build(request)
     const paaru = plan.days.findIndex((d) => d.childId === PAARU.id && d.index === 10)
     const broken = items.map((item, k) =>
@@ -227,10 +227,10 @@ describe('age and reading level', () => {
     expect(plan.children[0]!.band).toBe('older')
   })
 
-  it('toddler cards are one short paragraph meant for reading aloud; medium reader letters fit the poster', () => {
+  it('toddler cards are one short paragraph meant for reading aloud; shorter reader letters fit the poster', () => {
     for (let seed = 1; seed <= 10; seed++) {
       const request = christmas([MARKUS, PAARU, KAI], { sundaySweets: true }, seed)
-      const { plan, items } = build({ ...request, general: { ...request.general, length: 'medium' } })
+      const { plan, items } = build({ ...request, general: { ...request.general, length: 'short' } })
       plan.days.forEach((d, k) => {
         const band = plan.children.find((p) => p.child.id === d.childId)!.band
         const body = items[k]!.body
@@ -240,21 +240,33 @@ describe('age and reading level', () => {
     }
   })
 
-  it('long letters add a riddle or a task on most days, but toddler cards stay one paragraph', () => {
+  it('long letters tell more and now and then add a riddle, never a task glued on; a toddler hears a little story', () => {
     const request = christmas([MARKUS, PAARU, KAI], { sundaySweets: true }, 4)
     const long = build({ ...request, general: { ...request.general, length: 'long' } })
-    const medium = build({ ...request, general: { ...request.general, length: 'medium' } })
+    const short = build({ ...request, general: { ...request.general, length: 'short' } })
     const words = (items: { body: string }[]) => items.reduce((sum, item) => sum + item.body.split(/\s+/).length, 0)
     const readers = (built: typeof long) => built.items.filter((_, k) => built.plan.days[k]!.childId !== KAI.id)
-    expect(words(readers(long))).toBeGreaterThan(words(readers(medium)) * 1.15)
+    expect(words(readers(long))).toBeGreaterThan(words(readers(short)) * 1.3)
     expect(long.plan.long).toBe(true)
-    const extra = /Vastuse kirjutan homme|Vastus tuleb homses kirjas|Homme ütlen vastuse|kui tahad, |Kui sul täna aega on|Mul on sulle üks mõte/
-    expect(long.items.filter((item) => extra.test(item.body)).length).toBeGreaterThan(20)
-    // The openings vary: no single one carries the series.
-    const openings = long.items.map((item) => item.body.match(/(Kas oskad ära arvata\?|Nuputa natuke:|Mul on sulle üks mõistatus:|Üks mõistatus ka:)/)?.[1]).filter(Boolean)
-    expect(new Set(openings).size).toBeGreaterThan(1)
+    // A riddle is an extra, not the form of every letter: a few per child, never two days running.
+    for (const child of [MARKUS, PAARU]) {
+      const riddleDays = long.plan.days
+        .filter((d) => d.childId === child.id && d.addenda.some((a) => /Vastuse kirjutan homme|Vastus tuleb homses kirjas|Homme ütlen vastuse/.test(a)))
+        .map((d) => d.index)
+      expect(riddleDays.length, child.name).toBeGreaterThan(1)
+      expect(riddleDays.length, child.name).toBeLessThanOrEqual(8)
+      riddleDays.slice(1).forEach((day, k) => expect(day - riddleDays[k]!).toBeGreaterThanOrEqual(3))
+    }
+    // The old glued-on suggestions ("Mul on sulle üks mõte: kui tahad, …") are gone.
+    for (const item of long.items) expect(item.body).not.toMatch(/Mul on sulle üks mõte|Kui sul täna aega on, [a-zõäöü]|Üks päkapiku ettepanek: kui tahad/)
+    // Riddles start a sentence of their own, not after a colon.
+    for (const item of long.items) expect(item.body).not.toMatch(/mõistatus: [A-ZÕÄÖÜ]/)
+    // The one-year-old's longer letters are little stories; the shorter ones stay one-paragraph cards.
     long.plan.days.forEach((d, k) => {
-      if (d.childId === KAI.id) expect(long.items[k]!.body.split('\n\n')).toHaveLength(1)
+      if (d.childId === KAI.id && d.content.kind === 'scenario') expect(long.items[k]!.body.split('\n\n').length).toBeGreaterThan(1)
+    })
+    short.plan.days.forEach((d, k) => {
+      if (d.childId === KAI.id) expect(short.items[k]!.body.split('\n\n')).toHaveLength(1)
     })
     expect(validateCollection(long.plan, long.items, library).filter((i) => i.severity === 'error')).toEqual([])
   })
@@ -305,8 +317,9 @@ describe('age and reading level', () => {
         expect(average).toBeGreaterThan(250)
       }
     }
-    // The one-year-old keeps the short cards.
-    expect(build(christmas([KAI])).plan.children[0]!.readAloud).toBe(false)
+    // A one-year-old gets the little stories too in longer letters, and the one-line cards in shorter ones.
+    expect(build(christmas([KAI])).plan.children[0]!.readAloud).toBe(true)
+    expect(build(christmas([KAI], {}, 1, { length: 'short' })).plan.children[0]!.readAloud).toBe(false)
   })
 
   it('every toddler episode has a longer read-aloud version', () => {
@@ -437,7 +450,7 @@ describe('shared world for siblings', () => {
     const onDay = (child: ChildProfile) =>
       items[plan.days.findIndex((d) => d.childId === child.id && d.index === found)]!.body
     expect(onDay(MARKUS)).not.toBe(onDay(PAARU))
-    expect(onDay(KAI)).toContain('Täht on leitud!')
+    expect(onDay(KAI)).toContain('Me leidsime tähe!')
   })
 
   it('siblings’ helpers appear by their right names in the readers’ letters', () => {
@@ -459,8 +472,16 @@ describe('shared world for siblings', () => {
 })
 
 describe('secrets and real-world actions', () => {
-  it('the secret helper is only in the oldest child’s letters, and the invitation needs no answer', () => {
-    const { plan, items } = build(christmas([MARKUS, PAARU, KAI]))
+  it('no child is made the elves’ secret helper unless the parent chooses it', () => {
+    for (let seed = 1; seed <= 5; seed++) {
+      const { plan, items } = build(christmas([MARKUS, PAARU, KAI], {}, seed))
+      expect(plan.secret).toBeUndefined()
+      for (const item of items) expect(item.body).not.toMatch(/salajane abiline|Salamissioon|Salajane palve|Ehk päkapikud/i)
+    }
+  })
+
+  it('the chosen secret helper is only in the oldest child’s letters, and the invitation needs no answer', () => {
+    const { plan, items } = build(christmas([MARKUS, PAARU, KAI], { secretHelper: true }))
     expect(plan.secret?.childId).toBe(MARKUS.id)
     const markus = bodies(items, MARKUS)
     expect(markus[plan.secret!.inviteIndex]).toContain('ei pea sa midagi vastama')
@@ -471,13 +492,22 @@ describe('secrets and real-world actions', () => {
         expect(b).not.toMatch(/salajane abiline|Salamissioon|salajane missioon/i)
   })
 
-  it('a secret mission never repeats that day’s paired task', () => {
+  it('siblings are invited to do something together; nobody promises for the other', () => {
     for (let seed = 1; seed <= 10; seed++) {
       const { plan, items } = build(christmas([MARKUS, PAARU, KAI], {}, seed))
-      const markus = bodies(items, MARKUS)
-      const slipper = markus.filter((b) => /suss/.test(b) && /aknalaual/.test(b))
-      expect(slipper.length, `seed ${seed}`).toBeLessThanOrEqual(1)
-      expect(plan.secret).toBeDefined()
+      expect(plan.pairs.length, `seed ${seed}`).toBeGreaterThan(0)
+      for (const pair of plan.pairs) {
+        const giver = plan.days.findIndex((d) => d.childId === pair.giverId && d.index === pair.index)
+        const receiver = plan.days.findIndex((d) => d.childId === pair.receiverId && d.index === pair.index)
+        // The invitation is added to that day's story, it does not replace it.
+        for (const k of [giver, receiver]) {
+          expect(plan.days[k]!.content.kind).toBe('scenario')
+          expect(items[k]!.body).toMatch(/võite/)
+        }
+      }
+      for (const item of items) {
+        expect(item.body).not.toMatch(/(joonistab|loeb|õpetab|mängib|teeb) sulle täna|lubas täna|Täna on abilise ülesanne|Täna on sul tähtis ülesanne/)
+      }
     }
   })
 

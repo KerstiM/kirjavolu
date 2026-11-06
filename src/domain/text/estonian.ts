@@ -1,16 +1,90 @@
 import type { ChildProfile } from '../models'
 
 const VOWEL_END = /[aeiouõäöüy]$/i
+const VOWELS = /[aeiouõäöüy]+/gi
 
 /**
- * Genitive (omastav) form of a first name. Names ending in a vowel stay the same,
- * names ending in a consonant get "-i" (Markus → Markuse). Irregular names can be
- * overridden in the child profile.
+ * Estonian names whose genitive no rule gives (Mikk → Miku, Mart → Mardi). Lower case.
+ * Names here and those the parent typed in are "sure"; see `genitiveIsSure`.
+ */
+const IRREGULAR_GENITIVES: Record<string, string> = {
+  mikk: 'Miku',
+  mart: 'Mardi',
+  ott: 'Oti',
+  jaak: 'Jaagu',
+  priit: 'Priidu',
+  tiit: 'Tiidu',
+  siim: 'Siimu',
+  rait: 'Raidu',
+  hans: 'Hansu',
+  ants: 'Antsu',
+  toomas: 'Tooma',
+  peeter: 'Peetri',
+  sander: 'Sandri',
+  aleksander: 'Aleksandri',
+  mihkel: 'Mihkli',
+  kaarel: 'Kaarli',
+  indrek: 'Indreku',
+  erik: 'Eriku',
+  henrik: 'Henriku',
+  patrik: 'Patriku',
+  jaagup: 'Jaagupi',
+  tõnu: 'Tõnu',
+}
+
+/**
+ * Consonant-final names that take "-i" without doubt (Karl → Karli). Other consonant-final
+ * names also get "-i", but that is a guess: Estonian names such as Mikk or Mart do not.
+ */
+const REGULAR_I = new Set([
+  'karl', 'paul', 'jaan', 'oskar', 'robin', 'martin', 'kevin', 'kristjan', 'kristofer', 'daniel', 'jakob',
+  'joosep', 'georg', 'oliver', 'william', 'artur', 'aron', 'stefan', 'gustav', 'romet', 'kaspar', 'karmen',
+  'kirsten', 'ingrid', 'liisbet', 'elisabet', 'karin', 'kerstin', 'johan', 'juhan', 'taavet', 'ruben',
+  'jasper', 'kaur', 'jan', 'tristan', 'sebastian', 'adrian', 'ralf', 'roland', 'herman', 'nikolai', 'eerik',
+  'liis', 'jaanika', 'ellen', 'helen', 'kristin', 'marten', 'marleen', 'evelin', 'kätlin', 'merilin',
+])
+
+const syllables = (word: string) => word.match(VOWELS)?.length ?? 0
+
+/** Genitive of one word of a name, and whether it follows a rule that does not fail. */
+function wordGenitive(word: string): { form: string; sure: boolean } {
+  const lower = word.toLowerCase()
+  const irregular = IRREGULAR_GENITIVES[lower]
+  if (irregular) return { form: word.charAt(0) + irregular.slice(1), sure: true }
+  // Mari, Jüri, Pääru: a name ending in a vowel stays the same.
+  if (VOWEL_END.test(word)) return { form: word, sure: true }
+  // Rasmus → Rasmuse, Tõnis → Tõnise, Lukas → Lukase, Andres → Andrese.
+  if (/[aeiu]s$/i.test(word) && syllables(word) >= 2) return { form: `${word}e`, sure: true }
+  return { form: `${word}i`, sure: REGULAR_I.has(lower) }
+}
+
+/**
+ * Genitive (omastav) form of a first name. A name ending in a vowel stays the same,
+ * Rasmus → Rasmuse, the common irregular Estonian names come from a list (Mikk → Miku,
+ * Mart → Mardi) and other names get "-i". In "Mari-Liis" and "Anna Maria" only the last
+ * part changes. The form the parent typed in the profile always wins.
  */
 export function genitive(name: string, override?: string): string {
   const trimmed = name.trim()
   if (override && override.trim()) return override.trim()
-  return VOWEL_END.test(trimmed) ? trimmed : `${trimmed}i`
+  const { head, last } = splitName(trimmed)
+  return head + wordGenitive(last).form
+}
+
+/**
+ * Whether the genitive is certain: typed in by the parent, or given by a rule that holds.
+ * Where it is not, letters prefer a sentence that keeps the name in the nominative
+ * ("Sina ja Mart võite …") to a guessed form ("Martiga").
+ */
+export function genitiveIsSure(child: Pick<ChildProfile, 'name' | 'nameGenitive'>): boolean {
+  if (child.nameGenitive?.trim()) return true
+  return wordGenitive(splitName(child.name.trim()).last).sure
+}
+
+/** "Mari-Liis" → "Mari-" + "Liis"; "Anna Maria" → "Anna " + "Maria". */
+function splitName(name: string): { head: string; last: string } {
+  const at = Math.max(name.lastIndexOf('-'), name.lastIndexOf(' '))
+  return { head: name.slice(0, at + 1), last: name.slice(at + 1) }
 }
 
 export type NameCase = 'nominative' | 'genitive' | 'allative' | 'comitative' | 'adessive' | 'elative'
@@ -50,6 +124,11 @@ export function namesInCase(
     return joinList([...head, last ? nameCase(last, 'comitative') : ''])
   }
   return joinList(children.map((child) => nameCase(child, form)))
+}
+
+/** Whether every name's case forms are certain (see `genitiveIsSure`). */
+export function namesAreSure(children: Pick<ChildProfile, 'name' | 'nameGenitive'>[]): boolean {
+  return children.every(genitiveIsSure)
 }
 
 export function capitalize(text: string): string {

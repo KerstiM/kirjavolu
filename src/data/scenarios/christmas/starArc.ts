@@ -30,7 +30,7 @@ export const STAR_ARC_SCENARIOS: Scenario[] = [
     },
     variants: {
       older: () => [
-        'Kirjutan täna lühidalt, sest töökojas on ärevus. Kuuse tipust on kadunud täht.',
+        'Kirjutan täna kiiresti, sest töökojas on ärevus. Kuuse tipust on kadunud täht.',
         'See pole tavaline ehe. Jõuluööl näitab see täht Jõuluvana kelgule teed läbi tuisu ja pilvede. Ilma temata on kelk nagu laev ilma tuletornita.',
         'Eile õhtul oli ta veel paigal – nägin teda, kui tuled kustutasin. Täna hommikul oli kuuse tipp tühi. Uks oli lukus, aken kinni. Ma ei tea veel, mida sellest arvata. Aga ma kavatsen välja uurida.',
       ],
@@ -46,7 +46,7 @@ export const STAR_ARC_SCENARIOS: Scenario[] = [
     readAloud: () => [
       'Oi-oi! Töökoja kuuse tipus oli suur kuldne täht. Ta säras nii ilusti. Aga täna hommikul oli kuuse tipp tühi!',
       'Kus on täht? Vaatasin laua alla – ei ole. Vaatasin kapi taha – ei ole. Vaatasin isegi oma sussi sisse – ei ole!',
-      'Täht näitab Jõuluvanale jõuluööl teed, nii et kõik päkapikud otsivad. Kui sina näed kuskil sära, hüüa: täht!',
+      'Täht näitab Jõuluvanale jõuluööl teed, nii et kõik päkapikud otsivad. Kui sina näed kuskil sära, näita näpuga!',
     ],
   },
   {
@@ -60,7 +60,7 @@ export const STAR_ARC_SCENARIOS: Scenario[] = [
     establishes: ['feather-found'],
     more: {
       older: () => [
-        'Tegelikult ei jõudnud ma ööni oodata. Kohe, kui seda kirja kirjutama hakkasin, kustutasin lambi. Algul ei juhtunud midagi. Siis hakkas sulg vaikselt helendama, nagu hingaks: valgus tuli ja läks, tuli ja läks. Kirjutasin märkmikku: sulg helendab pimedas, rahulikult nagu magaja. Homme küsin kelleltki, kes linde paremini tunneb.',
+        'Tegelikult ei jõudnud ma ööni oodata. Kohe, kui seda kirja kirjutama hakkasin, kustutasin lambi. Algul ei juhtunud midagi. Siis hakkas sulg vaikselt helendama, nagu hingaks: valgus tuli ja läks, tuli ja läks. Kirjutasin märkmikku: sulg helendab pimedas, rahulikult nagu magaja. Pean küsima kelleltki, kes linde paremini tunneb.',
       ],
     },
     variants: {
@@ -162,7 +162,7 @@ export const STAR_ARC_SCENARIOS: Scenario[] = [
         'Eile otsisin töökoja raamatukogust vanu linnuraamatuid. Kõige alumisel riiulil oli üks, mille kaaned olid tolmust hallid. Selles oli pilt väikesest hõbedasest linnust ja selle all üks sõna, tagurpidi kirjutatud – nii hoidsid vanad meistrid saladusi:',
         BIRD_CODE,
         c.uses('codes')
-          ? 'Sinusugusele salakoodide lahendajale on see ilmselt kerge. Mina lugesin seda kolm korda valesti.'
+          ? 'Salakoodid on sinu ala – proovi! Mina lugesin seda kolm korda valesti.'
           : 'Mina lugesin seda kolm korda valesti.',
       ],
     },

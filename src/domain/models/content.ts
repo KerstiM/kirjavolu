@@ -14,8 +14,15 @@ export interface ContentType {
 }
 
 export type Tone = 'humorous' | 'magical' | 'adventurous' | 'heartwarming'
+/** Letters offer "short" and "long"; "medium" is kept for creations made before. */
 export type Length = 'short' | 'medium' | 'long'
+/** Letters use `LetterOptions.language` instead; "easier" and "harder" remain in older creations. */
 export type Difficulty = 'easier' | 'auto' | 'harder'
+/**
+ * How a letter is written for one child: "simple" has shorter sentences and familiar words,
+ * "rich" more words, description and dialogue. Both are meant to be read aloud as well.
+ */
+export type LanguageLevel = 'simple' | 'rich'
 
 export interface GeneralOptions {
   tone: Tone
@@ -79,8 +86,18 @@ export interface LetterOptions {
   events?: FamilyEvent[]
   /** House rule: sweets only on Sundays – the Sunday letters say so. */
   sundaySweets?: boolean
-  /** Personal challenges; an older sibling is asked to support them in secret. */
+  /** Personal challenges for one child each. */
   challenges?: ChildChallenge[]
+  /**
+   * Language per child id; a child without an entry gets the one suggested by age and reading
+   * ability (`languageFor`). Missing in creations made before this choice.
+   */
+  language?: Record<string, LanguageLevel>
+  /**
+   * The parent's own choice: the oldest reader becomes the elves' secret helper with missions
+   * for the younger ones, and supports a sibling's challenge in secret. Off unless chosen.
+   */
+  secretHelper?: boolean
 }
 
 export type Setting = 'indoor' | 'outdoor'
