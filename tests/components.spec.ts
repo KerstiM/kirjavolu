@@ -288,9 +288,9 @@ describe('preview with choices beside it', () => {
     expect(presets).toHaveTextContent('Plakat tuleb 6 A4 lehele, kaardid on suuremad.')
     // The layout is no longer chosen twice: "Printimise lisavalikud" keeps only what to print and capitals.
     expect(screen.queryByRole('group', { name: 'Prindi paigutus' })).toBeNull()
-    // Long letters do not fit half a page at a readable print size: it is shown, but off.
-    expect(within(presets).getByRole('radio', { name: 'Pool lehte' })).toBeDisabled()
-    expect(screen.getByText(/poolele lehele liiga pik/)).toBeInTheDocument()
+    // Letters written in fuller paragraphs take less room: half a page now holds them. A letter
+    // too long for it is covered by printFit.spec.
+    expect(within(presets).getByRole('radio', { name: 'Pool lehte' })).toBeEnabled()
     await user.click(within(presets).getByRole('radio', { name: 'Terve leht' }))
     expect(store.creations[0]?.layout).toBe('page')
     expect(screen.getByText('Printimise lisavalikud').closest('details')).not.toHaveAttribute('open')
