@@ -907,7 +907,7 @@ function exportText(): void {
   color: var(--danger);
 }
 .controls__upper {
-  align-self: center;
+  align-self: flex-start;
 }
 .controls__note {
   flex-basis: 100%;
