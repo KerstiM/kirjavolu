@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import type { ChildProfile, ContentOptionsMap, GeneralOptions, GeneratedContent, LanguageLevel } from '../../domain/models'
+import type { ChildProfile, ContentOptionsMap, Decoration, GeneralOptions, GeneratedContent, LanguageLevel, TextSize } from '../../domain/models'
 import { getContentType } from '../../domain/contentTypes'
 import { defaultOptions } from '../../domain/defaults'
 import { clone } from '../../utils/clone'
@@ -34,8 +34,11 @@ import CertificateOptionsForm from '../creation/options/CertificateOptionsForm.v
  * The creation's choices beside the preview. Every change is sent on after a short
  * pause, so the letters update while the parent is still looking at them.
  */
-const props = defineProps<{ content: GeneratedContent; busy?: boolean; errors?: string[] }>()
-const emit = defineEmits<{ change: [choices: { general: GeneralOptions; options: GeneratedContent['request']['options'] }] }>()
+const props = defineProps<{ content: GeneratedContent; decoration: Decoration; busy?: boolean; errors?: string[] }>()
+const emit = defineEmits<{
+  change: [choices: { general: GeneralOptions; options: GeneratedContent['request']['options'] }]
+  decoration: [decoration: Decoration]
+}>()
 
 interface Choices {
   general: GeneralOptions
@@ -112,6 +115,24 @@ const lengthOptions = computed(() =>
   draft.value.general.length === 'medium' ? [...LETTER_LENGTH_OPTIONS, LEGACY_MEDIUM] : LETTER_LENGTH_OPTIONS,
 )
 
+const TEXT_SIZE_OPTIONS: { value: TextSize; label: string }[] = [
+  { value: 'normal', label: 'Tavaline (16 px)' },
+  { value: 'smaller', label: 'Väiksem (14 px)' },
+]
+/** A child's own text size (several children), or the shared one. */
+function textSizeOf(child?: ChildProfile): TextSize {
+  const own = child && children.value.length > 1 ? props.decoration.childDecorations?.[child.id]?.textSize : undefined
+  return own ?? props.decoration.textSize ?? 'normal'
+}
+function setTextSize(value: TextSize, child?: ChildProfile): void {
+  if (!child || children.value.length < 2) {
+    emit('decoration', { ...props.decoration, textSize: value })
+    return
+  }
+  const own = props.decoration.childDecorations?.[child.id] ?? { background: 'shared' as const, image: null }
+  emit('decoration', { ...props.decoration, childDecorations: { ...props.decoration.childDecorations, [child.id]: { ...own, textSize: value } } })
+}
+
 const labelOf = <T,>(list: { value: T; label: string }[], value: T) => list.find((o) => o.value === value)?.label ?? ''
 const generalSummary = computed(() =>
   [
@@ -140,6 +161,7 @@ const childLine = (child: ChildProfile) =>
     linked.value ? helperName(child) : '',
     engine.value ? labelOf(LANGUAGE_OPTIONS, languageOf(child)) : '',
     labelOf(lengthOptions.value, draft.value.general.length),
+    textSizeOf(child) === 'smaller' ? 'väiksem tekst' : '',
   ]
     .filter(Boolean)
     .join(' · ')
@@ -193,6 +215,13 @@ const contentSummary = computed(() => {
                   :hint="[LANGUAGE_HINT, toddlerNote(child)].filter(Boolean).join(' ')"
                   @update:model-value="setLanguage(child, $event)"
                 />
+                <SegmentedControl
+                  :model-value="textSizeOf(child)"
+                  :name="`text-size-${child.id}`"
+                  label="Teksti suurus"
+                  :options="TEXT_SIZE_OPTIONS"
+                  @update:model-value="setTextSize($event, child)"
+                />
               </ChildContentBlock>
             </template>
             <SegmentedControl
@@ -203,6 +232,14 @@ const contentSummary = computed(() => {
               :options="LANGUAGE_OPTIONS"
               :hint="[LANGUAGE_HINT, toddlerNote(children[0]!)].filter(Boolean).join(' ')"
               @update:model-value="setLanguage(children[0]!, $event)"
+            />
+            <SegmentedControl
+              v-if="!blocks"
+              :model-value="textSizeOf()"
+              name="text-size"
+              label="Teksti suurus"
+              :options="TEXT_SIZE_OPTIONS"
+              @update:model-value="setTextSize($event)"
             />
             <SegmentedControl
               v-model="draft.general.length"
@@ -226,6 +263,14 @@ const contentSummary = computed(() => {
       <PuzzleOptionsForm v-else-if="type === 'puzzle'" v-model="draft.options.puzzle" />
       <CalendarOptionsForm v-else-if="type === 'calendar'" v-model="draft.options.calendar" />
       <CertificateOptionsForm v-else v-model="draft.options.certificate" :occasion-id="request.occasionId" />
+
+      <SegmentedControl
+        :model-value="textSizeOf()"
+        name="text-size"
+        label="Teksti suurus"
+        :options="TEXT_SIZE_OPTIONS"
+        @update:model-value="setTextSize($event)"
+      />
 
       <details class="customize__general">
         <summary>

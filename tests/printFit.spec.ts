@@ -9,7 +9,7 @@ import { useCreationsStore } from '@/features/preview/creationsStore'
 import type { RequestFor } from '@/domain/models'
 import { templateGenerator } from '@/domain/generators/templateGenerator'
 import { DEFAULT_GENERAL, defaultOptions } from '@/domain/defaults'
-import { fitsSheet, fittingChars, letterHeightMm, MAX_PT, MIN_PT, printTextPt, SHEET_HEIGHT_MM } from '@/features/preview/printFit'
+import { fitsSheet, fittingChars, letterHeightMm, MAX_PT, MIN_PT, printTextPt, SHEET_HEIGHT_MM, SMALLER_PT } from '@/features/preview/printFit'
 import { KAI, makeRequest, MARKUS, PAARU } from './helpers'
 
 const paragraph = 'Ma tulin otse töökoja köögist – kui kiri lõhnab kaneeli järele, siis ongi nii.'
@@ -23,6 +23,13 @@ const letter = (paragraphs: number) => ({
 describe('print fit', () => {
   it('keeps a short letter at full size', () => {
     expect(printTextPt(letter(2), { sheet: 'half' })).toBe(MAX_PT)
+  })
+
+  it('starts from 14 px (10.5 pt) when the text is set smaller, and still fits the sheet', () => {
+    expect(printTextPt(letter(1), { sheet: 'page' })).toBe(MAX_PT)
+    expect(printTextPt(letter(1), { sheet: 'page', smaller: true })).toBe(SMALLER_PT)
+    expect(printTextPt(letter(1), { sheet: 'half', smaller: true })).toBe(SMALLER_PT)
+    expect(printTextPt(letter(12), { sheet: 'half', smaller: true })).toBe(MIN_PT)
   })
 
   it('makes the text smaller as the letter grows, and never below the minimum', () => {

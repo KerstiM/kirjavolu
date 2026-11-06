@@ -55,7 +55,11 @@ export interface FitOptions {
   uppercase?: boolean
   /** A background picture or pattern puts the text on a padded panel. */
   backdrop?: boolean
+  /** Smaller text (14 px): pages start from `SMALLER_PT` instead of their usual largest size. */
+  smaller?: boolean
 }
+/** 14 px. */
+export const SMALLER_PT = 10.5
 
 function lines(text: string, widthMm: number, pt: number, charEm: number): number {
   const perLine = Math.floor(widthMm / (pt * MM_PER_PT * charEm))
@@ -94,7 +98,8 @@ export function letterHeightMm(item: Letter, pt: number, options: FitOptions): n
 
 /** The largest body size (pt) at which the letter fits its sheet; the sheet's smallest if none does. */
 export function printTextPt(item: Letter, options: FitOptions): number {
-  const { max, min } = PT_RANGE[options.sheet]
+  const { min } = PT_RANGE[options.sheet]
+  const max = options.smaller && options.sheet !== 'cards' ? Math.min(PT_RANGE[options.sheet].max, SMALLER_PT) : PT_RANGE[options.sheet].max
   const room = SHEET_HEIGHT_MM[options.sheet] - SAFETY_MM
   for (let pt = max; pt > min; pt -= STEP_PT) if (letterHeightMm(item, pt, options) <= room) return pt
   return min

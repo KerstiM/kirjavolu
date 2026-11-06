@@ -7,6 +7,9 @@ export interface StoredImageRef {
   height: number
 }
 
+/** Body text of letters on half and whole pages: normal is 16 px (12 pt), smaller 14 px (10.5 pt). */
+export type TextSize = 'normal' | 'smaller'
+
 /** Visual decoration of printable items. Purely presentational: never affects the texts. */
 export interface Decoration {
   pattern: PatternId | null
@@ -29,6 +32,8 @@ export interface Decoration {
    * smaller letters. Unset = normal.
    */
   cardFit?: CardFit
+  /** Text size of letters on pages (all children without their own); unset = normal. */
+  textSize?: TextSize
   /** Per child (by id): an own picture, or no background, on that child's sheets. */
   childDecorations?: Record<string, ChildDecoration>
 }
@@ -43,6 +48,8 @@ export interface ChildDecoration {
   background: ChildBackground
   image: StoredImageRef | null
   pattern?: PatternId | null
+  /** This child's own text size; unset = follows the shared one. */
+  textSize?: TextSize
 }
 
 /** What is behind one child's sheets: at most one of picture, pattern or drawn landscape. */
