@@ -53,8 +53,9 @@ export const DEFAULT_VALIDATION: ValidationOptions = { phraseWords: 6, maxPhrase
 /** Printable budgets per band: what fits a poster card (readers) or a toddler mini card. */
 // Measured on the poster in the browser: longer texts shrink below about 8 pt (a warning);
 // past the hard limit the card overflows even at the smallest font (an error).
-export const CARD_LIMITS: Record<Band, number> = { older: 640, young: 460, toddler: 200 }
-export const CARD_HARD_LIMITS: Record<Band, number> = { older: 760, young: 560, toddler: 200 }
+// The toddler's mini card holds about 130 characters (measured: 130 fits, 140 overflows).
+export const CARD_LIMITS: Record<Band, number> = { older: 640, young: 460, toddler: 130 }
+export const CARD_HARD_LIMITS: Record<Band, number> = { older: 760, young: 560, toddler: 130 }
 
 /** The card a child's letters are printed on: longer read-aloud letters use the reader poster. */
 export function cardBand(p: Pick<PlannedChild, 'band' | 'readAloud'>): Band {
@@ -493,7 +494,7 @@ export function validateLibrary(library: ScenarioLibrary): string[] {
       const activity = s.activities?.[band]
       const extra = activity ? activity.text(sampleContext([], 'Tuduja')).length + 2 : 0
       // Room for the greeting and a postscript line.
-      if (longest + extra > CARD_LIMITS[band] - (band === 'toddler' ? 45 : 80))
+      if (longest + extra > CARD_LIMITS[band] - (band === 'toddler' ? 0 : 80))
         errors.push(`${s.id}/${band}: liiga pikk kaardi jaoks (${longest + extra} märki)`)
       if (activity?.check && !activity.check())
         errors.push(`${s.id}/${band}: mõistatuse kontroll ebaõnnestus`)
@@ -562,7 +563,7 @@ function validateTopicSlot(s: Scenario): string[] {
       const limit =
         band === 'readAloud' || band === 'young'
           ? CARD_LIMITS.young - 80
-          : CARD_LIMITS[band] - (band === 'toddler' ? 45 : 80)
+          : CARD_LIMITS[band] - (band === 'toddler' ? 0 : 80)
       if (text.length > limit) errors.push(`${where}: liiga pikk kaardi jaoks (${text.length} märki)`)
       if (band === 'toddler' && paragraphs.length > 1) errors.push(`${where}: väikelapse kaart peab olema üks lõik`)
       for (const other of PERSONAL_HOOKS) {

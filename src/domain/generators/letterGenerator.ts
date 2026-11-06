@@ -23,6 +23,8 @@ import {
   TODDLER_OPENINGS,
 } from '../../data/templates/letters'
 import type { Line } from '../../data/templates/types'
+import { TOOTH_STORIES, TOOTH_TODDLER, TOPIC_STORY_ORDER, TOPIC_TOOTH_STORIES } from '../../data/templates/toothFairy'
+import { profileHooks } from '../story/hooks'
 import { ageBand } from './audience'
 import { familyExtras, familyInstructions, type FamilyDayExtras } from './familyEvents'
 import {
@@ -97,6 +99,7 @@ export function generateLetters(
   const ctx = createContext(request, variants, sender, linked?.used)
   const { audience, occasion } = ctx
   const toddlerOnly = audience.band === 'toddler'
+  if (occasion.id === 'lost-tooth' && options.count === 1) return toothFairyLetter(request, ctx, sender)
   const connected = options.connected && options.count > 1
   const personal = audienceLines(audience)
   const occasionCores = OCCASION_CORES[occasion.id] ?? []
@@ -337,6 +340,48 @@ export function generateLetters(
     subtitle: `${occasion.name} · ${audience.names} · saatja ${sender}`,
     items,
     instructions: letterInstructions(request, connected),
+  }
+}
+
+/**
+ * One whole letter for a lost tooth: the introduction, a single story told from beginning to end
+ * and the one task that belongs to it. A child's topic is the reason for the story when there is
+ * one written for it; the other topics are not mentioned at all.
+ */
+function toothFairyLetter(
+  request: RequestFor<'letter'>,
+  ctx: ReturnType<typeof createContext<'letter'>>,
+  sender: string,
+): TypeResult {
+  const { audience, occasion } = ctx
+  const { options } = request
+  const p = ctx.item(0)
+  const isoDate = options.startDate
+  const hooks = new Set(request.children.flatMap((child) => [...profileHooks(child)]))
+  const topicStory = TOPIC_STORY_ORDER.filter((id) => hooks.has(id)).map((id) => TOPIC_TOOTH_STORIES[id])
+  // A topic story is told about every second variant, so "Uus variant" still gives another letter.
+  const stories = audience.band === 'toddler' ? [] : [...TOOTH_STORIES, ...topicStory.flatMap((s) => (s ? [s, s] : []))]
+  const story = stories.length > 0 ? p.pick(stories, 'tooth-story') : undefined
+  const intro = `Tere! ${ctx.line(FIRST_LETTER_INTRO[0] as Line)}`
+  const toddlerIntro = `Tere, ${audience.v('väike', 'väikesed')} ${audience.names}! Mina olen ${sender}.`
+  const body = story
+    ? paragraphs(intro, ...story.paragraphs.map((line) => ctx.line(line)), ctx.line(story.task))
+    : paragraphs(toddlerIntro, ctx.line(p.pick(TOOTH_TODDLER, 'tooth-toddler')), 'Kalli-kalli!')
+  const signOff = audience.v('Sinu sõber', 'Teie sõber')
+  return {
+    title: 'Maagiline kiri',
+    subtitle: `${occasion.name} · ${audience.names} · saatja ${sender}`,
+    items: [
+      {
+        kind: 'letter',
+        label: isoDate ? formatDate(isoDate) : '',
+        date: isoDate || undefined,
+        heading: audience.greeting,
+        body,
+        signature: `${signOff}\n${sender}`,
+      },
+    ],
+    instructions: letterInstructions(request, false),
   }
 }
 

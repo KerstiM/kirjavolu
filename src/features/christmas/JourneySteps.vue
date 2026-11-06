@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /**
- * Where the parent is in the Christmas letters: who for, the free letters, and (if they want)
- * the personal ones. The third step is named as optional, so it never reads like a toll gate.
+ * Where the parent is in the Christmas letters: who for, then the free letters. The personal
+ * letters are not a step: they are an offer on the finished letters' page (PremiumOffer).
  */
-defineProps<{ current: 1 | 2 | 3 }>()
-const STEPS = ['Kellele?', 'Tasuta kirjad', 'Soovi korral isiklikumaks'] as const
+defineProps<{ current: 1 | 2 }>()
+const STEPS = ['Kellele?', 'Tasuta kirjad'] as const
 </script>
 
 <template>

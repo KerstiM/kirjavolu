@@ -8,7 +8,8 @@ import { HELPER_INVITE, HELPER_MISSIONS, type HelperContext } from '../../data/t
 import { RIDDLES } from '../../data/templates/riddles'
 import { STAND_IN_CAST } from './characters'
 import { narrowedBy, PERSONAL_HOOKS, profileHooks } from './hooks'
-import { effectiveHooks } from './sample'
+import { effectiveHooks, sampleContext } from './sample'
+import { CARD_LIMITS } from './validate'
 import { scenarioIn, type ScenarioLibrary } from './library'
 import type { Band, Cast, HookId, Scenario } from './types'
 
@@ -281,7 +282,9 @@ export function planCollection(
     const lastStage = new Map<string, number>()
     for (const [k, stage] of stages.entries()) {
       const s = scenario(stage.scenarioId)
-      const tellers = oneTellerPerBand(planned.filter((p) => s.variants[p.band]))
+      // Every child hears the story in their own text: one child's language choice must not take
+      // the arc away from a sibling who happens to share the band.
+      const tellers = planned.filter((p) => s.variants[p.band])
       if (tellers.length === 0) continue
       // A short series keeps only the required stages, spread evenly between the first and last letter.
       const at = count >= 12 ? stage.at : k / Math.max(1, stages.length - 1)
@@ -488,12 +491,21 @@ export function planCollection(
       d.addenda.length === 0 &&
       !(yesterday?.content.kind === 'scenario' && yesterday.content.activity)
     if (!giverDay || !receiverDay) continue
+    // A toddler's small card holds one short paragraph: an invitation that does not fit is left out.
+    const roomFor = (p: PlannedChild, d: PlannedDay, text: string) => {
+      if (p.band !== 'toddler' || p.readAloud || d.content.kind !== 'scenario') return true
+      const variant = scenario(d.content.scenarioId).variants[d.band ?? p.band]
+      const base = variant ? variant(sampleContext([])).join(' ').length : 0
+      return base + 1 + text.length <= CARD_LIMITS.toddler
+    }
     if (!together(giverDay, slotOf(giver)[pair.index - 1]) || !together(receiverDay, slotOf(receiver)[pair.index - 1])) continue
     const ctx = pairContext(giver.child, receiver.child, personas, receiver.band === 'toddler')
     const receiverText =
       receiver.band === 'toddler' ? pair.template.receiverToddler?.(ctx) : pair.template.receiverReader?.(ctx)
     if (!receiverText) continue
-    giverDay.addenda.push(pair.template.giver(ctx))
+    const giverText = pair.template.giver(ctx)
+    if (!roomFor(giver, giverDay, giverText) || !roomFor(receiver, receiverDay, receiverText)) continue
+    giverDay.addenda.push(giverText)
     receiverDay.addenda.push(receiverText)
     const prep = pair.template.prep?.(ctx)
     if (prep) giverDay.prep.push(prep)

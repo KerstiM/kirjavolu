@@ -9,6 +9,7 @@ import { VOICES } from './characters'
 import { scenarioIn, type ScenarioLibrary } from './library'
 import type { CollectionPlan, PlannedChild, PlannedDay } from './planner'
 import type { Paragraph, ScenarioContext } from './types'
+import { CARD_LIMITS } from './validate'
 
 /**
  * Stage B of generation: turns the plan into letters. The renderer writes only
@@ -89,9 +90,10 @@ function renderDay(
   else if (p.band !== 'toddler') paragraphs = mergeParagraphs(paragraphs)
   if (postscripts.length > 0) {
     if (p.band === 'toddler') {
-      // Toddler cards hold one paragraph: the postscript joins it.
-      paragraphs[paragraphs.length - 1] =
-        `${paragraphs.at(-1) ?? ''} ${postscripts.join(' ')}`.trim()
+      // Toddler cards hold one paragraph: the postscript joins it when the card has room for it
+      // (the parent sheet still says what goes into the slipper).
+      const joined = `${paragraphs.at(-1) ?? ''} ${postscripts.join(' ')}`.trim()
+      if (p.readAloud || joined.length <= CARD_LIMITS.toddler) paragraphs[paragraphs.length - 1] = joined
     } else {
       paragraphs.push(`P.S. ${postscripts.join(' ')}`)
     }

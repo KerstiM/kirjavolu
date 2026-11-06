@@ -284,7 +284,15 @@ export const STAR_ARC_SCENARIOS: Scenario[] = [
         `Aga linnupojad said endale päris oma laterna. ${c.cast.older} ehitas selle moosipurgist ja mina värvisin sellele lumehelbed. Kõige ilusam latern maailmas!`,
         'Nüüd on kõigil valge: kuusel, kelgul ja linnupesal. Ja minul on mälestuseks üks hõbedane sulg.',
       ],
+      toddler: () => [
+        'Täht on tagasi kuusel! Linnupoegadel on nüüd oma väike latern. Sära-sära! Piiu-piiu!',
+      ],
     },
+    readAloud: () => [
+      'Täht on jälle kuuse otsas! Ta särab nii eredalt, et kogu töökoda on valge.',
+      'Linnupojad said endale oma pisikese laterna. See on moosipurgist ja sees on natuke tähe sära, nii et pojad ei pea enam pimedas kartma.',
+      'Õhtul riputasime laterna pesa kõrvale. Ema-lind ütles: piiu! Ma arvan, et see tähendas aitäh. Kas sina oskad öelda piiu?',
+    ],
   },
 ]
 

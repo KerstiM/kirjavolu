@@ -208,7 +208,7 @@ _Hüpates · Pisi-Pätsi_
 
 **Kallis Kai!**
 
-Töökojas on üks tuba, kus hoitakse sädelust. Sinna tohib minna ainult hiilides ja hinge kinni hoides. Mina läksin eile sinna paelu tooma – ja mul hakkas nina sügelema. Aaa… aaa… AATŠIHH! Nüüd sädeleb kõik: seinad, laud, kass ja Jõuluvana habe. Jõuluvana vaatas peeglisse ja ütles, et nii pidulik pole ta kunagi olnud.
+Kujuta ette: meie töökoja kuuse otsast on täht kadunud! Eile õhtul oli ta veel seal, ma olen kindel. Ta särab nii, et isegi minu tuppa paistab valgust. Aga täna hommikul oli kuuse tipp tühi. Ilma täheta ei leia Jõuluvana jõuluööl teed. Kõik päkapikud otsivad. Mina otsisin ka – isegi pudrupotist. Seal teda ei olnud.
 
 _Sinu sõber · Pisi-Pätsi_
 
@@ -224,7 +224,7 @@ _Jahusena · Pisi-Pätsi_
 
 **Kallis Kai!**
 
-Mul oli eile luksumine! Aga mitte tavaline – iga kord, kui ma luksusin, helisesid töökojas kõik kellukesed: kõlin! Proovisin vett juua, hinge kinni hoida ja pea peal seista. Ei aidanud. Kõlin! Kõlin! Lõpuks hiilis põhjapõder Välk mulle selja taha ja ütles kõrva: „Pöö!“ Ehmusin nii, et luksumine läks ära. Kellukesed on nüüd vaiksed. Peaaegu kahju.
+Ma leidsin vihje! Päris vihje! Täna hommikul vaatasin köögiaknast välja ja aknalaual oli hõbedane tolm. Mitte jahu – jahu ma tunnen. See tolm sädeles, kui ma selle peale hingasin. Kõpsu-Mõpsu ütles, et see on väga tähtis, ja korjas tolmu pintsliga purki. Ma tunnen end nüüd nagu päris detektiiv.
 
 _Kiirelt-kiirelt · Pisi-Pätsi_
 
@@ -232,7 +232,7 @@ _Kiirelt-kiirelt · Pisi-Pätsi_
 
 **Kallis Kai!**
 
-Töökoja jõulukontserdiks tegime bändi! Mina mängin trummi. Trummiks on kolm potti ja kaks puulusikat: bumm, kõll, plõnn! Põhjapõder Välk raputab kellukesi ja kass Nurr nurrub mikrofoni – teda on kuulda ainult siis, kui teised vait on. Eile proovisime esimest korda. Jõuluvana kuulas ja ütles, et see oli väga… vali.
+Me leidsime tähe! Ta oli mäe taga vana kuuse otsas linnupesas. Pesas olid kolm pisikest linnupoega ja täht helendas nende keskel nagu öölamp. Ema-lind oli tähe sinna viinud, sest pojad kartsid pimedat. Me ei saanud tema peale üldse pahane olla. Pojad olid nii armsad!
 
 _Sinu · Pisi-Pätsi_
 
@@ -240,7 +240,7 @@ _Sinu · Pisi-Pätsi_
 
 **Kallis Kai!**
 
-Eile panin aknale lindudele seemneid. Tihased tulid, sõid kõhud täis – ja lendasid minema minu sokiga, mis aknal kuivas! Täna nägin oma sokki kuuse otsas. Tihased on teinud sellest talvemaja. Välja paistavad kaks pead ja üks saba. Las nad peavad selle. Mina saan uue soki. Töökojas tantsitakse õhtuti päkapikutantsu: kükk, keerutus ja kolm plaksu. Sina ja Markus võite selle täna koos järele proovida.
+Täht on tagasi kuuse otsas! Ta särab jälle nii, et minu tuppagi paistab. Aga linnupojad said endale päris oma laterna. Kõpsu-Mõpsu ehitas selle moosipurgist ja mina värvisin sellele lumehelbed. Kõige ilusam latern maailmas! Nüüd on kõigil valge: kuusel, kelgul ja linnupesal. Ja minul on mälestuseks üks hõbedane sulg. Töökojas tantsitakse õhtuti päkapikutantsu: kükk, keerutus ja kolm plaksu. Sina ja Markus võite selle täna koos järele proovida.
 
 _Hüpates · Pisi-Pätsi_
 
@@ -248,7 +248,7 @@ _Hüpates · Pisi-Pätsi_
 
 **Kallis Kai!**
 
-See on minu viimane kiri sel aastal. Töökojas pakitakse viimaseid kinke. Täna toovad kõik päkapikud – Kõpsu-Mõpsu, Tipp-Topp ja Pisi-Pätsi – oma viimase kirja ja jäävad siis töökotta jõulutööde juurde. Ma pesin viimase pudrupoti puhtaks ja panin mütsi pähe. Ma hakkan sind igatsema! Häid jõule, Kai!
+See on minu viimane kiri sel aastal. Töökojas pakitakse viimaseid kinke. Täht särab jälle kuuse tipus. Täna toovad kõik päkapikud – Kõpsu-Mõpsu, Tipp-Topp ja Pisi-Pätsi – oma viimase kirja ja jäävad siis töökotta jõulutööde juurde. Ma pesin viimase pudrupoti puhtaks ja panin mütsi pähe. Ma hakkan sind igatsema! Häid jõule, Kai!
 
 _Kiirelt-kiirelt · Pisi-Pätsi_
 
@@ -263,8 +263,8 @@ _Kiirelt-kiirelt · Pisi-Pätsi_
 ### Seotud päevad
 
 - 1. kirjas tutvustab iga päkapikk ka õdede-vendade päkapikke, viimases kirjas lõpetavad kõik koos.
-- 2. detsember: ühine sündmus „Täht on kadunud“ – Markus ja Pääru kuulevad sellest igaüks oma päkapiku käest.
-- 5. detsember: ühine sündmus „Täht on leitud“ – Markus ja Pääru kuulevad sellest igaüks oma päkapiku käest.
+- 2. detsember: ühine sündmus „Täht on kadunud“ – Markus, Pääru ja Kai kuulevad sellest igaüks oma päkapiku käest.
+- 5. detsember: ühine sündmus „Täht on leitud“ – Markus, Pääru ja Kai kuulevad sellest igaüks oma päkapiku käest.
 - 6. detsember: Markus ja Kai (päkapikutants koos). Mõlema kirjas on kutse seda koos teha; kui ei jõua, ei juhtu midagi.
 
 ### Kuidas kirju kasutada
@@ -280,5 +280,5 @@ _Kiirelt-kiirelt · Pisi-Pätsi_
 - Loo päevad:
 - Markus: 2. detsember, 4. detsember, 5. detsember, 6. detsember.
 - Pääru: 2. detsember, 3. detsember, 5. detsember, 6. detsember.
-- Kai: –.
+- Kai: 2. detsember, 4. detsember, 5. detsember, 6. detsember.
 - Ükski kiri ei eelda, et laps on vastanud või midagi teinud. Mõistatuste vastused on sellel lehel ja järgmise päeva kirjas (P.S.).

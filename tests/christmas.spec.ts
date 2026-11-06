@@ -71,7 +71,7 @@ describe('Christmas letters: who for and the free letters', () => {
     const { router, pinia } = await open('/joulukirjad')
     const user = userEvent.setup()
     expect(await screen.findByRole('heading', { level: 1, name: 'Päkapikk kirjutab sinu lapsele 24 jõulukirja' })).toBeInTheDocument()
-    expect(screen.getByRole('list', { name: 'Jõulukirjade sammud' })).toHaveTextContent('Soovi korral isiklikumaks')
+    expect(screen.getByRole('list', { name: 'Jõulukirjade sammud' })).not.toHaveTextContent('isiklikumaks')
     await user.type(screen.getByLabelText('Lapse nimi'), 'Mia')
     await user.type(screen.getByLabelText('Vanus'), '5')
     // Topics are optional; one picked goes into the profile and the free letters.
