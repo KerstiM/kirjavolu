@@ -664,6 +664,10 @@ function exportText(): void {
             </div>
           </details>
           <p class="controls__note">Teksti muutmiseks vajuta kaardil „Muuda“. PDF-i saamiseks vali printimisaknas „Salvesta PDF-ina“.</p>
+          <p class="controls__note">
+            Kui pilt või taust jääb prindis kahele lehele (näiteks telefonis, kus äärt muuta ei saa), vähenda printimisaknas skaalat
+            või vali seal „Fit to page“ ehk lehele mahutamine. Nii jääb kogu leht tervena ühele paberile.
+          </p>
         </PanelSection>
         <!-- Right after printing: the letters are free, supporting is a choice. -->
         <SupportCard v-if="SUPPORT_ENABLED && !aiWritten" />
