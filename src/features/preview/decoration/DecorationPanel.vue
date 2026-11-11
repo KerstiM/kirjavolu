@@ -122,7 +122,7 @@ const summary = computed(() => {
         : choice.startsWith('image:')
           ? 'oma pilt'
           : (PATTERN_LABELS[choice as PatternId] ?? '').toLowerCase()
-  const saver = choice && patterns.value.includes(choice as PatternId) && props.decoration.inkSaver ? 'tindisäästlik' : ''
+  const saver = choice && choice !== 'airmail' && patterns.value.includes(choice as PatternId) && props.decoration.inkSaver ? 'tindisäästlik' : ''
   return [name, saver].filter(Boolean).join(' · ')
 })
 
@@ -245,7 +245,8 @@ function removeImage(): void {
           <span>Oma pilt</span>
         </label>
       </div>
-      <label v-if="background && patterns.includes(background as PatternId)" class="check">
+      <!-- The airmail stripes are only an edge already. -->
+      <label v-if="background && background !== 'airmail' && patterns.includes(background as PatternId)" class="check">
         <input type="checkbox" :checked="decoration.inkSaver" @change="update({ inkSaver: !decoration.inkSaver })" />
         <span>Tindisäästlik printimine: muster ainult raamina</span>
       </label>

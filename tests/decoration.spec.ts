@@ -93,6 +93,17 @@ describe('decorated printable items', () => {
     expect(container.querySelector('.paper')!.classList.contains('has-frame')).toBe(true)
   })
 
+  it('draws the airmail stripes as a frame only, with or without ink-saving', () => {
+    for (const inkSaver of [false, true]) {
+      const { container, unmount } = render(PrintableItem, { props: { item, pattern: 'airmail', inkSaver } })
+      expect(container.querySelector('.pattern--frame .pattern__airmail')).not.toBeNull()
+      expect(container.querySelector('.pattern svg')).toBeNull()
+      expect(container.querySelector('.paper')!.classList.contains('has-frame')).toBe(true)
+      expect(container.querySelector('.paper')!.classList.contains('has-backdrop')).toBe(false)
+      unmount()
+    }
+  })
+
   it('shows a numbered puzzle piece cut from the right place', () => {
     const grid = computeGrid(24, 4 / 3)
     render(PuzzlePiece, { props: { imageUrl: 'data:image/png;base64,x', grid, index: 7, maxCm: 8 } })

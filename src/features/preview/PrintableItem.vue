@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { Pencil, RefreshCw, Scissors } from 'lucide-vue-next'
 import type { CertificateStyle, GeneratedItem, PatternId } from '../../domain/models'
 import type { PuzzleGrid } from '../../domain/puzzleGrid'
+import { drawnAsFrame } from '../../domain/patterns'
 import PatternBackground from './decoration/PatternBackground.vue'
 import PuzzlePiece from './decoration/PuzzlePiece.vue'
 import CompanionFigure from '../../components/brand/companion/CompanionFigure.vue'
@@ -42,8 +43,8 @@ const kindClass = computed(() => [
   `paper--${props.item.kind}`,
   props.item.kind === 'certificate' ? `cert--${props.certificateStyle ?? 'magical'}` : '',
   {
-    'has-backdrop': !!props.backgroundUrl || (!!props.pattern && !props.inkSaver),
-    'has-frame': !!props.pattern && props.inkSaver,
+    'has-backdrop': !!props.backgroundUrl || (!!props.pattern && !drawnAsFrame(props.pattern, !!props.inkSaver)),
+    'has-frame': drawnAsFrame(props.pattern, !!props.inkSaver),
     'is-upper': !!props.uppercase,
     'is-smaller': !!props.smaller,
     'has-companion': !!props.companion,

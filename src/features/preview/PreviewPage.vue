@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft, Download, FileQuestion, Printer, Plus, UsersRound } from 'lucide-vue-next'
 import type { CardFit, CertificateStyle, ChildProfile, Decoration, GeneralOptions, GeneratedContent, GeneratedItem, GenerationRequest, PrintableLayout } from '../../domain/models'
 import { EMPTY_DECORATION, sheetBackground } from '../../domain/models'
+import { drawnAsFrame } from '../../domain/patterns'
 import { computeGrid } from '../../domain/puzzleGrid'
 import { PUZZLE_ENABLED } from '../../domain/puzzleAvailability'
 import { computePoster, LARGE_CARD_CHARS } from '../../domain/posterLayout'
@@ -31,6 +32,7 @@ import ParentSheet from './ParentSheet.vue'
 import CustomizePanel from './CustomizePanel.vue'
 import PersonalSoon from './PersonalSoon.vue'
 import SupportCard from '../support/SupportCard.vue'
+import FeedbackCard from '../feedback/FeedbackCard.vue'
 import { SUPPORT_ENABLED } from '../support/support'
 import PassOfferCard from '../pass/PassOfferCard.vue'
 import { AI_SERIES_GENERATOR, FIX_ERROR_TEXTS, LettersRequestError, requestLetterFix, requestStoryPageFix } from '../pass/passLetters'
@@ -317,7 +319,7 @@ function companionOf(group: ItemGroup, entry: { item: GeneratedItem; index: numb
 }
 function fitOptions(group: ItemGroup, sheet: FitSheet): FitOptions {
   const background = groupBackground(group)
-  const backdrop = !!groupImageUrl(group) || (!!background.pattern && !decoration.value.inkSaver)
+  const backdrop = !!groupImageUrl(group) || (!!background.pattern && !drawnAsFrame(background.pattern, decoration.value.inkSaver))
   return { sheet, uppercase: groupUppercase(group), backdrop, smaller: groupSmaller(group), companion: !!companionId.value && sheet !== 'cards' }
 }
 /** Long letters get a smaller print text, so that they fit their half or whole page. */
@@ -665,6 +667,7 @@ function exportText(): void {
         </PanelSection>
         <!-- Right after printing: the letters are free, supporting is a choice. -->
         <SupportCard v-if="SUPPORT_ENABLED && !aiWritten" />
+        <FeedbackCard />
         <PersonalSoon v-if="!PASS_ENABLED && !aiWritten && content.request.contentType === 'letter' && content.request.occasionId === 'christmas'" />
       </aside>
 
