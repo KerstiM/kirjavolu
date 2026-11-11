@@ -22,7 +22,8 @@
   ],
   // Jõulupass (/api/joulupass/…, /api/stripe/webhook): the codes live in D1 (migrations/).
   // STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET are secrets set in the dashboard; the
-  // publishable key and the price are public. Both are from Stripe's test sandbox for now.
+  // publishable key and the price are public. The keys are live ("Toeta autorit", /api/toetus);
+  // the Jõulupass price is still from the test sandbox, so make a live one before selling it.
   "d1_databases": [
     { "binding": "DB", "database_name": "kirjavolu", "database_id": "8f03ee4e-e0d6-4632-ace5-dec637a45cd7" }
   ],
@@ -31,7 +32,7 @@
     // Jõulupass AI for everyone together per day: whole series or stories, and single letters or pages rewritten.
     "PASS_SERIES_DAILY_LIMIT": "100",
     "PASS_FIX_DAILY_LIMIT": "600",
-    "STRIPE_PUBLISHABLE_KEY": "pk_test_51UXO8LRrq8t56a303ooxMfaqAfQ6HZ2VvoVoXl5b5IPhtAhNcc3IOTtlXUCKK25KloE4zv5d1KOAy3B1Goppkm7100m79ORWee",
+    "STRIPE_PUBLISHABLE_KEY": "pk_live_51UXO8LRrq8t56a309LKkohiVFprxw8PwwkKmIfq94FIxFDMWHkhS0MTakGQ4r2XhqhPPPDTNldVe3ZE3WWENiSkR00gdB7STYO",
     "STRIPE_PRICE_ID": "price_1UXOlkRrq8t56a30c1lDhA6G"
   },
   // Cloudflare creates the DNS records and certificates for these itself.

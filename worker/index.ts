@@ -2,6 +2,7 @@ import { handleSampleLetter, type SampleEnv } from './sampleLetter'
 import { handleLetterFix, handlePassLetters, type LettersEnv } from './passLetters'
 import { handlePassStory, handleStoryFix } from './passStory'
 import { handlePassLookup, handlePurchase, handleStripeWebhook, type PassEnv } from './seasonPass'
+import { handleSupport } from './support'
 
 /**
  * Kirjavõlu on Cloudflare: the built app (dist/) is served as static assets and
@@ -28,6 +29,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
   if (pathname === '/api/joulupass/lugu') return handlePassStory(request, env)
   if (pathname === '/api/joulupass/lugu/parandus') return handleStoryFix(request, env)
   if (pathname === '/api/stripe/webhook') return handleStripeWebhook(request, env)
+  if (pathname === '/api/toetus') return handleSupport(request, env)
   return Response.json({ error: 'not_found' }, { status: 404 })
 }
 

@@ -30,6 +30,8 @@ import { carryEdits } from './carryEdits'
 import ParentSheet from './ParentSheet.vue'
 import CustomizePanel from './CustomizePanel.vue'
 import PersonalSoon from './PersonalSoon.vue'
+import SupportCard from '../support/SupportCard.vue'
+import { SUPPORT_ENABLED } from '../support/support'
 import PassOfferCard from '../pass/PassOfferCard.vue'
 import { AI_SERIES_GENERATOR, FIX_ERROR_TEXTS, LettersRequestError, requestLetterFix, requestStoryPageFix } from '../pass/passLetters'
 import AiStoryCard from './AiStoryCard.vue'
@@ -661,6 +663,8 @@ function exportText(): void {
           </details>
           <p class="controls__note">Teksti muutmiseks vajuta kaardil „Muuda“. PDF-i saamiseks vali printimisaknas „Salvesta PDF-ina“.</p>
         </PanelSection>
+        <!-- Right after printing: the letters are free, supporting is a choice. -->
+        <SupportCard v-if="SUPPORT_ENABLED && !aiWritten" />
         <PersonalSoon v-if="!PASS_ENABLED && !aiWritten && content.request.contentType === 'letter' && content.request.occasionId === 'christmas'" />
       </aside>
 
