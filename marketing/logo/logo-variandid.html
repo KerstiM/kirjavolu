@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="et">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kirjavõlu logod</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Lora:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #fbf7f1;
+    --ink: #2a2433;
+    --ink-soft: #5b5366;
+    --line: #ebe3d8;
+    --violet: #5a48b8;
+    --violet-ink: #463898;
+    --violet-soft: #efedf9;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--bg); color: var(--ink); font-family: 'Figtree', system-ui, sans-serif; padding: 40px 16px 80px; }
+  main { max-width: 1100px; margin: 0 auto; }
+  h1 { font-family: 'Lora', serif; font-size: 2rem; margin-bottom: .4rem; }
+  .lead { color: var(--ink-soft); margin-bottom: 2rem; max-width: 60ch; }
+  h2 { font-family: 'Lora', serif; font-size: 1.3rem; margin: 2.5rem 0 1rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 20px; }
+  .card h3 { font-size: 1.05rem; margin-bottom: .2rem; }
+  .card p { color: var(--ink-soft); font-size: .92rem; margin-bottom: 1rem; }
+  .row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .big svg { width: 112px; height: 112px; display: block; }
+  .round { width: 88px; height: 88px; border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 3px #fff, 0 0 0 5px #e1306c33; }
+  .round svg { width: 100%; height: 100%; display: block; }
+  .tiny svg { width: 32px; height: 32px; display: block; }
+  .inverse svg { width: 56px; height: 56px; display: block; }
+  .lockups { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+  .lockup { display: inline-flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 14px; background: var(--bg); }
+  .lockup svg { width: 34px; height: 34px; }
+  .lockup .serif { font-family: 'Lora', serif; font-weight: 600; font-size: 1.3rem; letter-spacing: -.02em; }
+  .lockup .sans { font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 1.3rem; letter-spacing: -.03em; }
+  .tag { display: inline-block; font-size: .75rem; font-weight: 700; color: var(--violet-ink); background: var(--violet-soft); border-radius: 99px; padding: 2px 9px; margin-left: 6px; vertical-align: middle; }
+
+  .palette { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+  .swatches { display: flex; gap: 8px; margin: 10px 0 14px; }
+  .sw { flex: 1; height: 54px; border-radius: 12px; display: flex; align-items: end; padding: 6px; font-size: .7rem; font-weight: 600; }
+  .demo-btn { display: inline-block; color: #fff; font-weight: 600; border-radius: 99px; padding: 10px 20px; }
+  .demo-pill { display: inline-block; font-weight: 500; border-radius: 99px; padding: 7px 14px; margin-left: 8px; }
+
+  /* Instagram avatar export: open with #avatar-a … #avatar-f */
+  body.export { padding: 0; background: none; }
+  body.export main { display: none; }
+  #export { display: none; }
+  body.export #export { display: block; width: 1080px; height: 1080px; }
+  #export svg { width: 1080px; height: 1080px; display: block; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Kirjavõlu logovariandid</h1>
+  <p class="lead">Kaasaegsed, lihtsad ja tasased märgid rahulikuma lillaga – usaldusväärne täiskasvanule, aga võlu (kuldne säde) on alles. Igal: ikoon, Instagrami ring, favicon, hele versioon ja päise logo serif- või sans-kirjaga.</p>
+  <h2>Võlukepi-klapiga ümbrik</h2>
+  <div class="grid" id="wands"></div>
+  <h2>Segavariandid: ümbrik + õ / K</h2>
+  <div class="grid" id="combos"></div>
+  <h2>Põhivariandid</h2>
+  <div class="grid" id="grid"></div>
+
+  <h2>Lilla</h2>
+  <div class="palette">
+    <div class="card">
+      <h3>Algne</h3>
+      <div class="swatches">
+        <div class="sw" style="background:#6b5aa8;color:#fff">#6b5aa8</div>
+        <div class="sw" style="background:#54458c;color:#fff">#54458c</div>
+        <div class="sw" style="background:#eeeaf8;color:#54458c">#eeeaf8</div>
+      </div>
+      <span class="demo-btn" style="background:#6b5aa8">Loo uus kiri</span><span class="demo-pill" style="background:#eeeaf8;color:#54458c">Lapsed</span>
+    </div>
+    <div class="card">
+      <h3>Rahulik ja selge <span class="tag">uus</span></h3>
+      <div class="swatches">
+        <div class="sw" style="background:#5a48b8;color:#fff">#5a48b8</div>
+        <div class="sw" style="background:#463898;color:#fff">#463898</div>
+        <div class="sw" style="background:#efedf9;color:#463898">#efedf9</div>
+      </div>
+      <span class="demo-btn" style="background:#5a48b8">Loo uus kiri</span><span class="demo-pill" style="background:#efedf9;color:#463898">Lapsed</span>
+    </div>
+    <div class="card">
+      <h3>Liiga erk (eelmine katse)</h3>
+      <div class="swatches">
+        <div class="sw" style="background:#6e44e0;color:#fff">#6e44e0</div>
+        <div class="sw" style="background:#5530c0;color:#fff">#5530c0</div>
+        <div class="sw" style="background:#f0eaff;color:#5530c0">#f0eaff</div>
+      </div>
+      <span class="demo-btn" style="background:#6e44e0">Loo uus kiri</span><span class="demo-pill" style="background:#f0eaff;color:#5530c0">Lapsed</span>
+    </div>
+  </div>
+</main>
+<div id="export"></div>
+
+<script>
+  const V = '#5a48b8', CREAM = '#fffaf3', GOLD = '#f2c46d'
+  // Main look on violet, and the light look for cream paper.
+  const DARK = { bg: V, fg: CREAM, accent: GOLD, faint: 'rgba(255,250,243,.45)' }
+  const LIGHT = { bg: '#efedf9', fg: V, accent: '#d99a2b', faint: 'rgba(90,72,184,.35)' }
+
+  // Four-pointed sparkle.
+  const spark = (x, y, r, fill) =>
+    `<path d="M${x} ${y - r}Q${x} ${y} ${x + r} ${y}Q${x} ${y} ${x} ${y + r}Q${x} ${y} ${x - r} ${y}Q${x} ${y} ${x} ${y - r}Z" fill="${fill}"/>`
+
+  // A wavy stroke from (x1,y1) to (x2,y2): a sine wave across the line, like a wand's trail.
+  const wave = (x1, y1, x2, y2, amp, waves) => {
+    const dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy), nx = -dy / len, ny = dx / len
+    let d = ''
+    for (let i = 0; i <= 40; i++) {
+      const t = i / 40, o = amp * Math.sin(t * waves * 2 * Math.PI) * Math.sin(t * Math.PI)
+      d += (i ? 'L' : 'M') + (x1 + dx * t + nx * o).toFixed(2) + ' ' + (y1 + dy * t + ny * o).toFixed(2)
+    }
+    return d
+  }
+  const star5 = (cx, cy, R, r, fill) => {
+    let d = ''
+    for (let i = 0; i < 10; i++) {
+      const a = -Math.PI / 2 + (i * Math.PI) / 5, rad = i % 2 ? r : R
+      d += (i ? 'L' : 'M') + (cx + rad * Math.cos(a)).toFixed(2) + ' ' + (cy + rad * Math.sin(a)).toFixed(2)
+    }
+    return `<path d="${d}Z" fill="${fill}" stroke="${fill}" stroke-width="2.4" stroke-linejoin="round"/>`
+  }
+  const envelope = (p, y = 32) => `<rect x="20" y="${y}" width="60" height="40" rx="6" fill="none" stroke="${p.fg}" stroke-width="5.5"/>`
+
+  const wands = [
+    {
+      id: 'k', name: 'K · Laineline klapp', note: 'Klapi mõlemad pooled on kuldsed lained nagu võlukepi jälg, kõrval täht.',
+      art: (p) => `
+        ${envelope(p)}
+        <path d="${wave(24, 36, 50, 54, 5, 1)}${wave(50, 54, 76, 36, 5, 1).replace('M', 'L')}" fill="none" stroke="${p.accent}" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+        ${star5(80, 20, 8, 3.6, p.accent)}`,
+    },
+    {
+      id: 'l', name: 'L · Võlukepp-klapp', note: 'Klapi parem pool on võlukepp, mis ulatub ümbrikust välja tähega otsas; vasak pool on selle laineline jälg.',
+      art: (p) => `
+        ${envelope(p, 36)}
+        <path d="${wave(24, 40, 48, 58, 5, 1)}" fill="none" stroke="${p.accent}" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M66 44.6 79 35" stroke="${p.bg}" stroke-width="11" stroke-linecap="round"/>
+        <path d="M48 58 79 35" stroke="${p.accent}" stroke-width="5.5" stroke-linecap="round"/>
+        ${star5(83, 31, 9, 4, p.accent)}`,
+    },
+    {
+      id: 'm', name: 'M · Võlukepp-klapp, valge ümbrik', note: 'Nagu L, aga klapi jälg on valge ja ainult kepp koos tähega on kuldne. Rahulikum.',
+      art: (p) => `
+        ${envelope(p, 36)}
+        <path d="${wave(24, 40, 48, 58, 5, 1)}" fill="none" stroke="${p.fg}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M66 44.6 79 35" stroke="${p.bg}" stroke-width="11" stroke-linecap="round"/>
+        <path d="M48 58 79 35" stroke="${p.accent}" stroke-width="5.5" stroke-linecap="round"/>
+        ${star5(83, 31, 9, 4, p.accent)}`,
+    },
+  ]
+
+  const combos = [
+    {
+      id: 'g', name: 'G · Ümbrik-õ', note: 'Joonümbrik on „o“ ja kuldne tilde teeb sellest „õ“. Kiri ja eesti keel ühes märgis.',
+      art: (p) => `
+        <rect x="22" y="40" width="56" height="38" rx="6" fill="none" stroke="${p.fg}" stroke-width="5.5"/>
+        <path d="M24 43 50 61 76 43" fill="none" stroke="${p.fg}" stroke-width="5.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M32 27c5-6 10.5-6 15.5-1.5S58 31 63 25" fill="none" stroke="${p.accent}" stroke-width="6" stroke-linecap="round"/>
+        ${spark(73, 21, 6.5, p.accent)}`,
+    },
+    {
+      id: 'h', name: 'H · Ümbrik sulejoonega', note: 'Klapi tipust jookseb kuldne sulejoon välja ja lõpeb sädemega – kiri, mis saab võlu juurde.',
+      art: (p) => `
+        <rect x="18" y="34" width="54" height="38" rx="6" fill="none" stroke="${p.fg}" stroke-width="5.5"/>
+        <path d="M20 37 45 55 70 37" fill="none" stroke="${p.fg}" stroke-width="5.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M45 55C55 70 76 66 79 47S80 31 81 29" fill="none" stroke="${p.accent}" stroke-width="4.5" stroke-linecap="round"/>
+        ${spark(82, 21, 8, p.accent)}`,
+    },
+    {
+      id: 'i', name: 'I · K-pitseriga ümbrik', note: 'Joonümbrik, klapp suletud kuldse pitseriga, milles on K. Nagu päris kirja allkiri.',
+      art: (p) => `
+        <rect x="20" y="28" width="60" height="44" rx="6" fill="none" stroke="${p.fg}" stroke-width="5.5"/>
+        <path d="M22 31 50 52 78 31" fill="none" stroke="${p.fg}" stroke-width="5.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="50" cy="54" r="12.5" fill="${p.accent}" stroke="${p.bg}" stroke-width="3"/>
+        <path d="M45.5 47.5v13M45.5 55l8-7.5M48.5 52.5l5.5 8" fill="none" stroke="${p.bg}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+        ${spark(80, 19, 6, p.accent)}`,
+    },
+    {
+      id: 'j', name: 'J · Ümbrik-õ K-pitseriga', note: 'Kõik koos: ümbrik, õ-tilde ja K-pitser. Kõige rikkalikum, Instagrami avatariks sobiv.',
+      art: (p) => `
+        <rect x="22" y="40" width="56" height="38" rx="6" fill="none" stroke="${p.fg}" stroke-width="5.5"/>
+        <path d="M24 43 50 61 76 43" fill="none" stroke="${p.fg}" stroke-width="5.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="50" cy="62" r="11" fill="${p.accent}" stroke="${p.bg}" stroke-width="3"/>
+        <path d="M46 56.5v11M46 62.5l7-6.5M48.6 60.4l4.8 7" fill="none" stroke="${p.bg}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M32 27c5-6 10.5-6 15.5-1.5S58 31 63 25" fill="none" stroke="${p.accent}" stroke-width="6" stroke-linecap="round"/>
+        ${spark(73, 21, 6.5, p.accent)}`,
+    },
+  ]
+
+  const variants = [
+    {
+      id: 'a', name: 'A · Joonümbrik', note: 'Ühe joonega ümbrik, klapi tipus säde nagu pitser. Puhas ja ajatu.',
+      art: (p) => `
+        <rect x="22" y="31" width="56" height="40" rx="6" fill="none" stroke="${p.fg}" stroke-width="5.5"/>
+        <path d="M24 34 50 53 76 34" fill="none" stroke="${p.fg}" stroke-width="5.5" stroke-linejoin="round" stroke-linecap="round"/>
+        ${spark(50, 54, 9, p.accent)}`,
+    },
+    {
+      id: 'b', name: 'B · „õ“ monogramm', note: 'Geomeetriline õ: ring ja kuldne tilde. Ainult eesti keeles võimalik märk.',
+      art: (p) => `
+        <circle cx="50" cy="60" r="17" fill="none" stroke="${p.fg}" stroke-width="10"/>
+        <path d="M31 31c5-6 10.5-6 15.5-1.5S57 35 62 29" fill="none" stroke="${p.accent}" stroke-width="6.5" stroke-linecap="round"/>
+        ${spark(72, 25, 6.5, p.accent)}`,
+    },
+    {
+      id: 'c', name: 'C · Tasane ümbrik', note: 'Täis ümbrik, klapp eraldub negatiivse ruumiga. Julge ja selge ka väikesena.',
+      art: (p) => `
+        <path d="M20 37a6 6 0 0 1 6-6h48a6 6 0 0 1 6 6v28a6 6 0 0 1-6 6H26a6 6 0 0 1-6-6z" fill="${p.fg}"/>
+        <path d="M18 31 50 55 82 31" fill="none" stroke="${p.bg}" stroke-width="5" stroke-linejoin="round"/>
+        <circle cx="50" cy="55" r="5" fill="${p.accent}" stroke="${p.bg}" stroke-width="3"/>`,
+    },
+    {
+      id: 'd', name: 'D · K sädemega', note: 'Ümarate otstega K, mille ülemine haru lõpeb sädemega. Lihtne monogramm.',
+      art: (p) => `
+        <path d="M37 27v46M37 54 60 31M47 45l17 28" fill="none" stroke="${p.fg}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+        ${spark(68, 24, 8, p.accent)}`,
+    },
+    {
+      id: 'e', name: 'E · Kirjaleht', note: 'Volditud nurgaga leht ja paar rida. Kõlab kui päris kiri, mitte mänguasi.',
+      art: (p) => `
+        <path d="M29 20h28l15 15v41a4 4 0 0 1-4 4H29a4 4 0 0 1-4-4V24a4 4 0 0 1 4-4z" fill="${p.fg}"/>
+        <path d="M57 20v11a4 4 0 0 0 4 4h11" fill="${p.faint}"/>
+        <path d="M34 46h22M34 55h30M34 64h18" stroke="${p.bg}" stroke-width="4.5" stroke-linecap="round"/>
+        ${spark(66, 64, 7, p.accent)}`,
+    },
+    {
+      id: 'f', name: 'F · Postitempel', note: 'Ümmargune tempel ja lainelised jooned. Klassikalise posti tunne modernselt.',
+      art: (p) => `
+        <circle cx="42" cy="50" r="22" fill="none" stroke="${p.fg}" stroke-width="5"/>
+        <circle cx="42" cy="50" r="15" fill="none" stroke="${p.fg}" stroke-width="2" stroke-dasharray="2 3.2"/>
+        ${spark(42, 50, 9, p.accent)}
+        <path d="M66 38q4-4 8 0t8 0M66 50q4-4 8 0t8 0M66 62q4-4 8 0t8 0" fill="none" stroke="${p.fg}" stroke-width="4" stroke-linecap="round"/>`,
+    },
+  ]
+
+  const icon = (v, p, shape) => {
+    const bg = shape === 'square' ? `<rect x="-12" y="-12" width="124" height="124" fill="${p.bg}"/>` : `<rect width="100" height="100" rx="24" fill="${p.bg}"/>`
+    const vb = shape === 'square' ? '-12 -12 124 124' : '0 0 100 100'
+    return `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg">${bg}${v.art(p)}</svg>`
+  }
+
+  const m = location.hash.match(/^#avatar-(\w)$/)
+  if (m) {
+    document.body.classList.add('export')
+    // Inset a little so nothing touches Instagram's circle crop.
+    document.getElementById('export').innerHTML = icon([...wands, ...combos, ...variants].find((x) => x.id === m[1]), DARK, 'square')
+  } else {
+    const card = (v) => `
+      <div class="card">
+        <h3>${v.name}</h3>
+        <p>${v.note}</p>
+        <div class="row">
+          <div class="big">${icon(v, DARK, 'rounded')}</div>
+          <div class="round">${icon(v, DARK, 'square')}</div>
+          <div class="inverse">${icon(v, LIGHT, 'rounded')}</div>
+          <div class="tiny">${icon(v, DARK, 'rounded')}</div>
+        </div>
+        <div class="lockups">
+          <div class="lockup">${icon(v, DARK, 'rounded')}<span class="serif">Kirjavõlu</span></div>
+          <div class="lockup">${icon(v, DARK, 'rounded')}<span class="sans">kirjavõlu</span></div>
+        </div>
+      </div>`
+    document.getElementById('wands').innerHTML = wands.map(card).join('')
+    document.getElementById('combos').innerHTML = combos.map(card).join('')
+    document.getElementById('grid').innerHTML = variants.map(card).join('')
+  }
+</script>
+</body>
+</html>

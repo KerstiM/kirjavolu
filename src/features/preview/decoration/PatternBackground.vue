@@ -71,7 +71,7 @@ function tilesOf(edge: Edge) {
           </g>
           <g v-else-if="pattern === 'hearts'">
             <path d="M16 24s-8-5-8-10a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 24 14c0 5-8 10-8 10z" fill="#f4c7ba" />
-            <path d="M46 52s-6-3.8-6-7.5a3.4 3.4 0 0 1 6-2.1 3.4 3.4 0 0 1 6 2.1c0 3.7-6 7.5-6 7.5z" fill="#d9d2f0" />
+            <path d="M46 52s-6-3.8-6-7.5a3.4 3.4 0 0 1 6-2.1 3.4 3.4 0 0 1 6 2.1c0 3.7-6 7.5-6 7.5z" fill="#d9d4f1" />
             <circle cx="48" cy="14" r="1.6" fill="#e8a593" />
           </g>
           <g v-else-if="pattern === 'leaves'">
@@ -81,12 +81,12 @@ function tilesOf(edge: Edge) {
             <circle cx="48" cy="16" r="1.6" fill="#9cc0a3" />
           </g>
           <g v-else-if="pattern === 'moons'">
-            <path d="M20 8a10 10 0 1 0 6 18 8 8 0 1 1-6-18z" fill="#d9d2f0" />
+            <path d="M20 8a10 10 0 1 0 6 18 8 8 0 1 1-6-18z" fill="#d9d4f1" />
             <path d="M48 38l1.3 3 3 1.3-3 1.3-1.3 3-1.3-3-3-1.3 3-1.3z" fill="#f2c46d" />
             <circle cx="44" cy="14" r="1.5" fill="#b8acdf" />
           </g>
           <g v-else>
-            <circle cx="16" cy="16" r="3" fill="#d9d2f0" />
+            <circle cx="16" cy="16" r="3" fill="#d9d4f1" />
             <circle cx="48" cy="48" r="3" fill="#f7d9cf" />
             <circle cx="48" cy="16" r="2" fill="#dde9de" />
             <circle cx="16" cy="48" r="2" fill="#fbf0d6" />
@@ -142,7 +142,7 @@ function tilesOf(edge: Edge) {
   position: absolute;
   inset: 0;
   padding: 12px;
-  background: repeating-linear-gradient(-45deg, #e8836b 0 14px, #fffdf8 14px 22px, #7c6bb8 22px 36px, #fffdf8 36px 44px);
+  background: repeating-linear-gradient(-45deg, #e8836b 0 14px, #fffdf8 14px 22px, #7a6cd0 22px 36px, #fffdf8 36px 44px);
   mask:
     linear-gradient(#000 0 0) content-box exclude,
     linear-gradient(#000 0 0);

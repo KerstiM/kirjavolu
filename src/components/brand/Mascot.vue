@@ -142,7 +142,7 @@ const design = useDesign()
   stroke-width: 3;
 }
 .mascot__shoe {
-  fill: var(--lavender, #6b5aa8);
+  fill: var(--lavender, #5a48b8);
 }
 .mascot__cheek {
   fill: #f2a08f;
