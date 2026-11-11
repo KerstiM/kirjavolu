@@ -83,7 +83,7 @@ const classes = computed(() => ['btn', `btn--${props.variant}`, `btn--${props.si
 .btn--primary {
   background: var(--lavender);
   color: #fff;
-  box-shadow: 0 6px 16px rgba(107, 90, 168, 0.25);
+  box-shadow: 0 6px 16px rgba(90, 72, 184, 0.25);
   &:hover:not(:disabled) {
     background: var(--lavender-ink);
   }

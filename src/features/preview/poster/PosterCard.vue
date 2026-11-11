@@ -112,7 +112,7 @@ watch(overflow, (value) => emit('overflow', value), { immediate: true })
 }
 .card__heading {
   font-weight: 600;
-  color: #54458c;
+  color: #463898;
 }
 .card__signer {
   text-align: right;
@@ -133,7 +133,7 @@ watch(overflow, (value) => emit('overflow', value), { immediate: true })
   transition: opacity 0.15s ease;
   &:hover .card-edit__pill,
   &:focus-visible .card-edit__pill {
-    border-color: #6b5aa8;
+    border-color: #5a48b8;
   }
 }
 .card-edit__pill {
@@ -147,7 +147,7 @@ watch(overflow, (value) => emit('overflow', value), { immediate: true })
   font-family: var(--font-body);
   font-size: 7.5pt;
   font-weight: 600;
-  color: #54458c;
+  color: #463898;
 }
 /* On a touch screen the cards are shown small, so the whole card opens the editor. */
 @media (hover: none) {

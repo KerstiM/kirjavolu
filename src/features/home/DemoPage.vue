@@ -118,7 +118,7 @@ onMounted(async () => {
   .demo__letter {
     padding: 10px;
     border-radius: 6px;
-    background: repeating-linear-gradient(-45deg, #e8836b 0 14px, #fffdf8 14px 22px, #7c6bb8 22px 36px, #fffdf8 36px 44px);
+    background: repeating-linear-gradient(-45deg, #e8836b 0 14px, #fffdf8 14px 22px, #7a6cd0 22px 36px, #fffdf8 36px 44px);
     box-shadow: var(--shadow);
     transform: rotate(-0.8deg);
     :deep(.paper) {
