@@ -136,15 +136,23 @@ function loadStripeJs(): Promise<NonNullable<Window['Stripe']>> {
   return stripeJs
 }
 
+/** Starts loading Stripe.js before anyone asks to pay, so the payment form opens sooner. */
+export function preloadStripeJs(): void {
+  loadStripeJs().catch(() => {
+    // Tried again when the button is pressed.
+  })
+}
+
 /**
  * Starts a checkout on the server and shows Stripe's payment form inside the given element.
  * `returnTo` is the page Stripe sends the buyer back to (the server allows only its own).
+ * `endpoint` is what is being paid for: the pass, or "Toeta autorit" (/api/toetus).
  */
-export async function openCheckout(element: HTMLElement, returnTo?: string): Promise<EmbeddedCheckout> {
+export async function openCheckout(element: HTMLElement, returnTo?: string, endpoint = '/api/joulupass/ost'): Promise<EmbeddedCheckout> {
   const init: RequestInit = returnTo
     ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ returnTo }) }
     : { method: 'POST' }
-  const data = (await call('/api/joulupass/ost', init)) as { clientSecret?: unknown; publishableKey?: unknown } | null
+  const data = (await call(endpoint, init)) as { clientSecret?: unknown; publishableKey?: unknown } | null
   const clientSecret = data?.clientSecret
   const publishableKey = data?.publishableKey
   if (typeof clientSecret !== 'string' || typeof publishableKey !== 'string') throw new PassRequestError('failed')

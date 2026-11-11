@@ -28,6 +28,10 @@ export interface AnalyticsEvents {
   checkout_started: { product: 'season-pass' }
   /** The server confirmed the payment with Stripe. */
   purchase: { product: 'season-pass' }
+  /** "Toeta autorit" opened Stripe's payment form beside free letters. */
+  support_started: Record<string, never>
+  /** Stripe says the 3,99 € support went through. */
+  support_paid: Record<string, never>
   premium_generated: { type: ContentTypeId; items: number }
   /** Why writing failed: the server's reason (a closed list), never the child's data. */
   premium_failed: { reason: LettersError }
