@@ -88,6 +88,8 @@ describe('decorated printable items', () => {
       'pattern__left',
       'pattern__right',
     ])
+    // Each strip draws only the tiles it shows: one row along the top and bottom, one column at the sides.
+    expect([...container.querySelectorAll('.pattern svg')].map((svg) => svg.querySelectorAll('use').length)).toEqual([16, 16, 24, 24])
     expect(container.querySelector('.paper')!.classList.contains('has-frame')).toBe(true)
   })
 
