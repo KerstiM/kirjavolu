@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useId } from 'vue'
+import { computed, useId } from 'vue'
 import type { PatternId } from '../../../domain/models'
+import { drawnAsFrame } from '../../../domain/patterns'
 
 /**
  * Decorative SVG pattern behind a printable item. As a full background it is
@@ -10,8 +11,9 @@ import type { PatternId } from '../../../domain/models'
  * pattern fill into a small bitmap and stretches it when printing, zooming or on the
  * tilted poster cards, so the shapes came out blurry. Real shapes stay sharp.
  */
-defineProps<{ pattern: PatternId; inkSaver: boolean }>()
+const props = defineProps<{ pattern: PatternId; inkSaver: boolean }>()
 const id = `pattern-${useId()}`
+const framed = computed(() => drawnAsFrame(props.pattern, props.inkSaver))
 
 const TILE = 64
 // Enough tiles for a whole A4 page at screen size (about 794 × 1123 px), with room to spare.
@@ -20,6 +22,8 @@ const ROWS = 24
 const tiles = Array.from({ length: COLS * ROWS }, (_, i) => ({ x: (i % COLS) * TILE, y: Math.floor(i / COLS) * TILE }))
 // The four edges of the ink-saver frame, each a strip that shows the tiles under it.
 const EDGES = ['top', 'bottom', 'left', 'right'] as const
+// The airmail stripes are drawn by CSS, so they need none of the tiled strips.
+const strips = computed(() => (props.pattern === 'airmail' ? [] : props.inkSaver ? EDGES : (['all'] as const)))
 type Edge = (typeof EDGES)[number] | 'all'
 // A strip is 28 px, so it shows only the first row (top, bottom) or column (left, right) of
 // tiles; drawing just those keeps a long series light (4 × 384 tiles per sheet before).
@@ -32,8 +36,10 @@ function tilesOf(edge: Edge) {
 </script>
 
 <template>
-  <div class="pattern" :class="{ 'pattern--frame': inkSaver }" aria-hidden="true">
-    <svg v-for="edge in inkSaver ? EDGES : (['all'] as const)" :key="edge" :class="`pattern__${edge}`" focusable="false">
+  <div class="pattern" :class="{ 'pattern--frame': framed }" aria-hidden="true">
+    <!-- Airmail: coral and lavender stripes along the edge, as on the sample letter. -->
+    <div v-if="pattern === 'airmail'" class="pattern__airmail" />
+    <svg v-for="edge in strips" :key="edge" :class="`pattern__${edge}`" focusable="false">
       <defs v-if="edge === 'all' || edge === 'top'">
         <g :id="id">
           <g v-if="pattern === 'stars'">
@@ -131,6 +137,15 @@ function tilesOf(edge: Edge) {
 }
 .pattern__left {
   left: 0;
+}
+.pattern__airmail {
+  position: absolute;
+  inset: 0;
+  padding: 12px;
+  background: repeating-linear-gradient(-45deg, #e8836b 0 14px, #fffdf8 14px 22px, #7c6bb8 22px 36px, #fffdf8 36px 44px);
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
 }
 .pattern__right {
   right: 0;

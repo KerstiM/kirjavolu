@@ -9,6 +9,7 @@ export const PATTERN_LABELS: Record<PatternId, string> = {
   leaves: 'Lehed',
   moons: 'Kuud',
   dots: 'Täpid',
+  airmail: 'Lennupost',
 }
 
 const SUGGESTED: Record<OccasionId, PatternId[]> = {
@@ -23,6 +24,14 @@ const SUGGESTED: Record<OccasionId, PatternId[]> = {
   summer: ['leaves', 'dots'],
   'lost-tooth': ['stars', 'moons'],
   everyday: ['stars', 'leaves'],
+}
+
+/**
+ * Whether the pattern is only a frame along the edges: in ink-saver mode, and always for the
+ * airmail stripes, which are an edge by nature (as on the sample letter).
+ */
+export function drawnAsFrame(pattern: PatternId | null | undefined, inkSaver: boolean): boolean {
+  return !!pattern && (inkSaver || pattern === 'airmail')
 }
 
 /** All patterns, the ones that suit the occasion first. */

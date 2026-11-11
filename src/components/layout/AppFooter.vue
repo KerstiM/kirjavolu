@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { PASS_PAGE } from '../../features/pass/seasonPass'
 import { PASS_ENABLED } from '../../features/pass/availability'
+import { FEEDBACK_MAILTO } from '../../features/feedback/feedback'
 </script>
 
 <template>
@@ -20,6 +21,7 @@ import { PASS_ENABLED } from '../../features/pass/availability'
           <RouterLink to="/tingimused">Müügitingimused</RouterLink>
         </template>
         <RouterLink to="/privaatsus">Privaatsus</RouterLink>
+        <a :href="FEEDBACK_MAILTO">Anna tagasisidet</a>
       </nav>
     </div>
   </footer>

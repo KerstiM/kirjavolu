@@ -1,6 +1,6 @@
 /** The characters that can sit under a long letter. */
 export type CompanionId = 'pakapikk' | 'umbrik' | 'janes'
-export type PatternId = 'stars' | 'snow' | 'eggs' | 'confetti' | 'hearts' | 'leaves' | 'moons' | 'dots'
+export type PatternId = 'stars' | 'snow' | 'eggs' | 'confetti' | 'hearts' | 'leaves' | 'moons' | 'dots' | 'airmail'
 
 /** Metadata of an uploaded picture; the pixels live in IndexedDB under `id`. */
 export interface StoredImageRef {
