@@ -17,6 +17,9 @@ import { ageBand, buildAudience, languageFor, textLevel, usesSmallCards } from '
 import { formatDayMonth, namesInCase } from '../../domain/text/estonian'
 import BaseButton from '../../components/ui/BaseButton.vue'
 import EmptyState from '../../components/ui/EmptyState.vue'
+import BaseDialog from '../../components/ui/BaseDialog.vue'
+import OpenInBrowser from '../inapp/OpenInBrowser.vue'
+import { isInAppBrowser } from '../inapp/inAppBrowser'
 import SegmentedControl from '../../components/ui/SegmentedControl.vue'
 import PanelSection from '../../components/ui/PanelSection.vue'
 import { useGenerator } from '../../composables/useGenerator'
@@ -537,8 +540,15 @@ const printSummary = computed(() =>
 function cleanupPrint(): void {
   document.body.classList.remove('print-all', 'print-child', 'print-parent')
 }
+// Instagram's and Facebook's browsers ignore window.print, so the button explains the way out instead.
+const inApp = isInAppBrowser()
+const inAppHelp = ref(false)
 function print(mode: PrintMode): void {
   if (content.value) track('print_clicked', { type: content.value.request.contentType, layout: rawLayout.value, mode })
+  if (inApp) {
+    inAppHelp.value = true
+    return
+  }
   cleanupPrint()
   document.body.classList.add(`print-${mode}`)
   window.addEventListener('afterprint', cleanupPrint, { once: true })
@@ -574,6 +584,13 @@ function exportText(): void {
 
   <div v-else class="preview" :class="{ 'preview--new design-new': design === 'new' }">
     <EnvelopeReveal v-if="revealing && content" :content="content" @done="endReveal" />
+    <BaseDialog v-if="inAppHelp" title="Printimiseks ava oma brauseris" @close="inAppHelp = false">
+      <p class="inapp-help">
+        Instagrami sees printimine ja PDF-i salvestamine ei tööta. Ava see leht Safaris või Chrome'is. Kirjad, mis siin tegid, jäävad
+        aga Instagrami brauserisse, nii et need tuleb seal uuesti luua.
+      </p>
+      <OpenInBrowser />
+    </BaseDialog>
     <div class="toolbar no-print">
       <div class="container toolbar__inner">
         <div class="toolbar__title">
@@ -804,6 +821,10 @@ function exportText(): void {
 </template>
 
 <style scoped lang="scss">
+.inapp-help {
+  margin: 0 0 1rem;
+  color: var(--ink-soft);
+}
 .toolbar {
   position: sticky;
   top: 4rem;
