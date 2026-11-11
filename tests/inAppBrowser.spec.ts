@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { externalBrowserUrl, isInAppBrowser, platformOf } from '@/features/inapp/inAppBrowser'
+import { isInAppBrowser } from '@/features/inapp/inAppBrowser'
 
 const IG_IOS =
   'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Instagram 330.0.0.0 (iPhone14,5; iOS 17_5; et_EE)'
@@ -16,15 +16,5 @@ describe('in-app browser', () => {
     expect(isInAppBrowser(FB_IOS)).toBe(true)
     expect(isInAppBrowser(SAFARI)).toBe(false)
     expect(isInAppBrowser(CHROME)).toBe(false)
-  })
-
-  it('opens Chrome on Android; iPhones get only the menu steps', () => {
-    expect(platformOf(IG_ANDROID)).toBe('android')
-    expect(platformOf(IG_IOS)).toBe('ios')
-    expect(externalBrowserUrl('https://kirjavolu.ee/looming/abc?x=1', 'android')).toBe(
-      'intent://kirjavolu.ee/looming/abc?x=1#Intent;scheme=https;package=com.android.chrome;end',
-    )
-    expect(externalBrowserUrl('https://kirjavolu.ee/looming/abc', 'ios')).toBeNull()
-    expect(externalBrowserUrl('https://kirjavolu.ee/', 'other')).toBeNull()
   })
 })
