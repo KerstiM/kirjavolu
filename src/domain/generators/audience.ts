@@ -85,15 +85,16 @@ export function suggestedLanguage(child: Pick<ChildProfile, 'age' | 'readingLeve
 }
 
 /**
- * The child's language in a letter request: the parent's choice, else what an older creation's
- * "Lihtsam" / "Keerulisem" gave (so its letters read the same), else the suggestion.
+ * The child's language in a letter request: the parent's choice, else the creation's default
+ * (rich since it was added), else what an older creation's "Lihtsam" / "Keerulisem" gave (so
+ * its letters read the same), else the suggestion.
  */
 export function languageFor(
   child: ChildProfile,
-  options: Pick<LetterOptions, 'language'>,
+  options: Pick<LetterOptions, 'language' | 'defaultLanguage'>,
   difficulty: Difficulty = 'auto',
 ): LanguageLevel {
-  const chosen = options.language?.[child.id]
+  const chosen = options.language?.[child.id] ?? options.defaultLanguage
   if (chosen) return chosen
   const band = ageBand(child)
   if (difficulty === 'auto' || band === 'toddler') return suggestedLanguage(child)

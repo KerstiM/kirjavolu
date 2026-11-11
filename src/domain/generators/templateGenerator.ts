@@ -3,6 +3,7 @@ import { usesSmallCards } from './audience'
 import { PUZZLE_ENABLED } from '../puzzleAvailability'
 import { getContentType } from '../contentTypes'
 import { validateGenerationRequest } from '../validation'
+import { defaultDecoration } from '../defaults'
 import { createId } from '../../utils/id'
 import type { ContentGenerator } from './ContentGenerator'
 import type { TypeResult } from './context'
@@ -121,6 +122,7 @@ export class TemplateGenerator implements ContentGenerator {
       items: result.items.map((item) => ({ ...item, id: createId(), variant: 0, edited: false })),
       instructions: result.instructions,
       layout: defaultLayoutFor(request),
+      decoration: defaultDecoration(request),
       generator: { id: this.id, label: this.label },
     }
   }

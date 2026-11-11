@@ -1,4 +1,4 @@
-import type { ContentOptionsMap, GeneralOptions, OccasionId, StoryGenre } from './models'
+import { EMPTY_DECORATION, type ContentOptionsMap, type Decoration, type GeneralOptions, type GenerationRequest, type OccasionId, type StoryGenre } from './models'
 import type { MaterialId } from '../data/templates/activities'
 import { getOccasion } from './occasions/occasions'
 import { todayIso } from './text/estonian'
@@ -40,6 +40,8 @@ export function defaultOptions(occasionId: OccasionId): ContentOptionsMap {
       count: christmas ? (untilEve >= MIN_SERIES ? untilEve : 1) : 1,
       connected: christmas,
       mode: 'linked',
+      // The first letters are full ones for every age; "Lihtne" stays a choice.
+      defaultLanguage: 'rich',
     },
     'treasure-hunt': {
       clueCount: 6,
@@ -72,4 +74,13 @@ export function defaultOptions(occasionId: OccasionId): ContentOptionsMap {
       issuer: '',
     },
   }
+}
+
+/**
+ * How a new creation looks at first. Christmas letters come dressed: a frame of stars that saves
+ * ink and the elf under each long letter. Everything else starts plain.
+ */
+export function defaultDecoration(request: Pick<GenerationRequest, 'contentType' | 'occasionId'>): Decoration | undefined {
+  if (request.contentType !== 'letter' || request.occasionId !== 'christmas') return undefined
+  return { ...EMPTY_DECORATION, pattern: 'stars', inkSaver: true, companion: 'pakapikk' }
 }

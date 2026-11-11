@@ -23,12 +23,16 @@ export function makeRequest<K extends ContentTypeId>(
   } = {},
 ): RequestFor<K> {
   const occasionId = overrides.occasionId ?? 'everyday'
+  // The texts are tested at the language suggested by age (as in older creations and in the
+  // parent's "Lihtne"); new creations start rich, see defaults.spec.
+  const { defaultLanguage: _rich, ...letterDefaults } = defaultOptions(occasionId).letter
+  const defaults = { ...defaultOptions(occasionId), letter: letterDefaults }
   return {
     contentType,
     children: overrides.children ?? [MARKUS],
     occasionId,
     general: { ...DEFAULT_GENERAL, ...overrides.general },
     seed: overrides.seed ?? 1234,
-    options: { ...defaultOptions(occasionId)[contentType], ...overrides.options },
+    options: { ...defaults[contentType], ...overrides.options },
   } as GenerationRequest as RequestFor<K>
 }

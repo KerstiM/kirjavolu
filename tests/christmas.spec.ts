@@ -9,6 +9,8 @@ import { resetAnalytics, setupAnalytics } from '@/app/analytics'
 import { useChildrenStore } from '@/features/children/childrenStore'
 import { useCreationsStore } from '@/features/preview/creationsStore'
 import { loadPass, PASS_KEY } from '@/features/pass/seasonPass'
+import { languageFor, usesSmallCards } from '@/domain/generators/audience'
+import type { LetterOptions } from '@/domain/models'
 
 // Most of these tests are about the personal letters, so the pass is on sale unless a test says otherwise.
 const sale = vi.hoisted(() => ({ on: true }))
@@ -87,6 +89,20 @@ describe('Christmas letters: who for and the free letters', () => {
     expect(creation.request).toMatchObject({ contentType: 'letter', occasionId: 'christmas' })
     // Print, PDF and the full editor are one click away.
     expect(screen.getByRole('link', { name: /Prindi või salvesta PDF/ })).toHaveAttribute('href', `/looming/${creation.id}`)
+  })
+
+  it('gives a two-year-old full letters, the elf under them and an ink-saving frame of stars', async () => {
+    const { router, pinia } = await open('/joulukirjad')
+    const user = userEvent.setup()
+    await user.type(await screen.findByLabelText('Lapse nimi'), 'Mia')
+    await user.type(screen.getByLabelText('Vanus'), '2')
+    await user.click(screen.getByRole('button', { name: /Loo tasuta kirjad/ }))
+    await vi.waitFor(() => expect(router.currentRoute.value.path).toMatch(/^\/joulukirjad\/./), { timeout: 5000 })
+    const creation = useCreationsStore(pinia).creations[0]!
+    const child = creation.request.children[0]!
+    expect(languageFor(child, creation.request.options as LetterOptions)).toBe('rich')
+    expect(usesSmallCards(child, creation.request)).toBe(false)
+    expect(creation.decoration).toMatchObject({ pattern: 'stars', inkSaver: true, companion: 'pakapikk' })
   })
 
   it('needs a name and an age before making the letters', async () => {

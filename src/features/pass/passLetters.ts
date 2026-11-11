@@ -1,5 +1,5 @@
 import type { ChildProfile, GeneratedContent, GeneratedItem, GenerationRequest } from '../../domain/models'
-import { DEFAULT_GENERAL, defaultOptions } from '../../domain/defaults'
+import { DEFAULT_GENERAL, defaultDecoration, defaultOptions } from '../../domain/defaults'
 import { addDays, formatDate } from '../../domain/text/estonian'
 import { foodTexts, interestTexts } from '../../data/topics'
 import { createId } from '../../utils/id'
@@ -150,6 +150,7 @@ export function seriesContent(child: ChildProfile, letters: Letter[], now = new 
     ],
     // Long letters: a whole page each, not the poster's small cards.
     layout: 'page',
+    decoration: defaultDecoration(request),
     generator: { id: AI_SERIES_GENERATOR, label: GENERATOR_LABEL },
   }
 }

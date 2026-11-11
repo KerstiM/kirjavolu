@@ -20,6 +20,15 @@ const ROWS = 24
 const tiles = Array.from({ length: COLS * ROWS }, (_, i) => ({ x: (i % COLS) * TILE, y: Math.floor(i / COLS) * TILE }))
 // The four edges of the ink-saver frame, each a strip that shows the tiles under it.
 const EDGES = ['top', 'bottom', 'left', 'right'] as const
+type Edge = (typeof EDGES)[number] | 'all'
+// A strip is 28 px, so it shows only the first row (top, bottom) or column (left, right) of
+// tiles; drawing just those keeps a long series light (4 × 384 tiles per sheet before).
+const FRAME = 28
+function tilesOf(edge: Edge) {
+  if (edge === 'top' || edge === 'bottom') return tiles.filter((tile) => tile.y < FRAME)
+  if (edge === 'left' || edge === 'right') return tiles.filter((tile) => tile.x < FRAME)
+  return tiles
+}
 </script>
 
 <template>
@@ -78,7 +87,7 @@ const EDGES = ['top', 'bottom', 'left', 'right'] as const
           </g>
         </g>
       </defs>
-      <use v-for="tile in tiles" :key="`${tile.x}-${tile.y}`" :href="`#${id}`" :x="tile.x" :y="tile.y" />
+      <use v-for="tile in tilesOf(edge)" :key="`${tile.x}-${tile.y}`" :href="`#${id}`" :x="tile.x" :y="tile.y" />
     </svg>
   </div>
 </template>
