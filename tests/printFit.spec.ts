@@ -6,7 +6,7 @@ import { createMemoryHistory, createRouter } from 'vue-router'
 import App from '@/app/App.vue'
 import { routes } from '@/app/router'
 import { useCreationsStore } from '@/features/preview/creationsStore'
-import type { RequestFor } from '@/domain/models'
+import { EMPTY_DECORATION, type RequestFor } from '@/domain/models'
 import { templateGenerator } from '@/domain/generators/templateGenerator'
 import { DEFAULT_GENERAL, defaultOptions } from '@/domain/defaults'
 import { fitsSheet, fittingChars, letterHeightMm, MAX_PT, MIN_PT, printTextPt, SHEET_HEIGHT_MM, SMALLER_PT } from '@/features/preview/printFit'
@@ -91,6 +91,8 @@ describe('half page in the preview', () => {
     const content = await templateGenerator.generate(request)
     const store = useCreationsStore()
     store.add(content)
+    // Plain sheets: the elf under a letter takes room that half a page does not have.
+    store.setDecoration(content.id, { ...EMPTY_DECORATION })
     store.setLayout(content.id, 'half')
     const router = createRouter({ history: createMemoryHistory(), routes })
     router.push(`/looming/${content.id}`)

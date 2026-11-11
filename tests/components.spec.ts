@@ -288,9 +288,9 @@ describe('preview with choices beside it', () => {
     expect(presets).toHaveTextContent('Plakat tuleb 6 A4 lehele, kaardid on suuremad.')
     // The layout is no longer chosen twice: "Printimise lisavalikud" keeps only what to print and capitals.
     expect(screen.queryByRole('group', { name: 'Prindi paigutus' })).toBeNull()
-    // Letters written in fuller paragraphs take less room: half a page now holds them. A letter
-    // too long for it is covered by printFit.spec.
-    expect(within(presets).getByRole('radio', { name: 'Pool lehte' })).toBeEnabled()
+    // New Christmas letters are rich and have the elf under them: too much for half a page, so
+    // that stays off with its reason. Half pages for plainer letters are covered by printFit.spec.
+    expect(within(presets).getByRole('radio', { name: 'Pool lehte' })).toBeDisabled()
     await user.click(within(presets).getByRole('radio', { name: 'Terve leht' }))
     expect(store.creations[0]?.layout).toBe('page')
     expect(screen.getByText('Printimise lisavalikud').closest('details')).not.toHaveAttribute('open')
@@ -299,7 +299,7 @@ describe('preview with choices beside it', () => {
   it('keeps the poster in sight but off, with the reason, when a letter is too long even for a large card', async () => {
     const { user, store } = await letterPreview()
     const { id, items } = store.creations[0]!
-    store.editItem(id, items[0]!.id, { body: 'Väga pikk kiri. '.repeat(90) })
+    store.editItem(id, items[0]!.id, { body: 'Väga pikk kiri. '.repeat(120) })
     await user.click(screen.getByRole('button', { name: /Printimine/ }))
     const presets = screen.getByRole('group', { name: 'Kuidas prindid?' })
     await vi.waitFor(() => expect(within(presets).getByRole('radio', { name: 'Pusleplakat' })).toBeDisabled())

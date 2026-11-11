@@ -89,10 +89,16 @@ export interface LetterOptions {
   /** Personal challenges for one child each. */
   challenges?: ChildChallenge[]
   /**
-   * Language per child id; a child without an entry gets the one suggested by age and reading
-   * ability (`languageFor`). Missing in creations made before this choice.
+   * Language per child id; a child without an entry gets `defaultLanguage`, else the one
+   * suggested by age and reading ability (`languageFor`). Missing in creations made before this choice.
    */
   language?: Record<string, LanguageLevel>
+  /**
+   * Language of a child without an entry in `language`. New creations write "rich", so the first
+   * letters are full ones even for a toddler; missing in older creations, which keep the
+   * suggestion by age and reading ability.
+   */
+  defaultLanguage?: LanguageLevel
   /**
    * The parent's own choice: the oldest reader becomes the elves' secret helper with missions
    * for the younger ones, and supports a sibling's challenge in secret. Off unless chosen.

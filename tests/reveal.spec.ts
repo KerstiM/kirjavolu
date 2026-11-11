@@ -19,7 +19,8 @@ async function openPreview(path: (id: string) => string) {
     options: { startDate: '2026-12-01' },
   }) as RequestFor<'letter'>
   const content = await templateGenerator.generate(request)
-  useCreationsStore().add(content)
+  // The envelope does not depend on the decoration; 48 star frames are slow to draw in jsdom.
+  useCreationsStore().add({ ...content, decoration: undefined })
   const router = createRouter({ history: createMemoryHistory(), routes })
   router.push(path(content.id))
   await router.isReady()
