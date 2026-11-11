@@ -3,16 +3,20 @@ import { RouterView, useRoute } from 'vue-router'
 import AppHeader from '../components/layout/AppHeader.vue'
 import AppFooter from '../components/layout/AppFooter.vue'
 import MoveBanner from '../features/moving/MoveBanner.vue'
+import InAppBanner from '../features/inapp/InAppBanner.vue'
+import { isInAppBrowser } from '../features/inapp/inAppBrowser'
 
 const route = useRoute()
 // Set only on the old address once the new one is live.
 const movedTo = import.meta.env.VITE_MOVED_TO
+const inApp = isInAppBrowser()
 </script>
 
 <template>
   <a href="#main" class="skip-link no-print">Liigu sisu juurde</a>
   <AppHeader />
   <MoveBanner v-if="movedTo" :target="movedTo" />
+  <InAppBanner v-if="inApp" />
   <main id="main" tabindex="-1" class="app-main">
     <!--
       A time-based CSS animation instead of <Transition>: Transition swaps classes in

@@ -21,6 +21,8 @@ const refreshPass = () => (pass.value = loadPass())
 onMounted(() => window.addEventListener(PASS_CHANGED, refreshPass))
 onBeforeUnmount(() => window.removeEventListener(PASS_CHANGED, refreshPass))
 const passLeft = computed(() => (pass.value && isActive(pass.value) ? pass.value.generationsLeft : null))
+// Three or more links (Lapsed is always there) no longer fit a phone beside the name.
+const long = computed(() => [promo, creations.creations.length, pass.value].filter(Boolean).length >= 2)
 
 // The link does nothing while the wizard is already open, so ask it to start over.
 function startOver(): void {
@@ -29,7 +31,7 @@ function startOver(): void {
 </script>
 
 <template>
-  <header class="app-header" :class="{ 'app-header--long': promo && pass }">
+  <header class="app-header" :class="{ 'app-header--long': long }">
     <div class="container app-header__inner">
       <RouterLink to="/" class="brand" exact-active-class="is-active" aria-label="Kirjavõlu avaleht">
         <BrandMark />
@@ -154,8 +156,8 @@ function startOver(): void {
     clip: rect(0, 0, 0, 0);
   }
 }
-// With both the season and the pass in the menu, the logo alone stands for the name and the
-// links sit closer, so a 360 px phone still has one line.
+// With three or more links in the menu, the logo alone stands for the name and the links sit
+// closer, so a 360 px phone still has one line.
 @media (max-width: 460px) {
   .app-header--long {
     .brand__name {
